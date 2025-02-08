@@ -9,8 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]()
 
 ### Added
+- Add a issue and enhancement template so it makes reporting easier;
 ### Changed
 ### Fixed
+- Wrong placeholder title for enhancement template;
 ### Removed
 
 ## [1.0.0]()
