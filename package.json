@@ -9,11 +9,11 @@
     "utils:lint": "eslint src",
     "bundle": "esbuild src/main.ts --outfile=build/bundle.js --bundle --platform=browser",
     "build": "rimraf build && npm run utils:copy-static && npm run bundle",
-    "release": "npm run build && rimraf release && cpx build/**/* release --verbose",
+    "release": "npm run build && rimraf docs && cpx build/**/* docs --verbose",
     "start:cpx": "cpx src/public/**/* build --watch --verbose --update",
     "start:server": "http-server build -o -c-1",
     "start:bundler": "esbuild src/main.ts --outfile=build/bundle.js --bundle --platform=browser --watch --sourcemap",
-    "start:prod": "http-server release -o -c-1",
+    "start:prod": "http-server docs -o -c-1",
     "start:dev": "rimraf build && start npm run start:cpx && start npm run start:server && npm run start:bundler"
   },
   "keywords": [],

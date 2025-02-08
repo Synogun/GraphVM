@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add a issue and enhancement template so it makes reporting easier;
 ### Changed
+- `/release` directory renamed to `/docs`
 ### Fixed
 - Wrong placeholder title for enhancement template;
 ### Removed
