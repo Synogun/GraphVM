@@ -1,0 +1,144 @@
+name: Build and Deploy 🚀
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository 🔍
+        uses: actions/checkout@v4
+
+      - name: Setup Python 🐍
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Setup Node.js and NPM 🟢
+        uses: actions/setup-node@v4
+        with:
+            node-version: 23
+
+      - run: echo "# Deploying new release! :rocket:" >> $GITHUB_STEP_SUMMARY
+
+      - name: Make scripts executable 🛠️
+        shell: bash
+        run: |
+          echo "## Making scripts executable... :hammer:" >> $GITHUB_STEP_SUMMARY
+
+          chmod +x ./.github/workflows/scripts/calculate_semver.sh
+          chmod +x ./.github/workflows/scripts/fetch_scopes.sh
+
+          echo "### Scripts made executable successfully!" >> $GITHUB_STEP_SUMMARY
+          
+      - name: Calculate New Version 🧮
+        id: calc_version
+        run: |
+          echo "## Calculating new version... :abacus:" >> $GITHUB_STEP_SUMMARY
+
+          VERSION=$(bash ./.github/workflows/scripts/calculate_semver.sh)
+          IFS='_' read -r OLD_SEMVER_TAG NEW_SEMVER_TAG CALC_SEMVER_FLAG <<< "$VERSION"
+          echo "OLD_SEMVER_TAG=$OLD_SEMVER_TAG" >> $GITHUB_ENV
+          echo "NEW_SEMVER_TAG=$NEW_SEMVER_TAG" >> $GITHUB_ENV
+
+          # So linting doesn't complain
+          echo "OLD_SEMVER_TAG=$OLD_SEMVER_TAG" >> $GITHUB_OUTPUT
+          echo "NEW_SEMVER_TAG=$NEW_SEMVER_TAG" >> $GITHUB_OUTPUT
+          echo "CALC_SEMVER_FLAG=$CALC_SEMVER_FLAG" >> $GITHUB_OUTPUT
+
+          if [ "$CALC_SEMVER_FLAG" == "true" ]; then
+            echo "*New version: **$OLD_SEMVER_TAG ---> $NEW_SEMVER_TAG***" >> $GITHUB_STEP_SUMMARY
+            echo "### Version calculated successfully!" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "No changes detected. Exiting... :stop_sign:" >> $GITHUB_STEP_SUMMARY
+            exit 0
+          fi
+
+      - name: Fetch Commit Scopes 🎯
+        id: fetch_scopes
+        if: steps.calc_version.outputs.CALC_SEMVER_FLAG == 'true'
+        run: |
+          echo "## Fetching commit scopes... :dart:" >> $GITHUB_STEP_SUMMARY
+
+          SCOPES=$(bash ./.github/workflows/scripts/fetch_scopes.sh $OLD_SEMVER_TAG)
+          echo "SEMVER_SCOPES=$SCOPES" >> $GITHUB_ENV
+          
+          echo "*Fetched commit scopes: **$SCOPES***" >> $GITHUB_STEP_SUMMARY
+          echo "### Commit scopes fetched successfully!" >> $GITHUB_STEP_SUMMARY
+
+
+      - name: Build and Bump Version 📈
+        if: steps.calc_version.outputs.CALC_SEMVER_FLAG == 'true'
+        run: |
+          echo "## Bumping version... :chart_with_upwards_trend:" >> $GITHUB_STEP_SUMMARY
+
+          npm verison $NEW_SEMVER_TAG --no-git-tag-version
+          echo "### Version bumped successfully!" >> $GITHUB_STEP_SUMMARY
+
+      - name: Update Changelog 📝
+        id: update_changelog
+        if: steps.calc_version.outputs.CALC_SEMVER_FLAG == 'true'
+        run: |
+          echo "## Updating changelog... :memo:" >> $GITHUB_STEP_SUMMARY
+
+          RELEASE_NOTES=$(python ./.github/workflows/scripts/update_changelog.py $OLD_SEMVER_TAG $NEW_SEMVER_TAG)
+          echo "RELEASE_NOTES=$RELEASE_NOTES" >> $GITHUB_OUTPUT
+          
+          echo "*Fetched latest notes! *" >> $GITHUB_STEP_SUMMARY # Logging fetched release notes
+
+          echo "### Changelog updated successfully!" >> $GITHUB_STEP_SUMMARY
+    
+      - name: Commit and Tag 🏷️
+        if: steps.calc_version.outputs.CALC_SEMVER_FLAG == 'true'
+        run: |
+          echo "## Committing changes... :bookmark:" >> $GITHUB_STEP_SUMMARY
+          
+          git add .
+          git commit -m "$NEW_SEMVER_TAG\n\n$SCOPES"
+
+          echo "### Changes committed successfully!" >> $GITHUB_STEP_SUMMARY
+          echo "## Tagging release... :label:" >> $GITHUB_STEP_SUMMARY
+
+          git tag -a $NEW_SEMVER_TAG -m "$SCOPES"
+
+          echo "### Release tagged successfully!" >> $GITHUB_STEP_SUMMARY
+
+      - name: Push Changes ⬆
+        if: steps.calc_version.outputs.CALC_SEMVER_FLAG == 'true'
+        run: |
+          echo "## Pushing changes... :arrow_up:" >> $GITHUB_STEP_SUMMARY
+          
+          git push origin main
+          
+          echo "### Changes pushed successfully!" >> $GITHUB_STEP_SUMMARY
+
+      - name: Make Release 📦
+        if: steps.calc_version.outputs.CALC_SEMVER_FLAG == 'true'
+        id: make_release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ steps.calc_version.outputs.NEW_SEMVER_TAG }}
+          tag_name: ${{ steps.calc_version.outputs.NEW_SEMVER_TAG }}
+          body: ${{ steps.update_changelog.outputs.RELEASE_NOTES }}
+          token: ${{ secrets.TOKEN }}
+          generate_release_notes: true
+          make_latest: 'true'
+          files: |
+            ./src/**/*
+      - run: echo "## Release made successfully! :tada:" >> $GITHUB_STEP_SUMMARY
+      - run: echo "**Check it out on ${{ steps.make_release.outputs.url }}** :globe_with_meridians:" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Deploy 🚀
+        if: steps.calc_version.outputs.CALC_SEMVER_FLAG == 'true'
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: docs
+          branch: gh-pages
+          token: ${{ secrets.TOKEN }}
+          tag: "deploy-${{ steps.calc_version.outputs.NEW_SEMVER_TAG }}"
+          commit-message: "$SCOPES"
+          

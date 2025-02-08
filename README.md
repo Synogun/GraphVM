@@ -8,6 +8,8 @@
 <!-- omit from toc -->
 <!-- ## <center> [![en](https://img.shields.io/badge/README-en-red.svg)](README.md) [![pt-br](https://img.shields.io/badge/README-pt--br-green.svg)](README.pt-br.md) </center> -->
 
+![Build_And_Deploy](https://github.com/Synogun/GraphVM/actions/workflows/build_and_deploy.yml/badge.svg)
+
 [![Licence](https://img.shields.io/github/license/Ileriayo/markdown-badges?style=for-the-badge)](./LICENSE)
 
 ---
@@ -31,8 +33,8 @@ GraphVM its designed to be a quick and easy viewer and manipulator of graphs fro
 
 ## Features
 
-- [X] Add Nodes
-- [X] Add Edges
+- [X] Add/Delete Nodes
+- [X] Add/Delete Edges
 - [X] Styling nodes
   - <details> <summary>Available Properties</summary>
 
@@ -88,8 +90,6 @@ GraphVM its designed to be a quick and easy viewer and manipulator of graphs fro
 
 ### --save-dev
 
-    "@commitlint/cli": "^19.6.1",
-    "@commitlint/config-conventional": "^19.7.1",
     "@eslint/js": "^9.18.0",
     "@stylistic/eslint-plugin": "^2.12.1",
     "@types/node": "^22.10.5",
@@ -97,7 +97,6 @@ GraphVM its designed to be a quick and easy viewer and manipulator of graphs fro
     "esbuild": "0.24.2",
     "eslint": "^9.18.0",
     "http-server": "^14.1.1",
-    "husky": "^9.1.7",
     "rimraf": "^6.0.1",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.19.1"

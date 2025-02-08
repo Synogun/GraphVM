@@ -17,7 +17,6 @@ export default tseslint.config([
             'build/**/*',
             'release/**/*',
             'eslint.config.mjs',
-            'commitlint.config.ts',
         ],
     },
     {
