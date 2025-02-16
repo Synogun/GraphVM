@@ -1,8 +1,9 @@
 name: Bug report
-about: Create a bug report to help us improve
+description: Create a bug report to help us improve
 title: "[BUG] <title>"
 labels: bug
-assignees: Synogun
+assignees: 
+  - Synogun
 body:
 - type: markdown
   attributes:
@@ -32,9 +33,9 @@ body:
     description: Steps to reproduce the behavior.
     placeholder: |
       1. In this environment...
-      1. With this config...
-      1. Run '...'
-      1. See error...
+      2. With this config...
+      3. Run '...'
+      4. See error...
   validations:
     required: false
 - type: dropdown
@@ -48,7 +49,6 @@ body:
       - Edge
       - Safari
       - Other (Specify in 'Anything else?' section)
-    default: []
   validations:
     required: false
 - type: textarea
