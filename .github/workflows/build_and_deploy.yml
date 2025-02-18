@@ -86,6 +86,7 @@ jobs:
         run: |
           echo "## Bumping version... :chart_with_upwards_trend:" >> $GITHUB_STEP_SUMMARY
 
+          npm install
           npm verison $NEW_SEMVER_TAG --no-git-tag-version
           echo "### Version bumped successfully!" >> $GITHUB_STEP_SUMMARY
 

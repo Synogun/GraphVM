@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "utils:copy-static": "cpx src/public/**/* build",
-    "utils:lint": "eslint src",
+    "utils:lint": "npx eslint src",
     "bundle": "esbuild src/main.ts --outfile=build/bundle.js --bundle --platform=browser",
     "build": "rimraf build && npm run utils:copy-static && npm run bundle",
     "release": "npm run build && rimraf docs && cpx build/**/* docs --verbose",
