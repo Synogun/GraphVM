@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Project` - Moves commits generated in version from gh release to release commit message
 ### Fixed
 - `Project` - Fix form templates wrong keys and filename
+- `Project` - Fix action not fetching correct log
 ### Removed
 <!-- END -->
 

@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Checkout repository 🔍
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Python 🐍
         uses: actions/setup-python@v5
@@ -136,8 +138,12 @@ jobs:
           make_latest: 'true'
           files: |
             ./src/**/*
-      - run: echo "## Release made successfully! :tada:" >> $GITHUB_STEP_SUMMARY
-      - run: echo "**Check it out on ${{ steps.make_release.outputs.url }}** :globe_with_meridians:" >> $GITHUB_STEP_SUMMARY
+
+      - if: steps.calc_version.outputs.CALC_SEMVER_FLAG == 'true'
+        run: echo "## Release made successfully! :tada:" >> $GITHUB_STEP_SUMMARY
+      
+      - if: steps.calc_version.outputs.CALC_SEMVER_FLAG == 'true'
+        run: echo "**Check it out on ${{ steps.make_release.outputs.url }}** :globe_with_meridians:" >> $GITHUB_STEP_SUMMARY
       
       - name: Deploy 🚀
         if: steps.calc_version.outputs.CALC_SEMVER_FLAG == 'true' && github.event.inputs.deploy == true
