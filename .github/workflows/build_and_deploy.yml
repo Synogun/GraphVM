@@ -21,6 +21,8 @@ jobs:
         with:
           fetch-depth: 0
 
+      - run: git pull origin main
+
       - name: Setup Python 🐍
         uses: actions/setup-python@v5
         with:
