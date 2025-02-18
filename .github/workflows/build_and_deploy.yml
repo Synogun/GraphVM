@@ -2,6 +2,12 @@ name: Build and Deploy 🚀
 
 on:
   workflow_dispatch:
+    inputs:
+      deploy:
+        description: 'Deploy to pages?'
+        type: boolean
+        required: true
+        default: true
 
 permissions:
   contents: write
@@ -97,8 +103,9 @@ jobs:
         run: |
           echo "## Committing changes... :bookmark:" >> $GITHUB_STEP_SUMMARY
           
+          COMMITS=$(git log --pretty=format:"%s" $OLD_SEMVER_TAG..develop)
           git add .
-          git commit -m "$NEW_SEMVER_TAG\n\n$SCOPES"
+          git commit -m "$NEW_SEMVER_TAG\n\n$SCOPES\n\n$COMMITS"
 
           echo "### Changes committed successfully!" >> $GITHUB_STEP_SUMMARY
           echo "## Tagging release... :label:" >> $GITHUB_STEP_SUMMARY
@@ -125,7 +132,7 @@ jobs:
           tag_name: ${{ steps.calc_version.outputs.NEW_SEMVER_TAG }}
           body: ${{ steps.update_changelog.outputs.RELEASE_NOTES }}
           token: ${{ secrets.TOKEN }}
-          generate_release_notes: true
+          generate_release_notes: false
           make_latest: 'true'
           files: |
             ./src/**/*
@@ -133,7 +140,7 @@ jobs:
       - run: echo "**Check it out on ${{ steps.make_release.outputs.url }}** :globe_with_meridians:" >> $GITHUB_STEP_SUMMARY
       
       - name: Deploy 🚀
-        if: steps.calc_version.outputs.CALC_SEMVER_FLAG == 'true'
+        if: steps.calc_version.outputs.CALC_SEMVER_FLAG == 'true' && github.event.inputs.deploy == true
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: docs
