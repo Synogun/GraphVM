@@ -65,7 +65,6 @@ with open(tmpPath, 'w+') as file:
         
         file.write('\n')
 
-currentNotes.append("\n## Commits\n")
 currentNotes = "\n".join(currentNotes)
 
 print(currentNotes)

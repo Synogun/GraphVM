@@ -9,8 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- START -->
 ### Added
+- `Project` - Adds option to toggle deployment to GitHub Pages
 ### Changed
+- `Project` - Moves commits generated in version from gh release to release commit message
 ### Fixed
+- `Project` - Fix action not fetching correct log
+- `Project` - Fix form templates wrong keys and filename
 ### Removed
 <!-- END -->
 

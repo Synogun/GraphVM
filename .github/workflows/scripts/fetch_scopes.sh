@@ -18,7 +18,7 @@ OLD_SEMVER_TAG=$1
 # echo "Last tag: $OLD_SEMVER_TAG"
 
 # Get commit messages in chronological order (oldest first)
-COMMITS=$(git log "$OLD_SEMVER_TAG"..HEAD --reverse --pretty=format:"%s")
+COMMITS=$(git log "refs/tags/$OLD_SEMVER_TAG"..origin/develop --reverse --pretty=format:"%s")
 # echo "Commits (chronological order):"
 # echo "$COMMITS"
 

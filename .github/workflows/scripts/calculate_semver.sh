@@ -8,7 +8,7 @@ IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
 # echo "${MAJOR}.${MINOR}.${PATCH}"
 
 # Get commit messages in chronological order (oldest first)
-COMMITS=$(git log "$OLD_SEMVER_TAG"..develop --reverse --pretty=format:"%s")
+COMMITS=$(git log "refs/tags/$OLD_SEMVER_TAG"..origin/develop --reverse --pretty=format:"%s")
 # echo "$COMMITS"
 
 # Process each commit one-by-one
