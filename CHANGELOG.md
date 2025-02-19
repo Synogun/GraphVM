@@ -5,9 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/Synogun/GraphVM/compare/v1.0.0...develop)
+## [Unreleased](https://github.com/Synogun/GraphVM/compare/v1.0.6...develop)
 
 <!-- START -->
+### Added
+### Changed
+### Fixed
+### Removed
+<!-- END -->
+
+## [v1.0.6](https://github.com/Synogun/GraphVM/compare/v1.0.0...v1.0.6)
+
 ### Added
 - `Project` - Adds option to toggle deployment to GitHub Pages
 ### Changed
@@ -16,7 +24,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Project` - Fix action not fetching correct log
 - `Project` - Fix form templates wrong keys and filename
 ### Removed
-<!-- END -->
 
 ## [v1.0.0](https://github.com/Synogun/GraphVM/tree/v1.0.0)
 
