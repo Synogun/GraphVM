@@ -95,22 +95,39 @@ jobs:
         if: steps.calc_version.outputs.CALC_SEMVER_FLAG == 'true'
         run: |
           echo "## Updating changelog... :memo:" >> $GITHUB_STEP_SUMMARY
-
           RELEASE_NOTES=$(python ./.github/workflows/scripts/update_changelog.py $OLD_SEMVER_TAG $NEW_SEMVER_TAG)
-          echo "RELEASE_NOTES=$RELEASE_NOTES" >> $GITHUB_OUTPUT
+
+          echo "RELEASE_NOTES<<EOF" >> $GITHUB_OUTPUT
+          echo "$RELEASE_NOTES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
           
           echo "*Fetched latest notes! *" >> $GITHUB_STEP_SUMMARY # Logging fetched release notes
 
           echo "### Changelog updated successfully!" >> $GITHUB_STEP_SUMMARY
     
+
+      - name: Setup Git 🐙
+        if: steps.calc_version.outputs.CALC_SEMVER_FLAG == 'true'
+        run: |
+          echo "## Setting up Git... :octocat:" >> $GITHUB_STEP_SUMMARY
+          
+          git config user.email "${{ secrets.USER_EMAIL }}"
+          git config user.name "[BOT] ${{ secrets.USER_NAME }}"
+
+          echo "### Git setup successfully!" >> $GITHUB_STEP_SUMMARY
+
       - name: Commit and Tag 🏷️
         if: steps.calc_version.outputs.CALC_SEMVER_FLAG == 'true'
         run: |
           echo "## Committing changes... :bookmark:" >> $GITHUB_STEP_SUMMARY
           
-          COMMITS=$(git log --pretty=format:"%s" $OLD_SEMVER_TAG..develop)
+          COMMITS=$(git log "refs/tags/$OLD_SEMVER_TAG"..origin/develop --reverse --pretty=format:"%s")
           git add .
-          git commit -m "$NEW_SEMVER_TAG\n\n$SCOPES\n\n$COMMITS"
+          git commit -m "$NEW_SEMVER_TAG
+          
+          $SCOPES
+          
+          $COMMITS"
 
           echo "### Changes committed successfully!" >> $GITHUB_STEP_SUMMARY
           echo "## Tagging release... :label:" >> $GITHUB_STEP_SUMMARY
@@ -139,14 +156,12 @@ jobs:
           token: ${{ secrets.TOKEN }}
           generate_release_notes: false
           make_latest: 'true'
-          files: |
-            ./src/**/*
 
       - if: steps.calc_version.outputs.CALC_SEMVER_FLAG == 'true'
         run: echo "## Release made successfully! :tada:" >> $GITHUB_STEP_SUMMARY
       
       - if: steps.calc_version.outputs.CALC_SEMVER_FLAG == 'true'
-        run: echo "**Check it out on ${{ steps.make_release.outputs.url }}** :globe_with_meridians:" >> $GITHUB_STEP_SUMMARY
+        run: echo "**Check it out on https://github.com/Synogun/GraphVM/releases/tag/$NEW_SEMVER_TAG** :globe_with_meridians:" >> $GITHUB_STEP_SUMMARY
       
       - name: Deploy 🚀
         if: steps.calc_version.outputs.CALC_SEMVER_FLAG == 'true' && github.event.inputs.deploy == true
