@@ -74,9 +74,7 @@
     <div id="page" class="row w-100 h-100 g-0">
         <div id="left-col" class="col text-center">
             <div class="row m-0 p-0">
-                <h1 class="my-1"><img src="./imgs/graph.svg" class="logo" alt="GraphVM Logo" width="50px" height="50px">
-                    GraphVM
-                </h1>
+                <h1 class="my-1">GraphVM</h1>
             </div>
 
             <div class="breaker m-2"></div>
@@ -85,21 +83,21 @@
                 <button id="btn-new-graph" class="btn btn-sidebar w-100"
                     title="Destroys the current graph and create a new one">
                     <img class="icon" src="./imgs/graph.svg" alt="">
-                    New Graph
+                    New
                 </button>
             </div>
             <div class="row m-2">
                 <button id="btn-import-graph" class="btn btn-sidebar w-100"
                     title="Imports a graph from a .txt/.json file">
                     <img class="icon" src="./imgs/import.svg" alt="">
-                    Import Graph (W.I.P)
+                    Import (W.I.P)
                 </button>
             </div>
             <div class="row m-2">
                 <button id="btn-export-graph" class="btn btn-sidebar w-100"
                     title="Exports the graph as a .txt/.json file">
                     <img class="icon" src="./imgs/export.svg" alt="">
-                    Export Graph (W.I.P)
+                    Export (W.I.P)
                 </button>
             </div>
 
@@ -108,14 +106,14 @@
             <div class="row m-2">
                 <button id="btn-arrange-graph" class="btn btn-sidebar w-100" title="Rearranges the graph">
                     <img class="icon" src="./imgs/rearrange.svg" alt="">
-                    Arrange Graph
+                    Arrange
                 </button>
             </div>
             <div class="row m-2">
                 <button id="btn-center-graph" class="btn btn-sidebar w-100"
                     title="Centers on the graph or selected element(s)">
                     <img class="icon" src="./imgs/center-focus.svg" alt="">
-                    Center Graph
+                    Center
                 </button>
             </div>
             <div class="row m-2">
@@ -128,19 +126,19 @@
                 <button id="btn-add-edge" class="btn btn-sidebar w-100"
                     title="Add all-to-all edges between all the selected nodes">
                     <img class="icon" src="./imgs/playlist-add.svg" alt="">
-                    Add Edges
+                    Add Edge(s)
                 </button>
             </div>
 
             <div class="breaker m-2"></div>
 
             <div class="row m-2">
-                <span id="credits">@Synogun</span>
                 <a href="https://github.com/Synogun/GraphVM" class="btn btn-sidebar w-100"
                     title="Go to official GitHub repository">
                     <img class="icon" src="./imgs/github.svg" alt="">
-                    v<span id="app-version">0.1</span>
+                    GH Repository
                 </a>
+                <span id="credits">@Synogun</span>
                 <span id="is-dev" class="text-bg-danger d-none">NOT PRODUCTION</span>
             </div>
         </div>
@@ -182,26 +180,6 @@
                             title="Displays the total edge count of the graph" disabled readonly>
                     </div>
                 </div>
-
-                <!-- <div class="breaker m-2"></div> -->
-
-                <!-- <div class="row m-2 px-2 align-items-center">
-                    <div class="col-4 p-0">
-                        <label for="edge-color" class="col-form-label">Directed?</label>
-                    </div>
-                    <div class="col p-0">
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input radio-edge-directed" type="radio" name="radio-edge-directed"
-                                id="radio-edge-directed1" value="false" checked>
-                            <label class="form-check-label" for="radio-edge-directed1">No</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input radio-edge-directed" type="radio" name="radio-edge-directed"
-                                id="radio-edge-directed2" value="true">
-                            <label class="form-check-label" for="radio-edge-directed2">Yes</label>
-                        </div>
-                    </div>
-                </div> -->
 
                 <div id="layout-properties" class="sub-panel m-0 p-0">
                     <div class="breaker m-2"></div>
@@ -362,16 +340,6 @@
                     <h5 class="my-1">Edge(s)</h5>
                 </div>
 
-                <!-- <div class="row m-2 px-2">
-                    <div class="col p-0">
-                        <label for="edge-weight" class="col-form-label">Weight</label>
-                    </div>
-                    <div class="col-8 p-0">
-                        <input type="number" class="form-control" id="edge-weight" value="1" min="1"
-                            title="Change the weight of the selected edge(s)">
-                    </div>
-                </div> -->
-
                 <div class="row m-2 p-0 align-items-center">
                     <div class="col-4 p-0">
                         <label for="edge-weight" class="col-form-label">Weight</label>
@@ -381,27 +349,6 @@
                             title="Change the weight of the selected edge(s)">
                     </div>
                 </div>
-
-                <!-- <div class="row m-2 p-0 align-items-center">
-                    <div class="col p-0">
-                        <span>Label(s)</span><br>
-
-                        <div class="col p-0 m-0">
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input radio-edge-label" type="radio" name="radio-edge-label" id="radio-edge-label-1" value="hidden" checked>
-                                <label class="form-check-label" for="radio-edge-label-1">Hidden</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input radio-edge-label" type="radio" name="radio-edge-label" id="radio-edge-label-2" value="weight">
-                                <label class="form-check-label" for="radio-edge-label-2">Weight</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input radio-edge-label" type="radio" name="radio-edge-label" id="radio-edge-label-3" value="index">
-                                <label class="form-check-label" for="radio-edge-label-3">Index</label>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
 
                 <div class="row m-2 p-0 align-items-center">
                     <div class="col-4 p-0">
@@ -427,26 +374,6 @@
                             title="Change the color(s) of the selected edge(s)">
                     </div>
                 </div>
-
-                <!-- <div class="row m-2 p-0 align-items-center">
-                    <div class="col p-0">
-                        <span>Edge(s) Style</span>
-                        <div class="col p-0 m-0">
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input radio-edge-style" type="radio" name="radio-edge-style" id="radio-edge-style-1" value="solid" checked>
-                                <label class="form-check-label" for="radio-edge-style-1">Solid</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input radio-edge-style" type="radio" name="radio-edge-style" id="radio-edge-style-2" value="dotted">
-                                <label class="form-check-label" for="radio-edge-style-2">Dotted</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input radio-edge-style" type="radio" name="radio-edge-style" id="radio-edge-style-3" value="dashed">
-                                <label class="form-check-label" for="radio-edge-style-3">Dashed</label>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
 
                 <div class="row m-2 p-0 align-items-center">
                     <div class="col-4 p-0">
