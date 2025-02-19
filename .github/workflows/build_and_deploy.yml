@@ -3,7 +3,7 @@ name: Build and Deploy 🚀
 on:
   workflow_dispatch:
     inputs:
-      deploy:
+      deploy-to-pages:
         description: 'Deploy to pages?'
         type: boolean
         required: true
@@ -164,7 +164,7 @@ jobs:
         run: echo "**Check it out on https://github.com/Synogun/GraphVM/releases/tag/$NEW_SEMVER_TAG** :globe_with_meridians:" >> $GITHUB_STEP_SUMMARY
       
       - name: Deploy 🚀
-        if: steps.calc_version.outputs.CALC_SEMVER_FLAG == 'true' && github.event.inputs.deploy == true
+        if: steps.calc_version.outputs.CALC_SEMVER_FLAG == 'true' && github.event.inputs.deploy-to-pages == 'true'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: docs
