@@ -2,7 +2,7 @@
 
 body {
     background-color: #212121;
-    font-family: "Fira Code", Arial, sans-serif;
+    font-family: "Fira Code", "Roboto", Arial, sans-serif;
     margin: 0;
     padding: 0;
     height: 100vh;
@@ -23,6 +23,14 @@ body {
     height: 100vh;
 }
 
+#left-col {
+    border-right: 1px solid white;
+}
+
+#right-col {
+    border-left: 1px solid white;
+}
+
 #mid-col {
     background-color: #212121;
 }
@@ -33,7 +41,7 @@ body {
 }
 
 .breaker {
-    height: 2px;
+    height: 1px;
     background-color: white;
     margin: 0;
     padding: 0;
@@ -51,8 +59,29 @@ body {
     color: white;
 }
 
-/* .btn-sidebar:focus {
-    background-color: white;
-    border: 1px solid white;
-    color: black;
-} */
+.accordion-header,
+.accordion-button {
+    background-color: #171717;
+    color: white;
+    border: none;
+}
+
+.accordion-header,
+.accordion-button:hover {
+    background-color: #212121;
+    color: white;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #171717;
+    color: white;
+}
+
+.accordion-item {
+    background-color: #212121;
+    color: white;
+}
+
+.fs-14 {
+    font-size: 14px;
+}
