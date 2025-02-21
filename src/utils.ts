@@ -16,7 +16,7 @@ function checkDevelopment(): boolean {
     }
 
     $('#is-dev').removeClass('d-none');
-    $('title').text('Graph - Development');
+    $('title').text('GraphVM - Development');
     return true;
 }
 

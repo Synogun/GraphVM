@@ -71,66 +71,66 @@
         </div>
     </nav> -->
 
-    <div id="page" class="row w-100 h-100 g-0">
-        <div id="left-col" class="col text-center">
+    <div id="page" class="row w-100 h-100 g-0 fs-14">
+        <div id="left-col" class="col-2 text-center">
             <div class="row m-0 p-0">
                 <h1 class="my-1">GraphVM</h1>
             </div>
 
-            <div class="breaker m-2"></div>
+            <div class="breaker"></div>
 
             <div class="row m-2">
-                <button id="btn-new-graph" class="btn btn-sidebar w-100"
+                <button type="button" id="btn-new-graph" class="btn btn-sidebar w-100"
                     title="Destroys the current graph and create a new one">
                     <img class="icon" src="./imgs/graph.svg" alt="">
                     New
                 </button>
             </div>
             <div class="row m-2">
-                <button id="btn-import-graph" class="btn btn-sidebar w-100"
+                <button type="button" id="btn-import-graph" class="btn btn-sidebar w-100"
                     title="Imports a graph from a .txt/.json file">
                     <img class="icon" src="./imgs/import.svg" alt="">
                     Import (W.I.P)
                 </button>
             </div>
             <div class="row m-2">
-                <button id="btn-export-graph" class="btn btn-sidebar w-100"
+                <button type="button" id="btn-export-graph" class="btn btn-sidebar w-100"
                     title="Exports the graph as a .txt/.json file">
                     <img class="icon" src="./imgs/export.svg" alt="">
                     Export (W.I.P)
                 </button>
             </div>
 
-            <div class="breaker m-2"></div>
+            <div class="breaker"></div>
 
             <div class="row m-2">
-                <button id="btn-arrange-graph" class="btn btn-sidebar w-100" title="Rearranges the graph">
+                <button type="button" id="btn-arrange-graph" class="btn btn-sidebar w-100" title="Rearranges the graph">
                     <img class="icon" src="./imgs/rearrange.svg" alt="">
                     Arrange
                 </button>
             </div>
             <div class="row m-2">
-                <button id="btn-center-graph" class="btn btn-sidebar w-100"
+                <button type="button" id="btn-center-graph" class="btn btn-sidebar w-100"
                     title="Centers on the graph or selected element(s)">
                     <img class="icon" src="./imgs/center-focus.svg" alt="">
                     Center
                 </button>
             </div>
             <div class="row m-2">
-                <button id="btn-add-node" class="btn btn-sidebar w-100" title="Adds a node to the graph">
+                <button type="button" id="btn-add-node" class="btn btn-sidebar w-100" title="Adds a node to the graph">
                     <img class="icon" src="./imgs/add-circle-plus.svg" alt="">
                     Add Node
                 </button>
             </div>
             <div class="row m-2">
-                <button id="btn-add-edge" class="btn btn-sidebar w-100"
+                <button type="button" id="btn-add-edge" class="btn btn-sidebar w-100"
                     title="Add all-to-all edges between all the selected nodes">
                     <img class="icon" src="./imgs/playlist-add.svg" alt="">
                     Add Edge(s)
                 </button>
             </div>
 
-            <div class="breaker m-2"></div>
+            <div class="breaker"></div>
 
             <div class="row m-2">
                 <a href="https://github.com/Synogun/GraphVM" class="btn btn-sidebar w-100"
@@ -148,291 +148,340 @@
             <div id="graph"></div>
         </div>
 
-
         <div id="right-col" class="col text-center">
-            <div class="row p-0 mx-0">
-                <h3 class="my-1">Properties</h3>
-            </div>
-
-
-            <div id="graph-properties-panel" class="panel m-0 p-0">
-                <div class="breaker m-2"></div>
-
-                <div class="row p-0 mx-0">
-                    <h5 class="my-1">Info</h5>
-                </div>
-
-                <div class="row m-2 px-2 align-items-center">
-                    <div class="col p-0">
-                        <label for="node-count" class="col-form-label">Node Qty.</label>
-                    </div>
-                    <div class="col-8 p-0">
-                        <input type="text" class="form-control" id="node-count" value="0 nodes"
-                            title="Displays the total node count of the graph" disabled readonly>
-                    </div>
-                </div>
-                <div class="row m-2 px-2 align-items-center">
-                    <div class="col p-0">
-                        <label for="edge-count" class="col-form-label">Edge Qty.</label>
-                    </div>
-                    <div class="col-8 p-0">
-                        <input type="text" class="form-control" id="edge-count" value="0 edges"
-                            title="Displays the total edge count of the graph" disabled readonly>
-                    </div>
-                </div>
-
-                <div id="layout-properties" class="sub-panel m-0 p-0">
-                    <div class="breaker m-2"></div>
-
-                    <div class="row p-0 mx-0">
-                        <h5 class="my-1">Layout</h5>
-                    </div>
-                    <div class="row m-2 px-2 align-items-center">
-                        <div class="col p-0">
-                            <label for="graph-layout" class="col-form-label">Type</label>
-                        </div>
-                        <div class="col-8 p-0">
-                            <select id="graph-layout" class="form-select" aria-label="Node's layout select">
-                                <option value="circle" title="Display the nodes on a circle">Circle</option>
-                                <option value="grid" title="Display the nodes in a grid">Grid</option>
-                                <option value="concentric" title="Display the nodes in concentric circles">Concentric
-                                </option>
-                                <option value="cose" title="Display the nodes using a force-directed algorithm">Cose
-                                </option>
-                                <option value="preset" title="Display the nodes in preset positions">Preset</option>
-                                <option value="random" title="Display the nodes randomly">Random</option>
-                            </select>
+            <div class="accordion accordion-flush" id="right-col-accordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#graph-properties-accordion" aria-expanded="true"
+                            aria-controls="graph-properties-accordion">
+                            Graph Info
+                        </button>
+                    </h2>
+                    <div id="graph-properties-accordion" class="accordion-collapse collapse show">
+                        <div class="accordion-body container">
+                            <div class="col m-0 p-0">
+                                <div class="row my-1 justify-items-center align-items-center">
+                                    <div class="col p-0">
+                                        <label for="node-count" class="col-form-label">Node Qty.</label>
+                                    </div>
+                                    <div class="col-8 p-0">
+                                        <input type="text" class="form-control fs-14" id="node-count" value="0 nodes"
+                                            title="Displays the total node count of the graph" disabled readonly>
+                                    </div>
+                                </div>
+                                <div class="row my-1 justify-items-center align-items-center">
+                                    <div class="col p-0">
+                                        <label for="edge-count" class="col-form-label">Edge Qty.</label>
+                                    </div>
+                                    <div class="col-8 p-0">
+                                        <input type="text" class="form-control fs-14" id="edge-count" value="0 edges"
+                                            title="Displays the total edge count of the graph" disabled readonly>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div id="circle-layout-properties" class="layout-properties row m-0 align-items-center">
-                        <div class="col m-0 p-0">
-                            <div class="row m-2 px-2">
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#layout-properties-accordion" aria-expanded="false"
+                            aria-controls="layout-properties-accordion">
+                            Layout
+                        </button>
+                    </h2>
+                    <div id="layout-properties-accordion" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            <div class="col m-0 p-0">
+                                <div class="row my-1 justify-items-center align-items-center">
+                                    <div class="col p-0">
+                                        <label for="graph-layout" class="col-form-label">Type</label>
+                                    </div>
+                                    <div class="col-8 p-0">
+                                        <select id="graph-layout" class="form-select fs-14"
+                                            aria-label="Node's layout select">
+                                            <option value="circle" title="Display the nodes on a circle">Circle</option>
+                                            <option value="grid" title="Display the nodes in a grid">Grid</option>
+                                            <option value="concentric" title="Display the nodes in concentric circles">
+                                                Concentric
+                                            </option>
+                                            <option value="cose"
+                                                title="Display the nodes using a force-directed algorithm">Cose
+                                            </option>
+                                            <option value="preset" title="Display the nodes in preset positions">Preset
+                                            </option>
+                                            <option value="random" title="Display the nodes randomly">Random</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="row my-1 justify-items-center align-items-center circle-layout-properties layout-properties">
+                                    <div class="col p-0">
+                                        <label for="circle-radius" class="col-form-label">Radius</label>
+                                    </div>
+                                    <div class="col-8 p-0">
+                                        <input type="number" class="form-control circle-properties fs-14"
+                                            id="circle-radius" value="100" min="10"
+                                            title="Change the radius of the circle layout">
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="row my-1 justify-items-center align-items-center grid-layout-properties layout-properties d-none">
+                                    <div class="col p-0">
+                                        <label for="grid-rows" class="col-form-label">Rows</label>
+                                    </div>
+                                    <div class="col-8 p-0">
+                                        <input type="number" class="form-control grid-properties fs-14" id="grid-rows"
+                                            value="3" min="1" title="Change the amount of rows for the grid layout">
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="row my-1 justify-items-center align-items-center grid-layout-properties layout-properties d-none">
+                                    <div class="col p-0">
+                                        <label for="grid-cols" class="col-form-label">Cols</label>
+                                    </div>
+                                    <div class="col-8 p-0">
+                                        <input type="number" class="form-control grid-properties fs-14" id="grid-cols"
+                                            value="3" min="1" title="Change the amount of columns for the grid layout">
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="row my-1 justify-items-center align-items-center grid-layout-properties layout-properties d-none">
+                                    <div class="col p-0">
+                                        <label for="grid-condensed" class="col-form-label">Condensed</label>
+                                    </div>
+                                    <div class="col-8 p-0">
+                                        <input type="checkbox" id="grid-condensed"
+                                            class="form-check-input grid-properties"
+                                            title="Toggles whether the grid layout is condensed" aria-checked="false">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#node-properties-accordion" aria-expanded="false"
+                            aria-controls="node-properties-accordion">
+                            Nodes
+                        </button>
+                    </h2>
+                    <div id="node-properties-accordion" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            <div class="row my-1 justify-items-center align-items-center">
                                 <div class="col p-0">
-                                    <label for="circle-radius" class="col-form-label">Radius</label>
+                                    <label for="node-label" class="col-form-label">Label(s)</label>
+                                    <input type="text" id="node-label" class="form-control fs-14"
+                                        title="Change the label of the selected node(s)">
+                                </div>
+                            </div>
+
+                            <div class="row my-1 justify-items-center align-items-center">
+                                <div class="col p-0">
+                                    <label for="node-color" class="col-form-label">Color(s)</label>
                                 </div>
                                 <div class="col-8 p-0">
-                                    <input type="number" class="form-control circle-properties" id="circle-radius"
-                                        value="100" min="10" title="Change the radius of the circle layout">
+                                    <input type="color" class="form-control" id="node-color"
+                                        title="Change the color(s) of the selected node(s)">
                                 </div>
                             </div>
-                            <!-- <div class="row m-2 p-0">
+                            <div class="row my-1 justify-items-center align-items-center">
                                 <div class="col p-0">
-                                    <label for="circle-sweep" class="col-form-label">Sweep</label>
+                                    <label for="node-shape" class="col-form-label">Shape(s)</label>
                                 </div>
                                 <div class="col-8 p-0">
-                                    <input type="range" class="form-range circle-properties" id="circle-sweep" value="5.7595865316" max="5.7595865316" min="0.0174532925" step="0.0174532925" title="The radius of the circle layout">
-                                </div>
-                            </div> -->
-                        </div>
-                    </div>
-                    <div id="grid-layout-properties" class="layout-properties row m-0 align-items-center d-none">
-                        <div class="col m-0 p-0">
-                            <div class="row m-2 p-0 align-items-center">
-                                <div class="col-4 p-0">
-                                    <label for="grid-rows" class="col-form-label visually-hidden">Rows</label>
-                                    <label for="grid-cols" class="col-form-label visually-hidden">Cols</label>
-                                    <span>Rows & Cols</span>
-                                </div>
-                                <div class="col p-0 mx-1">
-                                    <input type="number" class="form-control grid-properties" id="grid-rows" value="3"
-                                        min="1" title="Change the amount of row for the grid layout">
-                                </div>
-                                <div class="col p-0 mx-1">
-                                    <input type="number" class="form-control grid-properties" id="grid-cols" value="3"
-                                        min="1" title="Change the radius of the circle layout">
+                                    <select id="node-shape" class="form-select fs-14" aria-label="Node's layout select">
+                                        <option value="ellipse" title="Change the node(s) shape to a ellipse" selected>
+                                            Ellipse
+                                        </option>
+                                        <option value="triangle" title="Change the node(s) shape to a triangle">Triangle
+                                        </option>
+                                        <option value="round-triangle"
+                                            title="Change the node(s) shape to a rounded triangle">Round
+                                            Triangle</option>
+                                        <option value="rectangle" title="Change the node(s) shape to a rectangle">
+                                            Rectangle</option>
+                                        <option value="round-rectangle"
+                                            title="Change the node(s) shape to a rounded rectangle">
+                                            Round Rectangle</option>
+                                        <option value="bottom-round-rectangle"
+                                            title="Change the node(s) shape to a bottom-round-rectangle">Bottom Round
+                                            Rectangle
+                                        </option>
+                                        <option value="cut-rectangle"
+                                            title="Change the node(s) shape to a cut-rectangle">Cut
+                                            Rectangle</option>
+                                        <option value="barrel" title="Change the node(s) shape to a barrel">Barrel
+                                        </option>
+                                        <option value="rhomboid" title="Change the node(s) shape to a rhomboid">Rhomboid
+                                        </option>
+                                        <option value="right-rhomboid"
+                                            title="Change the node(s) shape to a right-rhomboid">Right
+                                            Rhomboid</option>
+                                        <option value="diamond" title="Change the node(s) shape to a diamond">Diamond
+                                        </option>
+                                        <option value="round-diamond"
+                                            title="Change the node(s) shape to a round-diamond">Round
+                                            Diamond</option>
+                                        <option value="pentagon" title="Change the node(s) shape to a pentagon">Pentagon
+                                        </option>
+                                        <option value="round-pentagon"
+                                            title="Change the node(s) shape to a round-pentagon">Round
+                                            Pentagon</option>
+                                        <option value="hexagon" title="Change the node(s) shape to a hexagon">Hexagon
+                                        </option>
+                                        <option value="round-hexagon"
+                                            title="Change the node(s) shape to a round-hexagon">Round
+                                            Hexagon</option>
+                                        <option value="concave-hexagon"
+                                            title="Change the node(s) shape to a concave-hexagon">
+                                            Concave Hexagon</option>
+                                        <option value="heptagon" title="Change the node(s) shape to a heptagon">Heptagon
+                                        </option>
+                                        <option value="round-heptagon"
+                                            title="Change the node(s) shape to a round-heptagon">Round
+                                            Heptagon</option>
+                                        <option value="octagon" title="Change the node(s) shape to a octagon">Octagon
+                                        </option>
+                                        <option value="round-octagon"
+                                            title="Change the node(s) shape to a round-octagon">Round
+                                            Octagon</option>
+                                        <option value="star" title="Change the node(s) shape to a star">Star</option>
+                                        <option value="tag" title="Change the node(s) shape to a tag">Tag</option>
+                                        <option value="round-tag" title="Change the node(s) shape to a round-tag">Round
+                                            Tag</option>
+                                        <option value="vee" title="Change the node(s) shape to a vee">Vee</option>
+                                    </select>
                                 </div>
                             </div>
-                            <div class="row m-2 p-0 align-items-center">
-                                <div class="col">
-                                    <label for="grid-condensed" class="col-form-label">Condensed</label>
-                                </div>
-                                <div class="col">
-                                    <input type="checkbox" id="grid-condensed" class="form-check-input grid-properties"
-                                        title="Whether the grid layout is condensed">
+
+                            <div class="row my-1 justify-items-center align-items-center">
+                                <div class="col p-0">
+                                    <button id="btn-delete-node" class="btn btn-danger w-100 fs-14">Delete Node</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#edge-properties-accordion" aria-expanded="false"
+                            aria-controls="edge-properties-accordion">
+                            Edges
+                        </button>
+                    </h2>
+                    <div id="edge-properties-accordion" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            <div class="row my-1 justify-items-center align-items-center">
+                                <div class="col p-0">
+                                    <label for="edge-weight" class="col-form-label">Weight</label>
+                                </div>
+                                <div class="col-8 p-0">
+                                    <input type="number" class="form-control fs-14" id="edge-weight" value="1" min="1"
+                                        max="1000000" title="Change the weight of the selected edge(s)">
+                                </div>
+                            </div>
 
-            <div id="node-properties-panel" class="panel m-0 p-0 d-none">
-                <div class="breaker m-2"></div>
+                            <div class="row my-1 justify-items-center align-items-center">
+                                <div class="col p-0">
+                                    <label for="edge-label" class="col-form-label">Label Style</label>
+                                </div>
+                                <div class="col-8 p-0">
+                                    <select id="edge-label" class="form-select fs-14"
+                                        aria-label="Edge's label style select">
+                                        <option value="hidden" title="Change the edge(s) label style to be hidden">
+                                            Hidden</option>
+                                        <option value="weight" title="Change the edge(s) label style to be its weight">
+                                            Weight
+                                        </option>
+                                        <option value="index"
+                                            title="Change the edge(s) label style to be its insertion index">Index
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
 
-                <div class="row p-0 mx-0">
-                    <h5 class="my-1">Node(s)</h5>
-                </div>
+                            <div class="row my-1 justify-items-center align-items-center">
+                                <div class="col p-0">
+                                    <label for="edge-color" class="col-form-label">Color(s)</label>
+                                </div>
+                                <div class="col-8 p-0">
+                                    <input type="color" class="form-control fs-14" id="edge-color"
+                                        title="Change the color(s) of the selected edge(s)">
+                                </div>
+                            </div>
 
-                <div class="row m-2 p-0 align-items-center">
-                    <div class="col p-0">
-                        <label for="node-label" class="col-form-label">Label(s)</label>
-                        <input type="text" id="node-label" class="form-control"
-                            title="Change the label of the selected node(s)"></input>
-                    </div>
-                </div>
-                <div class="row m-2 p-0 align-items-center">
-                    <div class="col-4 p-0">
-                        <label for="node-color" class="col-form-label">Color(s)</label>
-                    </div>
-                    <div class="col p-0">
-                        <input type="color" class="form-control" id="node-color"
-                            title="Change the color(s) of the selected node(s)">
-                    </div>
-                </div>
-                <div class="row m-2 p-0 align-items-center">
-                    <div class="col-4 p-0">
-                        <label for="node-shape" class="col-form-label">Shape(s)</label>
-                    </div>
-                    <div class="col p-0">
-                        <select id="node-shape" class="form-select" aria-label="Node's layout select">
-                            <option value="ellipse" title="Change the node(s) shape to a ellipse" selected>Ellipse
-                            </option>
-                            <option value="triangle" title="Change the node(s) shape to a triangle">Triangle</option>
-                            <option value="round-triangle" title="Change the node(s) shape to a rounded triangle">Round
-                                Triangle</option>
-                            <option value="rectangle" title="Change the node(s) shape to a rectangle">Rectangle</option>
-                            <option value="round-rectangle" title="Change the node(s) shape to a rounded rectangle">
-                                Round Rectangle</option>
-                            <option value="bottom-round-rectangle"
-                                title="Change the node(s) shape to a bottom-round-rectangle">Bottom Round Rectangle
-                            </option>
-                            <option value="cut-rectangle" title="Change the node(s) shape to a cut-rectangle">Cut
-                                Rectangle</option>
-                            <option value="barrel" title="Change the node(s) shape to a barrel">Barrel</option>
-                            <option value="rhomboid" title="Change the node(s) shape to a rhomboid">Rhomboid</option>
-                            <option value="right-rhomboid" title="Change the node(s) shape to a right-rhomboid">Right
-                                Rhomboid</option>
-                            <option value="diamond" title="Change the node(s) shape to a diamond">Diamond</option>
-                            <option value="round-diamond" title="Change the node(s) shape to a round-diamond">Round
-                                Diamond</option>
-                            <option value="pentagon" title="Change the node(s) shape to a pentagon">Pentagon</option>
-                            <option value="round-pentagon" title="Change the node(s) shape to a round-pentagon">Round
-                                Pentagon</option>
-                            <option value="hexagon" title="Change the node(s) shape to a hexagon">Hexagon</option>
-                            <option value="round-hexagon" title="Change the node(s) shape to a round-hexagon">Round
-                                Hexagon</option>
-                            <option value="concave-hexagon" title="Change the node(s) shape to a concave-hexagon">
-                                Concave Hexagon</option>
-                            <option value="heptagon" title="Change the node(s) shape to a heptagon">Heptagon</option>
-                            <option value="round-heptagon" title="Change the node(s) shape to a round-heptagon">Round
-                                Heptagon</option>
-                            <option value="octagon" title="Change the node(s) shape to a octagon">Octagon</option>
-                            <option value="round-octagon" title="Change the node(s) shape to a round-octagon">Round
-                                Octagon</option>
-                            <option value="star" title="Change the node(s) shape to a star">Star</option>
-                            <option value="tag" title="Change the node(s) shape to a tag">Tag</option>
-                            <option value="round-tag" title="Change the node(s) shape to a round-tag">Round Tag</option>
-                            <option value="vee" title="Change the node(s) shape to a vee">Vee</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="row m-2 p-0 align-items-center">
-                    <div class="col p-0">
-                        <button id="btn-delete-node" class="btn btn-danger w-100">Delete Node</button>
-                    </div>
-                </div>
-            </div>
+                            <div class="row my-1 justify-items-center align-items-center">
+                                <div class="col p-0">
+                                    <label for="edge-style" class="col-form-label">Edge Style</label>
+                                </div>
+                                <div class="col-8 p-0">
+                                    <select id="edge-style" class="form-select fs-14" aria-label="Edge's style select">
+                                        <option value="solid" title="Change the edge(s) style to a solid line">Solid
+                                        </option>
+                                        <option value="dotted" title="Change the edge(s) style to a series of dots">
+                                            Dotted</option>
+                                        <option value="dashed" title="Change the edge(s) style to a series of dashes">
+                                            Dashed
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
 
-            <div id="edge-properties-panel" class="panel m-0 p-0 d-none">
-                <div class="breaker m-2"></div>
+                            <div class="row my-1 justify-items-center align-items-center">
+                                <div class="col p-0">
+                                    <label for="edge-curve" class="col-form-label">Curve Style</label>
+                                </div>
+                                <div class="col-8 p-0">
+                                    <select id="edge-curve" class="form-select fs-14"
+                                        aria-label="Edge's curve style select">
+                                        <option value="haystack"
+                                            title="Change the edge(s) curve style to a bundled straight edges for which loops and compounds are unsupported">
+                                            Haystack</option>
+                                        <option value="straight"
+                                            title="Change the edge(s) curve style to straight edges with all arrows supported">
+                                            Straight</option>
+                                        <option value="bezier"
+                                            title="Change the edge(s) curve style to bundled curved edges" selected>
+                                            Bezier
+                                        </option>
+                                        <option value="unbundled-bezier"
+                                            title="Change the edge(s) curve style to curved edges for use with manual control points">
+                                            Unbundled Bezier</option>
+                                        <option value="segments"
+                                            title="Change the edge(s) curve style to a series of straight lines">
+                                            Segments
+                                        </option>
+                                        <option value="taxi"
+                                            title="Change the edge(s) curve style to right-angled lines, hierarchically bundled">
+                                            Taxi</option>
+                                    </select>
+                                </div>
+                            </div>
 
-                <div class="row p-0 mx-0">
-                    <h5 class="my-1">Edge(s)</h5>
-                </div>
-
-                <div class="row m-2 p-0 align-items-center">
-                    <div class="col-4 p-0">
-                        <label for="edge-weight" class="col-form-label">Weight</label>
-                    </div>
-                    <div class="col p-0">
-                        <input type="number" class="form-control" id="edge-weight" value="1" min="1" max="1000000"
-                            title="Change the weight of the selected edge(s)">
-                    </div>
-                </div>
-
-                <div class="row m-2 p-0 align-items-center">
-                    <div class="col-4 p-0">
-                        <label for="edge-label" class="col-form-label">Label Style</label>
-                    </div>
-                    <div class="col p-0">
-                        <select id="edge-label" class="form-select" aria-label="Edge's label style select">
-                            <option value="hidden" title="Change the edge(s) label style to be hidden">Hidden</option>
-                            <option value="weight" title="Change the edge(s) label style to be its weight">Weight
-                            </option>
-                            <option value="index" title="Change the edge(s) label style to be its insertion index">Index
-                            </option>
-                        </select>
+                            <div class="row my-1 justify-items-center align-items-center">
+                                <div class="col p-0">
+                                    <button id="btn-delete-edge" class="btn btn-danger w-100 fs-14">Delete Edge</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                <div class="row m-2 p-0 align-items-center">
-                    <div class="col-4 p-0">
-                        <label for="edge-color" class="col-form-label">Color(s)</label>
-                    </div>
-                    <div class="col p-0">
-                        <input type="color" class="form-control" id="edge-color"
-                            title="Change the color(s) of the selected edge(s)">
-                    </div>
-                </div>
-
-                <div class="row m-2 p-0 align-items-center">
-                    <div class="col-4 p-0">
-                        <label for="edge-style" class="col-form-label">Edge Style</label>
-                    </div>
-                    <div class="col p-0">
-                        <select id="edge-style" class="form-select" aria-label="Edge's style select">
-                            <option value="solid" title="Change the edge(s) style to a solid line">Solid</option>
-                            <option value="dotted" title="Change the edge(s) style to a series of dots">Dotted</option>
-                            <option value="dashed" title="Change the edge(s) style to a series of dashes">Dashed
-                            </option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="row m-2 p-0 align-items-center">
-                    <div class="col-4 p-0">
-                        <label for="edge-curve" class="col-form-label">Curve Style</label>
-                    </div>
-                    <div class="col p-0">
-                        <select id="edge-curve" class="form-select" aria-label="Edge's curve style select">
-                            <option value="haystack"
-                                title="Change the edge(s) curve style to a bundled straight edges for which loops and compounds are unsupported">
-                                Haystack</option>
-                            <option value="straight"
-                                title="Change the edge(s) curve style to straight edges with all arrows supported">
-                                Straight</option>
-                            <option value="bezier" title="Change the edge(s) curve style to bundled curved edges"
-                                selected>Bezier</option>
-                            <option value="unbundled-bezier"
-                                title="Change the edge(s) curve style to curved edges for use with manual control points">
-                                Unbundled Bezier</option>
-                            <option value="segments"
-                                title="Change the edge(s) curve style to a series of straight lines">Segments</option>
-                            <option value="taxi"
-                                title="Change the edge(s) curve style to right-angled lines, hierarchically bundled">
-                                Taxi</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="row m-2 p-0 align-items-center">
-                    <div class="col p-0">
-                        <button id="btn-delete-edge" class="btn btn-danger w-100">Delete Edge</button>
-                    </div>
-                </div>
-
             </div>
         </div>
-
     </div>
 
-    <!-- <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/cytoscape@3.30.2/dist/cytoscape.min.js"
-        integrity="sha256-g+jFSmvsZVv9gd8H32BWScJor2muymel6i2lTqQtrIE=" crossorigin="anonymous"></script> -->
-
     <script src="./bundle.js"></script>
 </body>
 

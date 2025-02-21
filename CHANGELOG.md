@@ -10,7 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <!-- START -->
 ### Added
 ### Changed
+- `UI` - Refactors right bar into accordions for better user experience
 ### Fixed
+- `UI` - Fixed wrong tooltips for grid layout properties
+- `UI` - Remove redundant text from left bar buttons
 - `Project` - Fix action input wrong usage
 ### Removed
 <!-- END -->
