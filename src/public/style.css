@@ -67,18 +67,14 @@ body {
 }
 
 .accordion-header,
-.accordion-button:hover {
+.accordion-button:hover,
+.accordion-item {
     background-color: #212121;
     color: white;
 }
 
 .accordion-button:not(.collapsed) {
     background-color: #171717;
-    color: white;
-}
-
-.accordion-item {
-    background-color: #212121;
     color: white;
 }
 

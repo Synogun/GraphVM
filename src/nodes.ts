@@ -126,9 +126,10 @@ function updateNodesProp(graph: cytoscape.Core, prop: string, value: string): cy
 //
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+export type NodeField = 'label' | 'color' | 'shape';
 function getNodeFields(): { label: string; color: string; shape: string };
-function getNodeFields(property: 'label' | 'color' | 'shape'): string;
-function getNodeFields(property?: 'label' | 'color' | 'shape'): string | { label: string; color: string; shape: string } {
+function getNodeFields(property: NodeField): string;
+function getNodeFields(property?: NodeField): string | { label: string; color: string; shape: string } {
     const data = {
         label: String($('#node-label').val()),
         color: String($('#node-color').val()),

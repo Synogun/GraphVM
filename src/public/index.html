@@ -253,7 +253,8 @@
                                     <div class="col-8 p-0">
                                         <input type="checkbox" id="grid-condensed"
                                             class="form-check-input grid-properties"
-                                            title="Toggles whether the grid layout is condensed" aria-checked="false">
+                                            title="Toggles whether the grid layout is condensed" aria-checked="true"
+                                            checked>
                                     </div>
                                 </div>
                             </div>
@@ -359,7 +360,8 @@
 
                             <div class="row my-1 justify-items-center align-items-center">
                                 <div class="col p-0">
-                                    <button id="btn-delete-node" class="btn btn-danger w-100 fs-14">Delete Node</button>
+                                    <button id="btn-delete-node" class="btn btn-danger w-100 fs-14" type="button">Delete
+                                        Node</button>
                                 </div>
                             </div>
                         </div>
@@ -464,10 +466,23 @@
 
                             <div class="row my-1 justify-items-center align-items-center">
                                 <div class="col p-0">
-                                    <button id="btn-delete-edge" class="btn btn-danger w-100 fs-14">Delete Edge</button>
+                                    <button id="btn-delete-edge" class="btn btn-danger w-100 fs-14" type="button">Delete
+                                        Edge</button>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item panel d-none">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#graph-properties-accordion" aria-expanded="false"
+                            aria-controls="graph-properties-accordion">
+                        </button>
+                    </h2>
+                    <div class="accordion-collapse collapse">
+                        <div class="accordion-body container"></div>
                     </div>
                 </div>
             </div>
