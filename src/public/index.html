@@ -80,24 +80,17 @@
             <div class="breaker"></div>
 
             <div class="row m-2">
-                <button type="button" id="btn-new-graph" class="btn btn-sidebar w-100"
-                    title="Destroys the current graph and create a new one">
+                <button type="button" id="btn-new-graph" class="btn btn-sidebar w-100" title="Creates a new graph">
                     <img class="icon" src="./imgs/graph.svg" alt="">
                     New
                 </button>
             </div>
             <div class="row m-2">
-                <button type="button" id="btn-import-graph" class="btn btn-sidebar w-100"
+                <button type="button" id="btn-import-export-graph" class="btn btn-sidebar w-100"
                     title="Imports a graph from a .txt/.json file">
                     <img class="icon" src="./imgs/import.svg" alt="">
-                    Import (W.I.P)
-                </button>
-            </div>
-            <div class="row m-2">
-                <button type="button" id="btn-export-graph" class="btn btn-sidebar w-100"
-                    title="Exports the graph as a .txt/.json file">
+                    Import / Export
                     <img class="icon" src="./imgs/export.svg" alt="">
-                    Export (W.I.P)
                 </button>
             </div>
 
@@ -116,6 +109,9 @@
                     Center
                 </button>
             </div>
+
+            <div class="breaker"></div>
+
             <div class="row m-2">
                 <button type="button" id="btn-add-node" class="btn btn-sidebar w-100" title="Adds a node to the graph">
                     <img class="icon" src="./imgs/add-circle-plus.svg" alt="">
@@ -143,14 +139,13 @@
             </div>
         </div>
 
-
         <div id="mid-col" class="col-8">
             <div id="graph"></div>
         </div>
 
         <div id="right-col" class="col text-center">
             <div class="accordion accordion-flush" id="right-col-accordion">
-                <div class="accordion-item">
+                <div id="graph-panel" class="accordion-item panel">
                     <h2 class="accordion-header">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
                             data-bs-target="#graph-properties-accordion" aria-expanded="true"
@@ -161,7 +156,7 @@
                     <div id="graph-properties-accordion" class="accordion-collapse collapse show">
                         <div class="accordion-body container">
                             <div class="col m-0 p-0">
-                                <div class="row my-1 justify-items-center align-items-center">
+                                <div class="row mb-1 justify-items-center align-items-center">
                                     <div class="col p-0">
                                         <label for="node-count" class="col-form-label">Node Qty.</label>
                                     </div>
@@ -183,7 +178,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="accordion-item">
+                <div id="layout-panel" class="accordion-item panel">
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                             data-bs-target="#layout-properties-accordion" aria-expanded="false"
@@ -194,7 +189,7 @@
                     <div id="layout-properties-accordion" class="accordion-collapse collapse">
                         <div class="accordion-body">
                             <div class="col m-0 p-0">
-                                <div class="row my-1 justify-items-center align-items-center">
+                                <div class="row mb-1 justify-items-center align-items-center">
                                     <div class="col p-0">
                                         <label for="graph-layout" class="col-form-label">Type</label>
                                     </div>
@@ -265,7 +260,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="accordion-item">
+                <div id="node-panel" class="accordion-item panel d-none">
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                             data-bs-target="#node-properties-accordion" aria-expanded="false"
@@ -275,7 +270,7 @@
                     </h2>
                     <div id="node-properties-accordion" class="accordion-collapse collapse">
                         <div class="accordion-body">
-                            <div class="row my-1 justify-items-center align-items-center">
+                            <div class="row mb-1 justify-items-center align-items-center">
                                 <div class="col p-0">
                                     <label for="node-label" class="col-form-label">Label(s)</label>
                                     <input type="text" id="node-label" class="form-control fs-14"
@@ -370,7 +365,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="accordion-item">
+                <div id="edge-panel" class="accordion-item panel d-none">
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                             data-bs-target="#edge-properties-accordion" aria-expanded="false"
@@ -380,7 +375,7 @@
                     </h2>
                     <div id="edge-properties-accordion" class="accordion-collapse collapse">
                         <div class="accordion-body">
-                            <div class="row my-1 justify-items-center align-items-center">
+                            <div class="row mb-1 justify-items-center align-items-center">
                                 <div class="col p-0">
                                     <label for="edge-weight" class="col-form-label">Weight</label>
                                 </div>

@@ -13,7 +13,8 @@
     "start:server": "http-server build -o -c-1",
     "start:bundler": "esbuild src/main.ts --outfile=build/bundle.js --bundle --platform=browser --watch --sourcemap",
     "start:prod": "http-server docs -o -c-1",
-    "start:dev": "rimraf build && start npm run start:cpx && start npm run start:server && npm run start:bundler",
+    "prestart:dev": "rimraf build",
+    "start:dev": "start npm run start:cpx && start npm run start:server && npm run start:bundler",
     "preversion": "npm run utils:lint",
     "version": "npm run release"
   },

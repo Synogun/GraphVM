@@ -8,24 +8,26 @@ import { addEdge, removeEdge, updateEdgesProp, getEdgeFields, updateEdgeFields }
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-function switchPanel(panel: string) {
-    $('.panel').addClass('d-none');
-
+function togglePanel(panel: string) {
     switch (panel) {
         case 'graph':
-            $('#graph-properties-panel').removeClass('d-none');
+            $('#graph-panel').toggleClass('d-none');
+            break;
+
+        case 'layout':
+            $('#layout-panel').toggleClass('d-none');
             break;
 
         case 'node':
-            $('#node-properties-panel').removeClass('d-none');
+            $('#node-panel').toggleClass('d-none');
             break;
 
         case 'edge':
-            $('#edge-properties-panel').removeClass('d-none');
+            $('#edge-panel').toggleClass('d-none');
             break;
 
         default:
-            console.log('switchPanel: invalid panel', panel);
+            console.log('togglePanel: invalid panel', panel);
             break;
     }
 }
@@ -56,7 +58,7 @@ function arrangeGraph(graph: cy.Core) {
 
 function switchLayoutPanel(subpanel: string) {
     $('.layout-properties').addClass('d-none');
-    $(`#${subpanel}-layout-properties`).removeClass('d-none');
+    $(`.${subpanel.toLocaleLowerCase()}-layout-properties`).removeClass('d-none');
 }
 
 function getLayoutFields() {
@@ -157,7 +159,10 @@ function bindGraphEvents(graph: cy.Core): cy.Core {
     // NODE EVENTS
     graph.on('select', 'node', function (evt) {
         updateNodeFields(graph);
-        switchPanel('node');
+
+        if (graph.nodes(':selected').length === 1) {
+            togglePanel('node');
+        }
         console.log('selected node', evt.target);
     });
 
@@ -165,7 +170,7 @@ function bindGraphEvents(graph: cy.Core): cy.Core {
         updateNodeFields(graph);
 
         if (!graph.nodes(':selected').length) {
-            switchPanel('graph');
+            togglePanel('node');
         }
         console.log('unselected node', evt.target);
     });
@@ -173,7 +178,10 @@ function bindGraphEvents(graph: cy.Core): cy.Core {
     // EDGE EVENTS
     graph.on('select', 'edge', function (evt) {
         updateEdgeFields(graph);
-        switchPanel('edge');
+
+        if (graph.edges(':selected').length === 1) {
+            togglePanel('edge');
+        }
         console.log('selected edge', evt.target);
     });
 
@@ -181,7 +189,7 @@ function bindGraphEvents(graph: cy.Core): cy.Core {
         updateEdgeFields(graph);
 
         if (!graph.edges(':selected').length) {
-            switchPanel('graph');
+            togglePanel('edge');
         }
         console.log('unselected edge', evt.target);
     });
@@ -221,7 +229,7 @@ function bindRightEvents(graph: cy.Core): cy.Core {
 
         updateNodeFields(graph);
         if (!graph.nodes(':selected').length) {
-            switchPanel('graph');
+            togglePanel('node');
         }
         updateGraphFields(graph);
     });
@@ -258,7 +266,7 @@ function bindRightEvents(graph: cy.Core): cy.Core {
 
         updateEdgeFields(graph);
         if (!graph.edges(':selected').length) {
-            switchPanel('graph');
+            togglePanel('edge');
         }
         updateGraphFields(graph);
     });
@@ -269,7 +277,7 @@ function bindRightEvents(graph: cy.Core): cy.Core {
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 export {
-    switchPanel,
+    togglePanel,
     updateGraphFields,
     arrangeGraph,
     bindLeftEvents,
