@@ -2,12 +2,7 @@ name: Build and Deploy 🚀
 
 on:
   workflow_dispatch:
-    inputs:
-      deploy-to-pages:
-        description: 'Deploy to pages?'
-        type: boolean
-        required: true
-        default: true
+    
 
 permissions:
   contents: write
@@ -158,18 +153,4 @@ jobs:
           make_latest: 'true'
 
       - if: steps.calc_version.outputs.CALC_SEMVER_FLAG == 'true'
-        run: echo "## Release made successfully! :tada:" >> $GITHUB_STEP_SUMMARY
-      
-      - if: steps.calc_version.outputs.CALC_SEMVER_FLAG == 'true'
-        run: echo "**Check it out on https://github.com/Synogun/GraphVM/releases/tag/$NEW_SEMVER_TAG** :globe_with_meridians:" >> $GITHUB_STEP_SUMMARY
-      
-      - name: Deploy 🚀
-        if: steps.calc_version.outputs.CALC_SEMVER_FLAG == 'true' && github.event.inputs.deploy-to-pages == 'true'
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: docs
-          branch: gh-pages
-          token: ${{ secrets.TOKEN }}
-          tag: "deploy-${{ steps.calc_version.outputs.NEW_SEMVER_TAG }}"
-          commit-message: "$SCOPES"
-          
+        run: echo "## Release made successfully! :tada:" >> $GITHUB_STEP_SUMMARY      

@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <!-- START -->
 ### Added
 ### Changed
+- `Project` - Changes deployment from gh-pages branch to main
 - `UI` - Refactors right bar into accordions for better user experience
 ### Fixed
 - `UI` - Fixed wrong tooltips for grid layout properties
