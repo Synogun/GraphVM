@@ -5,9 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/Synogun/GraphVM/compare/v1.0.6...develop)
+## [Unreleased](https://github.com/Synogun/GraphVM/compare/v1.0.22...develop)
 
 <!-- START -->
+### Added
+### Changed
+### Fixed
+### Removed
+<!-- END -->
+
+## [v1.0.22](https://github.com/Synogun/GraphVM/compare/v1.0.6...v1.0.22)
+
 ### Added
 ### Changed
 - `Project` - Update `fetch_scope` script to from .sh to .py
@@ -19,7 +27,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `UI` - Remove redundant text from left bar buttons
 - `Project` - Fix action input wrong usage
 ### Removed
-<!-- END -->
 
 ## [v1.0.6](https://github.com/Synogun/GraphVM/compare/v1.0.0...v1.0.6)
 
