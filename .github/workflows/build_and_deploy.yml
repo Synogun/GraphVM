@@ -36,7 +36,6 @@ jobs:
           echo "## Making scripts executable... :hammer:" >> $GITHUB_STEP_SUMMARY
 
           chmod +x ./.github/workflows/scripts/calculate_semver.sh
-          chmod +x ./.github/workflows/scripts/fetch_scopes.sh
 
           echo "### Scripts made executable successfully!" >> $GITHUB_STEP_SUMMARY
           
