@@ -35238,7 +35238,7 @@
       return false;
     }
     (0, import_jquery.default)("#is-dev").removeClass("d-none");
-    (0, import_jquery.default)("title").text("Graph - Development");
+    (0, import_jquery.default)("title").text("GraphVM - Development");
     return true;
   }
   function findPropertyValueMode(property, eles) {
@@ -35721,20 +35721,22 @@
 
   // src/ui.ts
   var import_jquery4 = __toESM(require_jquery(), 1);
-  function switchPanel(panel) {
-    (0, import_jquery4.default)(".panel").addClass("d-none");
+  function togglePanel(panel, state) {
     switch (panel) {
       case "graph":
-        (0, import_jquery4.default)("#graph-properties-panel").removeClass("d-none");
+        (0, import_jquery4.default)("#graph-panel").toggleClass("d-none", !state);
+        break;
+      case "layout":
+        (0, import_jquery4.default)("#layout-panel").toggleClass("d-none", !state);
         break;
       case "node":
-        (0, import_jquery4.default)("#node-properties-panel").removeClass("d-none");
+        (0, import_jquery4.default)("#node-panel").toggleClass("d-none", !state);
         break;
       case "edge":
-        (0, import_jquery4.default)("#edge-properties-panel").removeClass("d-none");
+        (0, import_jquery4.default)("#edge-panel").toggleClass("d-none", !state);
         break;
       default:
-        console.log("switchPanel: invalid panel", panel);
+        console.log("togglePanel: invalid panel", panel);
         break;
     }
   }
@@ -35749,7 +35751,7 @@
   }
   function switchLayoutPanel(subpanel) {
     (0, import_jquery4.default)(".layout-properties").addClass("d-none");
-    (0, import_jquery4.default)(`#${subpanel}-layout-properties`).removeClass("d-none");
+    (0, import_jquery4.default)(`.${subpanel.toLocaleLowerCase()}-layout-properties`).removeClass("d-none");
   }
   function getLayoutFields() {
     const name = String((0, import_jquery4.default)("#graph-layout").val());
@@ -35764,7 +35766,7 @@
       // grid layout properties
       rows: 3,
       cols: 3,
-      condense: false,
+      condense: true,
       spacingFactor: 0,
       // concentric layout properties
       minNodeSpacing: 50
@@ -35815,27 +35817,31 @@
     return graph2;
   }
   function bindGraphEvents(graph2) {
-    graph2.on("select", "node", function(evt) {
+    graph2.on("select box", "node", function(evt) {
       updateNodeFields(graph2);
-      switchPanel("node");
+      if (graph2.nodes(":selected").length >= 1) {
+        togglePanel("node", true);
+      }
       console.log("selected node", evt.target);
     });
     graph2.on("unselect", "node", function(evt) {
       updateNodeFields(graph2);
       if (!graph2.nodes(":selected").length) {
-        switchPanel("graph");
+        togglePanel("node", false);
       }
       console.log("unselected node", evt.target);
     });
-    graph2.on("select", "edge", function(evt) {
+    graph2.on("select box", "edge", function(evt) {
       updateEdgeFields(graph2);
-      switchPanel("edge");
+      if (graph2.edges(":selected").length >= 1) {
+        togglePanel("edge", true);
+      }
       console.log("selected edge", evt.target);
     });
     graph2.on("unselect", "edge", function(evt) {
       updateEdgeFields(graph2);
       if (!graph2.edges(":selected").length) {
-        switchPanel("graph");
+        togglePanel("edge", false);
       }
       console.log("unselected edge", evt.target);
     });
@@ -35847,16 +35853,9 @@
       switchLayoutPanel(layout4.name);
       graph2 = arrangeGraph(graph2);
     });
-    (0, import_jquery4.default)("#node-label").on("change", function() {
-      graph2 = updateNodesProp(graph2, "label", getNodeFields("label"));
-      updateNodeFields(graph2);
-    });
-    (0, import_jquery4.default)("#node-color").on("change", function() {
-      graph2 = updateNodesProp(graph2, "color", getNodeFields("color"));
-      updateNodeFields(graph2);
-    });
-    (0, import_jquery4.default)("#node-shape").on("change", function() {
-      graph2 = updateNodesProp(graph2, "shape", getNodeFields("shape"));
+    (0, import_jquery4.default)("#node-label, #node-color, #node-shape").on("change", function(evt) {
+      const property = evt.target.id.split("-")[1];
+      graph2 = updateNodesProp(graph2, property, getNodeFields(property));
       updateNodeFields(graph2);
     });
     (0, import_jquery4.default)("#btn-delete-node").on("click", function() {
@@ -35864,28 +35863,13 @@
       graph2 = arrangeGraph(graph2);
       updateNodeFields(graph2);
       if (!graph2.nodes(":selected").length) {
-        switchPanel("graph");
+        togglePanel("node");
       }
       updateGraphFields(graph2);
     });
-    (0, import_jquery4.default)("#edge-weight").on("change", function() {
-      graph2 = updateEdgesProp(graph2, "weight", getEdgeFields("weight"));
-      updateEdgeFields(graph2);
-    });
-    (0, import_jquery4.default)("#edge-label").on("change", function() {
-      graph2 = updateEdgesProp(graph2, "label", getEdgeFields("label"));
-      updateEdgeFields(graph2);
-    });
-    (0, import_jquery4.default)("#edge-color").on("change", function() {
-      graph2 = updateEdgesProp(graph2, "color", getEdgeFields("color"));
-      updateEdgeFields(graph2);
-    });
-    (0, import_jquery4.default)("#edge-style").on("change", function() {
-      graph2 = updateEdgesProp(graph2, "style", getEdgeFields("style"));
-      updateEdgeFields(graph2);
-    });
-    (0, import_jquery4.default)("#edge-curve").on("change", function() {
-      graph2 = updateEdgesProp(graph2, "curve", getEdgeFields("curve"));
+    (0, import_jquery4.default)("#edge-weight, #edge-label, #edge-color, #edge-style, #edge-curve").on("change", function(evt) {
+      const property = evt.target.id.split("-")[1];
+      graph2 = updateEdgesProp(graph2, property, getEdgeFields(property));
       updateEdgeFields(graph2);
     });
     (0, import_jquery4.default)("#btn-delete-edge").on("click", function() {
@@ -35893,7 +35877,7 @@
       graph2 = arrangeGraph(graph2);
       updateEdgeFields(graph2);
       if (!graph2.edges(":selected").length) {
-        switchPanel("graph");
+        togglePanel("edge");
       }
       updateGraphFields(graph2);
     });
@@ -35901,11 +35885,9 @@
   }
 
   // src/main.ts
-  var appVersion = "1.0.0";
   var graph = generateGraph();
   (0, import_jquery5.default)(function() {
     checkDevelopment();
-    (0, import_jquery5.default)("#app-version").text(appVersion);
     (0, import_jquery5.default)("#loader-wrapper").fadeOut(700);
     graph = bindLeftEvents(graph);
     graph = bindGraphEvents(graph);
