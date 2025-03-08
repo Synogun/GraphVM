@@ -115,14 +115,9 @@ jobs:
         if: steps.calc_version.outputs.CALC_SEMVER_FLAG == 'true'
         run: |
           echo "## Committing changes... :bookmark:" >> $GITHUB_STEP_SUMMARY
-          
-          COMMITS=$(git log "refs/tags/$OLD_SEMVER_TAG"..origin/develop --reverse --pretty=format:"%s")
+    
           git add .
-          git commit -m "$NEW_SEMVER_TAG
-          
-          $SCOPES
-          
-          $COMMITS"
+          git commit -m "$NEW_SEMVER_TAG"
 
           echo "### Changes committed successfully!" >> $GITHUB_STEP_SUMMARY
           echo "## Tagging release... :label:" >> $GITHUB_STEP_SUMMARY
