@@ -187,9 +187,10 @@ function updateEdgesProp(
 //
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+export type EdgeField = 'weight' | 'label' | 'color' | 'style' | 'curve';
 function getEdgeFields(): { weight: string; label: string; color: string; style: string; curve: string };
-function getEdgeFields(property: 'weight' | 'label' | 'color' | 'style' | 'curve'): string;
-function getEdgeFields(property?: 'weight' | 'label' | 'color' | 'style' | 'curve') {
+function getEdgeFields(property: EdgeField): string;
+function getEdgeFields(property?: EdgeField) {
     const data = {
         weight: String($('#edge-weight').val()),
         label: String($('#edge-label').val()),

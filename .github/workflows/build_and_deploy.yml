@@ -2,12 +2,7 @@ name: Build and Deploy 🚀
 
 on:
   workflow_dispatch:
-    inputs:
-      deploy:
-        description: 'Deploy to pages?'
-        type: boolean
-        required: true
-        default: true
+    
 
 permissions:
   contents: write
@@ -41,7 +36,6 @@ jobs:
           echo "## Making scripts executable... :hammer:" >> $GITHUB_STEP_SUMMARY
 
           chmod +x ./.github/workflows/scripts/calculate_semver.sh
-          chmod +x ./.github/workflows/scripts/fetch_scopes.sh
 
           echo "### Scripts made executable successfully!" >> $GITHUB_STEP_SUMMARY
           
@@ -74,7 +68,8 @@ jobs:
         run: |
           echo "## Fetching commit scopes... :dart:" >> $GITHUB_STEP_SUMMARY
 
-          SCOPES=$(bash ./.github/workflows/scripts/fetch_scopes.sh $OLD_SEMVER_TAG)
+          COMMITS=$(git log "refs/tags/$OLD_SEMVER_TAG"..origin/develop --reverse --pretty=format:"%s")
+          SCOPES=$(python ./.github/workflows/scripts/fetch_scopes.py $OLD_SEMVER_TAG $COMMITS)
           echo "SEMVER_SCOPES=$SCOPES" >> $GITHUB_ENV
           
           echo "*Fetched commit scopes: **$SCOPES***" >> $GITHUB_STEP_SUMMARY
@@ -120,14 +115,9 @@ jobs:
         if: steps.calc_version.outputs.CALC_SEMVER_FLAG == 'true'
         run: |
           echo "## Committing changes... :bookmark:" >> $GITHUB_STEP_SUMMARY
-          
-          COMMITS=$(git log "refs/tags/$OLD_SEMVER_TAG"..origin/develop --reverse --pretty=format:"%s")
+    
           git add .
-          git commit -m "$NEW_SEMVER_TAG
-          
-          $SCOPES
-          
-          $COMMITS"
+          git commit -m "$NEW_SEMVER_TAG"
 
           echo "### Changes committed successfully!" >> $GITHUB_STEP_SUMMARY
           echo "## Tagging release... :label:" >> $GITHUB_STEP_SUMMARY
@@ -158,18 +148,4 @@ jobs:
           make_latest: 'true'
 
       - if: steps.calc_version.outputs.CALC_SEMVER_FLAG == 'true'
-        run: echo "## Release made successfully! :tada:" >> $GITHUB_STEP_SUMMARY
-      
-      - if: steps.calc_version.outputs.CALC_SEMVER_FLAG == 'true'
-        run: echo "**Check it out on https://github.com/Synogun/GraphVM/releases/tag/$NEW_SEMVER_TAG** :globe_with_meridians:" >> $GITHUB_STEP_SUMMARY
-      
-      - name: Deploy 🚀
-        if: steps.calc_version.outputs.CALC_SEMVER_FLAG == 'true' && github.event.inputs.deploy == true
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: docs
-          branch: gh-pages
-          token: ${{ secrets.TOKEN }}
-          tag: "deploy-${{ steps.calc_version.outputs.NEW_SEMVER_TAG }}"
-          commit-message: "$SCOPES"
-          
+        run: echo "## Release made successfully! :tada:" >> $GITHUB_STEP_SUMMARY      
