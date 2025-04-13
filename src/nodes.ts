@@ -11,47 +11,70 @@ const removedNodes: cytoscape.NodeSingular[] = [];
 //
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-function addNode(graph: cytoscape.Core, quantity = 1, options?: cytoscape.ElementDefinition): cytoscape.Core {
-    // TODO: add more properties
-    // TODO: change this to default node properties from global configs instead of hardcoding
+function addNode(graph: cytoscape.Core, quantity = 1, options?: cy.ElementDefinition | cy.ElementDefinition[], classes?: string[]): cytoscape.Core {
+    if (quantity < 1) {
+        console.log('addNode > Quantity must be greater than 0');
+        return graph;
+    }
+
+    if (options && Array.isArray(options) && options.length < quantity) {
+        // Checks if options is an array and has the same length as quantity
+        console.log('addNode > Options length must be greater than or equal to quantity');
+        return graph;
+    } else if (options && !Array.isArray(options)) {
+        // Checks if options is an object and converts it to an array
+        options = [options];
+    } else if (!options) {
+        // Checks if options is undefined and converts it to an empty array
+        options = [];
+    }
+
+    const defaultNodeProperties = {
+        color: '#999999' as cytoscape.Css.Colour,
+        shape: 'ellipse' as cytoscape.Css.NodeShape,
+    };
 
     for (let i = 0; i < quantity; i++) {
-        const newId: number = graph.nodes().length + removedNodes.length;
+        const newIdIndex: number = graph.nodes().length + removedNodes.length;
+        const newId = `node-${newIdIndex.toString()}`;
         graph.add({
             group: 'nodes',
             data: {
-                id: `node-${newId.toString()}`,
+                id: newId,
                 index: graph.nodes().length,
 
-                label: options?.data.label
-                    ? String(options.data.label)
-                    : newId,
+                label: options[i]?.data.label
+                    ? String(options[i].data.label)
+                    : newIdIndex,
 
-                color: options?.data.color
-                    ? (options.data.color as cytoscape.Css.Colour)
-                    : ('#999999' as cytoscape.Css.Colour),
+                color: options[i]?.data.color
+                    ? (options[i].data.color as cytoscape.Css.Colour)
+                    : defaultNodeProperties.color,
 
-                shape: options?.data.color
-                    ? (options.data.color as cytoscape.Css.Colour)
-                    : ('ellipse' as cytoscape.Css.NodeShape),
+                shape: options[i]?.data.shape
+                    ? (options[i].data.shape as cytoscape.Css.NodeShape)
+                    : defaultNodeProperties.shape,
             },
-            classes: [],
+            classes: classes ?? [],
         });
         console.log(
-            `addNode > added node with id 'node-${newId.toString()}' and label '${newId.toString()}'`,
+            `addNode > added node with id '${newId}' and label '${newIdIndex.toString()}'`,
         );
     }
+
     graph.data('numNodes', graph.nodes().length);
     return graph;
 }
 
 function removeNode(graph: cytoscape.Core, nodes?: string | string[]): cytoscape.Core {
+    // Checks if nodes is a string and converts it to an array
     if (nodes && !Array.isArray(nodes)) {
         nodes = [nodes];
-    } // Checks if nodes is a string and converts it to an array
+    }
 
     if (nodes && Array.isArray(nodes)) {
-        // Intercept for specific nodes
+        // Intercept when deleting specific nodes
+
         for (const node of nodes) {
             const ele = graph.$(`#${node}`);
             if (ele.length === 0) {
@@ -61,12 +84,11 @@ function removeNode(graph: cytoscape.Core, nodes?: string | string[]): cytoscape
             removedNodes.push(ele);
             graph.remove(ele);
         }
-        graph.data('numNodes', graph.nodes().length);
-        graph.data('numEdges', graph.edges().length);
-
         console.log('removeNode > removed', nodes.length, 'node(s)');
+
     } else {
-        // Default behavior for selected nodes
+        // (Default behavior) When deleting selected nodes
+
         const selected = graph.nodes(':selected');
 
         if (selected.length === 0) {
@@ -74,7 +96,7 @@ function removeNode(graph: cytoscape.Core, nodes?: string | string[]): cytoscape
             return graph;
         }
 
-        selected.map((ele) => {
+        selected.forEach((ele) => {
             removedNodes.push(ele);
             graph.remove(ele);
         });
@@ -94,29 +116,20 @@ function updateNodesProp(graph: cytoscape.Core, prop: string, value: string): cy
         return graph;
     }
 
-    // let prop = propId.split('-')[2];
-    // let value = $(`#${propId}`).val();
-
     if (prop === 'label') {
-        const lval = String(value).split(';');
+        const labelValue = String(value).split(';');
 
-        selected.map((ele, i) => {
-            if (lval[i].trim() === '') lval[i] = ele.id().split('-')[1];
-
-            ele.data(prop, lval[i].trim());
+        selected.forEach((ele, i) => {
+            if (labelValue[i].trim() === '') labelValue[i] = ele.id().split('-')[1];
+            ele.data(prop, labelValue[i].trim());
         });
     } else {
-        selected.map((ele) => {
+        selected.forEach((ele) => {
             ele.data(prop, value);
         });
     }
 
-    console.log(
-        'updateNodesProp > updated',
-        selected.length,
-        'node(s) with new',
-        prop,
-    );
+    console.log('updateNodesProp > updated', selected.length, 'node(s) with new', prop);
     return graph;
 }
 
@@ -138,12 +151,9 @@ function getNodeFields(property?: NodeField): string | { label: string; color: s
     return property ? data[property] : data;
 }
 
-function setNodeFields(property: 'label' | 'color' | 'shape', value: string): void;
+function setNodeFields(property: NodeField, value: string): void;
 function setNodeFields(properties: { label?: string; color?: string; shape?: string }): void;
-function setNodeFields(
-    properties?: 'label' | 'color' | 'shape' | { label?: string; color?: string; shape?: string },
-    value?: string,
-): void {
+function setNodeFields(properties?: NodeField | { label?: string; color?: string; shape?: string }, value?: string): void {
     if (typeof properties === 'string') {
         $(`#node-${properties}`).val(String(value));
     } else if (typeof properties === 'object') {
@@ -183,15 +193,11 @@ function clearNodeFields(property?: string): void {
 function updateNodeFields(graph: cy.Core) {
     const selected = graph.nodes(':selected');
 
-    if (selected.length === 0) {
-        clearNodeFields();
-    }
+    if (selected.length === 0) { clearNodeFields(); }
 
     setNodeFields({
         label: selected.map((ele) => {
-            return ele.data('label') !== undefined
-                ? String(ele.data('label'))
-                : ele.id();
+            return ele.data('label') !== undefined ? String(ele.data('label')) : ele.id();
         }).join(' ; '),
         color: findPropertyValueMode('color', selected) ?? '#000000',
         shape: findPropertyValueMode('shape', selected) ?? 'ellipse',
