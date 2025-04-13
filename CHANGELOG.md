@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <!-- START -->
 ### Added
 ### Changed
-- `Nodes` - Improves node functions and improve legibility of code
+- `Nodes` - Improves node functions and improves legibility of code
 ### Fixed
 ### Removed
 <!-- END -->
