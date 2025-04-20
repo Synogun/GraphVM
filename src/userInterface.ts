@@ -314,7 +314,7 @@ export class UserInterface {
             const target = evt.target as cytoscape.NodeSingular;
             // const core = this.graph.getCore();
 
-            if (evt.type === 'tap') {
+            if (evt.type === 'tap' && this.edgeInsertionMode === 'path') {
                 this.nodeSelectionOrder.push(target.id());
                 this.edgeInsertionMode = 'path';
 
