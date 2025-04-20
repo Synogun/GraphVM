@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/Synogun/GraphVM/compare/v1.0.22...develop)
+## [Unreleased](https://github.com/Synogun/GraphVM/compare/v1.2.0...develop)
 
 <!-- START -->
 ### Added
@@ -24,6 +24,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `UI` - Removed `nodes.ts`, `edges.ts`, and `ui.ts` in favor of the new `UserInterface` class.
 - `Project` - Removed redundant `safe-buffer` and `debug` dependencies from `package-lock.json`.
 <!-- END -->
+
+## [v1.2.0](https://github.com/Synogun/GraphVM/compare/v1.0.22...v1.2.0)
+
+### Added
+- `Graph` - Introduced `GraphConfig` class for centralized configuration management.
+- `UI` - Added `UserInterface` class to handle UI interactions and events.
+- `Project` - Added `Graph` and `UserInterface` modules to improve modularity.
+### Changed
+- `Graph` - Refactored `Graph` class to encapsulate graph-related operations.
+- `UI` - Replaced `ui.ts` with `userInterface.ts` for better separation of concerns.
+- `Project` - Updated dependencies in `package-lock.json` and `package.json` to their latest versions.
+- `HTML` - Updated HTML structure to work better on screen sizes below 1000px.
+### Fixed
+- `UI` - Fixed layout panel toggling issues for grid and circle layouts.
+- `Graph` - Resolved edge and node property update inconsistencies.
+### Removed
+- `UI` - Removed `nodes.ts`, `edges.ts`, and `ui.ts` in favor of the new `UserInterface` class.
+- `Project` - Removed redundant `safe-buffer` and `debug` dependencies from `package-lock.json`.
 
 ## [v1.0.22](https://github.com/Synogun/GraphVM/compare/v1.0.6...v1.0.22)
 

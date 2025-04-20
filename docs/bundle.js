@@ -6377,7 +6377,48 @@
   });
 
   // src/main.ts
-  var import_jquery5 = __toESM(require_jquery(), 1);
+  var import_jquery3 = __toESM(require_jquery(), 1);
+
+  // src/utils.ts
+  var import_jquery = __toESM(require_jquery(), 1);
+  function checkDevelopment() {
+    if (window.location.href.startsWith("https://synogun.github.io/GraphVM/")) {
+      return false;
+    }
+    if (isMobileDevice()) {
+      console.log("User is on a mobile device");
+    } else {
+      console.log("User is on a PC");
+    }
+    (0, import_jquery.default)("#is-dev").removeClass("d-none");
+    (0, import_jquery.default)("title").text("GraphVM - Development");
+    return true;
+  }
+  function findPropertyValueMode(property, eles) {
+    if (!eles.length) {
+      return null;
+    }
+    if (!eles[0].data(property)) {
+      return null;
+    }
+    const count = {};
+    const mode = { propValue: "", frequency: 0 };
+    for (const ele of eles) {
+      const value = String(ele.data(property));
+      if (!Object.keys(count).includes(value)) {
+        count[value] = 0;
+      }
+      count[value]++;
+      if (count[value] > mode.frequency) {
+        mode.propValue = value;
+        mode.frequency = count[value];
+      }
+    }
+    return mode.propValue;
+  }
+  function isMobileDevice() {
+    return typeof navigator.userAgent === "string" && /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  }
 
   // node_modules/cytoscape/dist/cytoscape.esm.mjs
   function _typeof(obj) {
@@ -6532,7 +6573,7 @@
     };
   }
   var _window = typeof window === "undefined" ? null : window;
-  var navigator = _window ? _window.navigator : null;
+  var navigator2 = _window ? _window.navigator : null;
   _window ? _window.document : null;
   var typeofstr = _typeof("");
   var typeofobj = _typeof({});
@@ -6610,7 +6651,7 @@
     return object(obj) && fn$6(obj.then);
   };
   var ms = function ms2() {
-    return navigator && navigator.userAgent.match(/msie|trident|edge/i);
+    return navigator2 && navigator2.userAgent.match(/msie|trident|edge/i);
   };
   var memoize$1 = function memoize(fn3, keyFn) {
     if (!keyFn) {
@@ -18721,7 +18762,7 @@
       return edges3;
     },
     // search the graph like jQuery
-    $: function $(selector) {
+    $: function $2(selector) {
       var eles = this._private.elements;
       if (selector) {
         return eles.filter(selector);
@@ -18749,9 +18790,9 @@
         continue;
       }
       var cxtStyle = self2.getContextStyle(cxtMeta);
-      var app = self2.applyContextStyle(cxtMeta, cxtStyle, ele);
+      var app2 = self2.applyContextStyle(cxtMeta, cxtStyle, ele);
       if (ele._private.appliedInitStyle) {
-        self2.updateTransitions(ele, app.diffProps);
+        self2.updateTransitions(ele, app2.diffProps);
       } else {
         ele._private.appliedInitStyle = true;
       }
@@ -22619,7 +22660,7 @@
     var nodes3 = eles.nodes().filter(function(n2) {
       return n2.isChildless();
     });
-    var graph2 = eles;
+    var graph = eles;
     var directed = options2.directed;
     var maximal = options2.acyclic || options2.maximal || options2.maximalAdjustments > 0;
     var hasBoundingBox = !!options2.boundingBox;
@@ -22680,7 +22721,7 @@
       depths[depth][index] = null;
       if (ele2.isChildless()) addToDepth(ele2, newDepth);
     };
-    graph2.bfs({
+    graph.bfs({
       roots,
       directed: options2.directed,
       visit: function visit(node, edge, pNode, i2, depth) {
@@ -23450,9 +23491,9 @@
       }
     }
     for (var i = 0; i < layoutInfo.graphSet.length; i++) {
-      var graph2 = layoutInfo.graphSet[i];
-      for (var j = 0; j < graph2.length; j++) {
-        var index = layoutInfo.idToIndex[graph2[j]];
+      var graph = layoutInfo.graphSet[i];
+      for (var j = 0; j < graph.length; j++) {
+        var index = layoutInfo.idToIndex[graph[j]];
         layoutInfo.indexToGraph[index] = i;
       }
     }
@@ -23499,16 +23540,16 @@
     }
   };
   var findLCA_aux = function findLCA_aux2(node1, node2, graphIx, layoutInfo) {
-    var graph2 = layoutInfo.graphSet[graphIx];
-    if (-1 < graph2.indexOf(node1) && -1 < graph2.indexOf(node2)) {
+    var graph = layoutInfo.graphSet[graphIx];
+    if (-1 < graph.indexOf(node1) && -1 < graph.indexOf(node2)) {
       return {
         count: 2,
         graph: graphIx
       };
     }
     var c = 0;
-    for (var i = 0; i < graph2.length; i++) {
-      var nodeId = graph2[i];
+    for (var i = 0; i < graph.length; i++) {
+      var nodeId = graph[i];
       var nodeIx = layoutInfo.idToIndex[nodeId];
       var children = layoutInfo.layoutNodes[nodeIx].children;
       if (0 === children.length) {
@@ -23603,12 +23644,12 @@
   };
   var calculateNodeForces = function calculateNodeForces2(layoutInfo, options2) {
     for (var i = 0; i < layoutInfo.graphSet.length; i++) {
-      var graph2 = layoutInfo.graphSet[i];
-      var numNodes = graph2.length;
+      var graph = layoutInfo.graphSet[i];
+      var numNodes = graph.length;
       for (var j = 0; j < numNodes; j++) {
-        var node1 = layoutInfo.layoutNodes[layoutInfo.idToIndex[graph2[j]]];
+        var node1 = layoutInfo.layoutNodes[layoutInfo.idToIndex[graph[j]]];
         for (var k = j + 1; k < numNodes; k++) {
-          var node2 = layoutInfo.layoutNodes[layoutInfo.idToIndex[graph2[k]]];
+          var node2 = layoutInfo.layoutNodes[layoutInfo.idToIndex[graph[k]]];
           nodeRepulsion2(node1, node2, layoutInfo, options2);
         }
       }
@@ -23755,19 +23796,19 @@
     }
     var distThreshold = 1;
     for (var i = 0; i < layoutInfo.graphSet.length; i++) {
-      var graph2 = layoutInfo.graphSet[i];
-      var numNodes = graph2.length;
+      var graph = layoutInfo.graphSet[i];
+      var numNodes = graph.length;
       if (0 === i) {
         var centerX = layoutInfo.clientHeight / 2;
         var centerY = layoutInfo.clientWidth / 2;
       } else {
-        var temp = layoutInfo.layoutNodes[layoutInfo.idToIndex[graph2[0]]];
+        var temp = layoutInfo.layoutNodes[layoutInfo.idToIndex[graph[0]]];
         var parent4 = layoutInfo.layoutNodes[layoutInfo.idToIndex[temp.parentId]];
         var centerX = parent4.positionX;
         var centerY = parent4.positionY;
       }
       for (var j = 0; j < numNodes; j++) {
-        var node = layoutInfo.layoutNodes[layoutInfo.idToIndex[graph2[j]]];
+        var node = layoutInfo.layoutNodes[layoutInfo.idToIndex[graph[j]]];
         if (node.isLocked) {
           continue;
         }
@@ -35228,671 +35269,770 @@
   cytoscape.version = version;
   cytoscape.stylesheet = cytoscape.Stylesheet = Stylesheet;
 
-  // src/nodes.ts
-  var import_jquery2 = __toESM(require_jquery(), 1);
-
-  // src/utils.ts
-  var import_jquery = __toESM(require_jquery(), 1);
-  function checkDevelopment() {
-    if (window.location.href.startsWith("https://synogun.github.io/GraphVM/")) {
-      return false;
-    }
-    (0, import_jquery.default)("#is-dev").removeClass("d-none");
-    (0, import_jquery.default)("title").text("GraphVM - Development");
-    return true;
-  }
-  function findPropertyValueMode(property, eles) {
-    if (!eles.length) {
-      return null;
-    }
-    if (!eles[0].data(property)) {
-      return null;
-    }
-    const count = {};
-    const mode = { propValue: "", frequency: 0 };
-    for (const ele of eles) {
-      const value = String(ele.data(property));
-      if (!Object.keys(count).includes(value)) {
-        count[value] = 0;
-      }
-      count[value]++;
-      if (count[value] > mode.frequency) {
-        mode.propValue = value;
-        mode.frequency = count[value];
-      }
-    }
-    return mode.propValue;
-  }
-
-  // src/nodes.ts
-  var removedNodes = [];
-  function addNode(graph2, quantity = 1, options2) {
-    for (let i = 0; i < quantity; i++) {
-      const newId = graph2.nodes().length + removedNodes.length;
-      graph2.add({
-        group: "nodes",
-        data: {
-          id: `node-${newId.toString()}`,
-          index: graph2.nodes().length,
-          label: options2?.data.label ? String(options2.data.label) : newId,
-          color: options2?.data.color ? options2.data.color : "#999999",
-          shape: options2?.data.color ? options2.data.color : "ellipse"
+  // src/graphConfig.ts
+  var GraphConfig = class _GraphConfig {
+    static {
+      // Default values
+      this.default = {
+        layout: {
+          name: "circle",
+          animate: true,
+          animationDuration: 500,
+          animationEasing: "ease-in-out",
+          fit: true,
+          spacingFactor: 1.5,
+          radius: 100,
+          rows: 3,
+          cols: 3,
+          condensed: true,
+          minNodeSpacing: 10
         },
-        classes: []
-      });
-      console.log(
-        `addNode > added node with id 'node-${newId.toString()}' and label '${newId.toString()}'`
-      );
-    }
-    graph2.data("numNodes", graph2.nodes().length);
-    return graph2;
-  }
-  function removeNode(graph2, nodes3) {
-    if (nodes3 && !Array.isArray(nodes3)) {
-      nodes3 = [nodes3];
-    }
-    if (nodes3 && Array.isArray(nodes3)) {
-      for (const node of nodes3) {
-        const ele = graph2.$(`#${node}`);
-        if (ele.length === 0) {
-          console.log(`removeNode > Node '${node}' not found`);
-          return graph2;
-        }
-        removedNodes.push(ele);
-        graph2.remove(ele);
-      }
-      graph2.data("numNodes", graph2.nodes().length);
-      graph2.data("numEdges", graph2.edges().length);
-      console.log("removeNode > removed", nodes3.length, "node(s)");
-    } else {
-      const selected = graph2.nodes(":selected");
-      if (selected.length === 0) {
-        console.log("removeNode > Select at least one node");
-        return graph2;
-      }
-      selected.map((ele) => {
-        removedNodes.push(ele);
-        graph2.remove(ele);
-      });
-      console.log("removeNode > removed", selected.length, "node(s)");
-    }
-    graph2.data("numNodes", graph2.nodes().length);
-    graph2.data("numEdges", graph2.edges().length);
-    return graph2;
-  }
-  function updateNodesProp(graph2, prop, value) {
-    const selected = graph2.nodes(":selected");
-    if (selected.length === 0) {
-      console.log("updateNodesProp > Select at least one node");
-      return graph2;
-    }
-    if (prop === "label") {
-      const lval = String(value).split(";");
-      selected.map((ele, i) => {
-        if (lval[i].trim() === "") lval[i] = ele.id().split("-")[1];
-        ele.data(prop, lval[i].trim());
-      });
-    } else {
-      selected.map((ele) => {
-        ele.data(prop, value);
-      });
-    }
-    console.log(
-      "updateNodesProp > updated",
-      selected.length,
-      "node(s) with new",
-      prop
-    );
-    return graph2;
-  }
-  function getNodeFields(property) {
-    const data4 = {
-      label: String((0, import_jquery2.default)("#node-label").val()),
-      color: String((0, import_jquery2.default)("#node-color").val()),
-      shape: String((0, import_jquery2.default)("#node-shape").val())
-    };
-    return property ? data4[property] : data4;
-  }
-  function setNodeFields(properties, value) {
-    if (typeof properties === "string") {
-      (0, import_jquery2.default)(`#node-${properties}`).val(String(value));
-    } else if (typeof properties === "object") {
-      for (const [key, val] of Object.entries(properties)) {
-        if (val) {
-          (0, import_jquery2.default)(`#node-${key}`).val(val);
-        }
-      }
-    } else {
-      console.log("setNodeFields > invalid property", properties);
-    }
-  }
-  function clearNodeFields(property) {
-    switch (property) {
-      case "label":
-        (0, import_jquery2.default)("#node-label").val("");
-        break;
-      case "color":
-        (0, import_jquery2.default)("#node-color").val("#000000");
-        break;
-      case "shape":
-        (0, import_jquery2.default)("#node-shape").val("ellipse");
-        break;
-      default:
-        (0, import_jquery2.default)("#node-label").val("");
-        (0, import_jquery2.default)("#node-color").val("#000000");
-        (0, import_jquery2.default)("#node-shape").val("ellipse");
-        break;
-    }
-  }
-  function updateNodeFields(graph2) {
-    const selected = graph2.nodes(":selected");
-    if (selected.length === 0) {
-      clearNodeFields();
-    }
-    setNodeFields({
-      label: selected.map((ele) => {
-        return ele.data("label") !== void 0 ? String(ele.data("label")) : ele.id();
-      }).join(" ; "),
-      color: findPropertyValueMode("color", selected) ?? "#000000",
-      shape: findPropertyValueMode("shape", selected) ?? "ellipse"
-    });
-  }
-
-  // src/edges.ts
-  var import_jquery3 = __toESM(require_jquery(), 1);
-  var removedEdges = [];
-  function addEdge(graph2, sourceOrEdges, target) {
-    if (Array.isArray(sourceOrEdges)) {
-      for (const edge of sourceOrEdges) {
-        const source = graph2.nodes(`[index = ${String(edge.source)}]`).first().id();
-        const target2 = graph2.nodes(`[index = ${String(edge.target)}]`).first().id();
-        const newEdge = graph2.add({
-          group: "edges",
-          classes: [],
-          data: {
-            id: `edge-${String(graph2.edges().length + removedEdges.length)}`,
-            source,
-            target: target2,
-            weight: 1,
-            index: graph2.edges().length,
-            // Styling
-            label: "hidden",
-            // 0: hidden, 1: weight, 2: index
-            color: "#cccccc",
-            style: "solid",
-            curve: "bezier",
-            arrowShape: "triangle"
+        stylesheet: [
+          {
+            selector: "node",
+            style: {
+              "label": "data(label)",
+              "background-color": "data(color)",
+              "shape": (ele) => ele.data("shape"),
+              "font-family": "Fira Code, sans-serif",
+              "color": "#fff",
+              "text-outline-color": "#000",
+              "text-outline-width": 1,
+              "text-halign": "center",
+              "text-valign": "center"
+            }
+          },
+          {
+            selector: "node:active",
+            style: {
+              "background-color": "#0169d9",
+              "border-color": "#0169d9",
+              "border-width": 2
+            }
+          },
+          {
+            selector: "node:selected",
+            style: {
+              "background-color": "data(color)",
+              "border-color": "#0169d9",
+              "border-width": 2
+            }
+          },
+          {
+            selector: "edge",
+            style: {
+              "width": 3,
+              "line-color": "data(color)",
+              "line-style": (ele) => ele.data("style"),
+              "curve-style": (ele) => ele.data("curve"),
+              "target-arrow-color": "data(color)",
+              "font-family": "Fira Code, sans-serif",
+              "color": "#fff",
+              "text-outline-color": "#000",
+              "text-outline-width": 1
+            }
+          },
+          {
+            selector: ".edge-label-weight",
+            style: {
+              label: "data(weight)"
+            }
+          },
+          {
+            selector: ".edge-label-index",
+            style: {
+              label: "data(index)"
+            }
+          },
+          {
+            selector: ".directed",
+            style: {
+              "target-arrow-shape": (ele) => ele.data("arrowShape")
+            }
+          },
+          {
+            selector: "edge:active",
+            style: {
+              "line-color": "#0169d9",
+              "target-arrow-color": "#0169d9",
+              "line-outline-width": 2.5,
+              "line-outline-color": "#0169d9"
+            }
+          },
+          {
+            selector: "edge:selected",
+            style: {
+              "line-color": "data(color)",
+              "target-arrow-color": "data(color)",
+              "line-outline-width": 2.5,
+              "line-outline-color": "#0169d9"
+            }
           }
-        });
-        if (graph2.data("directed")) {
-          graph2.edges(`#${newEdge.id()}`).addClass("directed");
-        }
-      }
-      console.log("addEdge > added", sourceOrEdges.length, "edge(s)");
-    } else if (sourceOrEdges && target) {
-      const newEdge = graph2.add({
-        group: "edges",
-        data: {
-          id: `edge-${String(graph2.$("edge").length + removedEdges.length)}`,
-          source: sourceOrEdges.id(),
-          target: target.id(),
-          weight: 1,
-          index: graph2.edges().length,
-          // Styling
+        ],
+        constructorParameters: {
+          elements: [],
+          data: {
+            directed: false,
+            multigraph: false,
+            numberOfNodes: 0,
+            numberOfEdges: 0
+          },
+          minZoom: 0.1
+        },
+        // Default node data -> ele.data()
+        nodeData: {
+          color: "#999999",
+          shape: "ellipse"
+        },
+        // Default edge data -> ele.data()
+        edgeData: {
+          weight: "1",
           label: "hidden",
-          // 0: hidden, 1: weight, 2: index
           color: "#cccccc",
           style: "solid",
           curve: "bezier",
           arrowShape: "triangle"
-        },
-        classes: []
-      });
-      if (graph2.data("directed")) {
-        graph2.edges(`#${newEdge.id()}`).addClass("directed");
+        }
+      };
+    }
+    constructor() {
+      this.config = {
+        ..._GraphConfig.default,
+        constructorParameters: {
+          ..._GraphConfig.default.constructorParameters,
+          layout: { ..._GraphConfig.default.layout },
+          style: [..._GraphConfig.default.stylesheet]
+        }
+      };
+    }
+    // Getters for config properties
+    get layout() {
+      return this.config.layout;
+    }
+    set layout(layout4) {
+      this.config.layout = {
+        ...this.config.layout,
+        ...layout4
+      };
+    }
+    get stylesheet() {
+      return this.config.stylesheet;
+    }
+    set stylesheet(stylesheet3) {
+      this.config.stylesheet = stylesheet3;
+    }
+    get constructorParameters() {
+      return this.config.constructorParameters;
+    }
+    set constructorParameters(params) {
+      const { layout: layout4, style: style3, ...rest } = params;
+      this.config.constructorParameters = {
+        ...this.config.constructorParameters,
+        ...rest
+      };
+      if (layout4) {
+        this.config.layout = {
+          ...this.config.layout,
+          ...layout4
+        };
       }
-      console.log(
-        "addEdge > added edge with source",
-        sourceOrEdges.id(),
-        "and target",
-        target.id()
-      );
-    } else {
-      const selected = graph2.nodes(":selected");
-      if (selected.length < 2) {
-        console.log("addEdge > Select at least two nodes");
-        return graph2;
-      }
-      for (let i = 0; i < selected.length; i++) {
-        for (let j = i; j < selected.length; j++) {
-          if (i === j) continue;
-          const source = selected[i];
-          const target2 = selected[j];
-          addEdge(graph2, source, target2);
+      if (style3) {
+        if (style3 instanceof Promise) {
+          style3.then((resolvedStyle) => {
+            this.config.stylesheet = resolvedStyle;
+          }).catch((error3) => {
+            console.error("Error loading stylesheet:", error3);
+          });
+        } else {
+          this.config.stylesheet = style3;
         }
       }
     }
-    graph2.data("numEdges", graph2.edges().length);
-    return graph2;
-  }
-  function removeEdge(graph2, edges3) {
-    if (edges3 && !Array.isArray(edges3)) {
-      edges3 = [edges3];
+    get nodeData() {
+      return this.config.nodeData;
     }
-    if (edges3 && Array.isArray(edges3)) {
-      for (const edge of edges3) {
-        const ele = graph2.$(`#${edge}`);
-        if (ele.length === 0) {
-          console.log(`removeEdge > Edge '${edge}' not found`);
-          return graph2;
+    set nodeData(data4) {
+      this.config.nodeData = {
+        ...this.config.nodeData,
+        ...data4
+      };
+    }
+    get edgeData() {
+      return this.config.edgeData;
+    }
+    set edgeData(data4) {
+      this.config.edgeData = {
+        ...this.config.edgeData,
+        ...data4
+      };
+    }
+    // Reset to default settings
+    reset() {
+      this.config = {
+        ..._GraphConfig.default,
+        constructorParameters: {
+          ..._GraphConfig.default.constructorParameters,
+          layout: { ..._GraphConfig.default.layout },
+          style: [..._GraphConfig.default.stylesheet]
         }
-        removedEdges.push(ele);
-        graph2.remove(ele);
-      }
-      console.log("removeEdge > removed", edges3.length, "edge(s)");
-    } else {
-      const selected = graph2.edges(":selected");
-      if (!selected.length) {
-        console.log("removeEdge > Select at least one edge");
-        return graph2;
-      }
-      selected.map((ele) => {
-        removedEdges.push(ele);
-        graph2.remove(ele);
-      });
-      console.log("removeEdge > removed", selected.length, "edge(s)");
+      };
     }
-    graph2.data("numEdges", graph2.edges().length);
-    return graph2;
-  }
-  function updateEdgesProp(graph2, prop, value) {
-    const selected = graph2.edges(":selected");
-    if (selected.length === 0) {
-      console.log("updateEdgesProp > Select at least one edge");
-      return graph2;
-    }
-    if (prop === "weight" && String(value).trim() === "") value = 1;
-    else if (prop === "label") {
-      selected.map((ele) => {
-        ele.removeClass(`edge-label-${String(ele.data("label"))}`);
-        ele.data("label", value);
-        ele.addClass(`edge-label-${String(value)}`);
-      });
-    } else selected.map((ele) => ele.data(prop, value));
-    console.log("updated", selected.length, "edge(s) with new", prop);
-    return graph2;
-  }
-  function getEdgeFields(property) {
-    const data4 = {
-      weight: String((0, import_jquery3.default)("#edge-weight").val()),
-      label: String((0, import_jquery3.default)("#edge-label").val()),
-      color: String((0, import_jquery3.default)("#edge-color").val()),
-      style: String((0, import_jquery3.default)("#edge-style").val()),
-      curve: String((0, import_jquery3.default)("#edge-curve").val())
-    };
-    return property ? data4[property] : data4;
-  }
-  function setEdgeFields(properties, value) {
-    if (typeof properties === "string") {
-      (0, import_jquery3.default)(`#edge-${properties}`).val(String(value));
-    } else if (typeof properties === "object") {
-      for (const [key, val] of Object.entries(properties)) {
-        if (val) {
-          (0, import_jquery3.default)(`#edge-${key}`).val(val);
-        }
-      }
-    } else {
-      console.log("setEdgeFields > invalid property", properties);
-    }
-  }
-  function clearEdgeFields(property) {
-    switch (property) {
-      case "weight": {
-        (0, import_jquery3.default)("#edge-weight").val(1);
-        break;
-      }
-      case "label": {
-        (0, import_jquery3.default)("#edge-label").val("");
-        break;
-      }
-      case "color": {
-        (0, import_jquery3.default)("#edge-color").val("#000000");
-        break;
-      }
-      case "style": {
-        (0, import_jquery3.default)("#edge-style").val("solid");
-        break;
-      }
-      case "curve": {
-        (0, import_jquery3.default)("#edge-curve").val("bezier");
-        break;
-      }
-      default: {
-        (0, import_jquery3.default)("#edge-weight").val(1);
-        (0, import_jquery3.default)("#edge-label").val("");
-        (0, import_jquery3.default)("#edge-color").val("#000000");
-        (0, import_jquery3.default)("#edge-style").val("solid");
-        (0, import_jquery3.default)("#edge-curve").val("bezier");
-        break;
-      }
-    }
-  }
-  function updateEdgeFields(graph2) {
-    const selected = graph2.edges(":selected");
-    if (selected.length === 0) {
-      clearEdgeFields();
-      return false;
-    }
-    const val = {
-      weight: findPropertyValueMode("weight", selected) ?? "1",
-      label: findPropertyValueMode("label", selected) ?? "hidden",
-      color: findPropertyValueMode("color", selected) ?? "#000000",
-      style: findPropertyValueMode("style", selected) ?? "solid",
-      curve: findPropertyValueMode("curve", selected) ?? "bezier"
-    };
-    setEdgeFields(val);
-    return true;
-  }
+  };
 
   // src/graph.ts
-  function generateGraph(options2) {
-    const graph2 = cytoscape({
-      container: document.getElementById("graph"),
-      elements: [],
-      data: {
-        directed: false,
-        numNodes: 0,
-        numEdges: 0
-      },
-      style: [
-        // the stylesheet for the graph
-        {
-          selector: "node",
-          style: {
-            "label": "data(label)",
-            "background-color": "data(color)",
-            "shape": (ele) => ele.data("shape"),
-            "font-family": "Fira Code, sans-serif",
-            "color": "#fff",
-            "text-outline-color": "#000",
-            "text-outline-width": 1,
-            "text-halign": "center",
-            "text-valign": "center"
-          }
-        },
-        {
-          selector: "node:active",
-          style: {
-            "background-color": "#0169d9",
-            "border-color": "#0169d9",
-            "border-width": 2
-          }
-        },
-        {
-          selector: "node:selected",
-          style: {
-            "background-color": "data(color)",
-            "border-color": "#0169d9",
-            "border-width": 2
-          }
-        },
-        {
-          selector: "edge",
-          style: {
-            "width": 3,
-            "line-color": "data(color)",
-            "line-style": (ele) => ele.data("style"),
-            "curve-style": (ele) => ele.data("curve"),
-            "target-arrow-color": "data(color)",
-            "font-family": "Fira Code, sans-serif",
-            "color": "#fff",
-            "text-outline-color": "#000",
-            "text-outline-width": 1
-          }
-        },
-        {
-          selector: ".edge-label-weight",
-          style: {
-            label: "data(weight)"
-          }
-        },
-        {
-          selector: ".edge-label-index",
-          style: {
-            label: "data(index)"
-          }
-        },
-        {
-          selector: ".directed",
-          style: {
-            "target-arrow-shape": (ele) => ele.data("arrowShape")
-          }
-        },
-        {
-          selector: "edge:active",
-          style: {
-            "line-color": "#0169d9",
-            "target-arrow-color": "#0169d9",
-            "line-outline-width": 2.5,
-            "line-outline-color": "#0169d9"
-          }
-        },
-        {
-          selector: "edge:selected",
-          style: {
-            "line-color": "data(color)",
-            "target-arrow-color": "data(color)",
-            "line-outline-width": 2.5,
-            "line-outline-color": "#0169d9"
+  var Graph = class {
+    constructor({ containerId, graphOptions = {}, config = new GraphConfig() }) {
+      this.removedNodes = [];
+      this.removedEdges = [];
+      this.config = config;
+      this.containerId = containerId;
+      this.core = this.newGraph({ containerId, options: graphOptions });
+    }
+    newGraph({ containerId, options: options2 } = {}) {
+      containerId ??= this.containerId;
+      this.removedNodes = [];
+      this.removedEdges = [];
+      const graphOptions = {
+        ...this.config.constructorParameters,
+        // default graph options
+        ...options2
+      };
+      if (options2?.data) {
+        graphOptions.data = {
+          ...this.config.constructorParameters.data,
+          // default graph data
+          ...options2.data
+        };
+      }
+      const newGraph = cytoscape({
+        ...graphOptions,
+        container: document.getElementById(containerId)
+      });
+      newGraph.data("numberOfNodes", newGraph.nodes().length);
+      newGraph.data("numberOfEdges", newGraph.edges().length);
+      console.log("newGraph > created new graph");
+      return newGraph;
+    }
+    arrangeGraph(options2) {
+      const layoutOptions = {
+        ...this.config.layout,
+        // default layout options
+        ...options2
+      };
+      this.core.layout(layoutOptions).run();
+      console.log("arrangeGraph > arranged graph with", options2.name, "layout");
+    }
+    centerGraph(eles, padding = 30) {
+      if (eles?.length) {
+        this.core.fit(eles, padding);
+      } else {
+        this.core.fit(this.core.nodes(), padding);
+      }
+      console.log(
+        "centerGraph > centered graph on",
+        eles?.length ? eles.toArray() : "all nodes"
+      );
+    }
+    getCore() {
+      return this.core;
+    }
+    setCore(graph) {
+      this.core = graph;
+    }
+    clearSelection() {
+      this.core.elements().unselect();
+      console.log("clearSelection > cleared selection");
+    }
+    addNode({ options: options2, classes: classes2 } = {}) {
+      const numberOfNodes = this.core.nodes().length;
+      const newIdIndex = numberOfNodes + this.removedNodes.length;
+      const newId = `node-${newIdIndex.toString()}`;
+      const newNodeData = {
+        id: newId,
+        index: newIdIndex,
+        label: newIdIndex.toString(),
+        ...this.config.nodeData,
+        // default node data
+        ...options2?.data
+      };
+      this.core.add({
+        group: "nodes",
+        data: newNodeData,
+        classes: classes2 ?? []
+      });
+      this.core.data("numberOfNodes", numberOfNodes + 1);
+      console.log("addNode > added node with id:", newId);
+    }
+    removeNodes(nodes3) {
+      if (nodes3.length === 0) {
+        console.log("removeNode > Select at least one node");
+        return;
+      }
+      nodes3.forEach((node) => {
+        if (this.core.hasElementWithId(node.id())) {
+          this.removedNodes.push(node);
+          this.core.remove(node);
+        } else {
+          console.log("removeNode > Node not found in graph:", node.id());
+        }
+      });
+      this.core.data("numberOfNodes", this.core.nodes().length);
+      console.log("removeNode > removed", nodes3.length, "node(s)");
+    }
+    updateNodes(nodes3, property, value) {
+      if (nodes3.length === 0) {
+        console.log("updateNodes > Select at least one node");
+        return;
+      }
+      nodes3.forEach((node) => {
+        if (!this.core.hasElementWithId(node.id())) {
+          console.log("updateNodes > Node not found in graph:", node.id());
+          return;
+        }
+        node.data(property, value);
+      });
+      console.log("updateNodes > updated", nodes3.length, "node(s)");
+    }
+    getRemovedNodes() {
+      return this.removedNodes;
+    }
+    clearRemovedNodes() {
+      this.removedNodes = [];
+    }
+    getSelectedNodes() {
+      return this.core.nodes(":selected");
+    }
+    addEdge(options2, classes2) {
+      if (!options2.data.source) {
+        console.log("addEdge > Source node is required");
+        return;
+      }
+      if (!options2.data.target) {
+        console.log("addEdge > Target node is required");
+        return;
+      }
+      const newIdIndex = this.core.edges().length + this.removedEdges.length;
+      const newId = `edge-${newIdIndex.toString()}`;
+      const newEdgeData = {
+        id: newId,
+        index: newIdIndex,
+        ...this.config.edgeData,
+        // default edge data
+        ...options2.data
+      };
+      this.core.add({
+        group: "edges",
+        data: newEdgeData,
+        classes: classes2 ?? []
+      });
+      if (this.core.data("directed")) {
+        this.core.edges(`#${newId}`).addClass("directed");
+      }
+      this.core.data("numEdges", this.core.edges().length);
+      console.log("addEdge > added edge with source", options2.data.source, "and target", options2.data.target);
+    }
+    removeEdges(edges3) {
+      if (edges3.length === 0) {
+        console.log("removeEdge > Select at least one edge");
+        return;
+      }
+      edges3.forEach((edge) => {
+        if (!this.core.hasElementWithId(edge.id())) {
+          console.log("removeEdge > Edge not found in graph:", edge.id());
+          return;
+        }
+        this.removedEdges.push(edge);
+        this.core.remove(edge);
+      });
+      console.log("removeEdge > removed", edges3.length, "edge(s)");
+    }
+    updateEdges(edges3, property, value) {
+      if (edges3.length === 0) {
+        console.log("updateEdges > Select at least one edge");
+        return;
+      }
+      if (property === "weight" && String(value).trim() === "") {
+        edges3.data("weight", 1);
+      } else if (property === "label") {
+        edges3.map((ele) => {
+          ele.removeClass(`edge-label-${String(ele.data("label"))}`);
+          ele.data("label", value);
+          ele.addClass(`edge-label-${String(value)}`);
+        });
+      } else {
+        edges3.map((ele) => ele.data(property, value));
+      }
+      console.log("updateEdges > updated", edges3.length, "edge(s)");
+    }
+    getRemovedEdges() {
+      return this.removedEdges;
+    }
+    clearRemovedEdges() {
+      this.removedEdges = [];
+    }
+    getSelectedEdges() {
+      return this.core.edges(":selected");
+    }
+  };
+
+  // src/userInterface.ts
+  var import_jquery2 = __toESM(require_jquery(), 1);
+  var UserInterface = class {
+    // path | complete
+    constructor(graph) {
+      this.graph = graph;
+      this.nodeSelectionOrder = [];
+      this.edgeInsertionMode = "path";
+      this.graph = graph;
+    }
+    init() {
+      this.bindActionsBarEvents();
+      this.bindGraphEvents();
+      this.bindPropertiesPanelEvents();
+      this.updateGraphFields();
+    }
+    // Graph
+    updateGraphFields() {
+      const graph = this.graph.getCore();
+      (0, import_jquery2.default)("#node-count").val(String(graph.data("numberOfNodes")) + " nodes");
+      (0, import_jquery2.default)("#edge-count").val(String(graph.data("numberOfEdges")) + " edges");
+    }
+    resetSelection() {
+      this.nodeSelectionOrder = [];
+      this.edgeInsertionMode = "path";
+      this.graph.clearSelection();
+    }
+    // Nodes
+    getNodeFields() {
+      return {
+        label: String((0, import_jquery2.default)("#node-label").val()),
+        color: String((0, import_jquery2.default)("#node-color").val()),
+        shape: String((0, import_jquery2.default)("#node-shape").val())
+      };
+    }
+    setNodeFields(properties) {
+      for (const [key, val] of Object.entries(properties)) {
+        if (val) {
+          (0, import_jquery2.default)(`#node-${key}`).val(String(val));
+        }
+      }
+    }
+    clearNodeFields(property) {
+      switch (property) {
+        case "label":
+          (0, import_jquery2.default)("#node-label").val("");
+          break;
+        case "color":
+          (0, import_jquery2.default)("#node-color").val("#000000");
+          break;
+        case "shape":
+          (0, import_jquery2.default)("#node-shape").val("ellipse");
+          break;
+        default:
+          (0, import_jquery2.default)("#node-label").val("");
+          (0, import_jquery2.default)("#node-color").val("#000000");
+          (0, import_jquery2.default)("#node-shape").val("ellipse");
+          break;
+      }
+    }
+    updateNodeFields(nodes3) {
+      if (!nodes3.length) {
+        this.clearNodeFields();
+        return;
+      }
+      this.setNodeFields({
+        label: nodes3.map((ele) => {
+          return ele.data("label") ? String(ele.data("label")) : ele.id();
+        }).join(" ; "),
+        color: findPropertyValueMode("color", nodes3) ?? "#000000",
+        shape: findPropertyValueMode("shape", nodes3) ?? "ellipse"
+      });
+    }
+    // Edges
+    getEdgeFields() {
+      return {
+        weight: String((0, import_jquery2.default)("#edge-weight").val()),
+        label: String((0, import_jquery2.default)("#edge-label").val()),
+        color: String((0, import_jquery2.default)("#edge-color").val()),
+        style: String((0, import_jquery2.default)("#edge-style").val()),
+        curve: String((0, import_jquery2.default)("#edge-curve").val())
+      };
+    }
+    setEdgeFields(properties) {
+      for (const [key, val] of Object.entries(properties)) {
+        if (val) {
+          (0, import_jquery2.default)(`#edge-${key}`).val(String(val));
+        }
+      }
+    }
+    clearEdgeFields(property) {
+      switch (property) {
+        case "weight":
+          (0, import_jquery2.default)("#edge-weight").val(1);
+          break;
+        case "label":
+          (0, import_jquery2.default)("#edge-label").val("");
+          break;
+        case "color":
+          (0, import_jquery2.default)("#edge-color").val("#000000");
+          break;
+        case "style":
+          (0, import_jquery2.default)("#edge-style").val("solid");
+          break;
+        case "curve":
+          (0, import_jquery2.default)("#edge-curve").val("bezier");
+          break;
+        default:
+          (0, import_jquery2.default)("#edge-weight").val(1);
+          (0, import_jquery2.default)("#edge-label").val("");
+          (0, import_jquery2.default)("#edge-color").val("#000000");
+          (0, import_jquery2.default)("#edge-style").val("solid");
+          (0, import_jquery2.default)("#edge-curve").val("bezier");
+          break;
+      }
+    }
+    updateEdgeFields(edges3) {
+      if (!edges3.length) {
+        this.clearEdgeFields();
+        return;
+      }
+      this.setEdgeFields({
+        weight: findPropertyValueMode("weight", edges3) ?? "1",
+        label: findPropertyValueMode("label", edges3) ?? "hidden",
+        color: findPropertyValueMode("color", edges3) ?? "#000000",
+        style: findPropertyValueMode("style", edges3) ?? "solid",
+        curve: findPropertyValueMode("curve", edges3) ?? "bezier"
+      });
+    }
+    togglePanel(panel, state) {
+      const panelId = `#${panel}-panel`;
+      if (state === void 0) {
+        (0, import_jquery2.default)(panelId).toggleClass("d-none");
+      } else {
+        (0, import_jquery2.default)(panelId).toggleClass("d-none", !state);
+      }
+    }
+    getLayoutFields() {
+      let layout4 = {};
+      const name = String((0, import_jquery2.default)("#graph-layout").val());
+      switch (name) {
+        case "circle":
+          layout4 = {
+            radius: parseInt(String((0, import_jquery2.default)("#circle-radius").val()))
+          };
+          break;
+        case "grid":
+          layout4 = {
+            rows: parseInt(String((0, import_jquery2.default)("#grid-rows").val())),
+            cols: parseInt(String((0, import_jquery2.default)("#grid-cols").val())),
+            condense: (0, import_jquery2.default)("#grid-condensed").is(":checked"),
+            spacingFactor: (0, import_jquery2.default)("#grid-condensed").is(":checked") ? 1.5 : 0
+          };
+          break;
+        case "concentric":
+          layout4 = {
+            minNodeSpacing: 50
+          };
+          break;
+        default:
+          break;
+      }
+      return { name, ...layout4 };
+    }
+    switchLayoutPanel(panel) {
+      panel = panel.toLocaleLowerCase();
+      (0, import_jquery2.default)(".layout-properties").addClass("d-none");
+      (0, import_jquery2.default)(`.${panel}-layout-properties`).removeClass("d-none");
+    }
+    bindActionsBarEvents() {
+      const handleNewGraph = () => {
+        const layout4 = this.getLayoutFields();
+        const newGraph = this.graph.newGraph();
+        this.graph.setCore(newGraph);
+        this.graph.clearSelection();
+        this.bindGraphEvents();
+        this.updateGraphFields();
+        this.graph.arrangeGraph(layout4);
+      };
+      const handleArrangeGraph = () => {
+        const layout4 = this.getLayoutFields();
+        this.graph.arrangeGraph(layout4);
+      };
+      const handleCenterGraph = () => {
+        const graph = this.graph.getCore();
+        const selected = graph.$(":selected");
+        this.graph.centerGraph(selected);
+      };
+      const handleAddNode = () => {
+        const layout4 = this.getLayoutFields();
+        this.graph.addNode();
+        this.resetSelection();
+        this.updateGraphFields();
+        this.graph.arrangeGraph(layout4);
+      };
+      const handleAddEdge = () => {
+        const selected = this.graph.getSelectedNodes();
+        if (selected.length < 2) {
+          alert("Select at least two nodes to create an edge.");
+          return;
+        }
+        if (this.edgeInsertionMode === "path") {
+          for (let i = 0; i < selected.length - 1; i++) {
+            const source = this.nodeSelectionOrder[i];
+            const target = this.nodeSelectionOrder[i + 1];
+            this.graph.addEdge({ data: { source, target } });
           }
         }
-      ],
-      // minZoom: 0.4,
-      maxZoom: 5,
-      layout: {
-        name: "circle",
-        radius: 100
-      }
-    });
-    if (options2?.directed) graph2.data("directed", options2.directed);
-    if (options2?.numNodes) addNode(graph2, options2.numNodes);
-    if (options2?.edges?.length) addEdge(graph2, options2.edges);
-    if (options2?.layout) graph2.layout(options2.layout).run();
-    return graph2;
-  }
-  function newGraph(graph2) {
-    window.location.reload();
-    return graph2;
-  }
-  function centerGraph(graph2) {
-    const selected = graph2.$(":selected");
-    const fitPadding = 30;
-    if (selected.length > 0) {
-      graph2.fit(selected, fitPadding);
-    } else {
-      graph2.fit(graph2.nodes(), fitPadding);
+        if (this.edgeInsertionMode === "complete") {
+          selected.forEach((sourceNode, i) => {
+            selected.slice(i + 1).forEach((targetNode) => {
+              this.graph.addEdge({
+                data: {
+                  source: sourceNode.id(),
+                  target: targetNode.id()
+                }
+              });
+            });
+          });
+        }
+        this.resetSelection();
+        this.updateGraphFields();
+        const layout4 = this.getLayoutFields();
+        this.graph.arrangeGraph(layout4);
+      };
+      (0, import_jquery2.default)("#btn-new-graph").on("click", handleNewGraph);
+      (0, import_jquery2.default)("#btn-arrange-graph").on("click", handleArrangeGraph);
+      (0, import_jquery2.default)("#btn-center-graph").on("click", handleCenterGraph);
+      (0, import_jquery2.default)("#btn-add-node").on("click", handleAddNode);
+      (0, import_jquery2.default)("#btn-add-edge").on("click", handleAddEdge);
     }
-    console.log(
-      "centerGraph > centered graph on",
-      selected.length > 0 ? "selected eles" : "all nodes"
-    );
-    return graph2;
-  }
+    bindGraphEvents() {
+      const handleNodeSelection = (evt) => {
+        const target = evt.target;
+        if (evt.type === "tap") {
+          this.nodeSelectionOrder.push(target.id());
+          this.edgeInsertionMode = "path";
+          console.log("path selected:", this.nodeSelectionOrder);
+        } else if (evt.type === "boxselect") {
+          this.nodeSelectionOrder = [];
+          this.edgeInsertionMode = "complete";
+          console.log("node bundle selected", this.graph.getSelectedNodes().map((ele) => ele.id()).join(", "));
+        }
+      };
+      const handleNodeUnselection = (evt) => {
+        const target = evt.target;
+        const selected = this.graph.getSelectedNodes();
+        this.nodeSelectionOrder = this.nodeSelectionOrder.filter((id2) => id2 !== target.id());
+        if (selected.length <= 0) {
+          this.edgeInsertionMode = "path";
+        }
+        console.log("node unselected", target.data("label"), this.nodeSelectionOrder);
+      };
+      const handleNodePanel = (evt) => {
+        const selected = this.graph.getSelectedNodes();
+        this.updateNodeFields(selected);
+        if (evt.type === "select" && selected.length > 0) {
+          this.togglePanel("node", true);
+        } else if (evt.type === "unselect" && selected.length <= 0) {
+          this.togglePanel("node", false);
+        }
+      };
+      const handleEdgePanel = (evt) => {
+        const selected = this.graph.getSelectedEdges();
+        this.updateEdgeFields(selected);
+        if (evt.type === "select" && selected.length > 0) {
+          this.togglePanel("edge", true);
+        } else if (evt.type === "unselect" && selected.length <= 0) {
+          this.togglePanel("edge", false);
+        }
+      };
+      const graph = this.graph.getCore();
+      graph.on("tap", (evt) => {
+        if (evt.target === graph) {
+          this.resetSelection();
+        }
+      });
+      graph.on("tap boxselect", "node", handleNodeSelection);
+      graph.on("select unselect", "node", handleNodePanel);
+      graph.on("unselect", "node", handleNodeUnselection);
+      graph.on("select unselect", "edge", handleEdgePanel);
+      this.graph.setCore(graph);
+    }
+    bindPropertiesPanelEvents() {
+      const handleLayoutChange = () => {
+        const layout4 = this.getLayoutFields();
+        this.switchLayoutPanel(layout4.name);
+        this.graph.arrangeGraph(layout4);
+      };
+      const handleNodePropertyChange = (evt) => {
+        const selected = this.graph.getSelectedNodes();
+        const target = evt.target;
+        const property = target.id.split("-")[1];
+        const values = this.getNodeFields();
+        this.graph.updateNodes(selected, property, values[property]);
+        this.updateNodeFields(selected);
+      };
+      const handleDeleteNodes = () => {
+        const selected = this.graph.getCore().nodes(":selected");
+        const layout4 = this.getLayoutFields();
+        this.graph.removeNodes(selected);
+        this.updateNodeFields(selected);
+        this.updateGraphFields();
+        this.graph.arrangeGraph(layout4);
+        if (!selected.length) {
+          this.togglePanel("node", false);
+        }
+      };
+      const handleEdgePropertyChange = (evt) => {
+        const selected = this.graph.getSelectedEdges();
+        const target = evt.target;
+        const property = target.id.split("-")[1];
+        const values = this.getEdgeFields();
+        this.graph.updateEdges(selected, property, values[property]);
+        this.updateEdgeFields(selected);
+      };
+      const handleDeleteEdge = () => {
+        const selected = this.graph.getCore().edges(":selected");
+        const layout4 = this.getLayoutFields();
+        this.graph.removeEdges(selected);
+        this.updateEdgeFields(selected);
+        this.updateGraphFields();
+        this.graph.arrangeGraph(layout4);
+        if (!selected.length) {
+          this.togglePanel("edge", false);
+        }
+      };
+      const layoutDOM = ["#graph-layout", ".circle-properties", ".grid-properties"].join();
+      (0, import_jquery2.default)(layoutDOM).on("change", handleLayoutChange);
+      const nodeDOM = ["#node-label", "#node-color", "#node-shape"].join();
+      (0, import_jquery2.default)(nodeDOM).on("change", handleNodePropertyChange);
+      (0, import_jquery2.default)("#btn-delete-node").on("click", handleDeleteNodes);
+      const edgeDOM = ["#edge-weight", "#edge-label", "#edge-color", "#edge-style", "#edge-curve"].join();
+      (0, import_jquery2.default)(edgeDOM).on("change", handleEdgePropertyChange);
+      (0, import_jquery2.default)("#btn-delete-edge").on("click", handleDeleteEdge);
+    }
+  };
 
-  // src/ui.ts
-  var import_jquery4 = __toESM(require_jquery(), 1);
-  function togglePanel(panel, state) {
-    switch (panel) {
-      case "graph":
-        (0, import_jquery4.default)("#graph-panel").toggleClass("d-none", !state);
-        break;
-      case "layout":
-        (0, import_jquery4.default)("#layout-panel").toggleClass("d-none", !state);
-        break;
-      case "node":
-        (0, import_jquery4.default)("#node-panel").toggleClass("d-none", !state);
-        break;
-      case "edge":
-        (0, import_jquery4.default)("#edge-panel").toggleClass("d-none", !state);
-        break;
-      default:
-        console.log("togglePanel: invalid panel", panel);
-        break;
+  // src/app.ts
+  var App = class {
+    // private logger = new Logger(config), // TODO: Implement logger
+    constructor() {
+      this.graph = new Graph({ containerId: "graph" });
+      this.userInterface = new UserInterface(this.graph);
     }
-  }
-  function updateGraphFields(graph2) {
-    (0, import_jquery4.default)("#node-count").val(String(graph2.data("numNodes")) + " nodes");
-    (0, import_jquery4.default)("#edge-count").val(String(graph2.data("numEdges")) + " edges");
-  }
-  function arrangeGraph(graph2) {
-    const layout4 = getLayoutFields();
-    graph2.layout(layout4).run();
-    return graph2;
-  }
-  function switchLayoutPanel(subpanel) {
-    (0, import_jquery4.default)(".layout-properties").addClass("d-none");
-    (0, import_jquery4.default)(`.${subpanel.toLocaleLowerCase()}-layout-properties`).removeClass("d-none");
-  }
-  function getLayoutFields() {
-    const name = String((0, import_jquery4.default)("#graph-layout").val());
-    const layout4 = {
-      // general properties
-      name,
-      animate: true,
-      animationDuration: 500,
-      animationEasing: "ease-in-out",
-      // circle layout properties
-      radius: 100,
-      // grid layout properties
-      rows: 3,
-      cols: 3,
-      condense: true,
-      spacingFactor: 0,
-      // concentric layout properties
-      minNodeSpacing: 50
-    };
-    switch (name) {
-      case "circle": {
-        layout4.radius = parseInt(String((0, import_jquery4.default)("#circle-radius").val()));
-        break;
-      }
-      case "grid": {
-        layout4.rows = parseInt(String((0, import_jquery4.default)("#grid-rows").val()));
-        layout4.cols = parseInt(String((0, import_jquery4.default)("#grid-cols").val()));
-        layout4.condense = (0, import_jquery4.default)("#grid-condensed").is(":checked");
-        layout4.spacingFactor = (0, import_jquery4.default)("#grid-condensed").is(":checked") ? 1.5 : 0;
-        break;
-      }
-      case "concentric": {
-        layout4.minNodeSpacing = 50;
-        break;
-      }
-      default: {
-        break;
-      }
+    init() {
+      this.userInterface.init();
     }
-    return layout4;
-  }
-  function bindLeftEvents(graph2) {
-    (0, import_jquery4.default)("#btn-new-graph").on("click", function() {
-      graph2 = newGraph(graph2);
-      graph2 = arrangeGraph(graph2);
-    });
-    (0, import_jquery4.default)("#btn-arrange-graph").on("click", function() {
-      graph2 = arrangeGraph(graph2);
-    });
-    (0, import_jquery4.default)("#btn-center-graph").on("click", function() {
-      graph2 = centerGraph(graph2);
-    });
-    (0, import_jquery4.default)("#btn-add-node").on("click", function() {
-      graph2 = addNode(graph2);
-      graph2 = arrangeGraph(graph2);
-      updateGraphFields(graph2);
-    });
-    (0, import_jquery4.default)("#btn-add-edge").on("click", function() {
-      graph2 = addEdge(graph2);
-      graph2 = arrangeGraph(graph2);
-      updateGraphFields(graph2);
-    });
-    return graph2;
-  }
-  function bindGraphEvents(graph2) {
-    graph2.on("select box", "node", function(evt) {
-      updateNodeFields(graph2);
-      if (graph2.nodes(":selected").length >= 1) {
-        togglePanel("node", true);
-      }
-      console.log("selected node", evt.target);
-    });
-    graph2.on("unselect", "node", function(evt) {
-      updateNodeFields(graph2);
-      if (!graph2.nodes(":selected").length) {
-        togglePanel("node", false);
-      }
-      console.log("unselected node", evt.target);
-    });
-    graph2.on("select box", "edge", function(evt) {
-      updateEdgeFields(graph2);
-      if (graph2.edges(":selected").length >= 1) {
-        togglePanel("edge", true);
-      }
-      console.log("selected edge", evt.target);
-    });
-    graph2.on("unselect", "edge", function(evt) {
-      updateEdgeFields(graph2);
-      if (!graph2.edges(":selected").length) {
-        togglePanel("edge", false);
-      }
-      console.log("unselected edge", evt.target);
-    });
-    return graph2;
-  }
-  function bindRightEvents(graph2) {
-    (0, import_jquery4.default)("#graph-layout, .circle-properties, .grid-properties").on("change", function() {
-      const layout4 = getLayoutFields();
-      switchLayoutPanel(layout4.name);
-      graph2 = arrangeGraph(graph2);
-    });
-    (0, import_jquery4.default)("#node-label, #node-color, #node-shape").on("change", function(evt) {
-      const property = evt.target.id.split("-")[1];
-      graph2 = updateNodesProp(graph2, property, getNodeFields(property));
-      updateNodeFields(graph2);
-    });
-    (0, import_jquery4.default)("#btn-delete-node").on("click", function() {
-      graph2 = removeNode(graph2);
-      graph2 = arrangeGraph(graph2);
-      updateNodeFields(graph2);
-      if (!graph2.nodes(":selected").length) {
-        togglePanel("node");
-      }
-      updateGraphFields(graph2);
-    });
-    (0, import_jquery4.default)("#edge-weight, #edge-label, #edge-color, #edge-style, #edge-curve").on("change", function(evt) {
-      const property = evt.target.id.split("-")[1];
-      graph2 = updateEdgesProp(graph2, property, getEdgeFields(property));
-      updateEdgeFields(graph2);
-    });
-    (0, import_jquery4.default)("#btn-delete-edge").on("click", function() {
-      graph2 = removeEdge(graph2);
-      graph2 = arrangeGraph(graph2);
-      updateEdgeFields(graph2);
-      if (!graph2.edges(":selected").length) {
-        togglePanel("edge");
-      }
-      updateGraphFields(graph2);
-    });
-    return graph2;
-  }
+  };
 
   // src/main.ts
-  var graph = generateGraph();
-  (0, import_jquery5.default)(function() {
+  var app = new App();
+  window.app = app;
+  (0, import_jquery3.default)(function() {
     checkDevelopment();
-    (0, import_jquery5.default)("#loader-wrapper").fadeOut(700);
-    graph = bindLeftEvents(graph);
-    graph = bindGraphEvents(graph);
-    graph = bindRightEvents(graph);
-    graph = arrangeGraph(graph);
+    app.init();
+    console.log(app);
+    (0, import_jquery3.default)("#loader-wrapper").fadeOut(700);
   });
 })();
 /*! Bundled license information:
