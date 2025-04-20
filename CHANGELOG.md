@@ -5,9 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/Synogun/GraphVM/compare/v1.0.22...develop)
+## [Unreleased](https://github.com/Synogun/GraphVM/compare/v1.2.0...develop)
 
 <!-- START -->
+### Added
+### Changed
+### Fixed
+### Removed
+<!-- END -->
+
+## [v1.2.0](https://github.com/Synogun/GraphVM/compare/v1.0.22...v1.2.0)
+
 ### Added
 - `Graph` - Introduced `GraphConfig` class for centralized configuration management.
 - `UI` - Added `UserInterface` class to handle UI interactions and events.
@@ -23,7 +31,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - `UI` - Removed `nodes.ts`, `edges.ts`, and `ui.ts` in favor of the new `UserInterface` class.
 - `Project` - Removed redundant `safe-buffer` and `debug` dependencies from `package-lock.json`.
-<!-- END -->
 
 ## [v1.0.22](https://github.com/Synogun/GraphVM/compare/v1.0.6...v1.0.22)
 
