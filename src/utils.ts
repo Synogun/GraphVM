@@ -15,6 +15,12 @@ function checkDevelopment(): boolean {
         return false;
     }
 
+    if (isMobileDevice()) {
+        console.log('User is on a mobile device');
+    } else {
+        console.log('User is on a PC');
+    }
+
     $('#is-dev').removeClass('d-none');
     $('title').text('GraphVM - Development');
     return true;
@@ -55,6 +61,19 @@ function findPropertyValueMode(property: string, eles: cy.EdgeCollection | cy.No
     }
 
     return mode.propValue;
+}
+
+/**
+ * Determines whether the current device is a mobile device.
+ *
+ * This function checks the `navigator.userAgent` string for patterns
+ * that match common mobile device identifiers such as "Mobi", "Android",
+ * "iPhone", "iPad", and "iPod".
+ *
+ * @returns {boolean} `true` if the current device is a mobile device, otherwise `false`.
+ */
+export function isMobileDevice(): boolean {
+    return typeof navigator.userAgent === 'string' && /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 }
 
 // +---------------------------------------------------------------------------+

@@ -1,186 +1,378 @@
 import cytoscape from 'cytoscape';
+import { GraphConfig } from './graphConfig.js';
 
-import { addNode } from './nodes';
-import { addEdge } from './edges';
-
-
-// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//
-// GENERAL FUNCTIONS
-//
-// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-type GraphFamily =
-    | 'Cycle'
-    | 'Wheel'
-    | 'Complete'
-    | 'Hlp'
-    | 'H\'lp'
-    | 'Bipartite'
-    | 'Complete Bipartite'
-    | 'Path'
-    | 'Star';
-
-type curveStyle =
-    | 'haystack'
-    | 'straight'
-    | 'bezier'
-    | 'unbundled-bezier'
-    | 'segments'
-    | 'taxi';
-
-interface GraphOptions {
-    directed?: boolean;
-    numNodes?: number;
-    edges?: { source: number; target: number }[];
-    weights?: number[];
-    family?: GraphFamily;
-    layout?: cytoscape.LayoutOptions;
+export interface GraphConstructorParameters {
+    containerId: string;
+    config?: GraphConfig;
+    graphOptions?: cytoscape.CytoscapeOptions;
 }
 
-function generateGraph(options?: GraphOptions): cytoscape.Core {
-    const graph = cytoscape({
-        container: document.getElementById('graph'),
-        elements: [],
-        data: {
-            directed: false,
-            numNodes: 0,
-            numEdges: 0,
-        },
+export interface LayoutOptions {
+    name: string;
 
-        style: [ // the stylesheet for the graph
-            {
-                selector: 'node',
-                style: {
-                    'label': 'data(label)',
-                    'background-color': 'data(color)',
-                    'shape': ele => ele.data('shape') as cytoscape.Css.NodeShape,
+    animate?: boolean;
+    animationDuration?: number;
+    animationEasing?: string;
+    fit?: boolean;
 
-                    'font-family': 'Fira Code, sans-serif',
-                    'color': '#fff',
-                    'text-outline-color': '#000',
-                    'text-outline-width': 1,
-                    'text-halign': 'center',
-                    'text-valign': 'center',
-                },
-            },
-            {
-                selector: 'node:active',
-                style: {
-                    'background-color': '#0169d9',
-                    'border-color': '#0169d9',
-                    'border-width': 2,
-                },
-            },
-            {
-                selector: 'node:selected',
-                style: {
-                    'background-color': 'data(color)',
-                    'border-color': '#0169d9',
-                    'border-width': 2,
-                },
-            },
-            {
-                selector: 'edge',
-                style: {
-                    'width': 3,
-                    'line-color': 'data(color)',
-                    'line-style': ele => ele.data('style') as cytoscape.Css.LineStyle,
-                    'curve-style': ele => ele.data('curve') as curveStyle,
+    radius?: number;
+    rows?: number;
+    cols?: number;
+    condense?: boolean;
+    spacingFactor?: number;
 
-                    'target-arrow-color': 'data(color)',
-
-                    'font-family': 'Fira Code, sans-serif',
-                    'color': '#fff',
-                    'text-outline-color': '#000',
-                    'text-outline-width': 1,
-                },
-            },
-            {
-                selector: '.edge-label-weight',
-                style: {
-                    label: 'data(weight)',
-                },
-            },
-            {
-                selector: '.edge-label-index',
-                style: {
-                    label: 'data(index)',
-                },
-            },
-            {
-                selector: '.directed',
-                style: {
-                    'target-arrow-shape': ele => ele.data('arrowShape') as cytoscape.Css.ArrowShape,
-                },
-            },
-            {
-                selector: 'edge:active',
-                style: {
-                    'line-color': '#0169d9',
-                    'target-arrow-color': '#0169d9',
-
-                    'line-outline-width': 2.5,
-                    'line-outline-color': '#0169d9',
-                },
-            },
-            {
-                selector: 'edge:selected',
-                style: {
-                    'line-color': 'data(color)',
-                    'target-arrow-color': 'data(color)',
-
-                    'line-outline-width': 2.5,
-                    'line-outline-color': '#0169d9',
-                },
-            },
-        ],
-
-        // minZoom: 0.4,
-        maxZoom: 5,
-
-        layout: {
-            name: 'circle',
-            radius: 100,
-        },
-    });
-
-    if (options?.directed) graph.data('directed', options.directed);
-
-    if (options?.numNodes) addNode(graph, options.numNodes);
-
-    if (options?.edges?.length) addEdge(graph, options.edges);
-
-    if (options?.layout) graph.layout(options.layout).run();
-
-    return graph;
+    minNodeSpacing?: number;
 }
 
-function newGraph(graph: cytoscape.Core): cytoscape.Core {
-    // TODO: Figure a better way to do this;
-    window.location.reload();
-    return graph;
+interface AddNodeParameters {
+    options?: cytoscape.NodeDefinition;
+    classes?: string[];
 }
 
-function centerGraph(graph: cytoscape.Core): cytoscape.Core {
-    const selected = graph.$(':selected');
-    const fitPadding = 30;
+interface NewGraphParameters {
+    containerId?: string;
+    options?: cytoscape.CytoscapeOptions;
+}
 
-    if (selected.length > 0) {
-        graph.fit(selected, fitPadding);
-    } else {
-        graph.fit(graph.nodes(), fitPadding);
+export class Graph {
+
+    private core: cytoscape.Core;
+    private config: GraphConfig;
+
+    private containerId: string;
+    private removedNodes: cytoscape.NodeSingular[] = [];
+    private removedEdges: cytoscape.EdgeSingular[] = [];
+
+    constructor({ containerId, graphOptions = {}, config = new GraphConfig }: GraphConstructorParameters) {
+        this.config = config;
+        this.containerId = containerId;
+        this.core = this.newGraph({ containerId, options: graphOptions });
     }
 
-    console.log(
-        'centerGraph > centered graph on',
-        selected.length > 0 ? 'selected eles' : 'all nodes',
-    );
-    return graph;
+    newGraph({ containerId, options }: NewGraphParameters = {}): cytoscape.Core {
+
+        containerId ??= this.containerId;
+        this.removedNodes = [];
+        this.removedEdges = [];
+
+        const graphOptions = {
+            ...this.config.constructorParameters, // default graph options
+            ...options,
+        };
+
+        // The following makes sure all data is passed to the
+        // graph even if the user only passes a few options
+        if (options?.data) {
+            graphOptions.data = {
+                ...this.config.constructorParameters.data, // default graph data
+                ...options.data,
+            };
+        }
+
+        const newGraph = cytoscape({
+            ...graphOptions,
+            container: document.getElementById(containerId),
+        });
+
+        newGraph.data('numberOfNodes', newGraph.nodes().length);
+        newGraph.data('numberOfEdges', newGraph.edges().length);
+
+        console.log('newGraph > created new graph');
+        return newGraph;
+    }
+
+    arrangeGraph(options: LayoutOptions): void {
+        const layoutOptions: LayoutOptions = {
+            ...this.config.layout, // default layout options
+            ...options,
+        };
+
+        this.core.layout(layoutOptions).run();
+        console.log('arrangeGraph > arranged graph with', options.name, 'layout');
+    }
+
+    centerGraph(eles?: cytoscape.Collection, padding = 30): void {
+        if (eles?.length) {
+            this.core.fit(eles, padding);
+        } else {
+            this.core.fit(this.core.nodes(), padding);
+        }
+
+        console.log(
+            'centerGraph > centered graph on',
+            eles?.length ? eles.toArray() : 'all nodes',
+        );
+    }
+
+    getCore(): cytoscape.Core {
+        return this.core;
+    }
+
+    setCore(graph: cytoscape.Core): void {
+        this.core = graph;
+    }
+
+    clearSelection() {
+        this.core.elements().unselect();
+        console.log('clearSelection > cleared selection');
+    }
+
+    addNode({ options, classes }: AddNodeParameters = {}): void {
+        const numberOfNodes = this.core.nodes().length;
+
+        const newIdIndex: number = numberOfNodes + this.removedNodes.length;
+        const newId = `node-${newIdIndex.toString()}`;
+
+        const newNodeData = {
+            id: newId,
+            index: newIdIndex,
+
+            label: newIdIndex.toString(),
+            ...this.config.nodeData, // default node data
+            ...options?.data,
+        };
+
+        this.core.add({
+            group: 'nodes',
+            data: newNodeData,
+            classes: classes ?? [],
+        });
+
+        this.core.data('numberOfNodes', numberOfNodes + 1);
+        console.log('addNode > added node with id:', newId);
+    }
+
+    removeNodes(nodes: cytoscape.NodeCollection): void {
+        if (nodes.length === 0) {
+            console.log('removeNode > Select at least one node');
+            return;
+        }
+
+        nodes.forEach((node) => {
+            if (this.core.hasElementWithId(node.id())) {
+                this.removedNodes.push(node);
+                this.core.remove(node);
+            } else {
+                console.log('removeNode > Node not found in graph:', node.id());
+            }
+        });
+
+        this.core.data('numberOfNodes', this.core.nodes().length);
+        console.log('removeNode > removed', nodes.length, 'node(s)');
+    }
+
+    updateNodes(nodes: cytoscape.NodeCollection, property: string, value: string): void {
+        if (nodes.length === 0) {
+            console.log('updateNodes > Select at least one node');
+            return;
+        }
+
+        nodes.forEach((node) => {
+            if (!this.core.hasElementWithId(node.id())) {
+                console.log('updateNodes > Node not found in graph:', node.id());
+                return;
+            }
+
+            node.data(property, value);
+        });
+
+        console.log('updateNodes > updated', nodes.length, 'node(s)');
+    }
+
+    getRemovedNodes(): cytoscape.NodeSingular[] {
+        return this.removedNodes;
+    }
+
+    clearRemovedNodes(): void {
+        this.removedNodes = [];
+    }
+
+    getSelectedNodes(): cytoscape.NodeCollection {
+        return this.core.nodes(':selected');
+    }
+
+    addEdge(options: cytoscape.EdgeDefinition, classes?: string[]): void {
+        if (!options.data.source) {
+            console.log('addEdge > Source node is required');
+            return;
+        }
+        if (!options.data.target) {
+            console.log('addEdge > Target node is required');
+            return;
+        }
+
+        const newIdIndex: number = this.core.edges().length + this.removedEdges.length;
+        const newId = `edge-${newIdIndex.toString()}`;
+
+        const newEdgeData = {
+            id: newId,
+            index: newIdIndex,
+
+            ...this.config.edgeData, // default edge data
+            ...options.data,
+        };
+
+        this.core.add({
+            group: 'edges',
+            data: newEdgeData,
+            classes: classes ?? [],
+        });
+
+        if (this.core.data('directed')) {
+            this.core.edges(`#${newId}`).addClass('directed');
+        }
+
+        this.core.data('numEdges', this.core.edges().length);
+        console.log('addEdge > added edge with source', options.data.source, 'and target', options.data.target);
+    }
+
+    removeEdges(edges: cytoscape.EdgeCollection): void {
+        if (edges.length === 0) {
+            console.log('removeEdge > Select at least one edge');
+            return;
+        }
+
+        edges.forEach((edge) => {
+            if (!this.core.hasElementWithId(edge.id())) {
+                console.log('removeEdge > Edge not found in graph:', edge.id());
+                return;
+            }
+
+            this.removedEdges.push(edge);
+            this.core.remove(edge);
+        });
+        console.log('removeEdge > removed', edges.length, 'edge(s)');
+    }
+
+    updateEdges(edges: cytoscape.EdgeCollection, property: string, value: string): void {
+        if (edges.length === 0) {
+            console.log('updateEdges > Select at least one edge');
+            return;
+        }
+
+        if (property === 'weight' && String(value).trim() === '') {
+            edges.data('weight', 1);
+        } else if (property === 'label') {
+            edges.map((ele) => {
+                ele.removeClass(`edge-label-${String(ele.data('label'))}`);
+                ele.data('label', value);
+                ele.addClass(`edge-label-${String(value)}`);
+            });
+        } else {
+            edges.map(ele => ele.data(property, value));
+        }
+
+        console.log('updateEdges > updated', edges.length, 'edge(s)');
+    }
+
+    getRemovedEdges(): cytoscape.EdgeSingular[] {
+        return this.removedEdges;
+    }
+
+    clearRemovedEdges(): void {
+        this.removedEdges = [];
+    }
+
+    getSelectedEdges(): cytoscape.EdgeCollection {
+        return this.core.edges(':selected');
+    }
 }
 
-export {
-    generateGraph,
-    newGraph,
-    centerGraph,
-};
+// type GraphFamily =
+//     | 'Cycle'
+//     | 'Wheel'
+//     | 'Complete'
+//     | 'Hlp'
+//     | 'H\'lp'
+//     | 'Bipartite'
+//     | 'Complete Bipartite'
+//     | 'Path'
+//     | 'Star';
+
+// [
+//     {
+//         selector: 'node',
+//         style: {
+//             'label': 'data(label)',
+//             'background-color': 'data(color)',
+//             'shape': ele => ele.data('shape') as cytoscape.Css.NodeShape,
+
+//             'font-family': 'Fira Code, sans-serif',
+//             'color': '#fff',
+//             'text-outline-color': '#000',
+//             'text-outline-width': 1,
+//             'text-halign': 'center',
+//             'text-valign': 'center',
+//         },
+//     },
+//     {
+//         selector: 'node:active',
+//         style: {
+//             'background-color': '#0169d9',
+//             'border-color': '#0169d9',
+//             'border-width': 2,
+//         },
+//     },
+//     {
+//         selector: 'node:selected',
+//         style: {
+//             'background-color': 'data(color)',
+//             'border-color': '#0169d9',
+//             'border-width': 2,
+//         },
+//     },
+//     {
+//         selector: 'edge',
+//         style: {
+//             'width': 3,
+//             'line-color': 'data(color)',
+//             'line-style': ele => ele.data('style') as cytoscape.Css.LineStyle,
+//             'curve-style': ele => ele.data('curve') as curveStyle,
+
+//             'target-arrow-color': 'data(color)',
+
+//             'font-family': 'Fira Code, sans-serif',
+//             'color': '#fff',
+//             'text-outline-color': '#000',
+//             'text-outline-width': 1,
+//         },
+//     },
+//     {
+//         selector: '.edge-label-weight',
+//         style: {
+//             label: 'data(weight)',
+//         },
+//     },
+//     {
+//         selector: '.edge-label-index',
+//         style: {
+//             label: 'data(index)',
+//         },
+//     },
+//     {
+//         selector: '.directed',
+//         style: {
+//             'target-arrow-shape': ele => ele.data('arrowShape') as cytoscape.Css.ArrowShape,
+//         },
+//     },
+//     {
+//         selector: 'edge:active',
+//         style: {
+//             'line-color': '#0169d9',
+//             'target-arrow-color': '#0169d9',
+
+//             'line-outline-width': 2.5,
+//             'line-outline-color': '#0169d9',
+//         },
+//     },
+//     {
+//         selector: 'edge:selected',
+//         style: {
+//             'line-color': 'data(color)',
+//             'target-arrow-color': 'data(color)',
+
+//             'line-outline-width': 2.5,
+//             'line-outline-color': '#0169d9',
+//         },
+//     },
+// ]

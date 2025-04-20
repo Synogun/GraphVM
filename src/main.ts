@@ -1,29 +1,28 @@
 import $ from 'jquery';
-import cytoscape from 'cytoscape';
 
-import { generateGraph } from './graph';
-import { arrangeGraph, bindLeftEvents, bindGraphEvents, bindRightEvents } from './ui';
-import { checkDevelopment } from './utils';
+import { checkDevelopment } from './utils.js';
+import { App } from './app.js';
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//
-// GLOBAL VARIABLES
-//
-// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-let graph: cytoscape.Core = generateGraph();
+declare global {
+    interface Window {
+        app: App;
+    }
+}
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+const app = new App;
+window.app = app; // Expose app to the global scope for debugging
 
 $(function () {
     checkDevelopment();
+
+    app.init();
+    console.log(app);
+
+    // Remove loading screen after 700ms
     $('#loader-wrapper').fadeOut(700);
-
-    graph = bindLeftEvents(graph);
-    graph = bindGraphEvents(graph);
-    graph = bindRightEvents(graph);
-
-    graph = arrangeGraph(graph);
 });
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
