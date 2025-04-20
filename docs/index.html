@@ -157,19 +157,19 @@
                         <div class="accordion-body container">
                             <div class="col m-0 p-0">
                                 <div class="row mb-1 justify-items-center align-items-center">
-                                    <div class="col p-0">
+                                    <div class="col-12 col-lg-4 text-center p-0">
                                         <label for="node-count" class="col-form-label">Node Qty.</label>
                                     </div>
-                                    <div class="col-8 p-0">
+                                    <div class="col-12 col-lg-8 text-center p-0">
                                         <input type="text" class="form-control fs-14" id="node-count" value="0 nodes"
                                             title="Displays the total node count of the graph" disabled readonly>
                                     </div>
                                 </div>
                                 <div class="row my-1 justify-items-center align-items-center">
-                                    <div class="col p-0">
+                                    <div class="col-12 col-lg-4 text-center p-0">
                                         <label for="edge-count" class="col-form-label">Edge Qty.</label>
                                     </div>
-                                    <div class="col-8 p-0">
+                                    <div class="col-12 col-lg-8 text-center p-0">
                                         <input type="text" class="form-control fs-14" id="edge-count" value="0 edges"
                                             title="Displays the total edge count of the graph" disabled readonly>
                                     </div>
@@ -180,20 +180,20 @@
                 </div>
                 <div id="layout-panel" class="accordion-item panel">
                     <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#layout-properties-accordion" aria-expanded="false"
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#layout-properties-accordion" aria-expanded="true"
                             aria-controls="layout-properties-accordion">
                             Layout
                         </button>
                     </h2>
-                    <div id="layout-properties-accordion" class="accordion-collapse collapse">
+                    <div id="layout-properties-accordion" class="accordion-collapse collapse show">
                         <div class="accordion-body">
                             <div class="col m-0 p-0">
                                 <div class="row mb-1 justify-items-center align-items-center">
-                                    <div class="col p-0">
+                                    <div class="col-12 col-lg-4 text-center p-0">
                                         <label for="graph-layout" class="col-form-label">Type</label>
                                     </div>
-                                    <div class="col-8 p-0">
+                                    <div class="col-12 col-lg-8 text-center p-0">
                                         <select id="graph-layout" class="form-select fs-14"
                                             aria-label="Node's layout select">
                                             <option value="circle" title="Display the nodes on a circle">Circle</option>
@@ -213,10 +213,10 @@
 
                                 <div
                                     class="row my-1 justify-items-center align-items-center circle-layout-properties layout-properties">
-                                    <div class="col p-0">
+                                    <div class="col-12 col-lg-4 text-center p-0">
                                         <label for="circle-radius" class="col-form-label">Radius</label>
                                     </div>
-                                    <div class="col-8 p-0">
+                                    <div class="col-12 col-lg-8 text-center p-0">
                                         <input type="number" class="form-control circle-properties fs-14"
                                             id="circle-radius" value="100" min="10"
                                             title="Change the radius of the circle layout">
@@ -225,10 +225,10 @@
 
                                 <div
                                     class="row my-1 justify-items-center align-items-center grid-layout-properties layout-properties d-none">
-                                    <div class="col p-0">
+                                    <div class="col-12 col-lg-4 text-center p-0">
                                         <label for="grid-rows" class="col-form-label">Rows</label>
                                     </div>
-                                    <div class="col-8 p-0">
+                                    <div class="col-12 col-lg-8 text-center p-0">
                                         <input type="number" class="form-control grid-properties fs-14" id="grid-rows"
                                             value="3" min="1" title="Change the amount of rows for the grid layout">
                                     </div>
@@ -236,10 +236,10 @@
 
                                 <div
                                     class="row my-1 justify-items-center align-items-center grid-layout-properties layout-properties d-none">
-                                    <div class="col p-0">
+                                    <div class="col-12 col-lg-4 text-center p-0">
                                         <label for="grid-cols" class="col-form-label">Cols</label>
                                     </div>
-                                    <div class="col-8 p-0">
+                                    <div class="col-12 col-lg-8 text-center p-0">
                                         <input type="number" class="form-control grid-properties fs-14" id="grid-cols"
                                             value="3" min="1" title="Change the amount of columns for the grid layout">
                                     </div>
@@ -247,10 +247,10 @@
 
                                 <div
                                     class="row my-1 justify-items-center align-items-center grid-layout-properties layout-properties d-none">
-                                    <div class="col p-0">
+                                    <div class="col-12 col-lg-4 text-center p-0">
                                         <label for="grid-condensed" class="col-form-label">Condensed</label>
                                     </div>
-                                    <div class="col-8 p-0">
+                                    <div class="col-12 col-lg-8 text-center p-0">
                                         <input type="checkbox" id="grid-condensed"
                                             class="form-check-input grid-properties"
                                             title="Toggles whether the grid layout is condensed" aria-checked="true"
@@ -280,19 +280,19 @@
                             </div>
 
                             <div class="row my-1 justify-items-center align-items-center">
-                                <div class="col p-0">
+                                <div class="col-12 col-lg-4 text-center p-0">
                                     <label for="node-color" class="col-form-label">Color(s)</label>
                                 </div>
-                                <div class="col-8 p-0">
+                                <div class="col-12 col-lg-8 text-center p-0">
                                     <input type="color" class="form-control" id="node-color"
                                         title="Change the color(s) of the selected node(s)">
                                 </div>
                             </div>
                             <div class="row my-1 justify-items-center align-items-center">
-                                <div class="col p-0">
+                                <div class="col-12 col-lg-4 text-center p-0">
                                     <label for="node-shape" class="col-form-label">Shape(s)</label>
                                 </div>
-                                <div class="col-8 p-0">
+                                <div class="col-12 col-lg-8 text-center p-0">
                                     <select id="node-shape" class="form-select fs-14" aria-label="Node's layout select">
                                         <option value="ellipse" title="Change the node(s) shape to a ellipse" selected>
                                             Ellipse
@@ -358,7 +358,7 @@
                                 </div>
                             </div>
 
-                            <div class="row my-1 justify-items-center align-items-center">
+                            <div class="row my-2 justify-items-center align-items-center">
                                 <div class="col p-0">
                                     <button id="btn-delete-node" class="btn btn-danger w-100 fs-14" type="button">Delete
                                         Node</button>
@@ -378,20 +378,20 @@
                     <div id="edge-properties-accordion" class="accordion-collapse collapse">
                         <div class="accordion-body">
                             <div class="row mb-1 justify-items-center align-items-center">
-                                <div class="col p-0">
+                                <div class="col-12 col-lg-4 text-center p-0">
                                     <label for="edge-weight" class="col-form-label">Weight</label>
                                 </div>
-                                <div class="col-8 p-0">
+                                <div class="col-12 col-lg-8 text-center p-0">
                                     <input type="number" class="form-control fs-14" id="edge-weight" value="1" min="1"
                                         max="1000000" title="Change the weight of the selected edge(s)">
                                 </div>
                             </div>
 
                             <div class="row my-1 justify-items-center align-items-center">
-                                <div class="col p-0">
+                                <div class="col-12 col-lg-4 text-center p-0">
                                     <label for="edge-label" class="col-form-label">Label Style</label>
                                 </div>
-                                <div class="col-8 p-0">
+                                <div class="col-12 col-lg-8 text-center p-0">
                                     <select id="edge-label" class="form-select fs-14"
                                         aria-label="Edge's label style select">
                                         <option value="hidden" title="Change the edge(s) label style to be hidden">
@@ -407,20 +407,20 @@
                             </div>
 
                             <div class="row my-1 justify-items-center align-items-center">
-                                <div class="col p-0">
+                                <div class="col-12 col-lg-4 text-center p-0">
                                     <label for="edge-color" class="col-form-label">Color(s)</label>
                                 </div>
-                                <div class="col-8 p-0">
+                                <div class="col-12 col-lg-8 text-center p-0">
                                     <input type="color" class="form-control fs-14" id="edge-color"
                                         title="Change the color(s) of the selected edge(s)">
                                 </div>
                             </div>
 
                             <div class="row my-1 justify-items-center align-items-center">
-                                <div class="col p-0">
+                                <div class="col-12 col-lg-4 text-center p-0">
                                     <label for="edge-style" class="col-form-label">Edge Style</label>
                                 </div>
-                                <div class="col-8 p-0">
+                                <div class="col-12 col-lg-8 text-center p-0">
                                     <select id="edge-style" class="form-select fs-14" aria-label="Edge's style select">
                                         <option value="solid" title="Change the edge(s) style to a solid line">Solid
                                         </option>
@@ -434,10 +434,10 @@
                             </div>
 
                             <div class="row my-1 justify-items-center align-items-center">
-                                <div class="col p-0">
+                                <div class="col-12 col-lg-4 text-center p-0">
                                     <label for="edge-curve" class="col-form-label">Curve Style</label>
                                 </div>
-                                <div class="col-8 p-0">
+                                <div class="col-12 col-lg-8 text-center p-0">
                                     <select id="edge-curve" class="form-select fs-14"
                                         aria-label="Edge's curve style select">
                                         <option value="haystack"
@@ -464,7 +464,7 @@
                                 </div>
                             </div>
 
-                            <div class="row my-1 justify-items-center align-items-center">
+                            <div class="row my-2 justify-items-center align-items-center">
                                 <div class="col p-0">
                                     <button id="btn-delete-edge" class="btn btn-danger w-100 fs-14" type="button">Delete
                                         Edge</button>
