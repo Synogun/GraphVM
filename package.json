@@ -3,7 +3,9 @@
   "version": "1.2.0",
   "main": "src/main.ts",
   "type": "module",
+  "private": true,
   "scripts": {
+    "utils:upgrade": "npx npm-check-updates -u",
     "utils:copy-static": "cpx \"src/public/**/*\" build",
     "utils:lint": "npx eslint src",
     "bundle": "esbuild src/main.ts --outfile=build/bundle.js --bundle --platform=browser",
@@ -25,18 +27,19 @@
   "devDependencies": {
     "@eslint/js": "9.18.0",
     "@stylistic/eslint-plugin": "2.12.1",
+    "@types/cytoscape": "3.21.9",
+    "@types/jquery": "3.5.32",
     "@types/node": "22.10.5",
     "cpx2": "8.0.0",
     "esbuild": "0.24.2",
     "eslint": "9.18.0",
     "http-server": "14.1.1",
+    "npm-check-updates": "18.0.2",
     "rimraf": "6.0.1",
     "typescript": "5.7.3",
     "typescript-eslint": "8.19.1"
   },
   "dependencies": {
-    "@types/cytoscape": "3.21.9",
-    "@types/jquery": "3.5.32",
     "browserify": "17.0.1",
     "cytoscape": "3.31.0",
     "jquery": "3.7.1"
