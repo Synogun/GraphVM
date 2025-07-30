@@ -5,6 +5,7 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "utils:upgrade-check": "npx npm-check-updates",
     "utils:upgrade": "npx npm-check-updates -u",
     "utils:copy-static": "cpx \"src/public/**/*\" build",
     "utils:lint": "npx eslint src",
@@ -25,23 +26,23 @@
   "license": "MIT",
   "description": "",
   "devDependencies": {
-    "@eslint/js": "9.18.0",
-    "@stylistic/eslint-plugin": "2.12.1",
+    "@eslint/js": "9.32.0",
+    "@stylistic/eslint-plugin": "5.2.2",
     "@types/cytoscape": "3.21.9",
     "@types/jquery": "3.5.32",
-    "@types/node": "22.10.5",
+    "@types/node": "24.1.0",
     "cpx2": "8.0.0",
-    "esbuild": "0.24.2",
-    "eslint": "9.18.0",
+    "esbuild": "0.25.8",
+    "eslint": "9.32.0",
     "http-server": "14.1.1",
     "npm-check-updates": "18.0.2",
     "rimraf": "6.0.1",
-    "typescript": "5.7.3",
-    "typescript-eslint": "8.19.1"
+    "typescript": "5.8.3",
+    "typescript-eslint": "8.38.0"
   },
   "dependencies": {
     "browserify": "17.0.1",
-    "cytoscape": "3.31.0",
+    "cytoscape": "3.33.0",
     "jquery": "3.7.1"
   }
 }
