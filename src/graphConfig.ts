@@ -1,7 +1,5 @@
 import cy from 'cytoscape';
 
-type CurveStyle = 'haystack' | 'straight' | 'bezier' | 'unbundled-bezier' | 'segments' | 'taxi';
-
 export class GraphConfig {
     // Default values
     public static default = {
@@ -30,7 +28,7 @@ export class GraphConfig {
                 style: {
                     'label': 'data(label)',
                     'background-color': 'data(color)',
-                    'shape': (ele: cy.NodeSingular) => ele.data('shape') as cy.Css.NodeShape,
+                    'shape': 'data(shape)',
 
                     'font-family': 'Fira Code, sans-serif',
                     'color': '#fff',
@@ -61,8 +59,8 @@ export class GraphConfig {
                 style: {
                     'width': 3,
                     'line-color': 'data(color)',
-                    'line-style': (ele: cy.NodeSingular) => ele.data('style') as cy.Css.LineStyle,
-                    'curve-style': (ele: cy.NodeSingular) => ele.data('curve') as CurveStyle,
+                    'line-style': 'data(style)',
+                    'curve-style': 'data(curve)',
 
                     'target-arrow-color': 'data(color)',
 
@@ -87,7 +85,7 @@ export class GraphConfig {
             {
                 selector: '.directed',
                 style: {
-                    'target-arrow-shape': (ele: cy.NodeSingular) => ele.data('arrowShape') as cy.Css.ArrowShape,
+                    'target-arrow-shape': 'data(arrowShape)',
                 },
             },
             {
@@ -131,7 +129,7 @@ export class GraphConfig {
 
         // Default edge data -> ele.data()
         edgeData: {
-            weight: '1',
+            weight: 1,
             label: 'hidden',
             color: '#cccccc',
             style: 'solid',

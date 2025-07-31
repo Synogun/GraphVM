@@ -1,38 +1,12 @@
 import cytoscape from 'cytoscape';
-import { GraphConfig } from './graphConfig.js';
-
-export interface GraphConstructorParameters {
-    containerId: string;
-    config?: GraphConfig;
-    graphOptions?: cytoscape.CytoscapeOptions;
-}
-
-export interface LayoutOptions {
-    name: string;
-
-    animate?: boolean;
-    animationDuration?: number;
-    animationEasing?: string;
-    fit?: boolean;
-
-    radius?: number;
-    rows?: number;
-    cols?: number;
-    condense?: boolean;
-    spacingFactor?: number;
-
-    minNodeSpacing?: number;
-}
-
-interface AddNodeParameters {
-    options?: cytoscape.NodeDefinition;
-    classes?: string[];
-}
-
-interface NewGraphParameters {
-    containerId?: string;
-    options?: cytoscape.CytoscapeOptions;
-}
+import { GraphConfig } from '../graphConfig';
+import type {
+    AddNodeParameters,
+    GraphConstructorParameters,
+    GraphLayoutOptions,
+    JSONGraphFormat,
+    NewGraphParameters
+} from './graph.d';
 
 export class Graph {
 
@@ -43,9 +17,10 @@ export class Graph {
     private removedNodes: cytoscape.NodeSingular[] = [];
     private removedEdges: cytoscape.EdgeSingular[] = [];
 
-    constructor({ containerId, graphOptions = {}, config = new GraphConfig }: GraphConstructorParameters) {
-        this.config = config;
+    constructor({ containerId, graphOptions, config }: GraphConstructorParameters) {
         this.containerId = containerId;
+
+        this.config = config ?? new GraphConfig;
         this.core = this.newGraph({ containerId, options: graphOptions });
     }
 
@@ -81,8 +56,30 @@ export class Graph {
         return newGraph;
     }
 
-    arrangeGraph(options: LayoutOptions): void {
-        const layoutOptions: LayoutOptions = {
+    exportElementsToText(format: 'txt' | 'json' = 'txt'): string {
+        let graphData = '';
+
+        if (format === 'txt') {
+            graphData = `${this.core.nodes().length.toString()} ${this.core.edges().length.toString()}\n`;
+
+            this.core.edges().forEach((edge) => {
+                const sourceNode = this.core.getElementById(String(edge.data('source')));
+                const targetNode = this.core.getElementById(String(edge.data('target')));
+                const edgeWeight = !edge.data('weight') || edge.data('weight') === 1 ? ' ' : ` ${String(edge.data('weight'))}`;
+
+                graphData += `${String(sourceNode.data('label'))} ${String(targetNode.data('label'))}${edgeWeight}\n`;
+            });
+
+        } else {
+            const graphJson = this.core.json() as JSONGraphFormat;
+            graphData = JSON.stringify(graphJson.elements, null, 2);
+        }
+
+        return graphData;
+    }
+
+    arrangeGraph(options: GraphLayoutOptions): void {
+        const layoutOptions: GraphLayoutOptions = {
             ...this.config.layout, // default layout options
             ...options,
         };
@@ -120,7 +117,7 @@ export class Graph {
     addNode({ options, classes }: AddNodeParameters = {}): void {
         const numberOfNodes = this.core.nodes().length;
 
-        const newIdIndex: number = numberOfNodes + this.removedNodes.length;
+        const newIdIndex = numberOfNodes + this.removedNodes.length;
         const newId = `node-${newIdIndex.toString()}`;
 
         const newNodeData = {
@@ -201,7 +198,7 @@ export class Graph {
             return;
         }
 
-        const newIdIndex: number = this.core.edges().length + this.removedEdges.length;
+        const newIdIndex = this.core.edges().length + this.removedEdges.length;
         const newId = `edge-${newIdIndex.toString()}`;
 
         const newEdgeData = {
@@ -222,7 +219,7 @@ export class Graph {
             this.core.edges(`#${newId}`).addClass('directed');
         }
 
-        this.core.data('numEdges', this.core.edges().length);
+        this.core.data('numberOfEdges', this.core.edges().length);
         console.log('addEdge > added edge with source', options.data.source, 'and target', options.data.target);
     }
 

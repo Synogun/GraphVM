@@ -1,6 +1,6 @@
 // import { Config } from './graphConfig';
-import { Graph } from './graph.js';
-import { UserInterface } from './userInterface.js';
+import { Graph } from './graph/graph.js';
+import { UserInterface } from './userInterface/userInterface.js';
 
 export class App {
 
@@ -8,9 +8,9 @@ export class App {
     public userInterface;
     // private logger = new Logger(config), // TODO: Implement logger
 
-    constructor() {
-        this.graph = new Graph({ containerId: 'graph' });
-        this.userInterface = new UserInterface(this.graph);
+    constructor(graph?: Graph, userInterface?: UserInterface) {
+        this.graph = graph ?? new Graph({ containerId: 'graph' });
+        this.userInterface = userInterface ?? new UserInterface(this.graph);
     }
 
     init() {

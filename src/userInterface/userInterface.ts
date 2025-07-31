@@ -1,36 +1,25 @@
-import $ from 'jquery';
 import cytoscape from 'cytoscape';
-import { Graph, LayoutOptions } from './graph.js';
-import { findPropertyValueMode } from './utils.js';
-// import { GraphConfig } from './graphConfig';
+import $ from 'jquery';
 
-export type NodeField = 'label' | 'color' | 'shape';
-export interface NodeFieldValues {
-    label: string;
-    color: string;
-    shape: string;
-}
+import type { GraphLayoutOptions } from '../graph/graph.d';
+import { Graph } from '../graph/graph.js';
+import { findPropertyValueMode } from '../utils.js';
+import type {
+    EdgeField,
+    EdgeFieldValues,
+    NodeField,
+    NodeFieldValues
+} from './userInterface.d';
 
-export type EdgeField = 'weight' | 'label' | 'color' | 'style' | 'curve';
-export interface EdgeFieldValues {
-    weight: string;
-    label: string;
-    color: string;
-    style: string;
-    curve: string;
-}
 
 export class UserInterface {
 
+    private graph: Graph;
     private nodeSelectionOrder: string[] = [];
-    private edgeInsertionMode = 'path'; // path | complete
+    private edgeInsertionMode: 'path' | 'complete' = 'path';
 
-    constructor(
-        private graph: Graph,
-        // private config: UiConfig = new UiConfig,
-    ) {
+    constructor(graph: Graph) {
         this.graph = graph;
-        // this.config = new UiConfig;
     }
 
     init() {
@@ -64,7 +53,7 @@ export class UserInterface {
         };
     }
 
-    setNodeFields(properties: NodeFieldValues): void {
+    setNodeFields(properties: NodeFieldValues) {
         for (const [key, val] of Object.entries(properties)) {
             if (val) {
                 $(`#node-${key}`).val(String(val));
@@ -72,7 +61,7 @@ export class UserInterface {
         }
     }
 
-    clearNodeFields(property?: NodeField): void {
+    clearNodeFields(property?: NodeField) {
         switch (property) {
             case 'label':
                 $('#node-label').val('');
@@ -94,7 +83,7 @@ export class UserInterface {
         }
     }
 
-    updateNodeFields(nodes: cytoscape.NodeCollection): void {
+    updateNodeFields(nodes: cytoscape.NodeCollection) {
         if (!nodes.length) {
             this.clearNodeFields();
             return;
@@ -120,7 +109,7 @@ export class UserInterface {
         };
     }
 
-    setEdgeFields(properties: EdgeFieldValues): void {
+    setEdgeFields(properties: EdgeFieldValues) {
         for (const [key, val] of Object.entries(properties)) {
             if (val) {
                 $(`#edge-${key}`).val(String(val));
@@ -128,7 +117,7 @@ export class UserInterface {
         }
     }
 
-    clearEdgeFields(property?: EdgeField): void {
+    clearEdgeFields(property?: EdgeField) {
         switch (property) {
             case 'weight':
                 $('#edge-weight').val(1);
@@ -160,7 +149,7 @@ export class UserInterface {
         }
     }
 
-    updateEdgeFields(edges: cytoscape.EdgeCollection): void {
+    updateEdgeFields(edges: cytoscape.EdgeCollection) {
         if (!edges.length) {
             this.clearEdgeFields();
             return;
@@ -175,10 +164,10 @@ export class UserInterface {
         });
     }
 
-    togglePanel(panel: string, state?: boolean) {
-        const panelId = `#${panel}-panel`;
+    togglePanel(panelName: string, state?: boolean) {
+        const panelId = `#${panelName}-panel`;
 
-        if (state === undefined) {
+        if (state) {
             $(panelId).toggleClass('d-none');
         } else {
             $(panelId).toggleClass('d-none', !state);
@@ -242,6 +231,19 @@ export class UserInterface {
             this.graph.arrangeGraph(layout);
         };
 
+        const handleExportGraphByText = () => {
+            const isJSON = $('#export-format-json').is(':checked') ? 'json' : 'txt';
+
+
+            const exportTextArea = $('#export-textarea');
+
+            const graphData = this.graph.exportElementsToText(isJSON);
+            const rows = $('#export-format-json').is(':checked') ? 8 : graphData.split('\n').length;
+
+            exportTextArea.attr('rows', rows);
+            exportTextArea.val(graphData);
+        };
+
         const handleArrangeGraph = () => {
             const layout = this.getLayoutFields();
             this.graph.arrangeGraph(layout);
@@ -302,6 +304,7 @@ export class UserInterface {
         };
 
         $('#btn-new-graph').on('click', handleNewGraph);
+        $('#btn-export-text').on('click', handleExportGraphByText);
         $('#btn-arrange-graph').on('click', handleArrangeGraph);
         $('#btn-center-graph').on('click', handleCenterGraph);
         $('#btn-add-node').on('click', handleAddNode);
@@ -385,7 +388,7 @@ export class UserInterface {
     bindPropertiesPanelEvents() {
 
         const handleLayoutChange = () => {
-            const layout: LayoutOptions = this.getLayoutFields();
+            const layout: GraphLayoutOptions = this.getLayoutFields();
             this.switchLayoutPanel(layout.name);
 
             this.graph.arrangeGraph(layout);
@@ -404,7 +407,7 @@ export class UserInterface {
 
         const handleDeleteNodes = () => {
             const selected = this.graph.getCore().nodes(':selected');
-            const layout: LayoutOptions = this.getLayoutFields();
+            const layout: GraphLayoutOptions = this.getLayoutFields();
 
             this.graph.removeNodes(selected);
             this.updateNodeFields(selected);
@@ -430,7 +433,7 @@ export class UserInterface {
 
         const handleDeleteEdge = () => {
             const selected = this.graph.getCore().edges(':selected');
-            const layout: LayoutOptions = this.getLayoutFields();
+            const layout: GraphLayoutOptions = this.getLayoutFields();
 
             this.graph.removeEdges(selected);
             this.updateEdgeFields(selected);
