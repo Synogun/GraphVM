@@ -1,7 +1,7 @@
 {
   "name": "graphvm",
   "version": "1.2.0",
-  "main": "src/main.ts",
+  "main": "src/main.tsx",
   "type": "module",
   "private": true,
   "scripts": {
@@ -14,10 +14,10 @@
     "release": "npm run build && rimraf docs && cpx \"build/**/*\" \"docs\" --verbose",
     "start:cpx": "cpx \"src/public/**/*\" build --watch --verbose --update",
     "start:server": "http-server build -o -c-1",
-    "start:bundler": "esbuild src/main.ts --outfile=build/bundle.js --bundle --platform=browser --watch --sourcemap",
+    "start:bundler": "esbuild src/main.tsx --outfile=build/bundle.js --bundle --platform=browser --watch --sourcemap",
     "start:prod": "http-server docs -o -c-1",
     "prestart:dev": "rimraf build",
-    "start:dev": "start npm run start:cpx && start npm run start:server && npm run start:bundler",
+    "start:dev": "start npm run start:cpx && start npm run start:server && start npm run start:bundler",
     "preversion": "npm run utils:lint",
     "version": "npm run release"
   },
@@ -31,6 +31,8 @@
     "@types/cytoscape": "3.21.9",
     "@types/jquery": "3.5.32",
     "@types/node": "24.1.0",
+    "@types/react": "19.1.9",
+    "@types/react-dom": "19.1.7",
     "cpx2": "8.0.0",
     "esbuild": "0.25.8",
     "eslint": "9.32.0",
@@ -43,6 +45,8 @@
   "dependencies": {
     "browserify": "17.0.1",
     "cytoscape": "3.33.0",
-    "jquery": "3.7.1"
+    "jquery": "3.7.1",
+    "react": "19.1.1",
+    "react-dom": "19.1.1"
   }
 }

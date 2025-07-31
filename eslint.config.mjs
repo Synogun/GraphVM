@@ -8,7 +8,9 @@ export default tseslint.config([
     {
         files: [
             'src/**/*.ts',
+            'src/**/*.tsx',
             'src/**/*.js',
+            'src/**/*.jsx',
         ],
     },
     {
