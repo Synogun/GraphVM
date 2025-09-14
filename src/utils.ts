@@ -1,28 +1,32 @@
-import $ from 'jquery';
-import cy from 'cytoscape';
+import type cy from 'cytoscape';
+
 
 /**
- * Checks if the current environment is development or production.
+ * Determines if the current environment is development.
  *
- * This function determines if the current URL starts with "https://synogun.github.io/gViewJS/".
- * If it does, it returns false indicating a production environment.
- * Otherwise, it modifies the DOM to indicate a development environment and returns true.
+ * Checks if the current window location does not include 'synogun.github.io',
+ * which is used to identify the production environment.
  *
- * @returns {boolean} - Returns true if the environment is development, false if it is production.
+ * @returns {boolean} `true` if running in development mode, otherwise `false`.
  */
-function checkDevelopment(): boolean {
-    if (window.location.href.startsWith('https://synogun.github.io/GraphVM/')) {
+function isDev(): boolean {
+    return !window.location.href.includes('synogun.github.io');
+}
+
+function setupLiveReload(): boolean {
+    if (!isDev()) {
         return false;
     }
 
-    if (isMobileDevice()) {
-        console.log('User is on a mobile device');
-    } else {
-        console.log('User is on a PC');
+    new EventSource('/esbuild').addEventListener('change', () => {
+        location.reload();
+    });
+
+    const title = document.getElementById('page-title');
+    if (title) {
+        title.innerText = 'GraphVM - Development';
     }
 
-    $('#is-dev').removeClass('d-none');
-    $('title').text('GraphVM - Development');
     return true;
 }
 
@@ -37,7 +41,7 @@ function checkDevelopment(): boolean {
  * @param eles - A collection of Cytoscape edges or nodes.
  * @returns {string | null} - The mode of the property as a string, or null if the collection is empty or the property does not exist.
  */
-function findPropertyValueMode(property: string, eles: cy.EdgeCollection | cy.NodeCollection): string | null {
+function findPropertyValueMode(eles: cy.EdgeCollection | cy.NodeCollection, property: string): string | null {
     if (!eles.length) { return null; } // return null if the collection is empty
     if (!eles[0].data(property)) { return null; } // return null if the property does not exist
 
@@ -72,13 +76,16 @@ function findPropertyValueMode(property: string, eles: cy.EdgeCollection | cy.No
  *
  * @returns {boolean} `true` if the current device is a mobile device, otherwise `false`.
  */
-export function isMobileDevice(): boolean {
+function isMobileDevice(): boolean {
     return typeof navigator.userAgent === 'string' && /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 }
 
 // +---------------------------------------------------------------------------+
 
 export {
-    checkDevelopment,
     findPropertyValueMode,
+    isDev,
+    isMobileDevice,
+    setupLiveReload
 };
+

@@ -1,0 +1,8 @@
+@import "tailwindcss" source("../../src");
+
+@source not "../services";
+@source not "../types";
+
+@plugin "daisyui" {
+    themes: all;
+}

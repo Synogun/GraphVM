@@ -7,12 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/Synogun/GraphVM/compare/v1.2.0...develop)
 
-<!-- START -->
 ### Added
+- `Project` - Integrated DaisyUI and Tailwind CSS for a modernized user interface.
+- `Project` - Implemented a component-based architecture using React.
+- `UI` - Introduced React contexts (`GraphContext`, `LayoutContext`, `NodesContext`, `EdgesContext`, `PropertiesContext`) for centralized state management.
+- `UI` - Created reusable UI components (`SideBar`, `ColorInput`, `NumberInput`, `RangeInput`, `SelectInput`, `TextInput`).
+- `UI` - Added a custom hook `useGraphRegistry` for managing graph instances.
 ### Changed
-### Fixed
+- `Project` - Migrated project from vanilla JavaScript to a React with TypeScript stack.
+- `Project` - Reorganized project structure for better modularity, separating components, contexts, hooks, services, and types.
+- `Project` - Updated `tsconfig.json` with module paths for cleaner imports.
+- `Graph` - Encapsulated core graph logic into services (`GraphClass`, `GraphConfig`).
+- `UI` - Replaced the previous UI with a new React-based interface.
 ### Removed
-<!-- END -->
+- `Workflow` - Removed old workflow files and scripts, simplifying the CI/CD process. Other strategies will be considered in the future.
+- `Project` - Removed old vanilla JavaScript files and assets, including the `userInterface.ts` and the `src/public` directory.
 
 ## [v1.2.0](https://github.com/Synogun/GraphVM/compare/v1.0.22...v1.2.0)
 
