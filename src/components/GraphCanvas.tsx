@@ -1,9 +1,9 @@
 import { useGraphProperties } from '@contexts/GraphContext';
 import type cytoscape from 'cytoscape';
-import React, { useEffect, useState } from 'react';
-import { isArrayOfStrings } from 'types/typeGuards';
+import { useEffect, useState } from 'react';
 import { useRegisterGraph } from '../hooks/useGraphRegistry';
 import { GraphClass } from '../services/graphClass';
+import { isArrayOfStrings } from '../types/typeGuards';
 
 export function GraphCanvas({ containerId }: GraphCanvasProps) {
     const canvasId = containerId || 'main-graph';

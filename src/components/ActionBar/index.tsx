@@ -1,10 +1,11 @@
+import { isArrayOfStrings } from '@/types/typeGuards';
+import { isDev } from '@/utils';
 import { useEdgesProperties } from '@contexts/EdgesContext';
 import { useGraphProperties } from '@contexts/GraphContext';
 import { useLayoutProperties } from '@contexts/LayoutContext';
 import { useGetGraph } from '@hooks/useGraphRegistry';
 import type cytoscape from 'cytoscape';
 import type { ChangeEvent, ReactNode } from 'react';
-import React from 'react';
 import { AiOutlineNodeIndex } from 'react-icons/ai';
 import { BsNodePlus } from 'react-icons/bs';
 import { FaGithub } from 'react-icons/fa';
@@ -12,8 +13,6 @@ import { GoTrash } from 'react-icons/go';
 import { MdFilterCenterFocus, MdSettings } from 'react-icons/md';
 import { PiFediverseLogo, PiGraph, PiLineSegments, PiShuffle } from 'react-icons/pi';
 import { RiSave3Fill } from 'react-icons/ri';
-import { isArrayOfStrings } from 'types/typeGuards';
-import { isDev } from 'utils';
 import { SideBar } from '../common/SideBar';
 import ActionButton from './ActionButton';
 

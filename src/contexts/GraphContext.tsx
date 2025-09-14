@@ -1,5 +1,5 @@
 import type cytoscape from 'cytoscape';
-import React, { createContext, ReactNode, useContext, useMemo, useState } from 'react';
+import { createContext, type ReactNode, useContext, useMemo, useState } from 'react';
 
 const GraphContext = createContext<GraphProperties | undefined>(undefined);
 

@@ -1,10 +1,10 @@
+import { isDev } from '@/utils';
 import { ActionBar } from '@components/ActionBar';
 import { GraphCanvas } from '@components/GraphCanvas';
 import { LoadingHero } from '@components/LoadingHero';
 import { PropertiesBar } from '@components/PropertiesBar';
 import { PropertiesProvider } from '@contexts/PropertiesContext';
-import React, { useEffect, useState } from 'react';
-import { isDev } from 'utils';
+import { useEffect, useState } from 'react';
 
 export default function App() {
     const [loadingApp, setLoadingApp] = useState(true);

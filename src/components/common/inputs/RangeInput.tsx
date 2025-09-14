@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import { type ChangeEvent } from 'react';
 import NumberInput from './NumberInput';
 
 function RangeInput({ label, numberInput=true, value, onChange, max, min, step, className='' }: RangeInputProps) {

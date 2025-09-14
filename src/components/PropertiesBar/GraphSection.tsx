@@ -1,6 +1,6 @@
 import { useGraphProperties } from '@contexts/GraphContext';
 import { useGetGraph } from '@hooks/useGraphRegistry';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import ElementCounter from './ElementCounter';
 
 export function GraphSection() {

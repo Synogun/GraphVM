@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react';
+import { type CSSProperties } from 'react';
 
 function ElementCounter({ label, value }: ElementCounterProps) {
     return (

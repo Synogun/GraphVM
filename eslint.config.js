@@ -1,40 +1,33 @@
-// @ts-check
-
-import eslint from '@eslint/js';
+import js from '@eslint/js';
 import stylistic from '@stylistic/eslint-plugin';
 import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
+import { globalIgnores } from 'eslint/config';
+import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config([
-
+    globalIgnores(['dist']),
     {
-        ignores: [
-            'node_modules/**/*',
-            'build/**/*',
-            'release/**/*',
-            'eslint.config.mjs',
-        ],
-    },
-    {
+        files: ['**/*.{ts,tsx}'],
         plugins: {
-            '@typescript-eslint': tseslint.plugin,
             '@stylistic': stylistic
         },
-    },
-    {
+        extends: [
+            js.configs.recommended,
+            tseslint.configs.strictTypeChecked,
+            tseslint.configs.stylisticTypeChecked,
+            reactHooks.configs['recommended-latest'],
+            reactRefresh.configs.vite,
+        ],
         languageOptions: {
+            ecmaVersion: 2020,
+            globals: globals.browser,
             parserOptions: {
-                projectService: true,
+                project: ['./tsconfig.node.json', './tsconfig.app.json'],
                 tsconfigRootDir: import.meta.dirname,
             },
         },
-    },
-    {
-        files: [
-            'src/**/*.ts', 'src/**/*.tsx',
-            'src/**/*.js', 'src/**/*.jsx',
-        ],
-        // TypeScript in General
         rules: {
             // Typescript
             "@typescript-eslint/consistent-type-definitions": ["error", "type"],
@@ -142,22 +135,18 @@ export default tseslint.config([
             // https://eslint.style/rules/template-curly-spacing
             '@stylistic/template-curly-spacing': ['error', 'never'],
             // https://eslint.style/rules/type-annotation-spacing
-            '@stylistic/type-annotation-spacing': ['error', { 
-                "before": false, 
-                "after": true, 
+            '@stylistic/type-annotation-spacing': ['error', {
+                "before": false,
+                "after": true,
                 "overrides": {
-                    "arrow": { "before": true, "after": true } 
-                } 
+                    "arrow": { "before": true, "after": true }
+                }
             }],
             // https://eslint.style/rules/type-generic-spacing
             '@stylistic/type-generic-spacing': ['error'],
             // https://eslint.style/rules/type-named-tuple-spacing
             '@stylistic/type-named-tuple-spacing': ['error'],
-        },
-    },
-    {
-        files: ['**/*.tsx', '**/*.jsx'],
-        rules: {
+
             // JSX Related
             // https://eslint.style/rules/jsx-closing-bracket-location
             // '@stylistic/jsx-closing-bracket-location': 'error',
@@ -168,7 +157,7 @@ export default tseslint.config([
             // https://eslint.style/rules/jsx-curly-newline
             '@stylistic/jsx-curly-newline': 'error',
             // https://eslint.style/rules/jsx-curly-spacing
-            '@stylistic/jsx-curly-spacing': ['error', { 'when': 'always'}],
+            '@stylistic/jsx-curly-spacing': ['error', { 'when': 'always' }],
             // https://eslint.style/rules/jsx-equals-spacing
             '@stylistic/jsx-equals-spacing': 'error',
             // https://eslint.style/rules/jsx-first-prop-new-line
@@ -192,7 +181,7 @@ export default tseslint.config([
             // https://eslint.style/rules/jsx-self-closing-comp
             '@stylistic/jsx-self-closing-comp': 'error',
             // https://eslint.style/rules/jsx-sort-props
-            '@stylistic/jsx-sort-props': ['error', { 
+            '@stylistic/jsx-sort-props': ['error', {
                 ignoreCase: true,
                 shorthandFirst: true,
                 reservedFirst: true,
@@ -214,11 +203,6 @@ export default tseslint.config([
                 prop: 'ignore',
                 propertyValue: 'ignore'
             }],
-            
-        },
+        }
     },
-    eslint.configs.recommended,
-    tseslint.configs.strictTypeChecked,
-    tseslint.configs.stylisticTypeChecked,
-    reactHooks.configs['recommended-latest'],
-]);
+])

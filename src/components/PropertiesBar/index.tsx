@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import React from 'react';
 import { SideBar } from '../common/SideBar';
 import { EdgesSection } from './EdgesSection';
 import { GraphSection } from './GraphSection';

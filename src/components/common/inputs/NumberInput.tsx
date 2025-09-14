@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import { type ChangeEvent } from 'react';
 
 function NumberInput({ label, value, onChange, max, min, step, className='' }: NumberInputProps) {
     return (

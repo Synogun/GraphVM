@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import { type ChangeEvent } from 'react';
 import { MdPalette } from 'react-icons/md';
 
 function ColorInput({ label, value, onChange, className='' }: ColorInputProps) {

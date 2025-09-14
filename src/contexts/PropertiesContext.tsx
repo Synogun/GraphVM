@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { EdgesProvider } from './EdgesContext';
 import { GraphProvider } from './GraphContext';
 import { LayoutProvider } from './LayoutContext';

@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `UI` - Created reusable UI components (`SideBar`, `ColorInput`, `NumberInput`, `RangeInput`, `SelectInput`, `TextInput`).
 - `UI` - Added a custom hook `useGraphRegistry` for managing graph instances.
 ### Changed
+- `Project` - Migrated project build process from esbuild to Vite for improved development experience and performance.
 - `Project` - Migrated project from vanilla JavaScript to a React with TypeScript stack.
 - `Project` - Reorganized project structure for better modularity, separating components, contexts, hooks, services, and types.
 - `Project` - Updated `tsconfig.json` with module paths for cleaner imports.

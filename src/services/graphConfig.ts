@@ -25,7 +25,7 @@ export class GraphConfig {
         stylesheet: [
             {
                 selector: 'node',
-                style: {
+                css: {
                     'label': 'data(label)',
                     'background-color': 'data(color)',
                     'shape': 'data(shape)',
@@ -40,7 +40,7 @@ export class GraphConfig {
             },
             {
                 selector: 'node:active',
-                style: {
+                css: {
                     'background-color': '#0169d9',
                     'border-color': '#0169d9',
                     'border-width': 2,
@@ -48,7 +48,7 @@ export class GraphConfig {
             },
             {
                 selector: 'node:selected',
-                style: {
+                css: {
                     'background-color': 'data(color)',
                     'border-color': '#0169d9',
                     'border-width': 2,
@@ -56,7 +56,7 @@ export class GraphConfig {
             },
             {
                 selector: 'edge',
-                style: {
+                css: {
                     'width': 3,
                     'line-color': 'data(color)',
                     'line-style': 'data(style)',
@@ -72,25 +72,25 @@ export class GraphConfig {
             },
             {
                 selector: '.edge-label-weight',
-                style: {
+                css: {
                     label: 'data(weight)',
                 },
             },
             {
                 selector: '.edge-label-index',
-                style: {
+                css: {
                     label: 'data(index)',
                 },
             },
             {
                 selector: '.directed',
-                style: {
+                css: {
                     'target-arrow-shape': 'data(arrowShape)',
                 },
             },
             {
                 selector: 'edge:active',
-                style: {
+                css: {
                     'line-color': '#0169d9',
                     'target-arrow-color': '#0169d9',
 
@@ -100,7 +100,7 @@ export class GraphConfig {
             },
             {
                 selector: 'edge:selected',
-                style: {
+                css: {
                     'line-color': 'data(color)',
                     'target-arrow-color': 'data(color)',
 
@@ -198,7 +198,7 @@ export class GraphConfig {
                     console.error('Error loading stylesheet:', error);
                 });
             } else {
-                this.config.stylesheet = style;
+                this.config.stylesheet = style as cy.StylesheetCSS[];
             }
         }
     }

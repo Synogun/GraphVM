@@ -1,7 +1,7 @@
 import { RangeInput, SelectInput } from '@components/common/inputs';
 import { isLayoutType, useLayoutProperties } from '@contexts/LayoutContext';
 import { useGetGraph } from '@hooks/useGraphRegistry';
-import React, { ChangeEvent, useEffect, useMemo } from 'react';
+import { type ChangeEvent, useEffect, useMemo } from 'react';
 
 export function LayoutSection({ visible = true }: LayoutSectionProps) {
     const graph = useGetGraph('main-graph');

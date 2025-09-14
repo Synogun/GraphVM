@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import { type ChangeEvent } from 'react';
 
 function SelectInput({ value, options, label, selectTitle, onChange, className='' }: SelectInputProps) {
     return (

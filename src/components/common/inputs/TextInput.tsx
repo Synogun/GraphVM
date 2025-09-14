@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import { type ChangeEvent } from 'react';
 
 function TextInput({ label, value, onChange, className='' }: TextInputProps) {
     return (

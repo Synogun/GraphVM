@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 function ActionButton({ label, icon, onClick, condensed = false, margin = 'my-1', disabled = false, isDelete = false }: ActionButtonProps) {
     const classStyle = isDelete
