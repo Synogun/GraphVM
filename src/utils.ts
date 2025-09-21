@@ -1,5 +1,4 @@
-import type cy from 'cytoscape';
-
+import type cytoscape from 'cytoscape';
 
 /**
  * Determines if the current environment is development.
@@ -13,24 +12,6 @@ function isDev(): boolean {
     return !window.location.href.includes('synogun.github.io');
 }
 
-function setupLiveReload(): boolean {
-    if (!isDev()) {
-        return false;
-    }
-
-    new EventSource('/esbuild').addEventListener('change', () => {
-        location.reload();
-    });
-
-    const title = document.getElementById('page-title');
-    if (title) {
-        title.innerText = 'GraphVM - Development';
-    }
-
-    return true;
-}
-
-
 /**
  * Finds the mode (most frequent value) of a specified property within a collection of Cytoscape elements.
  *
@@ -41,7 +22,7 @@ function setupLiveReload(): boolean {
  * @param eles - A collection of Cytoscape edges or nodes.
  * @returns {string | null} - The mode of the property as a string, or null if the collection is empty or the property does not exist.
  */
-function findPropertyValueMode(eles: cy.EdgeCollection | cy.NodeCollection, property: string): string | null {
+function findPropertyValueMode(eles: cytoscape.EdgeCollection | cytoscape.NodeCollection, property: string): string | null {
     if (!eles.length) { return null; } // return null if the collection is empty
     if (!eles[0].data(property)) { return null; } // return null if the property does not exist
 
@@ -67,25 +48,10 @@ function findPropertyValueMode(eles: cy.EdgeCollection | cy.NodeCollection, prop
     return mode.propValue;
 }
 
-/**
- * Determines whether the current device is a mobile device.
- *
- * This function checks the `navigator.userAgent` string for patterns
- * that match common mobile device identifiers such as "Mobi", "Android",
- * "iPhone", "iPad", and "iPod".
- *
- * @returns {boolean} `true` if the current device is a mobile device, otherwise `false`.
- */
-function isMobileDevice(): boolean {
-    return typeof navigator.userAgent === 'string' && /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-}
-
 // +---------------------------------------------------------------------------+
 
 export {
     findPropertyValueMode,
-    isDev,
-    isMobileDevice,
-    setupLiveReload
+    isDev
 };
 
