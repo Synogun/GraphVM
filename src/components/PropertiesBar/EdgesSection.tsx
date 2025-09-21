@@ -1,8 +1,8 @@
+import { ColorInput, NumberInput, SelectInput } from '@/components/common/inputs';
+import { useEdgesProperties } from '@/contexts/EdgesContext';
+import { useGraphProperties } from '@/contexts/GraphContext';
+import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { findPropertyValueMode } from '@/utils';
-import { ColorInput, NumberInput, SelectInput } from '@components/common/inputs';
-import { useEdgesProperties } from '@contexts/EdgesContext';
-import { useGraphProperties } from '@contexts/GraphContext';
-import { useGetGraph } from '@hooks/useGraphRegistry';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
 export function EdgesSection({ visible = true }: EdgesSectionProps) {

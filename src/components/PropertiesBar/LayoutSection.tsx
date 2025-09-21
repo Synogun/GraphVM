@@ -1,6 +1,7 @@
-import { RangeInput, SelectInput } from '@components/common/inputs';
-import { isLayoutType, useLayoutProperties } from '@contexts/LayoutContext';
-import { useGetGraph } from '@hooks/useGraphRegistry';
+import { RangeInput, SelectInput } from '@/components/common/inputs';
+import { useLayoutProperties } from '@/contexts/LayoutContext';
+import { useGetGraph } from '@/hooks/useGraphRegistry';
+import { isLayoutType } from '@/types/layoutTypeGuards';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
 export function LayoutSection({ visible = true }: LayoutSectionProps) {

@@ -1,8 +1,8 @@
 import { type ReactNode } from 'react';
-import { EdgesProvider } from './EdgesContext';
-import { GraphProvider } from './GraphContext';
-import { LayoutProvider } from './LayoutContext';
-import { NodesProvider } from './NodesContext';
+import { EdgesProvider } from './EdgesProvider';
+import { GraphProvider } from './GraphProvider';
+import { LayoutProvider } from './LayoutProvider';
+import { NodesProvider } from './NodesProvider';
     
 export function PropertiesProvider({ children }: PropertiesProviderProps) {
     return (

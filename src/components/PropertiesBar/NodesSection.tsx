@@ -1,8 +1,8 @@
+import { ColorInput, SelectInput } from '@/components/common/inputs';
+import { useGraphProperties } from '@/contexts/GraphContext';
+import { useNodeProperties } from '@/contexts/NodesContext';
+import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { findPropertyValueMode } from '@/utils';
-import { ColorInput, SelectInput } from '@components/common/inputs';
-import { useGraphProperties } from '@contexts/GraphContext';
-import { useNodeProperties } from '@contexts/NodesContext';
-import { useGetGraph } from '@hooks/useGraphRegistry';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
 export function NodesSection({ visible = true }: NodeSectionProps) {

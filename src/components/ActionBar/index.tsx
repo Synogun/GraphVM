@@ -1,9 +1,9 @@
+import { useEdgesProperties } from '@/contexts/EdgesContext';
+import { useGraphProperties } from '@/contexts/GraphContext';
+import { useLayoutProperties } from '@/contexts/LayoutContext';
+import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { isArrayOfStrings } from '@/types/typeGuards';
 import { isDev } from '@/utils';
-import { useEdgesProperties } from '@contexts/EdgesContext';
-import { useGraphProperties } from '@contexts/GraphContext';
-import { useLayoutProperties } from '@contexts/LayoutContext';
-import { useGetGraph } from '@hooks/useGraphRegistry';
 import type cytoscape from 'cytoscape';
 import type { ChangeEvent, ReactNode } from 'react';
 import { AiOutlineNodeIndex } from 'react-icons/ai';

@@ -1,7 +1,5 @@
-import type cytoscape from 'cytoscape';
-import { createContext, type ReactNode, useContext, useMemo, useState } from 'react';
-
-const GraphContext = createContext<GraphProperties | undefined>(undefined);
+import { GraphContext } from '@/contexts/GraphContext';
+import { useMemo, useState, type ReactNode } from 'react';
 
 export function GraphProvider({ children }: GraphProviderProps) {
     const [nodeCount, setNodeCount] = useState(0);
@@ -35,33 +33,6 @@ export function GraphProvider({ children }: GraphProviderProps) {
         </GraphContext.Provider>
     );
 }
-
-export function useGraphProperties() {
-    const context = useContext(GraphContext);
-    
-    if (context === undefined) {
-        throw new Error('useGraphProperties must be used within a GraphProvider');
-    }
-    
-    return context;
-}
-
-type GraphProperties = {
-    nodes: {
-        count: number;
-        setCount: (count: number) => void;
-        selected: cytoscape.NodeCollection | null;
-        setSelected: (nodes: cytoscape.NodeCollection | null) => void;
-    };
-    edges: {
-        count: number;
-        setCount: (count: number) => void;
-        selected: cytoscape.EdgeCollection | null;
-        setSelected: (edges: cytoscape.EdgeCollection | null) => void;
-        edgeMode: 'path' | 'complete';
-        setEdgeMode: (edgeMode: 'path' | 'complete') => void;
-    };
-};
 
 type GraphProviderProps = {
     children: ReactNode;

@@ -1,5 +1,5 @@
-import { useGraphProperties } from '@contexts/GraphContext';
-import { useGetGraph } from '@hooks/useGraphRegistry';
+import { useGraphProperties } from '@/contexts/GraphContext';
+import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { useEffect } from 'react';
 import ElementCounter from './ElementCounter';
 

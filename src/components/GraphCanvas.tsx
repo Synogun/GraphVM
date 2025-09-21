@@ -1,4 +1,4 @@
-import { useGraphProperties } from '@contexts/GraphContext';
+import { useGraphProperties } from '@/contexts/GraphContext';
 import type cytoscape from 'cytoscape';
 import { useEffect, useState } from 'react';
 import { useRegisterGraph } from '../hooks/useGraphRegistry';
