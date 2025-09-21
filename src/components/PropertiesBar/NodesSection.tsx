@@ -2,6 +2,7 @@ import { ColorInput, SelectInput } from '@/components/common/inputs';
 import { useGraphProperties } from '@/contexts/GraphContext';
 import { useNodeProperties } from '@/contexts/NodesContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
+import { updateNodes } from '@/services/NodesService';
 import { findPropertyValueMode } from '@/utils';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
@@ -45,7 +46,7 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
         if (!graph) { return; }
         if (!selectedNodes) { return; }
 
-        graph.updateNodes(selectedNodes, 'color', e.target.value);
+        updateNodes(selectedNodes, 'color', e.target.value);
         setColor(e.target.value);
     };
 
@@ -55,7 +56,7 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
 
         const { value } = e.target;
 
-        graph.updateNodes(selectedNodes, 'shape', value);
+        updateNodes(selectedNodes, 'shape', value);
         setShape(value);
     };
 

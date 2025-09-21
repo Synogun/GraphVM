@@ -1,6 +1,7 @@
 import { RangeInput, SelectInput } from '@/components/common/inputs';
 import { useLayoutProperties } from '@/contexts/LayoutContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
+import { arrangeGraph } from '@/services/LayoutService';
 import { isLayoutType } from '@/types/layoutTypeGuards';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
@@ -43,7 +44,7 @@ export function LayoutSection({ visible = true }: LayoutSectionProps) {
         }
 
         setCurrentLayout(options);
-        graph.arrangeGraph(options);
+        arrangeGraph(graph, options);
     }, [
         graph,
         layoutType,
@@ -74,7 +75,7 @@ export function LayoutSection({ visible = true }: LayoutSectionProps) {
 
     const handleRandomLayout = () => {
         if (!graph) return;
-        graph.arrangeGraph({ name: 'random' });
+        arrangeGraph(graph, { name: 'random' });
     };
 
     const selectTypeOptions = useMemo(() => {

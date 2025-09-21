@@ -1,7 +1,7 @@
+import type cytoscape from 'cytoscape';
 import { useEffect, useState } from 'react';
-import type { GraphClass } from '../services/graphClass';
 
-export type GraphApi = GraphClass | null;
+export type GraphApi = cytoscape.Core | null;
 
 const registry = new Map<string, GraphApi>;
 const subscribers = new Map<string, Set<() => void>>;

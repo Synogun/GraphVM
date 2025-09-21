@@ -2,6 +2,8 @@ import { ColorInput, NumberInput, SelectInput } from '@/components/common/inputs
 import { useEdgesProperties } from '@/contexts/EdgesContext';
 import { useGraphProperties } from '@/contexts/GraphContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
+import { updateEdges } from '@/services/EdgesServices';
+import { isEdgeCurve } from '@/types/edgesTypeGuards';
 import { findPropertyValueMode } from '@/utils';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
@@ -34,13 +36,13 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         const modeLabel = findPropertyValueMode(selectedEdges, 'label') ?? 'hidden';
         const modeColor = findPropertyValueMode(selectedEdges, 'color') ?? '#cccccc';
         const modeLineStyle = findPropertyValueMode(selectedEdges, 'style') ?? 'solid';
-        const modeCurve = findPropertyValueMode(selectedEdges, 'curve') ?? 'bezier';
+        const modeCurve = findPropertyValueMode(selectedEdges, 'curve');
         const modeWeight = findPropertyValueMode(selectedEdges, 'weight') ?? 1;
             
         setLabelStyle(modeLabel);
         setColor(modeColor);
         setLineStyle(modeLineStyle);
-        setCurveStyle(modeCurve);
+        setCurveStyle(isEdgeCurve(modeCurve) ? modeCurve : 'bezier');
         setWeight(Number(modeWeight));
     }, [graph, selectedEdges, setLabelStyle, setColor, setLineStyle, setCurveStyle, setWeight]);
 
@@ -50,7 +52,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
 
         const { value } = e.target;
 
-        graph.updateEdges(selectedEdges, 'label', value);
+        updateEdges(selectedEdges, 'label', value);
         setLabelStyle(value);
     };
 
@@ -60,7 +62,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
 
         const { value } = e.target;
 
-        graph.updateEdges(selectedEdges, 'weight', Number(value));
+        updateEdges(selectedEdges, 'weight', Number(value));
         setWeight(Number(value));
     };
 
@@ -68,7 +70,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         if (!graph) { return; }
         if (!selectedEdges) { return; }
 
-        graph.updateEdges(selectedEdges, 'color', e.target.value);
+        updateEdges(selectedEdges, 'color', e.target.value);
         setColor(e.target.value);
     };
 
@@ -78,7 +80,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
 
         const { value } = e.target;
 
-        graph.updateEdges(selectedEdges, 'style', value);
+        updateEdges(selectedEdges, 'style', value);
         setLineStyle(value);
     };
 
@@ -88,8 +90,8 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
 
         const { value } = e.target;
 
-        graph.updateEdges(selectedEdges, 'curve', value);
-        setCurveStyle(value);
+        updateEdges(selectedEdges, 'curve', value);
+        setCurveStyle(isEdgeCurve(value) ? value : 'bezier');
     };
 
     const selectLabelOptions = useMemo(() => {

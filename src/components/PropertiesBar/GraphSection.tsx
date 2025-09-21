@@ -14,13 +14,15 @@ export function GraphSection() {
         if (!graph) {
             return;
         }
-            
-        // Update the graph properties when the graph changes
-        if (nodeCount !== graph.getNodeCount()) {
-            setNodeCount(graph.getNodeCount());
+
+        const currentNodeCount = graph.nodes().length;
+        if (nodeCount !== currentNodeCount) {
+            setNodeCount(currentNodeCount);
         }
-        if (edgeCount !== graph.getEdgeCount()) {
-            setEdgeCount(graph.getEdgeCount());
+
+        const currentEdgeCount = graph.edges().length;
+        if (edgeCount !== currentEdgeCount) {
+            setEdgeCount(currentEdgeCount);
         }
     }, [graph, nodeCount, edgeCount, setNodeCount, setEdgeCount]);
 

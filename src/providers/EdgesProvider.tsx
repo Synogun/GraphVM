@@ -1,4 +1,5 @@
 import { EdgesContext } from '@/contexts/EdgesContext';
+import type { EdgeCurveStyle } from '@/types/edges';
 import { useMemo, useState, type ReactNode } from 'react';
 
 export function EdgesProvider({ children }: EdgesProviderProps) {
@@ -6,7 +7,7 @@ export function EdgesProvider({ children }: EdgesProviderProps) {
     const [weight, setWeight] = useState(1);
     const [color, setColor] = useState('#cccccc');
     const [lineStyle, setLineStyle] = useState('solid');
-    const [curveStyle, setCurveStyle] = useState('bezier');
+    const [curveStyle, setCurveStyle] = useState<EdgeCurveStyle>('bezier');
 
     const value = useMemo(() => ({
         labelStyle, setLabelStyle,

@@ -25,6 +25,6 @@ export type EdgesContextProperties = {
     lineStyle: string;
     setLineStyle: (lineStyle: string) => void;
 
-    curveStyle: string;
-    setCurveStyle: (curveStyle: string) => void;
+    curveStyle: EdgeCurveStyle;
+    setCurveStyle: (curveStyle: EdgeCurveStyle) => void;
 };
