@@ -5,8 +5,10 @@ import { PropertiesBar } from '@/components/PropertiesBar';
 import { PropertiesProvider } from '@/providers/PropertiesProvider';
 import { isDev } from '@/utils';
 import { useEffect, useState } from 'react';
+import Modal from './components/common/Modal';
+import { useModals } from './contexts/ModalsContext';
 
-export default function App() {
+function App() {
     const [loadingApp, setLoadingApp] = useState(true);
 
     useEffect(() => {
@@ -17,13 +19,43 @@ export default function App() {
         return () => { clearTimeout(timer); };
     }, []);
 
+    const modals = useModals();
+
     return loadingApp
         ? <LoadingHero />
-        : <PropertiesProvider>
-            <ActionBar>
-                <PropertiesBar>
-                    <GraphCanvas containerId='main-graph' />
-                </PropertiesBar>
-            </ActionBar>
-        </PropertiesProvider>;
+        : <>
+            <PropertiesProvider>
+                <ActionBar>
+                    <PropertiesBar>
+                        <Modal
+                            id='algorithms-modal'
+                            onClose={ () => { modals.setIsAlgorithmsModalOpen(false); } }
+                            show={ modals.isAlgorithmsModalOpen }
+                            title='Algorithms'
+                        />
+                        <Modal
+                            id='import-export-modal'
+                            onClose={ () => { modals.setIsImportExportModalOpen(false); } }
+                            show={ modals.isImportExportModalOpen }
+                            title='Import / Export'
+                        />
+                        <Modal
+                            id='settings-modal'
+                            onClose={ () => { modals.setIsSettingsModalOpen(false); } }
+                            show={ modals.isSettingsModalOpen }
+                            title='Settings'
+                        />
+                        <Modal
+                            id='help-modal'
+                            onClose={ () => { modals.setIsHelpModalOpen(false); } }
+                            show={ modals.isHelpModalOpen }
+                            title='Help'
+                        />
+                        <GraphCanvas containerId='main-graph' />
+                    </PropertiesBar>
+                </ActionBar>
+            </PropertiesProvider>
+        </>;
 }
+
+export default App;

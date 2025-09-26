@@ -1,6 +1,7 @@
 import { useEdgesProperties } from '@/contexts/EdgesContext';
 import { useGraphProperties } from '@/contexts/GraphContext';
 import { useLayoutProperties } from '@/contexts/LayoutContext';
+import { useModals } from '@/contexts/ModalsContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { addEdges, removeEdges } from '@/services/EdgesServices';
 import { arrangeGraph, centerGraph } from '@/services/LayoutService';
@@ -12,6 +13,8 @@ import type { ChangeEvent, ReactNode } from 'react';
 import { AiOutlineNodeIndex } from 'react-icons/ai';
 import { BsNodePlus } from 'react-icons/bs';
 import { FaGithub } from 'react-icons/fa';
+import { FaCode } from 'react-icons/fa6';
+import { FiHelpCircle } from 'react-icons/fi';
 import { GoTrash } from 'react-icons/go';
 import { MdFilterCenterFocus, MdSettings } from 'react-icons/md';
 import { PiFediverseLogo, PiGraph, PiLineSegments, PiShuffle } from 'react-icons/pi';
@@ -42,11 +45,30 @@ export function ActionBar({ children }: ActionBarProps) {
         curveStyle
     } = useEdgesProperties();
 
+    const {
+        setIsAlgorithmsModalOpen,
+        setIsHelpModalOpen,
+        setIsSettingsModalOpen,
+        setIsImportExportModalOpen
+    } = useModals();
+
     const { current: currentLayout } = useLayoutProperties();
     const graph = useGetGraph('main-graph');
     const edgeModeStyle = edgeMode === 'path' ? 'btn-outline' : 'btn-accent';
     const pathMode = edgeMode === 'complete';
-    const deleteDisabled = isDisabled(selectedNodes, selectedEdges);
+    const isDeleteBtnDisabled = verifyIfBtnDisable(selectedNodes, selectedEdges);
+
+    const handleNewGraph = () => {
+        location.reload();
+    };
+
+    const handleAlgorithms = () => {
+        setIsAlgorithmsModalOpen(true);
+    };
+
+    const handleImportExport = () => {
+        setIsImportExportModalOpen(true);
+    };
 
     const handleArrangeGraph = () => {
         if (!graph) { return; }
@@ -54,8 +76,12 @@ export function ActionBar({ children }: ActionBarProps) {
         arrangeGraph(graph, currentLayout ?? { name: 'circle' });
     };
 
-    const handleNewGraph = () => {
-        location.reload();
+    const handleSettings = () => {
+        setIsSettingsModalOpen(true);
+    };
+
+    const handleHelp = () => {
+        setIsHelpModalOpen(true);
     };
 
     const handleCenterGraph = () => {
@@ -155,6 +181,13 @@ export function ActionBar({ children }: ActionBarProps) {
                     />
 
                     <ActionButton
+                        icon={ actionIcons.algorithms }
+                        label='Algorithms'
+                        margin='my-1'
+                        onClick={ handleAlgorithms }
+                    />
+
+                    <ActionButton
                         icon={ actionIcons.importExport }
                         label='Import / Export'
                         margin='my-1'
@@ -204,14 +237,13 @@ export function ActionBar({ children }: ActionBarProps) {
                     </label>
 
                     <ActionButton
-                        disabled={ deleteDisabled }
+                        disabled={ isDeleteBtnDisabled }
                         icon={ actionIcons.deleteElements }
                         isDelete={ true }
                         label='Delete Selected'
                         margin='my-1'
                         onClick={ handleDeleteSelected }
                     />
-
 
                     <div className='divider mt-auto mb-3'>
                         <h1 className='text-base font-bold text-center'>Misc</h1>
@@ -224,7 +256,14 @@ export function ActionBar({ children }: ActionBarProps) {
                         onClick={ handleSettings }
                     />
 
-                    <a
+                    <ActionButton
+                        icon={ actionIcons.help }
+                        label='Help'
+                        margin='my-1'
+                        onClick={ handleHelp }
+                    />
+
+                    {/* <a
                         className='btn btn-outline hover:btn-accent'
                         href='https://github.com/Synogun/GraphVM'
                         rel='noopener noreferrer'
@@ -232,7 +271,7 @@ export function ActionBar({ children }: ActionBarProps) {
                         target='_blank'
                     >
                         <span>{actionIcons.github}</span> GH Repository
-                    </a>
+                    </a> */}
 
                     <div className='divider mt-1 mb-0' />
 
@@ -261,6 +300,7 @@ export function ActionBar({ children }: ActionBarProps) {
 
 const actionIcons = {
     newGraph: <PiGraph size='1.5em' />,
+    algorithms: <FaCode size='1.5em' />,
     importExport: <RiSave3Fill size='1.5em' />,
     arrange: <PiShuffle size='1.5em' />,
     center: <MdFilterCenterFocus size='1.5em' />,
@@ -270,11 +310,9 @@ const actionIcons = {
     completeEdgeMode: <PiFediverseLogo size='1.5em' />,
     deleteElements: <GoTrash size='1.5em' />,
     settings: <MdSettings size='1.5em' />,
+    help: <FiHelpCircle size='1.5em' />,
     github: <FaGithub size='1.5em' />,
 };
-
-const handleImportExport = () => { console.log('Import/Export clicked'); };
-const handleSettings = () => { console.log('Settings clicked'); };
 
 // ---------- Type Definitions ----------
 
@@ -282,7 +320,7 @@ type ActionBarProps = {
     children: ReactNode;
 };
 
-function isDisabled(selectedNodes: cytoscape.NodeCollection | null, selectedEdges: cytoscape.EdgeCollection | null) {
+function verifyIfBtnDisable(selectedNodes: cytoscape.NodeCollection | null, selectedEdges: cytoscape.EdgeCollection | null) {
     return (
         (selectedNodes === null || selectedNodes.length === 0) &&
         (selectedEdges === null || selectedEdges.length === 0)
