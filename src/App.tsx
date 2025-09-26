@@ -25,8 +25,8 @@ function App() {
         ? <LoadingHero />
         : <>
             <PropertiesProvider>
-                <ActionBar>
-                    <PropertiesBar>
+                <PropertiesBar>
+                    <ActionBar>
                         <Modal
                             id='algorithms-modal'
                             onClose={ () => { modals.setIsAlgorithmsModalOpen(false); } }
@@ -52,8 +52,8 @@ function App() {
                             title='Help'
                         />
                         <GraphCanvas containerId='main-graph' />
-                    </PropertiesBar>
-                </ActionBar>
+                    </ActionBar>
+                </PropertiesBar>
             </PropertiesProvider>
         </>;
 }

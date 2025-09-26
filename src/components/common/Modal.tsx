@@ -28,6 +28,9 @@ export function Modal({ id, title, children, show, onClose, actions }: ModalProp
 
         return () => {
             modal.removeEventListener('close', handleClose);
+            if (document.activeElement instanceof HTMLElement) {
+                document.activeElement.blur();
+            }
         };
     }, [onClose, show]);
 
