@@ -8,21 +8,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/Synogun/GraphVM/compare/v1.2.0...develop)
 
 ### Added
-- `Project` - Integrated DaisyUI and Tailwind CSS for a modernized user interface.
-- `Project` - Implemented a component-based architecture using React.
-- `UI` - Introduced React contexts (`GraphContext`, `LayoutContext`, `NodesContext`, `EdgesContext`, `PropertiesContext`) for centralized state management.
-- `UI` - Created reusable UI components (`SideBar`, `ColorInput`, `NumberInput`, `RangeInput`, `SelectInput`, `TextInput`).
+- `UI` - Introduced a basic modal structure for dialogs.
 - `UI` - Added a custom hook `useGraphRegistry` for managing graph instances.
+- `UI` - Created reusable UI components (`SideBar`, `ColorInput`, `NumberInput`, `RangeInput`, `SelectInput`, `TextInput`).
+- `UI` - Introduced React contexts (`GraphContext`, `LayoutContext`, `NodesContext`, `EdgesContext`, `PropertiesContext`) for centralized state management.
+- `Project` - Implemented a component-based architecture using React.
+- `Project` - Integrated DaisyUI and TailwindCSS for a modernized user interface.
 ### Changed
-- `Project` - Migrated project build process from esbuild to Vite for improved development experience and performance.
-- `Project` - Migrated project from vanilla JavaScript to a React with TypeScript stack.
-- `Project` - Reorganized project structure for better modularity, separating components, contexts, hooks, services, and types.
+- `Project` - Updated project dependencies to their latest versions.
+- `Project` - Improved Vite's Fast Refresh compatibility.
+- `Project` - Added more specific type guards for better type safety.
 - `Project` - Updated `tsconfig.json` with module paths for cleaner imports.
-- `Graph` - Encapsulated core graph logic into services (`GraphClass`, `GraphConfig`).
+- `Project` - Reorganized project structure for better modularity, separating components, contexts, hooks, services, and types.
+- `Project` - Migrated project from vanilla JavaScript to a React with TypeScript stack.
+- `Project` - Migrated project build process from esbuild to Vite for improved development experience and performance.
+- `Graph` - Encapsulated core graph logic into services.
 - `UI` - Replaced the previous UI with a new React-based interface.
+### Fixed
+- `Edges` - Fixed an issue where edge creation would fail when selecting nodes after a bounding box selection.
 ### Removed
-- `Workflow` - Removed old workflow files and scripts, simplifying the CI/CD process. Other strategies will be considered in the future.
+- `Project` - Removed unused functions and import aliases.
 - `Project` - Removed old vanilla JavaScript files and assets, including the `userInterface.ts` and the `src/public` directory.
+- `Workflow` - Removed old workflow files and scripts, simplifying the CI/CD process. Other strategies will be considered in the future.
 
 ## [v1.2.0](https://github.com/Synogun/GraphVM/compare/v1.0.22...v1.2.0)
 

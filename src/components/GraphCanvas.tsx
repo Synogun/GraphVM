@@ -1,5 +1,5 @@
 import { useGraphProperties } from '@/contexts/GraphContext';
-import { destroyGraph, newGraph } from '@/services/graphService';
+import { destroyGraph, newGraph } from '@/services/GraphService';
 import type cytoscape from 'cytoscape';
 import { useEffect, useState } from 'react';
 import { useRegisterGraph, type GraphApi } from '../hooks/useGraphRegistry';
