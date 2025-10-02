@@ -19,8 +19,7 @@ import { GoTrash } from 'react-icons/go';
 import { MdFilterCenterFocus, MdSettings } from 'react-icons/md';
 import { PiFediverseLogo, PiGraph, PiLineSegments, PiShuffle } from 'react-icons/pi';
 import { RiSave3Fill } from 'react-icons/ri';
-import { SideBar } from '../common/SideBar';
-import ActionButton from './ActionButton';
+import { SideBar } from './common/SideBar';
 
 export function ActionBar({ children }: ActionBarProps) {
     const {
@@ -298,6 +297,23 @@ export function ActionBar({ children }: ActionBarProps) {
     );
 }
 
+function ActionButton({ label, icon, onClick, condensed = false, margin = 'my-1', disabled = false, isDelete = false }: ActionButtonProps) {
+    const classStyle = isDelete
+        ? 'btn-error'
+        : 'btn-outline hover:btn-accent focus:btn-accent';
+
+    return (
+        <button
+            className={ `btn ${classStyle} ${margin}` }
+            disabled={ disabled }
+            onClick={ onClick }
+        >
+            {icon ? <span>{icon}</span> : null}
+            {!condensed ? label : null}
+        </button>
+    );
+}
+
 const actionIcons = {
     newGraph: <PiGraph size='1.5em' />,
     algorithms: <FaCode size='1.5em' />,
@@ -314,15 +330,25 @@ const actionIcons = {
     github: <FaGithub size='1.5em' />,
 };
 
-// ---------- Type Definitions ----------
-
-type ActionBarProps = {
-    children: ReactNode;
-};
-
 function verifyIfBtnDisable(selectedNodes: cytoscape.NodeCollection | null, selectedEdges: cytoscape.EdgeCollection | null) {
     return (
         (selectedNodes === null || selectedNodes.length === 0) &&
         (selectedEdges === null || selectedEdges.length === 0)
     );
 }
+
+// ---------- Type Definitions ----------
+
+type ActionBarProps = {
+    children: ReactNode;
+};
+
+type ActionButtonProps = {
+    label: string;
+    isDelete?: boolean;
+    icon?: ReactNode;
+    onClick?: () => void;
+    margin?: string;
+    condensed?: boolean;
+    disabled?: boolean;
+};
