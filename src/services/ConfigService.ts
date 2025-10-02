@@ -6,11 +6,11 @@ import { type CytoscapeOptions, type EdgeSingular, type LayoutOptions, type Node
 
 export class ConfigService {
     private static instance: ConfigService | null = null;
-    public stylesheet: StylesheetCSS[] = defaultStylesheet;
-    public graphOptions: CytoscapeOptions = defaultGraphOptions;
-    public layoutOptions = defaultLayoutOptions;
-    public nodesData: NodesData = defaultNodesData;
-    public edgesData: EdgesData = defaultEdgesData;
+    public stylesheet: StylesheetCSS[] = [...defaultStylesheet];
+    public graphOptions: CytoscapeOptions = { ...defaultGraphOptions };
+    public layoutOptions = { ...defaultLayoutOptions };
+    public nodesData: NodesData = { ...defaultNodesData };
+    public edgesData: EdgesData = { ...defaultEdgesData };
 
     // constructor() {
     //     // Later we can load options from a file or external source
@@ -25,7 +25,7 @@ export class ConfigService {
         ConfigService.instance = null;
     }
 
-    public resetStylesheet(): void { this.stylesheet = defaultStylesheet; }
+    public resetStylesheet(): void { this.stylesheet = [...defaultStylesheet]; }
     public getStylesheet(selector?: string): StylesheetCSS[] | StylesheetCSS | null {
         if (!selector) return this.stylesheet;
 
@@ -67,7 +67,7 @@ export class ConfigService {
         };
     }
 
-    public resetLayoutOptions(): void { this.layoutOptions = defaultLayoutOptions; }
+    public resetLayoutOptions(): void { this.layoutOptions = { ...defaultLayoutOptions }; }
     public getLayoutOptions(): LayoutOptions { return this.layoutOptions; }
     public setLayoutOptions(options: LayoutOptions): void {
         this.layoutOptions = {
@@ -81,7 +81,7 @@ export class ConfigService {
         };
     }
 
-    public resetNodesData(): void { this.nodesData = defaultNodesData; }
+    public resetNodesData(): void { this.nodesData = { ...defaultNodesData }; }
     public getNodesData(): NodesData { return this.nodesData; }
     public setNodesData(data: NodesData): void {
         this.nodesData = {
@@ -90,7 +90,7 @@ export class ConfigService {
         };
     }
 
-    public resetEdgesData(): void { this.edgesData = defaultEdgesData; }
+    public resetEdgesData(): void { this.edgesData = { ...defaultEdgesData }; }
     public getEdgesData(): EdgesData { return this.edgesData; }
     public setEdgesData(data: EdgesData): void {
         this.edgesData = {
