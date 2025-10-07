@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Project` - Implemented a component-based architecture using React.
 - `Project` - Integrated DaisyUI and TailwindCSS for a modernized user interface.
 ### Changed
+- `UI` - Replaced default font with 'Alan Sans'.
 - `Project` - Updated project dependencies to their latest versions.
 - `Project` - Improved Vite's Fast Refresh compatibility.
 - `Project` - Added more specific type guards for better type safety.
