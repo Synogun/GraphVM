@@ -1,12 +1,11 @@
-import js from '@eslint/js';
 import stylistic from '@stylistic/eslint-plugin';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
-import { globalIgnores } from 'eslint/config';
+import { defineConfig, globalIgnores } from 'eslint/config';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
-export default tseslint.config([
+export default defineConfig([
     globalIgnores(['dist']),
     {
         files: ['**/*.{ts,tsx}'],
@@ -14,23 +13,24 @@ export default tseslint.config([
             '@stylistic': stylistic
         },
         extends: [
-            js.configs.recommended,
-            tseslint.configs.strictTypeChecked,
+            // tseslint.configs.strictTypeChecked,
             tseslint.configs.stylisticTypeChecked,
             reactHooks.configs['recommended-latest'],
             reactRefresh.configs.vite,
         ],
         languageOptions: {
-            ecmaVersion: 2020,
+            ecmaVersion: 2022,
             globals: globals.browser,
+            sourceType: 'module',
             parserOptions: {
                 project: ['./tsconfig.node.json', './tsconfig.app.json'],
                 tsconfigRootDir: import.meta.dirname,
+
             },
         },
         rules: {
             // Typescript
-            "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+            '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
 
             // Stylistic Rules
             // https://eslint.style/rules/array-bracket-newline
@@ -89,7 +89,7 @@ export default tseslint.config([
             // https://eslint.style/rules/new-parens
             '@stylistic/new-parens': ['error', 'never'],
             // https://eslint.style/rules/no-extra-parens
-            '@stylistic/no-extra-parens': ['error', 'all', { ignoreJSX: 'multi-line', nestedBinaryExpressions: false }],
+            // '@stylistic/no-extra-parens': ['error', 'all', { ignoreJSX: 'multi-line', nestedBinaryExpressions: false }],
             // https://eslint.style/rules/no-extra-semi
             '@stylistic/no-extra-semi': 'error',
             // https://eslint.style/rules/no-floating-decimal
@@ -136,10 +136,10 @@ export default tseslint.config([
             '@stylistic/template-curly-spacing': ['error', 'never'],
             // https://eslint.style/rules/type-annotation-spacing
             '@stylistic/type-annotation-spacing': ['error', {
-                "before": false,
-                "after": true,
-                "overrides": {
-                    "arrow": { "before": true, "after": true }
+                before: false,
+                after: true,
+                overrides: {
+                    arrow: { before: true, after: true }
                 }
             }],
             // https://eslint.style/rules/type-generic-spacing
@@ -157,7 +157,7 @@ export default tseslint.config([
             // https://eslint.style/rules/jsx-curly-newline
             '@stylistic/jsx-curly-newline': 'error',
             // https://eslint.style/rules/jsx-curly-spacing
-            '@stylistic/jsx-curly-spacing': ['error', { 'when': 'always' }],
+            '@stylistic/jsx-curly-spacing': ['error', { when: 'always' }],
             // https://eslint.style/rules/jsx-equals-spacing
             '@stylistic/jsx-equals-spacing': 'error',
             // https://eslint.style/rules/jsx-first-prop-new-line
@@ -171,9 +171,9 @@ export default tseslint.config([
             // https://eslint.style/rules/jsx-newline
             // '@stylistic/jsx-newline': ['error', { prevent: true, allowMultilines: true }],
             // https://eslint.style/rules/jsx-one-expression-per-line
-            '@stylistic/jsx-one-expression-per-line': ['error', { 'allow': 'single-line' }],
+            '@stylistic/jsx-one-expression-per-line': ['error', { allow: 'single-line' }],
             // https://eslint.style/rules/jsx-pascal-case
-            '@stylistic/jsx-pascal-case': ['error', { 'allowNamespace': true }],
+            '@stylistic/jsx-pascal-case': ['error', { allowNamespace: true }],
             // https://eslint.style/rules/jsx-props-no-multi-spaces
             '@stylistic/jsx-props-no-multi-spaces': 'error',
             // https://eslint.style/rules/jsx-quotes
@@ -205,4 +205,4 @@ export default tseslint.config([
             }],
         }
     },
-])
+]);
