@@ -9,7 +9,7 @@ import type cytoscape from 'cytoscape';
  * @returns {boolean} `true` if running in development mode, otherwise `false`.
  */
 function isDev(): boolean {
-    return !window.location.href.includes('synogun.github.io');
+    return import.meta.env.DEV;
 }
 
 /**
