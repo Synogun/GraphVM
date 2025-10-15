@@ -7,7 +7,7 @@ export function addNode(core: cytoscape.Core, options?: cytoscape.NodeDefinition
     const numNodes = core.nodes().length;
 
     const newIdIndex = numNodes + 1;
-    const newId = `node-${newIdIndex.toString()}`;
+    const newId = `node-${Date.now().toString()}-${newIdIndex.toString()}`;
 
     const newNodeData = {
         ...configService.getNodesData(),

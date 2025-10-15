@@ -13,7 +13,7 @@ export function addEdge(core: cytoscape.Core, options: cytoscape.EdgeDefinition,
 
     const configService = ConfigService.getInstance();
     const newIdIndex = core.edges().length + 1;
-    const newId = `edge-${newIdIndex.toString()}`;
+    const newId = `edge-${Date.now().toString()}-${newIdIndex.toString()}`;
 
     const newEdgeData = {
         ...configService.getEdgesData(), // default edge data
