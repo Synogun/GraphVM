@@ -40,10 +40,11 @@ export function Modal({ id, title, children, show, onClose, actions }: ModalProp
                 <h3 className='font-bold text-lg'>{title ?? ' '}</h3>
                 <div className='py-4'>{children ?? ' '}</div>
                 <div className='modal-action'>
-                    {actions}
-                    <form method='dialog'>
-                        <button className='btn'>Close</button>
-                    </form>
+                    {actions ?? (
+                        <form method='dialog'>
+                            <button className='btn'>Close</button>
+                        </form>
+                    )}
                 </div>
             </div>
             <form className='modal-backdrop' method='dialog'>
