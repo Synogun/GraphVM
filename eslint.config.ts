@@ -13,8 +13,8 @@ export default defineConfig([
             '@stylistic': stylistic
         },
         extends: [
-            // tseslint.configs.strictTypeChecked,
-            tseslint.configs.stylisticTypeChecked,
+            tseslint.configs.strictTypeChecked,
+            // tseslint.configs.stylisticTypeChecked,
             reactHooks.configs['recommended-latest'],
             reactRefresh.configs.vite,
         ],

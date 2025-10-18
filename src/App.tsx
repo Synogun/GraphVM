@@ -6,6 +6,7 @@ import { PropertiesProvider } from '@/providers/PropertiesProvider';
 import { isDev } from '@/utils';
 import { useEffect, useState } from 'react';
 import Modal from './components/common/Modal';
+import { ImportExportModal } from './components/ImportExportModal';
 import { useModals } from './contexts/ModalsContext';
 
 function App() {
@@ -33,12 +34,7 @@ function App() {
                             show={ modals.isAlgorithmsModalOpen }
                             title='Algorithms'
                         />
-                        <Modal
-                            id='import-export-modal'
-                            onClose={ () => { modals.setIsImportExportModalOpen(false); } }
-                            show={ modals.isImportExportModalOpen }
-                            title='Import / Export'
-                        />
+                        <ImportExportModal />
                         <Modal
                             id='settings-modal'
                             onClose={ () => { modals.setIsSettingsModalOpen(false); } }

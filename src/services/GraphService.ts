@@ -24,11 +24,6 @@ export function newGraph(containerId?: string, options?: cytoscape.CytoscapeOpti
     newGraph.data('numNodes', newGraph.nodes().length);
     newGraph.data('numEdges', newGraph.edges().length);
 
-    console.log('newGraph > created new graph with options:', graphOptions);
-    console.log('numNodes:', newGraph.data('numNodes'));
-    console.log('numEdges:', newGraph.data('numEdges'));
-
-    console.log('newGraph > created new graph');
     return newGraph;
 }
 
