@@ -1,14 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-export function Modal({
-    id,
-    title,
-    children,
-    show,
-    onClose,
-    actions,
-    className,
-}: ModalProps) {
+export function Modal({ id, title, children, show, onClose, actions, className }: ModalProps) {
     const modalRef = useRef<HTMLDialogElement>(null);
 
     useEffect(() => {
@@ -44,7 +36,7 @@ export function Modal({
 
     return (
         <dialog ref={modalRef} className={`modal ${className ?? ''}`} id={id}>
-            <div className="modal-box max-h-[90vh]">
+            <div className="modal-box max-h-[90vh] max-w-[80vw] overflow-y-auto">
                 <h3 className="font-bold text-lg">{title ?? ' '}</h3>
                 <div className="pt-4 pb-2">{children ?? ' '}</div>
                 <div className="modal-action mt-3">
