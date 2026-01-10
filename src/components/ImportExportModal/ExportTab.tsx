@@ -1,6 +1,8 @@
 import { useGetGraph } from '@/hooks/useGraphRegistry';
+import { sheetToPlain } from '@/services/StyleService';
 import type { EdgesData } from '@/types/edges';
 import { makeBlobAndDownload } from '@/utils';
+import type { StylesheetCSS } from 'cytoscape';
 import {
     useCallback,
     useEffect,
@@ -10,6 +12,11 @@ import {
     type ChangeEvent,
     type Ref,
 } from 'react';
+
+type CytoscapeJson = {
+    style?: StylesheetCSS[];
+    [key: string]: unknown;
+};
 
 type ExportTabProps = {
     ref: Ref<{ handleExport: () => void }>;
@@ -64,7 +71,17 @@ export function ExportTab({ ref, onExportSuccess, onReadyStateChange }: ExportTa
         if (exportFormat === 'json') {
             graph.elements().unselect();
 
-            dataStr = JSON.stringify(graph.json());
+            const json = graph.json() as CytoscapeJson;
+            if (json.style) {
+                try {
+                    const plainStylesheet = sheetToPlain(json.style);
+                    json.style = plainStylesheet;
+                } catch (error) {
+                    console.error('Error converting stylesheet to plain format:', error);
+                }
+            }
+
+            dataStr = JSON.stringify(json);
             fileNameWithExt = `${fileName}.json`;
             fileType = 'application/json';
         } else if (exportFormat === 'png' || exportFormat === 'jpg') {

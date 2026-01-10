@@ -1,8 +1,14 @@
-import type { EdgeCurveStyle, EdgesData } from '@/types/edges';
+import type { EdgesData } from '@/types/edges';
 import { isEdgeArrowShape, isEdgeCurve, isEdgeStyle } from '@/types/edgesTypeGuards';
 import type { NodesData } from '@/types/nodes';
 import { isNodeShape } from '@/types/nodesTypeGuards';
-import { type CytoscapeOptions, type EdgeSingular, type LayoutOptions, type NodeSingular, type StylesheetCSS } from 'cytoscape';
+import {
+    type CytoscapeOptions,
+    type EdgeSingular,
+    type LayoutOptions,
+    type NodeSingular,
+    type StylesheetCSS,
+} from 'cytoscape';
 
 export class ConfigService {
     private static instance: ConfigService | null = null;
@@ -17,7 +23,7 @@ export class ConfigService {
     // }
 
     public static getInstance(): ConfigService {
-        ConfigService.instance ??= new ConfigService;
+        ConfigService.instance ??= new ConfigService();
         return ConfigService.instance;
     }
 
@@ -25,11 +31,13 @@ export class ConfigService {
         ConfigService.instance = null;
     }
 
-    public resetStylesheet(): void { this.stylesheet = [...defaultStylesheet]; }
+    public resetStylesheet(): void {
+        this.stylesheet = [...defaultStylesheet];
+    }
     public getStylesheet(selector?: string): StylesheetCSS[] | StylesheetCSS | null {
         if (!selector) return this.stylesheet;
 
-        const found = this.stylesheet.find(s => s.selector === selector);
+        const found = this.stylesheet.find((s) => s.selector === selector);
         return found ?? null;
     }
     public setStylesheet(styles: StylesheetCSS | StylesheetCSS[]): void {
@@ -39,7 +47,7 @@ export class ConfigService {
             return;
         }
 
-        const index = this.stylesheet.findIndex(s => s.selector === styles.selector);
+        const index = this.stylesheet.findIndex((s) => s.selector === styles.selector);
         if (index !== -1) {
             this.stylesheet[index] = styles;
         } else {
@@ -59,7 +67,9 @@ export class ConfigService {
             style: this.stylesheet,
         };
     }
-    public getGraphOptions(): CytoscapeOptions { return this.graphOptions; }
+    public getGraphOptions(): CytoscapeOptions {
+        return this.graphOptions;
+    }
     public setGraphOptions(options: CytoscapeOptions): void {
         this.graphOptions = {
             ...this.graphOptions,
@@ -67,8 +77,12 @@ export class ConfigService {
         };
     }
 
-    public resetLayoutOptions(): void { this.layoutOptions = { ...defaultLayoutOptions }; }
-    public getLayoutOptions(): LayoutOptions { return this.layoutOptions; }
+    public resetLayoutOptions(): void {
+        this.layoutOptions = { ...defaultLayoutOptions };
+    }
+    public getLayoutOptions(): LayoutOptions {
+        return this.layoutOptions;
+    }
     public setLayoutOptions(options: LayoutOptions): void {
         this.layoutOptions = {
             ...this.layoutOptions,
@@ -81,8 +95,12 @@ export class ConfigService {
         };
     }
 
-    public resetNodesData(): void { this.nodesData = { ...defaultNodesData }; }
-    public getNodesData(): NodesData { return this.nodesData; }
+    public resetNodesData(): void {
+        this.nodesData = { ...defaultNodesData };
+    }
+    public getNodesData(): NodesData {
+        return this.nodesData;
+    }
     public setNodesData(data: NodesData): void {
         this.nodesData = {
             ...this.nodesData,
@@ -90,8 +108,12 @@ export class ConfigService {
         };
     }
 
-    public resetEdgesData(): void { this.edgesData = { ...defaultEdgesData }; }
-    public getEdgesData(): EdgesData { return this.edgesData; }
+    public resetEdgesData(): void {
+        this.edgesData = { ...defaultEdgesData };
+    }
+    public getEdgesData(): EdgesData {
+        return this.edgesData;
+    }
     public setEdgesData(data: EdgesData): void {
         this.edgesData = {
             ...this.edgesData,
@@ -102,19 +124,36 @@ export class ConfigService {
 
 // -----------------------------------------------------------------
 
+export function getNodeShape(e: NodeSingular) {
+    const shape: unknown = e.data('shape');
+    return isNodeShape(shape) ? shape : 'ellipse';
+}
+
+export function getEdgeStyle(e: EdgeSingular) {
+    const style: unknown = e.data('style');
+    return isEdgeStyle(style) ? style : 'solid';
+}
+
+export function getEdgeCurve(e: EdgeSingular) {
+    const curve: unknown = e.data('curve');
+    return isEdgeCurve(curve) ? curve : 'bezier';
+}
+
+export function getEdgeArrowShape(e: EdgeSingular) {
+    const shape: unknown = e.data('arrowShape');
+    return isEdgeArrowShape(shape) ? shape : 'triangle';
+}
+
 const defaultStylesheet: StylesheetCSS[] = [
     {
         selector: 'node',
         css: {
-            'label': 'data(label)',
+            label: 'data(label)',
             'background-color': 'data(color)',
-            'shape': (e: NodeSingular) => {
-                const shape: unknown = e.data('shape');
-                return isNodeShape(shape) ? shape : 'ellipse';
-            },
+            shape: getNodeShape,
 
             'font-family': 'Fira Code, sans-serif',
-            'color': '#fff',
+            color: '#fff',
             'text-outline-color': '#000',
             'text-outline-width': 1,
             'text-halign': 'center',
@@ -140,21 +179,15 @@ const defaultStylesheet: StylesheetCSS[] = [
     {
         selector: 'edge',
         css: {
-            'width': 3,
+            width: 3,
             'line-color': 'data(color)',
-            'line-style': (e: EdgeSingular) => {
-                const style: unknown = e.data('style');
-                return isEdgeStyle(style) ? style : 'solid';
-            },
-            'curve-style': (e: EdgeSingular): EdgeCurveStyle => {
-                const curve: unknown = e.data('curve');
-                return isEdgeCurve(curve) ? curve : 'bezier';
-            },
+            'line-style': getEdgeStyle,
+            'curve-style': getEdgeCurve,
 
             'target-arrow-color': 'data(color)',
 
             'font-family': 'Fira Code, sans-serif',
-            'color': '#fff',
+            color: '#fff',
             'text-outline-color': '#000',
             'text-outline-width': 1,
         },
@@ -174,10 +207,7 @@ const defaultStylesheet: StylesheetCSS[] = [
     {
         selector: 'edge.directed',
         css: {
-            'target-arrow-shape': (e: EdgeSingular) => {
-                const shape: unknown = e.data('arrowShape');
-                return isEdgeArrowShape(shape) ? shape : 'triangle';
-            },
+            'target-arrow-shape': getEdgeArrowShape,
         },
     },
     {
@@ -188,7 +218,7 @@ const defaultStylesheet: StylesheetCSS[] = [
 
             'line-outline-width': 2.5,
             'line-outline-color': '#0169d9',
-        }
+        },
     },
     {
         selector: 'edge:selected',
@@ -198,7 +228,7 @@ const defaultStylesheet: StylesheetCSS[] = [
 
             'line-outline-width': 2.5,
             'line-outline-color': '#0169d9',
-        }
+        },
     },
 ];
 

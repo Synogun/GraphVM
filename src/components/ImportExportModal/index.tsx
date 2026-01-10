@@ -34,6 +34,7 @@ export function ImportExportModal() {
         } else {
             exportTabRef.current?.cleanup();
         }
+        setActiveTab('import');
         modals.setIsImportExportModalOpen(false);
     };
 
