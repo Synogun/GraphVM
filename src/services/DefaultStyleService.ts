@@ -10,8 +10,8 @@ import {
     type StylesheetCSS,
 } from 'cytoscape';
 
-export class ConfigService {
-    private static instance: ConfigService | null = null;
+export class DefaultStyleService {
+    private static instance: DefaultStyleService | null = null;
     public stylesheet: StylesheetCSS[] = [...defaultStylesheet];
     public graphOptions: CytoscapeOptions = { ...defaultGraphOptions };
     public layoutOptions = { ...defaultLayoutOptions };
@@ -22,13 +22,13 @@ export class ConfigService {
     //     // Later we can load options from a file or external source
     // }
 
-    public static getInstance(): ConfigService {
-        ConfigService.instance ??= new ConfigService();
-        return ConfigService.instance;
+    public static getInstance(): DefaultStyleService {
+        DefaultStyleService.instance ??= new DefaultStyleService();
+        return DefaultStyleService.instance;
     }
 
     public static resetInstance(): void {
-        ConfigService.instance = null;
+        DefaultStyleService.instance = null;
     }
 
     public resetStylesheet(): void {
@@ -122,8 +122,6 @@ export class ConfigService {
     }
 }
 
-// -----------------------------------------------------------------
-
 export function getNodeShape(e: NodeSingular) {
     const shape: unknown = e.data('shape');
     return isNodeShape(shape) ? shape : 'ellipse';
@@ -143,6 +141,38 @@ export function getEdgeArrowShape(e: EdgeSingular) {
     const shape: unknown = e.data('arrowShape');
     return isEdgeArrowShape(shape) ? shape : 'triangle';
 }
+
+export function sheetToPlain(stylesheet: StylesheetCSS[]): StylesheetCSS[] {
+    /**
+     *
+     * I'M NOT PROUD OF THIS CODE, BUT IT WORKS FOR NOW.
+     * DON'T JUDGE ME.
+     *
+     */
+    const plainStylesheet = JSON.parse(JSON.stringify(stylesheet)) as StylesheetCSS[];
+    const propertyMap = {
+        shape: { toPlain: 'data(shape)', toSheet: getNodeShape },
+        'line-style': { toPlain: 'data(style)', toSheet: getEdgeStyle },
+        'curve-style': { toPlain: 'data(curve)', toSheet: getEdgeCurve },
+        'target-arrow-shape': { toPlain: 'data(arrowShape)', toSheet: getEdgeArrowShape },
+    };
+
+    for (const style of plainStylesheet) {
+        //@ts-expect-error For some reason the object reaches with a .style but TS can't infer it
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        for (const [key, value] of Object.entries(style.style)) {
+            if (value !== 'fn' || !(key in propertyMap)) continue;
+
+            const propKey = key as keyof typeof propertyMap;
+            //@ts-expect-error For some reason the object reaches with a .style but TS can't infer it
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            style.style[propKey] = propertyMap[propKey].toPlain;
+        }
+    }
+    return plainStylesheet;
+}
+
+// -----------------------------------------------------------------
 
 const defaultStylesheet: StylesheetCSS[] = [
     {

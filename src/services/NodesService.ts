@@ -1,5 +1,5 @@
 import type cytoscape from 'cytoscape';
-import { ConfigService } from './ConfigService';
+import { DefaultStyleService } from './DefaultStyleService';
 import { removeEdges } from './EdgesServices';
 
 export function makeNodeId() {
@@ -11,14 +11,14 @@ export function addNode(
     options?: cytoscape.NodeDefinition,
     classes?: string[]
 ): void {
-    const configService = ConfigService.getInstance();
+    const defaultStyleService = DefaultStyleService.getInstance();
     const numNodes = core.nodes().length;
 
     const newIdIndex = numNodes + 1;
     const newId = `node-${Date.now().toString()}-${newIdIndex.toString()}`;
 
     const newNodeData = {
-        ...configService.getNodesData(),
+        ...defaultStyleService.getNodesData(),
         id: newId,
         index: newIdIndex,
         label: newIdIndex.toString(),
@@ -40,7 +40,7 @@ export function addNodes(
     nodesData: cytoscape.NodeDefinition[],
     classes?: string[]
 ): void {
-    const configService = ConfigService.getInstance();
+    const defaultStyleService = DefaultStyleService.getInstance();
     const numNodes = core.nodes().length;
 
     const newNodes = nodesData.map((nodeData, index) => {
@@ -51,7 +51,7 @@ export function addNodes(
             ...nodeData,
             classes: classes ?? [],
             data: {
-                ...configService.getNodesData(),
+                ...defaultStyleService.getNodesData(),
                 id: newId,
                 index: newIdIndex,
                 label: newIdIndex.toString(),

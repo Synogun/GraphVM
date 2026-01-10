@@ -1,5 +1,5 @@
 import { useGetGraph } from '@/hooks/useGraphRegistry';
-import { sheetToPlain } from '@/services/StyleService';
+import { sheetToPlain } from '@/services/DefaultStyleService';
 import type { EdgesData } from '@/types/edges';
 import { makeBlobAndDownload } from '@/utils';
 import type { StylesheetCSS } from 'cytoscape';

@@ -1,5 +1,5 @@
 import type cytoscape from 'cytoscape';
-import { ConfigService } from './services/ConfigService';
+import { DefaultStyleService } from './services/DefaultStyleService';
 
 /**
  * Determines if the current environment is development.
@@ -62,9 +62,9 @@ type CyElementsDefinition = cytoscape.ElementDefinition[] | cytoscape.ElementsDe
 export function assignDefaultElementData(
     elements: CyElementsDefinition & {}
 ): CyElementsDefinition {
-    const configService = ConfigService.getInstance();
-    const defaultNodeData = configService.getNodesData();
-    const defaultEdgeData = configService.getEdgesData();
+    const defaultStyleService = DefaultStyleService.getInstance();
+    const defaultNodeData = defaultStyleService.getNodesData();
+    const defaultEdgeData = defaultStyleService.getEdgesData();
 
     if (Array.isArray(elements)) {
         return elements.map((el) => {

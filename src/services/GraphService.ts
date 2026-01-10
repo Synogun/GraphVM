@@ -1,11 +1,11 @@
 import cytoscape from 'cytoscape';
-import { ConfigService } from './ConfigService';
+import { DefaultStyleService } from './DefaultStyleService';
 
 export function newGraph(
     containerId?: string,
     options?: cytoscape.CytoscapeOptions
 ): cytoscape.Core {
-    const ConfigManager = ConfigService.getInstance();
+    const ConfigManager = DefaultStyleService.getInstance();
 
     containerId ??= 'main-graph';
 

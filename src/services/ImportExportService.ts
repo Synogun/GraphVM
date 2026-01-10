@@ -1,5 +1,5 @@
 import type { ElementsDefinition } from 'cytoscape';
-import { ConfigService } from './ConfigService';
+import { DefaultStyleService } from './DefaultStyleService';
 import { makeNodeId } from './NodesService';
 import { makeEdgeId } from './EdgesServices';
 
@@ -46,7 +46,7 @@ export function parseTextData(data: string, type: FileType): ElementsDefinition 
         return false;
     }
 
-    const ConfigManager = ConfigService.getInstance();
+    const ConfigManager = DefaultStyleService.getInstance();
     const nodeMap = new Map<string, string>();
     const edges = [];
 

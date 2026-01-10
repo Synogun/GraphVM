@@ -1,5 +1,5 @@
 import type { EdgesData } from '@/types/edges';
-import { ConfigService } from './ConfigService';
+import { DefaultStyleService } from './DefaultStyleService';
 
 export function makeEdgeId() {
     return `edge-${Date.now().toString()}-${Math.floor(Math.random() * 10000).toString()}`;
@@ -19,12 +19,12 @@ export function addEdge(
         return;
     }
 
-    const configService = ConfigService.getInstance();
+    const defaultStyleService = DefaultStyleService.getInstance();
     const newIdIndex = core.edges().length + 1;
     const newId = `edge-${Date.now().toString()}-${newIdIndex.toString()}`;
 
     const newEdgeData = {
-        ...configService.getEdgesData(), // default edge data
+        ...defaultStyleService.getEdgesData(), // default edge data
         id: newId,
         index: newIdIndex,
         ...options.data,

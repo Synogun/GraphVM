@@ -1,11 +1,11 @@
 import type cytoscape from 'cytoscape';
-import { ConfigService } from './ConfigService';
+import { DefaultStyleService } from './DefaultStyleService';
 
 export function arrangeGraph(core: cytoscape.Core, options?: cytoscape.LayoutOptions): void {
-    const configService = ConfigService.getInstance();
+    const defaultStyleService = DefaultStyleService.getInstance();
 
     const layoutOptions: cytoscape.LayoutOptions = {
-        ...configService.getLayoutOptions(),
+        ...defaultStyleService.getLayoutOptions(),
         ...(options ?? {}),
     };
 
