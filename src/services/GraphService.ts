@@ -1,7 +1,10 @@
 import cytoscape from 'cytoscape';
 import { ConfigService } from './ConfigService';
 
-export function newGraph(containerId?: string, options?: cytoscape.CytoscapeOptions): cytoscape.Core {
+export function newGraph(
+    containerId?: string,
+    options?: cytoscape.CytoscapeOptions
+): cytoscape.Core {
     const ConfigManager = ConfigService.getInstance();
 
     containerId ??= 'main-graph';
@@ -13,7 +16,7 @@ export function newGraph(containerId?: string, options?: cytoscape.CytoscapeOpti
 
     graphOptions.data = {
         ...ConfigManager.getNodesData(), // default graph data
-        ...options?.data ?? {},
+        ...(options?.data ?? {}),
     };
 
     const newGraph = cytoscape({
@@ -37,4 +40,3 @@ export function destroyGraph(core: cytoscape.Core): void {
     core.destroy();
     console.log('destroyGraph > destroyed graph');
 }
-

@@ -9,10 +9,10 @@ import Modal from './components/common/Modal';
 import { ImportExportModal } from './components/ImportExportModal';
 import { useModals } from './contexts/ModalsContext';
 
-function App() {
+export function App() {
     const [loadingApp, setLoadingApp] = useState(true);
 
-    useEffect(() => {
+    useEffect(() => { // Simulate loading time
         const timer = setTimeout(() => {
             setLoadingApp(false);
         }, !isDev() ? 5.0 * 1000 : 10);
@@ -53,5 +53,3 @@ function App() {
             </PropertiesProvider>
         </>;
 }
-
-export default App;

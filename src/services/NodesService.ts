@@ -2,7 +2,11 @@ import type cytoscape from 'cytoscape';
 import { ConfigService } from './ConfigService';
 import { removeEdges } from './EdgesServices';
 
-export function addNode(core: cytoscape.Core, options?: cytoscape.NodeDefinition, classes?: string[]): void {
+export function addNode(
+    core: cytoscape.Core,
+    options?: cytoscape.NodeDefinition,
+    classes?: string[]
+): void {
     const configService = ConfigService.getInstance();
     const numNodes = core.nodes().length;
 
@@ -14,7 +18,7 @@ export function addNode(core: cytoscape.Core, options?: cytoscape.NodeDefinition
         id: newId,
         index: newIdIndex,
         label: newIdIndex.toString(),
-        ...options?.data ?? {},
+        ...(options?.data ?? {}),
     };
 
     core.add({
@@ -25,6 +29,40 @@ export function addNode(core: cytoscape.Core, options?: cytoscape.NodeDefinition
 
     core.data('numNodes', numNodes + 1);
     console.log('addNode > added node with id:', newId, core.data());
+}
+
+export function addNodes(
+    core: cytoscape.Core,
+    nodesData: cytoscape.NodeDefinition[],
+    classes?: string[]
+): void {
+    const configService = ConfigService.getInstance();
+    const numNodes = core.nodes().length;
+
+    const newNodes = nodesData.map((nodeData, index) => {
+        const newIdIndex = numNodes + index + 1;
+        const newId = `node-${Date.now().toString()}-${newIdIndex.toString()}`;
+
+        return {
+            ...nodeData,
+            classes: classes ?? [],
+            data: {
+                ...configService.getNodesData(),
+                id: newId,
+                index: newIdIndex,
+                label: newIdIndex.toString(),
+                ...nodeData.data,
+            },
+        };
+    });
+
+    core.add(newNodes);
+    core.data('numNodes', numNodes + newNodes.length);
+    console.log(
+        'addNodes > added nodes with ids:',
+        newNodes.map((node) => node.data.id),
+        core.data()
+    );
 }
 
 export function removeNodes(core: cytoscape.Core, nodes: cytoscape.NodeCollection): void {
@@ -45,14 +83,17 @@ export function removeNodes(core: cytoscape.Core, nodes: cytoscape.NodeCollectio
 
         // this.removedNodes.push(node);
         core.remove(node);
-
     });
 
     core.data('numNodes', core.nodes().length);
     console.log('removeNode > removed', nodes.length, 'node(s)');
 }
 
-export function updateNodes(nodes: cytoscape.NodeCollection, property: string, value: string): void {
+export function updateNodes(
+    nodes: cytoscape.NodeCollection,
+    property: string,
+    value: string
+): void {
     if (nodes.length === 0) {
         console.log('updateNodes > Select at least one node');
         return;
