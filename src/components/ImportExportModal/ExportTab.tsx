@@ -62,6 +62,8 @@ export function ExportTab({ ref, onExportSuccess, onReadyStateChange }: ExportTa
         let fileType = '';
 
         if (exportFormat === 'json') {
+            graph.elements().unselect();
+
             dataStr = JSON.stringify(graph.json());
             fileNameWithExt = `${fileName}.json`;
             fileType = 'application/json';
@@ -82,11 +84,18 @@ export function ExportTab({ ref, onExportSuccess, onReadyStateChange }: ExportTa
             dataStr = graph
                 .edges()
                 .map((edge) => {
-                    const { source = '', target = '', weight } = edge.data() as EdgesData;
-                    const weightStr =
-                        weight !== undefined && weight !== 1 ? ' ' + weight.toString() : '';
+                    const {
+                        source: sourceId = '',
+                        target: targetId = '',
+                        weight = 1,
+                    } = edge.data() as EdgesData;
 
-                    return `${source} ${target}${weightStr}`;
+                    const sourceLabel = graph.$id(sourceId).data('label') as string;
+                    const targetLabel = graph.$id(targetId).data('label') as string;
+
+                    const weightStr = weight !== 1 ? ' ' + weight.toString() : '';
+
+                    return `${sourceLabel} ${targetLabel}${weightStr}`;
                 })
                 .join('\n');
             fileNameWithExt = `${fileName}.txt`;

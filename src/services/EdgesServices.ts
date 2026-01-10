@@ -1,7 +1,15 @@
 import type { EdgesData } from '@/types/edges';
 import { ConfigService } from './ConfigService';
 
-export function addEdge(core: cytoscape.Core, options: cytoscape.EdgeDefinition, classes?: string[]): void {
+export function makeEdgeId() {
+    return `edge-${Date.now().toString()}-${Math.floor(Math.random() * 10000).toString()}`;
+}
+
+export function addEdge(
+    core: cytoscape.Core,
+    options: cytoscape.EdgeDefinition,
+    classes?: string[]
+): void {
     if (!options.data.source) {
         console.log('addEdge > Source node is required');
         return;
@@ -33,10 +41,20 @@ export function addEdge(core: cytoscape.Core, options: cytoscape.EdgeDefinition,
     }
 
     core.data('numEdges', core.edges().length);
-    console.log('addEdge > added edge with source', options.data.source, 'and target', options.data.target);
+    console.log(
+        'addEdge > added edge with source',
+        options.data.source,
+        'and target',
+        options.data.target
+    );
 }
 
-export function addEdges(core: cytoscape.Core, data: EdgesData, edgeMode = 'path', edges: string[]): void {
+export function addEdges(
+    core: cytoscape.Core,
+    data: EdgesData,
+    edgeMode = 'path',
+    edges: string[]
+): void {
     if (edges.length < 2) {
         console.log('addPath > Provide at least two edge definitions to create a path');
         // TODO: Show user feedback
@@ -49,8 +67,8 @@ export function addEdges(core: cytoscape.Core, data: EdgesData, edgeMode = 'path
                 data: {
                     source: edges[i],
                     target: edges[i + 1],
-                    ...data
-                }
+                    ...data,
+                },
             });
         }
     }
@@ -62,8 +80,8 @@ export function addEdges(core: cytoscape.Core, data: EdgesData, edgeMode = 'path
                     data: {
                         source: edges[i],
                         target: edges[j],
-                        ...data
-                    }
+                        ...data,
+                    },
                 });
             }
         }
@@ -88,7 +106,11 @@ export function removeEdges(core: cytoscape.Core, edges: cytoscape.EdgeCollectio
     console.log('removeEdge > removed', edges.length, 'edge(s)');
 }
 
-export function updateEdges(edges: cytoscape.EdgeCollection, property: string, value: string | number): void {
+export function updateEdges(
+    edges: cytoscape.EdgeCollection,
+    property: string,
+    value: string | number
+): void {
     if (edges.length === 0) {
         console.log('updateEdges > Select at least one edge');
         return;
@@ -103,7 +125,7 @@ export function updateEdges(edges: cytoscape.EdgeCollection, property: string, v
             ele.addClass(`edge-label-${String(value)}`);
         });
     } else {
-        edges.map(ele => ele.data(property, value));
+        edges.map((ele) => ele.data(property, value));
     }
 
     console.log('updateEdges > updated', edges.length, 'edge(s)');

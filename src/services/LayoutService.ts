@@ -1,15 +1,16 @@
 import type cytoscape from 'cytoscape';
 import { ConfigService } from './ConfigService';
 
-export function arrangeGraph(core: cytoscape.Core, options: cytoscape.LayoutOptions): void {
+export function arrangeGraph(core: cytoscape.Core, options?: cytoscape.LayoutOptions): void {
     const configService = ConfigService.getInstance();
+
     const layoutOptions: cytoscape.LayoutOptions = {
-        ...configService.getLayoutOptions(), // default layout options
-        ...options,
+        ...configService.getLayoutOptions(),
+        ...(options ?? {}),
     };
 
     core.layout(layoutOptions).run();
-    console.log('arrangeGraph > arranged graph with', options.name, 'layout');
+    console.log('arrangeGraph > arranged graph with', layoutOptions.name, 'layout');
 }
 
 export function centerGraph(core: cytoscape.Core, eles?: cytoscape.Collection, padding = 30): void {
@@ -19,8 +20,5 @@ export function centerGraph(core: cytoscape.Core, eles?: cytoscape.Collection, p
         core.fit(core.nodes(), padding);
     }
 
-    console.log(
-        'centerGraph > centered graph on',
-        eles?.length ? eles.toArray() : 'all nodes',
-    );
+    console.log('centerGraph > centered graph on', eles?.length ? eles.toArray() : 'all nodes');
 }

@@ -1,5 +1,7 @@
 import type { ElementsDefinition } from 'cytoscape';
 import { ConfigService } from './ConfigService';
+import { makeNodeId } from './NodesService';
+import { makeEdgeId } from './EdgesServices';
 
 export type FileType = 'application/json' | 'text/plain';
 
@@ -45,7 +47,7 @@ export function parseTextData(data: string, type: FileType): ElementsDefinition 
     }
 
     const ConfigManager = ConfigService.getInstance();
-    const nodeSet = new Set<string>();
+    const nodeMap = new Map<string, string>();
     const edges = [];
 
     try {
@@ -54,27 +56,39 @@ export function parseTextData(data: string, type: FileType): ElementsDefinition 
                 continue;
             }
 
-            const [source, target, weight = 1] = line.map((val) => val.trim());
+            const [sourceLabel, targetLabel, weight = 1] = line.map((val) => val.trim());
 
-            nodeSet.add(source);
-            nodeSet.add(target);
+            const sourceId = nodeMap.get(sourceLabel) ?? makeNodeId();
+            const targetId = nodeMap.get(targetLabel) ?? makeNodeId();
 
             edges.push({
                 data: {
                     ...ConfigManager.getEdgesData(),
-                    source,
-                    target,
+                    id: makeEdgeId(),
+                    source: sourceId,
+                    target: targetId,
                     weight,
                 },
             });
+
+            if (!nodeMap.has(sourceLabel)) {
+                nodeMap.set(sourceLabel, sourceId);
+            }
+            if (!nodeMap.has(targetLabel)) {
+                nodeMap.set(targetLabel, targetId);
+            }
         }
     } catch (error) {
         console.error('Error parsing edge data:', error);
         return false;
     }
 
-    const nodes = Array.from(nodeSet).map((id) => ({
-        data: { ...ConfigManager.getNodesData(), id },
+    const nodes = Array.from(nodeMap.entries()).map(([label, id]) => ({
+        data: {
+            ...ConfigManager.getNodesData(),
+            id,
+            label,
+        },
     }));
 
     return { nodes, edges };

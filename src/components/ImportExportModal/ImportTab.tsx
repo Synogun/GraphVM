@@ -1,8 +1,7 @@
 import { useGetGraph } from '@/hooks/useGraphRegistry';
-// import { ConfigService } from '@/services/ConfigService';
 import { newGraph } from '@/services/GraphService';
 import { isFileValid, parseTextData, type FileType } from '@/services/ImportExportService';
-// import { assignDefaultElementData } from '@/utils';
+import { arrangeGraph } from '@/services/LayoutService';
 import cytoscape, { type CytoscapeOptions } from 'cytoscape';
 import {
     useCallback,
@@ -22,7 +21,6 @@ type ImportTabProps = {
 
 export function ImportTab({ ref, onImportSuccess, onReadyStateChange }: ImportTabProps) {
     const graph = useGetGraph('main-graph');
-    // const ConfigManager = ConfigService.getInstance();
 
     const [importData, setImportData] = useState<CytoscapeOptions | null>(null);
     const [previewCy, setPreviewCy] = useState<cytoscape.Core | null>(null);
@@ -49,10 +47,10 @@ export function ImportTab({ ref, onImportSuccess, onReadyStateChange }: ImportTa
         console.log('all file:', event.target.files);
         console.log('Selected file:', file);
 
-        const invalidFile = (a?: string) => {
+        const invalidFile = () => {
             cleanup();
             // TODO: Display error to user
-            alert(`Invalid file. ${a ?? ''} Please select a JSON, CSV, or TXT file under 2MB.`);
+            alert(`Invalid file. Please select a JSON or TXT file under 2MB.`);
         };
 
         if (!file || !isFileValid(file)) {
@@ -67,7 +65,7 @@ export function ImportTab({ ref, onImportSuccess, onReadyStateChange }: ImportTa
 
         const success = handleDataPreview(content, file.type as FileType);
         if (!success) {
-            invalidFile('ccccccccccccccccccccccc');
+            invalidFile();
         }
     };
 
@@ -129,7 +127,8 @@ export function ImportTab({ ref, onImportSuccess, onReadyStateChange }: ImportTa
 
         graph.elements().remove();
         graph.json(importData as { elements: cytoscape.ElementDefinition[] });
-        graph.fit();
+
+        arrangeGraph(graph);
 
         cleanup();
         onImportSuccess();

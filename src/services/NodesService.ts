@@ -2,6 +2,10 @@ import type cytoscape from 'cytoscape';
 import { ConfigService } from './ConfigService';
 import { removeEdges } from './EdgesServices';
 
+export function makeNodeId() {
+    return `node-${Date.now().toString()}-${Math.floor(Math.random() * 10000).toString()}`;
+}
+
 export function addNode(
     core: cytoscape.Core,
     options?: cytoscape.NodeDefinition,
@@ -41,7 +45,7 @@ export function addNodes(
 
     const newNodes = nodesData.map((nodeData, index) => {
         const newIdIndex = numNodes + index + 1;
-        const newId = `node-${Date.now().toString()}-${newIdIndex.toString()}`;
+        const newId = makeNodeId();
 
         return {
             ...nodeData,
