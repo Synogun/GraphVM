@@ -5,13 +5,13 @@ import { defineConfig } from 'vite';
 // https://vite.dev/config/
 export default defineConfig({
     base: '/GraphVM/',
-    plugins: [
-        react(),
-        tailwindcss()
-    ],
+    plugins: [react(), tailwindcss()],
     resolve: {
         alias: {
             '@': '/src',
         },
+    },
+    dev: {
+        sourcemap: true,
     },
 });
