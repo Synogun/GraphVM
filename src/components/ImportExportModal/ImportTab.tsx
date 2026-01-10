@@ -1,3 +1,4 @@
+import { useLayoutProperties } from '@/contexts/LayoutContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { newGraph } from '@/services/GraphService';
 import { isFileValid, parseTextData, type FileType } from '@/services/ImportExportService';
@@ -21,6 +22,8 @@ type ImportTabProps = {
 
 export function ImportTab({ ref, onImportSuccess, onReadyStateChange }: ImportTabProps) {
     const graph = useGetGraph('main-graph');
+
+    const { current: currentLayout } = useLayoutProperties();
 
     const [importData, setImportData] = useState<CytoscapeOptions | null>(null);
     const [previewCy, setPreviewCy] = useState<cytoscape.Core | null>(null);
@@ -100,6 +103,8 @@ export function ImportTab({ ref, onImportSuccess, onReadyStateChange }: ImportTa
                 ...previewOptions,
             });
 
+            arrangeGraph(newPreviewCy, currentLayout);
+
             setPreviewCy(newPreviewCy);
         } catch (error) {
             console.error('Error initializing Cytoscape with imported data:', error);
@@ -118,8 +123,6 @@ export function ImportTab({ ref, onImportSuccess, onReadyStateChange }: ImportTa
 
         graph.elements().remove();
         graph.json(importData as { elements: cytoscape.ElementDefinition[] });
-
-        arrangeGraph(graph);
 
         cleanup();
         onImportSuccess();

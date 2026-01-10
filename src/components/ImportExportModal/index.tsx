@@ -5,6 +5,8 @@ import { ExportTab } from './ExportTab';
 import { ImportTab } from './ImportTab';
 import { TabBtn } from './TabBtn';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
+import { arrangeGraph } from '@/services/LayoutService';
+import { useLayoutProperties } from '@/contexts/LayoutContext';
 
 type ImportTabRef = {
     handleImport: () => void;
@@ -19,6 +21,7 @@ type ExportTabRef = {
 export function ImportExportModal() {
     const modals = useModals();
     const graph = useGetGraph('main-graph');
+    const { current: currentLayout } = useLayoutProperties();
 
     const [activeTab, setActiveTab] = useState<'import' | 'export'>('import');
     const [isActionReady, setIsActionReady] = useState(
@@ -36,6 +39,12 @@ export function ImportExportModal() {
         }
         setActiveTab('import');
         modals.setIsImportExportModalOpen(false);
+
+        if (!graph) {
+            return;
+        }
+
+        arrangeGraph(graph, currentLayout);
     };
 
     const handleAction = () => {
