@@ -1,6 +1,14 @@
 import React, { useEffect, useRef } from 'react';
 
-export function Modal({ id, title, children, show, onClose, actions }: ModalProps) {
+export function Modal({
+    id,
+    title,
+    children,
+    show,
+    onClose,
+    actions,
+    className,
+}: ModalProps) {
     const modalRef = useRef<HTMLDialogElement>(null);
 
     useEffect(() => {
@@ -35,20 +43,20 @@ export function Modal({ id, title, children, show, onClose, actions }: ModalProp
     }, [onClose, show]);
 
     return (
-        <dialog ref={ modalRef } className='modal' id={ id }>
-            <div className='modal-box'>
-                <h3 className='font-bold text-lg'>{title ?? ' '}</h3>
-                <div className='py-4'>{children ?? ' '}</div>
-                <div className='modal-action'>
+        <dialog ref={modalRef} className={`modal ${className ?? ''}`} id={id}>
+            <div className="modal-box max-h-[90vh]">
+                <h3 className="font-bold text-lg">{title ?? ' '}</h3>
+                <div className="pt-4 pb-2">{children ?? ' '}</div>
+                <div className="modal-action mt-3">
                     {actions ?? (
-                        <form method='dialog'>
-                            <button className='btn'>Close</button>
+                        <form method="dialog">
+                            <button className="btn">Close</button>
                         </form>
                     )}
                 </div>
             </div>
-            <form className='modal-backdrop' method='dialog'>
-                <button>close</button>
+            <form className="modal-backdrop" method="dialog">
+                <button onClick={onClose}>close</button>
             </form>
         </dialog>
     );
@@ -61,7 +69,7 @@ type ModalProps = {
     show?: boolean;
     onClose?: () => void;
     actions?: React.ReactNode;
+    className?: string;
 };
 
 export default Modal;
-
