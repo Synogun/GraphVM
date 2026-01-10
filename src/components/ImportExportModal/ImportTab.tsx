@@ -44,9 +44,6 @@ export function ImportTab({ ref, onImportSuccess, onReadyStateChange }: ImportTa
     const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0] ?? null;
 
-        console.log('all file:', event.target.files);
-        console.log('Selected file:', file);
-
         const invalidFile = () => {
             cleanup();
             // TODO: Display error to user
@@ -110,12 +107,6 @@ export function ImportTab({ ref, onImportSuccess, onReadyStateChange }: ImportTa
         }
 
         setImportData(dataToImport);
-
-        console.log(
-            'Cytoscape initialized with imported data:',
-            newPreviewCy.elements(),
-            'elements'
-        );
 
         return true;
     };
