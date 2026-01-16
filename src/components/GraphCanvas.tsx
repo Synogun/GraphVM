@@ -8,18 +8,10 @@ import { isArrayOfStrings } from '../types/typeGuards';
 export function GraphCanvas({ containerId }: GraphCanvasProps) {
     const canvasId = containerId || 'main-graph';
     const [graph, setGraph] = useState<GraphApi>(null);
-    const [isGraphInitialized, setIsGraphInitialized] = useState({
-        data: false,
-        events: false,
-    });
 
     const {
         nodes: { setSelected: setSelectedNodes },
-        edges: {
-            setSelected: setSelectedEdges,
-            setEdgeMode,
-        },
-
+        edges: { setSelected: setSelectedEdges },
     } = useGraphProperties();
 
     useEffect(() => {
@@ -27,98 +19,76 @@ export function GraphCanvas({ containerId }: GraphCanvasProps) {
             data: {
                 nodeSelectionOrder: [],
                 edgeSelectionOrder: [],
-            }
+            },
         });
 
-        // newCore.getCore().data('nodeSelectionOrder', []);
-        // newCore.getCore().data('edgeSelectionOrder', []);
-        setIsGraphInitialized(prev => ({ ...prev, data: true }));
+        newCore.on('select', 'node, edge', (e: cytoscape.EventObject) => {
+            const target = e.target as cytoscape.Collection;
+
+            const currentSelectedNodes: unknown = newCore.data('nodeSelectionOrder');
+            const currentSelectedEdges: unknown = newCore.data('edgeSelectionOrder');
+            if (
+                !isArrayOfStrings(currentSelectedNodes) ||
+                !isArrayOfStrings(currentSelectedEdges)
+            ) {
+                console.log('event', e);
+                console.error('Invalid selection order data');
+                return;
+            }
+
+            const targetNodes = target.filter('node').map((n) => n.id());
+            const targetEdges = target.filter('edge').map((n) => n.id());
+
+            newCore.data('nodeSelectionOrder', [...currentSelectedNodes, ...targetNodes]);
+            newCore.data('edgeSelectionOrder', [...currentSelectedEdges, ...targetEdges]);
+
+            setSelectedNodes(newCore.nodes(':selected'));
+            setSelectedEdges(newCore.edges(':selected'));
+        });
+
+        newCore.on('unselect', 'node, edge', (e: cytoscape.EventObject) => {
+            const target = e.target as cytoscape.Collection;
+
+            const currentSelectedNodes: unknown = newCore.data('nodeSelectionOrder');
+            const currentSelectedEdges: unknown = newCore.data('edgeSelectionOrder');
+
+            if (
+                !isArrayOfStrings(currentSelectedNodes) ||
+                !isArrayOfStrings(currentSelectedEdges)
+            ) {
+                console.log('event', e);
+                console.error('Invalid selection order data');
+                return;
+            }
+
+            const targetNodes = target.filter('node').map((n) => n.id());
+            const targetEdges = target.filter('edge').map((n) => n.id());
+
+            const filteredSelectionNodes = currentSelectedNodes.filter(
+                (id) => !targetNodes.includes(id)
+            );
+
+            const filteredSelectionEdges = currentSelectedEdges.filter(
+                (id) => !targetEdges.includes(id)
+            );
+
+            newCore.data('nodeSelectionOrder', filteredSelectionNodes);
+            newCore.data('edgeSelectionOrder', filteredSelectionEdges);
+
+            setSelectedNodes(newCore.nodes(':selected'));
+            setSelectedEdges(newCore.edges(':selected'));
+        });
 
         setGraph(newCore);
 
         return () => {
             destroyGraph(newCore);
         };
-    }, [canvasId]);
-
-    useEffect(() => {
-        if (
-            !graph ||
-            !isGraphInitialized.data ||
-            isGraphInitialized.events
-        ) {
-            return;
-        }
-
-        setSelectedNodes(graph.nodes(':selected'));
-        setSelectedEdges(graph.edges(':selected'));
-        
-        graph.on('select', 'node, edge', (e: cytoscape.EventObject) => {
-            const target = e.target as cytoscape.Collection;
-
-            const currentSelectedNodes: unknown = graph.data('nodeSelectionOrder');
-            const currentSelectedEdges: unknown = graph.data('edgeSelectionOrder');
-            if (
-                !isArrayOfStrings(currentSelectedNodes) ||
-                !isArrayOfStrings(currentSelectedEdges)
-            ) {
-                console.log('event', e);
-                console.error('Invalid selection order data');
-                return;
-            }
-
-            const targetNodes = target.filter('node').map(n => n.id());
-            const targetEdges = target.filter('edge').map(n => n.id());
-
-            graph.data('nodeSelectionOrder', [...currentSelectedNodes, ...targetNodes]);
-            graph.data('edgeSelectionOrder', [...currentSelectedEdges, ...targetEdges]);
-
-            setSelectedNodes(graph.nodes(':selected'));
-            setSelectedEdges(graph.edges(':selected'));
-        });
-
-        graph.on('unselect', 'node, edge', (e: cytoscape.EventObject) => {
-            const target = e.target as cytoscape.Collection;
-
-            const currentSelectedNodes: unknown = graph.data('nodeSelectionOrder');
-            const currentSelectedEdges: unknown = graph.data('edgeSelectionOrder');
-
-            if (
-                !isArrayOfStrings(currentSelectedNodes) ||
-                !isArrayOfStrings(currentSelectedEdges)
-            ) {
-                console.log('event', e);
-                console.error('Invalid selection order data');
-                return;
-            }
-
-            const targetNodes = target.filter('node').map(n => n.id());
-            const targetEdges = target.filter('edge').map(n => n.id());
-
-            const filteredSelectionNodes = currentSelectedNodes
-                .filter(id => !targetNodes.includes(id));
-            
-            const filteredSelectionEdges = currentSelectedEdges
-                .filter(id => !targetEdges.includes(id));
-
-            graph.data('nodeSelectionOrder', filteredSelectionNodes);
-            graph.data('edgeSelectionOrder', filteredSelectionEdges);
-
-            setSelectedNodes(graph.nodes(':selected'));
-            setSelectedEdges(graph.edges(':selected'));
-        });
-
-        setIsGraphInitialized(prev => ({ ...prev, events: true }));
-    }, [graph, setSelectedNodes, setSelectedEdges, isGraphInitialized, setEdgeMode]);
+    }, [canvasId, setSelectedNodes, setSelectedEdges]);
 
     useRegisterGraph(canvasId, graph);
 
-    return (
-        <div
-            className='h-full w-full bg-base-100'
-            id={ canvasId }
-        />
-    );
+    return <div className="h-full w-full bg-base-100" id={canvasId} />;
 }
 
 type GraphCanvasProps = {
