@@ -9,19 +9,23 @@ export function EdgesProvider({ children }: EdgesProviderProps) {
     const [lineStyle, setLineStyle] = useState('solid');
     const [curveStyle, setCurveStyle] = useState<EdgeCurveStyle>('bezier');
 
-    const value = useMemo(() => ({
-        labelStyle, setLabelStyle,
-        weight, setWeight,
-        color, setColor,
-        lineStyle, setLineStyle,
-        curveStyle, setCurveStyle
-    }), [labelStyle, weight, color, lineStyle, curveStyle]);
-
-    return (
-        <EdgesContext.Provider value={ value }>
-            {children}
-        </EdgesContext.Provider>
+    const value = useMemo(
+        () => ({
+            labelStyle,
+            setLabelStyle,
+            weight,
+            setWeight,
+            color,
+            setColor,
+            lineStyle,
+            setLineStyle,
+            curveStyle,
+            setCurveStyle,
+        }),
+        [labelStyle, weight, color, lineStyle, curveStyle]
     );
+
+    return <EdgesContext.Provider value={value}>{children}</EdgesContext.Provider>;
 }
 
 type EdgesProviderProps = {

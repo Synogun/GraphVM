@@ -1,5 +1,11 @@
-
-export type LayoutType = 'null' | 'circle' | 'random' | 'grid' | 'concentric' | 'breadthfirst' | 'cose';
+export type LayoutType =
+    | 'null'
+    | 'circle'
+    | 'random'
+    | 'grid'
+    | 'concentric'
+    | 'breadthfirst'
+    | 'cose';
 
 export type LayoutContextProperties = {
     current: cytoscape.LayoutOptions | undefined;

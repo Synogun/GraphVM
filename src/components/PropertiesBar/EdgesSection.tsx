@@ -10,18 +10,29 @@ import { type ChangeEvent, useEffect, useMemo } from 'react';
 export function EdgesSection({ visible = true }: EdgesSectionProps) {
     const graph = useGetGraph('main-graph');
     const {
-        labelStyle, setLabelStyle,
-        weight, setWeight,
-        color, setColor,
-        lineStyle, setLineStyle,
-        curveStyle, setCurveStyle
+        labelStyle,
+        setLabelStyle,
+        weight,
+        setWeight,
+        color,
+        setColor,
+        lineStyle,
+        setLineStyle,
+        curveStyle,
+        setCurveStyle,
     } = useEdgesProperties();
 
-    const { edges: { selected: selectedEdges } } = useGraphProperties();
+    const {
+        edges: { selected: selectedEdges },
+    } = useGraphProperties();
 
     useEffect(() => {
-        if (!graph) { return; }
-        if (!selectedEdges) { return; }
+        if (!graph) {
+            return;
+        }
+        if (!selectedEdges) {
+            return;
+        }
 
         if (selectedEdges.length === 0) {
             setLabelStyle('hidden');
@@ -38,7 +49,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         const modeLineStyle = findPropertyValueMode(selectedEdges, 'style') ?? 'solid';
         const modeCurve = findPropertyValueMode(selectedEdges, 'curve');
         const modeWeight = findPropertyValueMode(selectedEdges, 'weight') ?? 1;
-            
+
         setLabelStyle(modeLabel);
         setColor(modeColor);
         setLineStyle(modeLineStyle);
@@ -47,8 +58,12 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
     }, [graph, selectedEdges, setLabelStyle, setColor, setLineStyle, setCurveStyle, setWeight]);
 
     const handleChangeLabel = (e: ChangeEvent<HTMLSelectElement>) => {
-        if (!graph) { return; }
-        if (!selectedEdges) { return; }
+        if (!graph) {
+            return;
+        }
+        if (!selectedEdges) {
+            return;
+        }
 
         const { value } = e.target;
 
@@ -57,8 +72,12 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
     };
 
     const handleChangeWeight = (e: ChangeEvent<HTMLInputElement>) => {
-        if (!graph) { return; }
-        if (!selectedEdges) { return; }
+        if (!graph) {
+            return;
+        }
+        if (!selectedEdges) {
+            return;
+        }
 
         const { value } = e.target;
 
@@ -67,16 +86,24 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
     };
 
     const handleChangeColor = (e: ChangeEvent<HTMLInputElement>) => {
-        if (!graph) { return; }
-        if (!selectedEdges) { return; }
+        if (!graph) {
+            return;
+        }
+        if (!selectedEdges) {
+            return;
+        }
 
         updateEdges(selectedEdges, 'color', e.target.value);
         setColor(e.target.value);
     };
 
     const handleChangeLineStyle = (e: ChangeEvent<HTMLSelectElement>) => {
-        if (!graph) { return; }
-        if (!selectedEdges) { return; }
+        if (!graph) {
+            return;
+        }
+        if (!selectedEdges) {
+            return;
+        }
 
         const { value } = e.target;
 
@@ -85,8 +112,12 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
     };
 
     const handleChangeCurveStyle = (e: ChangeEvent<HTMLSelectElement>) => {
-        if (!graph) { return; }
-        if (!selectedEdges) { return; }
+        if (!graph) {
+            return;
+        }
+        if (!selectedEdges) {
+            return;
+        }
 
         const { value } = e.target;
 
@@ -95,88 +126,66 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
     };
 
     const selectLabelOptions = useMemo(() => {
-        return labelStyleOptions.map(
-            style => ({
-                label: style.charAt(0).toUpperCase() + style.slice(1),
-                value: style
-            })
-        );
+        return labelStyleOptions.map((style) => ({
+            label: style.charAt(0).toUpperCase() + style.slice(1),
+            value: style,
+        }));
     }, []);
 
     const selectLineStyleOptions = useMemo(() => {
-        return lineStyleOptions.map(
-            style => ({
-                label: style.charAt(0).toUpperCase() + style.slice(1),
-                value: style
-            })
-        );
+        return lineStyleOptions.map((style) => ({
+            label: style.charAt(0).toUpperCase() + style.slice(1),
+            value: style,
+        }));
     }, []);
 
     const selectCurveStyleOptions = useMemo(() => {
-        return curveStyleOptions.map(
-            style => ({
-                label: style.charAt(0).toUpperCase() + style.slice(1),
-                value: style
-            })
-        );
+        return curveStyleOptions.map((style) => ({
+            label: style.charAt(0).toUpperCase() + style.slice(1),
+            value: style,
+        }));
     }, []);
 
     return (
-        <div className={ visible ? '' : 'hidden' }>
-            <div className='divider mb-1'>
-                <h1 className='text-lg font-bold text-center'>Edges</h1>
+        <div className={visible ? '' : 'hidden'}>
+            <div className="divider mb-1">
+                <h1 className="text-lg font-bold text-center">Edges</h1>
             </div>
 
             <SelectInput
-                label='Label Style'
-                onChange={ handleChangeLabel }
-                options={ selectLabelOptions }
-                selectTitle='Pick a label style'
-                value={ labelStyle }
+                label="Label Style"
+                onChange={handleChangeLabel}
+                options={selectLabelOptions}
+                selectTitle="Pick a label style"
+                value={labelStyle}
             />
 
-            <NumberInput
-                label='Weight'
-                onChange={ handleChangeWeight }
-                value={ weight }
-            />
+            <NumberInput label="Weight" onChange={handleChangeWeight} value={weight} />
 
-            <ColorInput
-                label='Color'
-                onChange={ handleChangeColor }
-                value={ color }
+            <ColorInput label="Color" onChange={handleChangeColor} value={color} />
+
+            <SelectInput
+                label="Line Style"
+                onChange={handleChangeLineStyle}
+                options={selectLineStyleOptions}
+                selectTitle="Pick a line style"
+                value={lineStyle}
             />
 
             <SelectInput
-                label='Line Style'
-                onChange={ handleChangeLineStyle }
-                options={ selectLineStyleOptions }
-                selectTitle='Pick a line style'
-                value={ lineStyle }
-            />
-
-            <SelectInput
-                label='Curve Style'
-                onChange={ handleChangeCurveStyle }
-                options={ selectCurveStyleOptions }
-                selectTitle='Pick a curve style'
-                value={ curveStyle }
+                label="Curve Style"
+                onChange={handleChangeCurveStyle}
+                options={selectCurveStyleOptions}
+                selectTitle="Pick a curve style"
+                value={curveStyle}
             />
         </div>
     );
 }
 
-const labelStyleOptions = [
-    'hidden',
-    'weight',
-    'index',
-];
+const labelStyleOptions = ['hidden', 'weight', 'index'];
 
-const lineStyleOptions = [
-    'solid',
-    'dashed',
-    'dotted',
-];
+const lineStyleOptions = ['solid', 'dashed', 'dotted'];
 
 const curveStyleOptions = [
     'haystack',

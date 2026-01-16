@@ -8,16 +8,19 @@ import { type ChangeEvent, useEffect, useMemo } from 'react';
 
 export function NodesSection({ visible = true }: NodeSectionProps) {
     const graph = useGetGraph('main-graph');
-    const {
-        color, setColor,
-        shape, setShape,
-    } = useNodeProperties();
+    const { color, setColor, shape, setShape } = useNodeProperties();
 
-    const { nodes: { selected: selectedNodes } } = useGraphProperties();
+    const {
+        nodes: { selected: selectedNodes },
+    } = useGraphProperties();
 
     useEffect(() => {
-        if (!graph) { return; }
-        if (!selectedNodes) { return; }
+        if (!graph) {
+            return;
+        }
+        if (!selectedNodes) {
+            return;
+        }
 
         if (selectedNodes.length === 0) {
             setColor('#999999');
@@ -43,16 +46,24 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
     // };
 
     const handleChangeColor = (e: ChangeEvent<HTMLInputElement>) => {
-        if (!graph) { return; }
-        if (!selectedNodes) { return; }
+        if (!graph) {
+            return;
+        }
+        if (!selectedNodes) {
+            return;
+        }
 
         updateNodes(selectedNodes, 'color', e.target.value);
         setColor(e.target.value);
     };
 
     const handleChangeShape = (e: ChangeEvent<HTMLSelectElement>) => {
-        if (!graph) { return; }
-        if (!selectedNodes) { return; }
+        if (!graph) {
+            return;
+        }
+        if (!selectedNodes) {
+            return;
+        }
 
         const { value } = e.target;
 
@@ -61,17 +72,16 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
     };
 
     const selectShapeOptions = useMemo(() => {
-        return shapeOptions
-            .map(shape => ({
-                label: shape.charAt(0).toUpperCase() + shape.slice(1),
-                value: shape
-            }));
+        return shapeOptions.map((shape) => ({
+            label: shape.charAt(0).toUpperCase() + shape.slice(1),
+            value: shape,
+        }));
     }, []);
 
     return (
-        <div className={ visible ? '' : 'hidden' }>
-            <div className='divider mb-1'>
-                <h1 className='text-lg font-bold text-center'>Nodes</h1>
+        <div className={visible ? '' : 'hidden'}>
+            <div className="divider mb-1">
+                <h1 className="text-lg font-bold text-center">Nodes</h1>
             </div>
 
             {/* <TextInput
@@ -80,18 +90,14 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
                 // value={ nodeProperties.label }
             /> */}
 
-            <ColorInput
-                label='Color'
-                onChange={ handleChangeColor }
-                value={ color }
-            />
+            <ColorInput label="Color" onChange={handleChangeColor} value={color} />
 
             <SelectInput
-                label='Shape'
-                onChange={ handleChangeShape }
-                options={ selectShapeOptions }
-                selectTitle='Pick a node shape'
-                value={ shape }
+                label="Shape"
+                onChange={handleChangeShape}
+                options={selectShapeOptions}
+                selectTitle="Pick a node shape"
+                value={shape}
             />
         </div>
     );

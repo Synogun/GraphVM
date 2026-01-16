@@ -11,15 +11,14 @@ if (!rootElement) {
     throw new Error('Root element with id "root" not found');
 }
 
-const appComponent = isDev()
-    ? (
-        <StrictMode>
-            <ModalsProvider>
-                <App />
-            </ModalsProvider>
-        </StrictMode>
-    )
-    : <App />;
+const appComponent = isDev() ? (
+    <StrictMode>
+        <ModalsProvider>
+            <App />
+        </ModalsProvider>
+    </StrictMode>
+) : (
+    <App />
+);
 
-createRoot(rootElement)
-    .render(appComponent);
+createRoot(rootElement).render(appComponent);

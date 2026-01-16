@@ -25,12 +25,12 @@ export function LayoutSection({ visible = true }: LayoutSectionProps) {
             animationDuration: 500,
             animationEasing: 'ease-out',
         };
-        
+
         if (layoutType === 'circle') {
             options = {
                 ...options,
                 name: 'circle',
-                radius: circleLayout.radius
+                radius: circleLayout.radius,
             };
         }
 
@@ -39,7 +39,7 @@ export function LayoutSection({ visible = true }: LayoutSectionProps) {
                 ...options,
                 name: 'grid',
                 rows: gridLayout.rows,
-                cols: gridLayout.cols
+                cols: gridLayout.cols,
             };
         }
 
@@ -51,7 +51,7 @@ export function LayoutSection({ visible = true }: LayoutSectionProps) {
         circleLayout.radius,
         gridLayout.rows,
         gridLayout.cols,
-        setCurrentLayout
+        setCurrentLayout,
     ]);
 
     const handleChangeLayoutType = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -80,68 +80,76 @@ export function LayoutSection({ visible = true }: LayoutSectionProps) {
 
     const selectTypeOptions = useMemo(() => {
         return layoutOptions
-            .map(option => ({
+            .map((option) => ({
                 value: option,
-                label: option.charAt(0).toUpperCase() + option.slice(1)
+                label: option.charAt(0).toUpperCase() + option.slice(1),
             }))
             .sort((a, b) => a.label.localeCompare(b.label));
     }, []);
 
-    return (<>
-        <div className={ visible ? '' : 'hidden' }>
-            <div className='divider mb-1'>
-                <h1 className='text-lg font-bold text-center'>Layout</h1>
+    return (
+        <>
+            <div className={visible ? '' : 'hidden'}>
+                <div className="divider mb-1">
+                    <h1 className="text-lg font-bold text-center">Layout</h1>
+                </div>
+
+                <SelectInput
+                    label="Layout Type"
+                    onChange={handleChangeLayoutType}
+                    options={selectTypeOptions}
+                    selectTitle="Pick a layout type"
+                    value={layoutType}
+                />
+
+                {layoutType === 'circle' && (
+                    <>
+                        <RangeInput
+                            label="Radius"
+                            max={250}
+                            min={1}
+                            onChange={handleChangeCircleRadius}
+                            step={1}
+                            value={circleLayout.radius}
+                        />
+                    </>
+                )}
+
+                {layoutType === 'grid' && (
+                    <>
+                        <RangeInput
+                            label="Rows"
+                            max={10}
+                            min={1}
+                            onChange={handleChangeGridRows}
+                            step={1}
+                            value={gridLayout.rows}
+                        />
+
+                        <RangeInput
+                            label="Columns"
+                            max={10}
+                            min={1}
+                            onChange={handleChangeGridCols}
+                            step={1}
+                            value={gridLayout.cols}
+                        />
+                    </>
+                )}
+
+                {layoutType === 'random' && (
+                    <>
+                        <button
+                            className="btn btn-outline hover:btn-accent focus:btn-accent w-full mt-2 mb-1"
+                            onClick={handleRandomLayout}
+                        >
+                            Randomize node positions
+                        </button>
+                    </>
+                )}
             </div>
-
-            <SelectInput
-                label='Layout Type'
-                onChange={ handleChangeLayoutType }
-                options={ selectTypeOptions }
-                selectTitle='Pick a layout type'
-                value={ layoutType }
-            />
-
-            {layoutType === 'circle' && <>
-                <RangeInput
-                    label='Radius'
-                    max={ 250 }
-                    min={ 1 }
-                    onChange={ handleChangeCircleRadius }
-                    step={ 1 }
-                    value={ circleLayout.radius }
-                />
-            </>}
-
-            {layoutType === 'grid' && <>
-                <RangeInput
-                    label='Rows'
-                    max={ 10 }
-                    min={ 1 }
-                    onChange={ handleChangeGridRows }
-                    step={ 1 }
-                    value={ gridLayout.rows }
-                />
-
-                <RangeInput
-                    label='Columns'
-                    max={ 10 }
-                    min={ 1 }
-                    onChange={ handleChangeGridCols }
-                    step={ 1 }
-                    value={ gridLayout.cols }
-                />
-            </>}
-
-            {layoutType === 'random' && <>
-                <button
-                    className='btn btn-outline hover:btn-accent focus:btn-accent w-full mt-2 mb-1'
-                    onClick={ handleRandomLayout }
-                >
-                    Randomize node positions
-                </button>
-            </>}
-        </div>
-    </>);
+        </>
+    );
 }
 
 const setNumberProperty = (
@@ -153,24 +161,23 @@ const setNumberProperty = (
 ) => {
     let value = Number(e.target.value);
 
-    if (isNaN(value)) { return; }
+    if (isNaN(value)) {
+        return;
+    }
 
-    if (value < min) { value = min; }
-    if (value > max) { value = max; }
+    if (value < min) {
+        value = min;
+    }
+    if (value > max) {
+        value = max;
+    }
 
     if (value !== current) {
         setter(value);
     }
 };
 
-const layoutOptions = [
-    'circle',
-    'random',
-    'grid',
-    'concentric',
-    'breadthfirst',
-    'cose',
-];
+const layoutOptions = ['circle', 'random', 'grid', 'concentric', 'breadthfirst', 'cose'];
 
 type LayoutSectionProps = {
     visible?: boolean;

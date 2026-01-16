@@ -1,4 +1,3 @@
-
 export type GraphContextProperties = {
     nodes: {
         count: number;

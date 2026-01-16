@@ -10,21 +10,13 @@ export function isEdgeCurve(value: unknown): value is EdgeCurveStyle {
         'segments',
         'taxi',
         'straight',
-        'haystack'
+        'haystack',
     ];
-    return (
-        typeof value === 'string' &&
-        validCurves.includes(value as EdgeCurveStyle)
-    );
+    return typeof value === 'string' && validCurves.includes(value as EdgeCurveStyle);
 }
 
 export function isEdgeStyle(value: unknown): value is cytoscape.Css.LineStyle {
-    const validStyles: cytoscape.Css.LineStyle[] = [
-        'solid',
-        'dotted',
-        'dashed',
-        'double'
-    ];
+    const validStyles: cytoscape.Css.LineStyle[] = ['solid', 'dotted', 'dashed', 'double'];
     return typeof value === 'string' && validStyles.includes(value as cytoscape.Css.LineStyle);
 }
 
@@ -41,7 +33,7 @@ export function isEdgeArrowShape(value: unknown): value is cytoscape.Css.ArrowSh
         'circle',
         'diamond',
         'chevron',
-        'none'
+        'none',
     ];
     return typeof value === 'string' && validShapes.includes(value as cytoscape.Css.ArrowShape);
 }

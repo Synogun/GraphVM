@@ -1,27 +1,36 @@
 import { type ChangeEvent } from 'react';
 
-function SelectInput({ value, options, label, selectTitle, onChange, className='' }: SelectInputProps) {
+function SelectInput({
+    value,
+    options,
+    label,
+    selectTitle,
+    onChange,
+    className = '',
+}: SelectInputProps) {
     return (
-        <fieldset className='fieldset'>
-            {label && <legend className='fieldset-legend'>{label}</legend>}
+        <fieldset className="fieldset">
+            {label && <legend className="fieldset-legend">{label}</legend>}
             <select
-                className={ `select hover:select-accent focus:select-accent cursor-pointer ${className}` }
-                onChange={ onChange }
-                value={ value }
+                className={`select hover:select-accent focus:select-accent cursor-pointer ${className}`}
+                onChange={onChange}
+                value={value}
             >
-                {selectTitle && <>
-                    <option
-                        key={ selectTitle.replace(' ', '-') + '-' + 'type-dropdown-title' }
-                        disabled={ true }
-                    >
-                        {selectTitle}
-                    </option>
-                </>}
+                {selectTitle && (
+                    <>
+                        <option
+                            key={selectTitle.replace(' ', '-') + '-' + 'type-dropdown-title'}
+                            disabled={true}
+                        >
+                            {selectTitle}
+                        </option>
+                    </>
+                )}
 
-                {options.map(option => (
+                {options.map((option) => (
                     <option
-                        key={ option.label.replace(' ', '-') + '-' + option.value }
-                        value={ option.value }
+                        key={option.label.replace(' ', '-') + '-' + option.value}
+                        value={option.value}
                     >
                         {option.label}
                     </option>

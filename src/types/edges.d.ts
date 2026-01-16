@@ -1,4 +1,12 @@
-export type EdgeCurveStyle = 'haystack' | 'straight' | 'bezier' | 'unbundled-bezier' | 'segments' | 'taxi' | 'round-taxi' | 'round-segments';
+export type EdgeCurveStyle =
+    | 'haystack'
+    | 'straight'
+    | 'bezier'
+    | 'unbundled-bezier'
+    | 'segments'
+    | 'taxi'
+    | 'round-taxi'
+    | 'round-segments';
 
 export type EdgesData = {
     id?: string;

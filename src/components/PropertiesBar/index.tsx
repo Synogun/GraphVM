@@ -6,7 +6,6 @@ import { LayoutSection } from './LayoutSection';
 import { NodesSection } from './NodesSection';
 
 export function PropertiesBar({ children }: PropertiesBarProps) {
-
     // const [panelsDisplay, setPanelsDisplay] = useState({
     //     layout: true,
     //     nodes: false,
@@ -15,28 +14,28 @@ export function PropertiesBar({ children }: PropertiesBarProps) {
 
     return (
         <SideBar
-            id='properties-bar'
-            inputId='properties-bar-input'
-            side='right'
-            sideClassName='select-none shadow-xl/45'
-            width='w-70'
-            sidebarChildren={ (
+            id="properties-bar"
+            inputId="properties-bar-input"
+            side="right"
+            sideClassName="select-none shadow-xl/45"
+            width="w-70"
+            sidebarChildren={
                 <>
                     <GraphSection />
 
                     <LayoutSection
-                        // visible={ panelsDisplay.layout }
+                    // visible={ panelsDisplay.layout }
                     />
 
                     <NodesSection
-                        // visible={ panelsDisplay.nodes }
+                    // visible={ panelsDisplay.nodes }
                     />
 
                     <EdgesSection
-                        // visible={ panelsDisplay.edges }
+                    // visible={ panelsDisplay.edges }
                     />
                 </>
-            ) }
+            }
         >
             {children}
         </SideBar>

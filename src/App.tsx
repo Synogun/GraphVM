@@ -12,44 +12,58 @@ import { useModals } from './contexts/ModalsContext';
 export function App() {
     const [loadingApp, setLoadingApp] = useState(true);
 
-    useEffect(() => { // Simulate loading time
-        const timer = setTimeout(() => {
-            setLoadingApp(false);
-        }, !isDev() ? 5.0 * 1000 : 10);
+    useEffect(() => {
+        // Simulate loading time
+        const timer = setTimeout(
+            () => {
+                setLoadingApp(false);
+            },
+            !isDev() ? 5.0 * 1000 : 10
+        );
 
-        return () => { clearTimeout(timer); };
+        return () => {
+            clearTimeout(timer);
+        };
     }, []);
 
     const modals = useModals();
 
-    return loadingApp
-        ? <LoadingHero />
-        : <>
+    return loadingApp ? (
+        <LoadingHero />
+    ) : (
+        <>
             <PropertiesProvider>
                 <PropertiesBar>
                     <ActionBar>
                         <Modal
-                            id='algorithms-modal'
-                            onClose={ () => { modals.setIsAlgorithmsModalOpen(false); } }
-                            show={ modals.isAlgorithmsModalOpen }
-                            title='Algorithms'
+                            id="algorithms-modal"
+                            onClose={() => {
+                                modals.setIsAlgorithmsModalOpen(false);
+                            }}
+                            show={modals.isAlgorithmsModalOpen}
+                            title="Algorithms"
                         />
                         <ImportExportModal />
                         <Modal
-                            id='settings-modal'
-                            onClose={ () => { modals.setIsSettingsModalOpen(false); } }
-                            show={ modals.isSettingsModalOpen }
-                            title='Settings'
+                            id="settings-modal"
+                            onClose={() => {
+                                modals.setIsSettingsModalOpen(false);
+                            }}
+                            show={modals.isSettingsModalOpen}
+                            title="Settings"
                         />
                         <Modal
-                            id='help-modal'
-                            onClose={ () => { modals.setIsHelpModalOpen(false); } }
-                            show={ modals.isHelpModalOpen }
-                            title='Help'
+                            id="help-modal"
+                            onClose={() => {
+                                modals.setIsHelpModalOpen(false);
+                            }}
+                            show={modals.isHelpModalOpen}
+                            title="Help"
                         />
-                        <GraphCanvas containerId='main-graph' />
+                        <GraphCanvas containerId="main-graph" />
                     </ActionBar>
                 </PropertiesBar>
             </PropertiesProvider>
-        </>;
+        </>
+    );
 }

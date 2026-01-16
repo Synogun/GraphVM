@@ -1,4 +1,3 @@
-
 export type NodeField = 'label' | 'color' | 'shape';
 
 export type NodeFieldValues = {

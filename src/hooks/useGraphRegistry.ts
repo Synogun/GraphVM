@@ -3,25 +3,29 @@ import { useEffect, useState } from 'react';
 
 export type GraphApi = cytoscape.Core | null;
 
-const registry = new Map<string, GraphApi>;
-const subscribers = new Map<string, Set<() => void>>;
+const registry = new Map<string, GraphApi>();
+const subscribers = new Map<string, Set<() => void>>();
 
 export function useRegisterGraph(id: string, api: GraphApi) {
     useEffect(() => {
         registry.set(id, api);
-        subscribers.get(id)?.forEach((callback) => { callback(); });
+        subscribers.get(id)?.forEach((callback) => {
+            callback();
+        });
 
         return () => {
             registry.delete(id);
         };
-    }, [id, api]);
+    });
 }
 
 export function useGetGraph(id: string): GraphApi {
     const [api, setApi] = useState<GraphApi>(() => registry.get(id) ?? null);
 
     useEffect(() => {
-        if (api) { return; } // Already have the api
+        if (api) {
+            return;
+        } // Already have the api
 
         const onGraphRegistered = () => {
             const registeredApi = registry.get(id);
@@ -33,17 +37,19 @@ export function useGetGraph(id: string): GraphApi {
         onGraphRegistered();
 
         if (!subscribers.has(id)) {
-            subscribers.set(id, new Set);
+            subscribers.set(id, new Set());
         }
 
         const subscriberSet = subscribers.get(id);
 
         if (!subscriberSet) {
-            console.warn('This shouldn\'t happen');
+            console.warn("This shouldn't happen");
             return;
         }
 
-        const callback = () => { onGraphRegistered(); };
+        const callback = () => {
+            onGraphRegistered();
+        };
         subscriberSet.add(callback);
 
         return () => {

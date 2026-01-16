@@ -1,14 +1,14 @@
 import { type ChangeEvent } from 'react';
 
-function TextInput({ label, value, onChange, className='' }: TextInputProps) {
+function TextInput({ label, value, onChange, className = '' }: TextInputProps) {
     return (
-        <fieldset className='fieldset'>
-            {label && <legend className='fieldset-legend'>{label}</legend>}
+        <fieldset className="fieldset">
+            {label && <legend className="fieldset-legend">{label}</legend>}
             <input
-                className={ `p-1 border rounded input hover:input-accent ${className}` }
-                onChange={ onChange }
-                type='text'
-                value={ value }
+                className={`p-1 border rounded input hover:input-accent ${className}`}
+                onChange={onChange}
+                type="text"
+                value={value}
             />
         </fieldset>
     );

@@ -7,9 +7,9 @@ export function GraphSection() {
     const graph = useGetGraph('main-graph');
     const {
         nodes: { count: nodeCount, setCount: setNodeCount },
-        edges: { count: edgeCount, setCount: setEdgeCount }
+        edges: { count: edgeCount, setCount: setEdgeCount },
     } = useGraphProperties();
-    
+
     useEffect(() => {
         if (!graph) {
             return;
@@ -28,13 +28,13 @@ export function GraphSection() {
 
     return (
         <>
-            <div className='divider mt-2'>
-                <h1 className='text-lg font-bold text-center'>Graph</h1>
+            <div className="divider mt-2">
+                <h1 className="text-lg font-bold text-center">Graph</h1>
             </div>
 
-            <div className='grid grid-flow-col gap-4 text-center auto-cols-fr'>
-                <ElementCounter label='Nodes' value={ nodeCount } />
-                <ElementCounter label='Edges' value={ edgeCount } />
+            <div className="grid grid-flow-col gap-4 text-center auto-cols-fr">
+                <ElementCounter label="Nodes" value={nodeCount} />
+                <ElementCounter label="Edges" value={edgeCount} />
             </div>
         </>
     );

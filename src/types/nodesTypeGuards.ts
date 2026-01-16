@@ -27,7 +27,7 @@ export function isNodeShape(value: unknown): value is cytoscape.Css.NodeShape {
         'round-tag',
         'cut-rectangle',
         'bottom-round-rectangle',
-        'concave-hexagon'
+        'concave-hexagon',
     ];
     return typeof value === 'string' && validShapes.includes(value as cytoscape.Css.NodeShape);
 }

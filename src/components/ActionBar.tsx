@@ -23,32 +23,23 @@ import { SideBar } from './common/SideBar';
 
 export function ActionBar({ children }: ActionBarProps) {
     const {
-        nodes: {
-            setCount: setNodeCount,
-            selected: selectedNodes,
-            setSelected: setSelectedNodes,
-        },
+        nodes: { setCount: setNodeCount, selected: selectedNodes, setSelected: setSelectedNodes },
         edges: {
             edgeMode,
             setEdgeMode,
             selected: selectedEdges,
             setSelected: setSelectedEdges,
-            setCount: setEdgeCount
+            setCount: setEdgeCount,
         },
     } = useGraphProperties();
 
-    const {
-        weight,
-        color,
-        lineStyle,
-        curveStyle
-    } = useEdgesProperties();
+    const { weight, color, lineStyle, curveStyle } = useEdgesProperties();
 
     const {
         setIsAlgorithmsModalOpen,
         setIsHelpModalOpen,
         setIsSettingsModalOpen,
-        setIsImportExportModalOpen
+        setIsImportExportModalOpen,
     } = useModals();
 
     const { current: currentLayout } = useLayoutProperties();
@@ -70,7 +61,9 @@ export function ActionBar({ children }: ActionBarProps) {
     };
 
     const handleArrangeGraph = () => {
-        if (!graph) { return; }
+        if (!graph) {
+            return;
+        }
 
         arrangeGraph(graph, currentLayout ?? { name: 'circle' });
     };
@@ -84,14 +77,18 @@ export function ActionBar({ children }: ActionBarProps) {
     };
 
     const handleCenterGraph = () => {
-        if (!graph) { return; }
+        if (!graph) {
+            return;
+        }
 
         const currentSelected = graph.elements(':selected');
         centerGraph(graph, currentSelected, 30);
     };
 
     const handleAddNode = () => {
-        if (!graph) { return; }
+        if (!graph) {
+            return;
+        }
 
         addNode(graph);
 
@@ -101,11 +98,15 @@ export function ActionBar({ children }: ActionBarProps) {
     };
 
     const handleAddEdges = () => {
-        if (!graph) { return; }
+        if (!graph) {
+            return;
+        }
 
         const currentSelectedNodes: unknown = graph.data('nodeSelectionOrder');
 
-        if (!isArrayOfStrings(currentSelectedNodes)) { return; }
+        if (!isArrayOfStrings(currentSelectedNodes)) {
+            return;
+        }
 
         if (currentSelectedNodes.length < 2) {
             console.warn('Select at least two nodes to create an edge.');
@@ -115,12 +116,7 @@ export function ActionBar({ children }: ActionBarProps) {
 
         const edgeData = { weight, color, style: lineStyle, curve: curveStyle };
 
-        addEdges(
-            graph,
-            edgeData,
-            edgeMode,
-            currentSelectedNodes,
-        );
+        addEdges(graph, edgeData, edgeMode, currentSelectedNodes);
 
         const currentEdgeCount = graph.edges().length;
         setEdgeCount(currentEdgeCount);
@@ -132,10 +128,14 @@ export function ActionBar({ children }: ActionBarProps) {
     };
 
     const handleDeleteSelected = () => {
-        if (!graph) { return; }
+        if (!graph) {
+            return;
+        }
 
         let selectedElements = graph.elements(':selected');
-        if (selectedElements.length === 0) { return; }
+        if (selectedElements.length === 0) {
+            return;
+        }
 
         const nodesToRemove = selectedElements.filter('node');
         if (nodesToRemove.length > 0) {
@@ -161,105 +161,111 @@ export function ActionBar({ children }: ActionBarProps) {
 
     return (
         <SideBar
-            className='select-none text-center'
-            id='actions-bar'
-            inputId='actions-bar-input'
-            sideClassName='select-none shadow-xl/45'
-            width='w-50'
-            sidebarChildren={ (
+            className="select-none text-center"
+            id="actions-bar"
+            inputId="actions-bar-input"
+            sideClassName="select-none shadow-xl/45"
+            width="w-50"
+            sidebarChildren={
                 <>
-                    <div className='divider mt-2'>
-                        <h1 className='text-xl font-bold text-center'>GraphVM</h1>
+                    <div className="divider mt-2">
+                        <h1 className="text-xl font-bold text-center">GraphVM</h1>
                     </div>
 
                     <ActionButton
-                        icon={ actionIcons.newGraph }
-                        label='New Graph'
-                        margin='my-1'
-                        onClick={ handleNewGraph }
+                        icon={actionIcons.newGraph}
+                        label="New Graph"
+                        margin="my-1"
+                        onClick={handleNewGraph}
                     />
 
                     <ActionButton
-                        icon={ actionIcons.algorithms }
-                        label='Algorithms'
-                        margin='my-1'
-                        onClick={ handleAlgorithms }
+                        icon={actionIcons.algorithms}
+                        label="Algorithms"
+                        margin="my-1"
+                        onClick={handleAlgorithms}
                     />
 
                     <ActionButton
-                        icon={ actionIcons.importExport }
-                        label='Import / Export'
-                        margin='my-1'
-                        onClick={ handleImportExport }
+                        icon={actionIcons.importExport}
+                        label="Import / Export"
+                        margin="my-1"
+                        onClick={handleImportExport}
                     />
 
-                    <div className='divider my-3'>
-                        <h1 className='text-base font-bold text-center'>Organize</h1>
+                    <div className="divider my-3">
+                        <h1 className="text-base font-bold text-center">Organize</h1>
                     </div>
 
                     <ActionButton
-                        icon={ actionIcons.arrange }
-                        label='Arrange'
-                        margin='my-1'
-                        onClick={ handleArrangeGraph }
+                        icon={actionIcons.arrange}
+                        label="Arrange"
+                        margin="my-1"
+                        onClick={handleArrangeGraph}
                     />
 
                     <ActionButton
-                        icon={ actionIcons.center }
-                        label='Center'
-                        margin='my-1'
-                        onClick={ handleCenterGraph }
+                        icon={actionIcons.center}
+                        label="Center"
+                        margin="my-1"
+                        onClick={handleCenterGraph}
                     />
 
-                    <div className='divider my-3'>
-                        <h1 className='text-base font-bold text-center'>Elements</h1>
+                    <div className="divider my-3">
+                        <h1 className="text-base font-bold text-center">Elements</h1>
                     </div>
 
                     <ActionButton
-                        icon={ actionIcons.addNode }
-                        label='Add node'
-                        margin='my-1'
-                        onClick={ handleAddNode }
+                        icon={actionIcons.addNode}
+                        label="Add node"
+                        margin="my-1"
+                        onClick={handleAddNode}
                     />
 
                     <ActionButton
-                        icon={ actionIcons.addEdges }
-                        label='Add Edges(s)'
-                        margin='my-1'
-                        onClick={ handleAddEdges }
+                        icon={actionIcons.addEdges}
+                        label="Add Edges(s)"
+                        margin="my-1"
+                        onClick={handleAddEdges}
                     />
 
-                    <label className={ `btn ${edgeModeStyle} hover:btn-accent swap hover:swap-rotate my-1` }>
-                        <input checked={ pathMode } onChange={ handleToggleEdgeMode } type='checkbox' />
-                        <div className='swap-off flex items-center text-center gap-5'>{actionIcons.pathEdgeMode} Path Mode</div>
-                        <div className='swap-on flex items-center text-center gap-2'>{actionIcons.completeEdgeMode} Complete Mode</div>
+                    <label
+                        className={`btn ${edgeModeStyle} hover:btn-accent swap hover:swap-rotate my-1`}
+                    >
+                        <input checked={pathMode} onChange={handleToggleEdgeMode} type="checkbox" />
+                        <div className="swap-off flex items-center text-center gap-5">
+                            {actionIcons.pathEdgeMode} Path Mode
+                        </div>
+                        <div className="swap-on flex items-center text-center gap-2">
+                            {actionIcons.completeEdgeMode} Complete Mode
+                        </div>
                     </label>
 
                     <ActionButton
-                        disabled={ isDeleteBtnDisabled }
-                        icon={ actionIcons.deleteElements }
-                        isDelete={ true }
-                        label='Delete Selected'
-                        margin='my-1'
-                        onClick={ handleDeleteSelected }
+                        disabled={isDeleteBtnDisabled}
+                        icon={actionIcons.deleteElements}
+                        isDelete={true}
+                        label="Delete Selected"
+                        margin="my-1"
+                        onClick={handleDeleteSelected}
                     />
 
-                    <div className='divider mt-auto mb-3'>
-                        <h1 className='text-base font-bold text-center'>Misc</h1>
+                    <div className="divider mt-auto mb-3">
+                        <h1 className="text-base font-bold text-center">Misc</h1>
                     </div>
 
                     <ActionButton
-                        icon={ actionIcons.settings }
-                        label='Settings'
-                        margin='my-1'
-                        onClick={ handleSettings }
+                        icon={actionIcons.settings}
+                        label="Settings"
+                        margin="my-1"
+                        onClick={handleSettings}
                     />
 
                     <ActionButton
-                        icon={ actionIcons.help }
-                        label='Help'
-                        margin='my-1'
-                        onClick={ handleHelp }
+                        icon={actionIcons.help}
+                        label="Help"
+                        margin="my-1"
+                        onClick={handleHelp}
                     />
 
                     {/* <a
@@ -272,42 +278,40 @@ export function ActionBar({ children }: ActionBarProps) {
                         <span>{actionIcons.github}</span> GH Repository
                     </a> */}
 
-                    <div className='divider mt-1 mb-0' />
+                    <div className="divider mt-1 mb-0" />
 
-                    <div className='flex flex-col items-center'>
-                        <span
-                            className='text-xs text-gray-500'
-                            id='credits'>
+                    <div className="flex flex-col items-center">
+                        <span className="text-xs text-gray-500" id="credits">
                             @Synogun
                         </span>
 
                         {isDev() && (
-                            <span
-                                className='text-xs text-red-600'
-                                id='is-dev'>
+                            <span className="text-xs text-red-600" id="is-dev">
                                 NOT PRODUCTION
                             </span>
                         )}
                     </div>
                 </>
-            ) }
+            }
         >
             {children}
         </SideBar>
     );
 }
 
-function ActionButton({ label, icon, onClick, condensed = false, margin = 'my-1', disabled = false, isDelete = false }: ActionButtonProps) {
-    const classStyle = isDelete
-        ? 'btn-error'
-        : 'btn-outline hover:btn-accent focus:btn-accent';
+function ActionButton({
+    label,
+    icon,
+    onClick,
+    condensed = false,
+    margin = 'my-1',
+    disabled = false,
+    isDelete = false,
+}: ActionButtonProps) {
+    const classStyle = isDelete ? 'btn-error' : 'btn-outline hover:btn-accent focus:btn-accent';
 
     return (
-        <button
-            className={ `btn ${classStyle} ${margin}` }
-            disabled={ disabled }
-            onClick={ onClick }
-        >
+        <button className={`btn ${classStyle} ${margin}`} disabled={disabled} onClick={onClick}>
             {icon ? <span>{icon}</span> : null}
             {!condensed ? label : null}
         </button>
@@ -315,22 +319,25 @@ function ActionButton({ label, icon, onClick, condensed = false, margin = 'my-1'
 }
 
 const actionIcons = {
-    newGraph: <PiGraph size='1.5em' />,
-    algorithms: <FaCode size='1.5em' />,
-    importExport: <RiSave3Fill size='1.5em' />,
-    arrange: <PiShuffle size='1.5em' />,
-    center: <MdFilterCenterFocus size='1.5em' />,
-    addNode: <BsNodePlus size='1.5em' />,
-    addEdges: <AiOutlineNodeIndex size='1.5em' />,
-    pathEdgeMode: <PiLineSegments size='1.5em' />,
-    completeEdgeMode: <PiFediverseLogo size='1.5em' />,
-    deleteElements: <GoTrash size='1.5em' />,
-    settings: <MdSettings size='1.5em' />,
-    help: <FiHelpCircle size='1.5em' />,
-    github: <FaGithub size='1.5em' />,
+    newGraph: <PiGraph size="1.5em" />,
+    algorithms: <FaCode size="1.5em" />,
+    importExport: <RiSave3Fill size="1.5em" />,
+    arrange: <PiShuffle size="1.5em" />,
+    center: <MdFilterCenterFocus size="1.5em" />,
+    addNode: <BsNodePlus size="1.5em" />,
+    addEdges: <AiOutlineNodeIndex size="1.5em" />,
+    pathEdgeMode: <PiLineSegments size="1.5em" />,
+    completeEdgeMode: <PiFediverseLogo size="1.5em" />,
+    deleteElements: <GoTrash size="1.5em" />,
+    settings: <MdSettings size="1.5em" />,
+    help: <FiHelpCircle size="1.5em" />,
+    github: <FaGithub size="1.5em" />,
 };
 
-function verifyIfBtnDisable(selectedNodes: cytoscape.NodeCollection | null, selectedEdges: cytoscape.EdgeCollection | null) {
+function verifyIfBtnDisable(
+    selectedNodes: cytoscape.NodeCollection | null,
+    selectedEdges: cytoscape.EdgeCollection | null
+) {
     return (
         (selectedNodes === null || selectedNodes.length === 0) &&
         (selectedEdges === null || selectedEdges.length === 0)

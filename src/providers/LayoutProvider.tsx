@@ -8,17 +8,22 @@ export function LayoutProvider({ children }: LayoutProviderProps) {
     const [type, setType] = useState<LayoutType>('circle');
 
     const [radius, setRadius] = useState(100);
-    
+
     const [rows, setRows] = useState(3);
     const [cols, setCols] = useState(3);
 
     const circleLayout = useMemo(() => ({ radius, setRadius }), [radius]);
     const gridLayout = useMemo(() => ({ rows, setRows, cols, setCols }), [rows, cols]);
 
-    const generalLayout = useMemo(() => ({
-        current, setCurrent,
-        type, setType,
-    }), [current, type]);
+    const generalLayout = useMemo(
+        () => ({
+            current,
+            setCurrent,
+            type,
+            setType,
+        }),
+        [current, type]
+    );
 
     const value = {
         ...generalLayout,
@@ -26,11 +31,7 @@ export function LayoutProvider({ children }: LayoutProviderProps) {
         grid: gridLayout,
     };
 
-    return (
-        <LayoutContext.Provider value={ value }>
-            {children}
-        </LayoutContext.Provider>
-    );
+    return <LayoutContext.Provider value={value}>{children}</LayoutContext.Provider>;
 }
 
 export type LayoutProviderProps = {
