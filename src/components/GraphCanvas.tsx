@@ -22,31 +22,7 @@ export function GraphCanvas({ containerId }: GraphCanvasProps) {
             },
         });
 
-        newCore.on('select', 'node, edge', (e: cytoscape.EventObject) => {
-            const target = e.target as cytoscape.Collection;
-
-            const currentSelectedNodes: unknown = newCore.data('nodeSelectionOrder');
-            const currentSelectedEdges: unknown = newCore.data('edgeSelectionOrder');
-            if (
-                !isArrayOfStrings(currentSelectedNodes) ||
-                !isArrayOfStrings(currentSelectedEdges)
-            ) {
-                console.log('event', e);
-                console.error('Invalid selection order data');
-                return;
-            }
-
-            const targetNodes = target.filter('node').map((n) => n.id());
-            const targetEdges = target.filter('edge').map((n) => n.id());
-
-            newCore.data('nodeSelectionOrder', [...currentSelectedNodes, ...targetNodes]);
-            newCore.data('edgeSelectionOrder', [...currentSelectedEdges, ...targetEdges]);
-
-            setSelectedNodes(newCore.nodes(':selected'));
-            setSelectedEdges(newCore.edges(':selected'));
-        });
-
-        newCore.on('unselect', 'node, edge', (e: cytoscape.EventObject) => {
+        const handleElementSelection = (e: cytoscape.EventObject) => {
             const target = e.target as cytoscape.Collection;
 
             const currentSelectedNodes: unknown = newCore.data('nodeSelectionOrder');
@@ -60,29 +36,32 @@ export function GraphCanvas({ containerId }: GraphCanvasProps) {
                 console.error('Invalid selection order data');
                 return;
             }
-
             const targetNodes = target.filter('node').map((n) => n.id());
             const targetEdges = target.filter('edge').map((n) => n.id());
 
-            const filteredSelectionNodes = currentSelectedNodes.filter(
-                (id) => !targetNodes.includes(id)
-            );
+            let nodeSelectionOrder = [...currentSelectedNodes, ...targetNodes];
+            let edgeSelectionOrder = [...currentSelectedEdges, ...targetEdges];
 
-            const filteredSelectionEdges = currentSelectedEdges.filter(
-                (id) => !targetEdges.includes(id)
-            );
+            if (e.type === 'unselect') {
+                nodeSelectionOrder = nodeSelectionOrder.filter((id) => !targetNodes.includes(id));
+                edgeSelectionOrder = edgeSelectionOrder.filter((id) => !targetEdges.includes(id));
+            }
 
-            newCore.data('nodeSelectionOrder', filteredSelectionNodes);
-            newCore.data('edgeSelectionOrder', filteredSelectionEdges);
+            newCore.data('nodeSelectionOrder', nodeSelectionOrder);
+            newCore.data('edgeSelectionOrder', edgeSelectionOrder);
 
             setSelectedNodes(newCore.nodes(':selected'));
             setSelectedEdges(newCore.edges(':selected'));
-        });
+        };
+
+        newCore.on('select', 'node, edge', handleElementSelection);
+        newCore.on('unselect', 'node, edge', handleElementSelection);
 
         setGraph(newCore);
 
         return () => {
             destroyGraph(newCore);
+            setGraph(null);
         };
     }, [canvasId, setSelectedNodes, setSelectedEdges]);
 
