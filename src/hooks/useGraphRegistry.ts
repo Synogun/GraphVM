@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import type { GraphApi } from '../types/graph';
+import type { GraphInstance } from '../types/graph';
 
-const registry = new Map<string, GraphApi>();
+const registry = new Map<string, GraphInstance>();
 const subscribers = new Map<string, Set<() => void>>();
 
-export function useRegisterGraph(id: string, api: GraphApi) {
+export function useRegisterGraph(id: string, api: GraphInstance) {
     useEffect(() => {
         registry.set(id, api);
         subscribers.get(id)?.forEach((callback) => {
@@ -17,8 +17,8 @@ export function useRegisterGraph(id: string, api: GraphApi) {
     }, [id, api]);
 }
 
-export function useGetGraph(id: string): GraphApi {
-    const [api, setApi] = useState<GraphApi>(() => registry.get(id) ?? null);
+export function useGetGraph(id: string): GraphInstance {
+    const [api, setApi] = useState<GraphInstance>(() => registry.get(id) ?? null);
 
     useEffect(() => {
         if (api) {

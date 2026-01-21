@@ -1,4 +1,4 @@
-export type GraphApi = cytoscape.Core | null;
+export type GraphInstance = cytoscape.Core | null;
 
 export type GraphContextProperties = {
     nodes: {
