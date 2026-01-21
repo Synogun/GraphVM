@@ -1,14 +1,14 @@
 import { useGraphProperties } from '@/contexts/GraphContext';
 import { destroyGraph, newGraph } from '@/services/GraphService';
 import type cytoscape from 'cytoscape';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRegisterGraph } from '../hooks/useGraphRegistry';
 import { isArrayOfStrings } from '../types/typeGuards';
 import type { GraphInstance } from '@/types/graph';
 
 export function GraphCanvas({ containerId }: GraphCanvasProps) {
-    const canvasId = containerId || 'main-graph';
     const [graph, setGraph] = useState<GraphInstance>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     const {
         nodes: { setSelected: setSelectedNodes },
@@ -16,7 +16,11 @@ export function GraphCanvas({ containerId }: GraphCanvasProps) {
     } = useGraphProperties();
 
     useEffect(() => {
-        const newCore = newGraph(canvasId, {
+        if (!containerRef.current) {
+            return;
+        }
+
+        const newCore = newGraph(containerId, {
             data: {
                 nodeSelectionOrder: [],
                 edgeSelectionOrder: [],
@@ -25,9 +29,10 @@ export function GraphCanvas({ containerId }: GraphCanvasProps) {
 
         const handleElementSelection = (e: cytoscape.EventObject) => {
             const target = e.target as cytoscape.Collection;
+            const core = e.cy;
 
-            const currentSelectedNodes: unknown = newCore.data('nodeSelectionOrder');
-            const currentSelectedEdges: unknown = newCore.data('edgeSelectionOrder');
+            const currentSelectedNodes: unknown = core.data('nodeSelectionOrder');
+            const currentSelectedEdges: unknown = core.data('edgeSelectionOrder');
 
             if (
                 !isArrayOfStrings(currentSelectedNodes) ||
@@ -48,11 +53,11 @@ export function GraphCanvas({ containerId }: GraphCanvasProps) {
                 edgeSelectionOrder = edgeSelectionOrder.filter((id) => !targetEdges.includes(id));
             }
 
-            newCore.data('nodeSelectionOrder', nodeSelectionOrder);
-            newCore.data('edgeSelectionOrder', edgeSelectionOrder);
+            core.data('nodeSelectionOrder', nodeSelectionOrder);
+            core.data('edgeSelectionOrder', edgeSelectionOrder);
 
-            setSelectedNodes(newCore.nodes(':selected'));
-            setSelectedEdges(newCore.edges(':selected'));
+            setSelectedNodes(core.nodes(':selected'));
+            setSelectedEdges(core.edges(':selected'));
         };
 
         newCore.on('select', 'node, edge', handleElementSelection);
@@ -64,11 +69,11 @@ export function GraphCanvas({ containerId }: GraphCanvasProps) {
             destroyGraph(newCore);
             setGraph(null);
         };
-    }, [canvasId, setSelectedNodes, setSelectedEdges]);
+    }, [containerId, setSelectedNodes, setSelectedEdges]);
 
-    useRegisterGraph(canvasId, graph);
+    useRegisterGraph(containerId, graph);
 
-    return <div className="h-full w-full bg-base-100" id={canvasId} />;
+    return <div className="h-full w-full bg-base-100" ref={containerRef} id={containerId} />;
 }
 
 type GraphCanvasProps = {
