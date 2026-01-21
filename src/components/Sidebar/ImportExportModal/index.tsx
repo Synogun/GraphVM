@@ -1,6 +1,6 @@
 import { useModals } from '@/contexts/ModalsContext';
 import { useCallback, useRef, useState } from 'react';
-import Modal from '../common/Modal';
+import Modal from '@/components/common/Modal';
 import { ExportTab } from './ExportTab';
 import { ImportTab } from './ImportTab';
 import { TabBtn } from './TabBtn';

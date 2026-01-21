@@ -1,7 +1,5 @@
-import type cytoscape from 'cytoscape';
 import { useEffect, useState } from 'react';
-
-export type GraphApi = cytoscape.Core | null;
+import type { GraphApi } from '../types/graph';
 
 const registry = new Map<string, GraphApi>();
 const subscribers = new Map<string, Set<() => void>>();
@@ -16,7 +14,7 @@ export function useRegisterGraph(id: string, api: GraphApi) {
         return () => {
             registry.delete(id);
         };
-    });
+    }, [id, api]);
 }
 
 export function useGetGraph(id: string): GraphApi {

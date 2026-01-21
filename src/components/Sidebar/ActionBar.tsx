@@ -19,7 +19,7 @@ import { GoTrash } from 'react-icons/go';
 import { MdFilterCenterFocus, MdSettings } from 'react-icons/md';
 import { PiFediverseLogo, PiGraph, PiLineSegments, PiShuffle } from 'react-icons/pi';
 import { RiSave3Fill } from 'react-icons/ri';
-import { SideBar } from './common/SideBar';
+import { SideBar } from '../common/SideBar';
 
 export function ActionBar({ children }: ActionBarProps) {
     const {

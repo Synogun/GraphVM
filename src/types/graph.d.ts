@@ -1,3 +1,5 @@
+export type GraphApi = cytoscape.Core | null;
+
 export type GraphContextProperties = {
     nodes: {
         count: number;

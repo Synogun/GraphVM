@@ -1,4 +1,4 @@
-import { ActionBar } from '@/components/ActionBar';
+import { ActionBar } from '@/components/Sidebar/ActionBar';
 import { GraphCanvas } from '@/components/GraphCanvas';
 import { LoadingHero } from '@/components/LoadingHero';
 import { PropertiesBar } from '@/components/PropertiesBar';
@@ -6,7 +6,7 @@ import { PropertiesProvider } from '@/providers/PropertiesProvider';
 import { isDev } from '@/utils';
 import { useEffect, useState } from 'react';
 import Modal from './components/common/Modal';
-import { ImportExportModal } from './components/ImportExportModal';
+import { ImportExportModal } from './components/Sidebar/ImportExportModal';
 import { useModals } from './contexts/ModalsContext';
 
 export function App() {
