@@ -26,19 +26,20 @@ export function LayoutSection({ visible = true }: LayoutSectionProps) {
             animationEasing: 'ease-out',
         };
 
-        if (layoutType === 'circle') {
-            options = {
-                ...options,
-                name: 'circle',
-                radius: circleLayout.radius,
-            };
-        }
+        // Delayed
+        // if (layoutType === 'circle') {
+        //     options = {
+        //         ...options,
+        //         name: 'circle',
+        //         radius: circleLayout.radius,
+        //     };
+        // }
 
         if (layoutType === 'grid') {
             options = {
                 ...options,
                 name: 'grid',
-                rows: gridLayout.rows,
+                // rows: gridLayout.rows, // Delayed
                 cols: gridLayout.cols,
             };
         }
@@ -61,13 +62,15 @@ export function LayoutSection({ visible = true }: LayoutSectionProps) {
         setLayoutType(type);
     };
 
-    const handleChangeCircleRadius = (e: ChangeEvent<HTMLInputElement>) => {
-        setNumberProperty(e, circleLayout.setRadius, circleLayout.radius, 1, 250);
-    };
+    // Delayed
+    // const handleChangeCircleRadius = (e: ChangeEvent<HTMLInputElement>) => {
+    //     setNumberProperty(e, circleLayout.setRadius, circleLayout.radius, 1, 250);
+    // };
 
-    const handleChangeGridRows = (e: ChangeEvent<HTMLInputElement>) => {
-        setNumberProperty(e, gridLayout.setRows, gridLayout.rows, 1, 10);
-    };
+    // In analysis for better use cases
+    // const handleChangeGridRows = (e: ChangeEvent<HTMLInputElement>) => {
+    //     setNumberProperty(e, gridLayout.setRows, gridLayout.rows, 1, 10);
+    // };
 
     const handleChangeGridCols = (e: ChangeEvent<HTMLInputElement>) => {
         setNumberProperty(e, gridLayout.setCols, gridLayout.cols, 1, 10);
@@ -102,7 +105,9 @@ export function LayoutSection({ visible = true }: LayoutSectionProps) {
                     value={layoutType}
                 />
 
-                {layoutType === 'circle' && (
+                {/* {layoutType === 'circle' && (
+                    // Better visualized when multi-layout is implemented
+                    // TODO: implement multi-layout
                     <>
                         <RangeInput
                             label="Radius"
@@ -113,18 +118,20 @@ export function LayoutSection({ visible = true }: LayoutSectionProps) {
                             value={circleLayout.radius}
                         />
                     </>
-                )}
+                )} */}
 
                 {layoutType === 'grid' && (
                     <>
-                        <RangeInput
+                        {/* In analysis for better use cases 
+                            TODO: Find use cases for grid rows adjustment or deprecation */}
+                        {/* <RangeInput
                             label="Rows"
                             max={10}
                             min={1}
                             onChange={handleChangeGridRows}
                             step={1}
                             value={gridLayout.rows}
-                        />
+                        /> */}
 
                         <RangeInput
                             label="Columns"
