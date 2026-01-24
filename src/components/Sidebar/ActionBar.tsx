@@ -20,6 +20,7 @@ import { PiFediverseLogo, PiGraph, PiLineSegments, PiShuffle } from 'react-icons
 import { RiSave3Fill } from 'react-icons/ri';
 import { SideBar } from '../common/SideBar';
 import { Logger } from '@Logger';
+import { TbReport } from 'react-icons/tb';
 
 const logger = Logger.createContextLogger('ActionBar');
 
@@ -279,6 +280,17 @@ export function ActionBar({ children }: ActionBarProps) {
                         <span>{actionIcons.github}</span> GH Repository
                     </a> */}
 
+                    {isDev() && (
+                        <ActionButton
+                            icon={actionIcons.logs}
+                            label="Download Logs"
+                            margin="my-1"
+                            onClick={() => {
+                                Logger.downloadLogs();
+                            }}
+                        />
+                    )}
+
                     <div className="divider mt-1 mb-0" />
 
                     <div className="flex flex-col items-center">
@@ -319,20 +331,22 @@ function ActionButton({
     );
 }
 
+const ICON_SIZE = '1.5em';
 const actionIcons = {
-    newGraph: <PiGraph size="1.5em" />,
-    algorithms: <FaCode size="1.5em" />,
-    importExport: <RiSave3Fill size="1.5em" />,
-    arrange: <PiShuffle size="1.5em" />,
-    center: <MdFilterCenterFocus size="1.5em" />,
-    addNode: <BsNodePlus size="1.5em" />,
-    addEdges: <AiOutlineNodeIndex size="1.5em" />,
-    pathEdgeMode: <PiLineSegments size="1.5em" />,
-    completeEdgeMode: <PiFediverseLogo size="1.5em" />,
-    deleteElements: <GoTrash size="1.5em" />,
-    settings: <MdSettings size="1.5em" />,
-    help: <FiHelpCircle size="1.5em" />,
-    github: <FaGithub size="1.5em" />,
+    newGraph: <PiGraph size={ICON_SIZE} />,
+    algorithms: <FaCode size={ICON_SIZE} />,
+    importExport: <RiSave3Fill size={ICON_SIZE} />,
+    arrange: <PiShuffle size={ICON_SIZE} />,
+    center: <MdFilterCenterFocus size={ICON_SIZE} />,
+    addNode: <BsNodePlus size={ICON_SIZE} />,
+    addEdges: <AiOutlineNodeIndex size={ICON_SIZE} />,
+    pathEdgeMode: <PiLineSegments size={ICON_SIZE} />,
+    completeEdgeMode: <PiFediverseLogo size={ICON_SIZE} />,
+    deleteElements: <GoTrash size={ICON_SIZE} />,
+    settings: <MdSettings size={ICON_SIZE} />,
+    help: <FiHelpCircle size={ICON_SIZE} />,
+    github: <FaGithub size={ICON_SIZE} />,
+    logs: <TbReport size={ICON_SIZE} />,
 };
 
 // ---------- Type Definitions ----------
