@@ -10,27 +10,21 @@ export function GraphProvider({ children }: GraphProviderProps) {
     const [edgeCount, setEdgeCount] = useState(0);
     const [selectedEdges, setSelectedEdges] = useState<cytoscape.EdgeCollection | null>(null);
 
-    const nodes = useMemo(
-        () => ({
-            count: nodeCount,
-            setCount: setNodeCount,
-            selected: selectedNodes,
-            setSelected: setSelectedNodes,
-        }),
-        [nodeCount, selectedNodes]
-    );
+    const nodes = {
+        count: nodeCount,
+        setCount: setNodeCount,
+        selected: selectedNodes,
+        setSelected: setSelectedNodes,
+    };
 
-    const edges = useMemo(
-        () => ({
-            count: edgeCount,
-            setCount: setEdgeCount,
-            selected: selectedEdges,
-            setSelected: setSelectedEdges,
-            edgeMode,
-            setEdgeMode,
-        }),
-        [edgeCount, selectedEdges, edgeMode]
-    );
+    const edges = {
+        count: edgeCount,
+        setCount: setEdgeCount,
+        selected: selectedEdges,
+        setSelected: setSelectedEdges,
+        edgeMode,
+        setEdgeMode,
+    };
 
     const registry = useMemo(() => {
         const instances = new Map<string, GraphInstance>();

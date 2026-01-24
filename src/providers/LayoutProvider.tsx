@@ -1,6 +1,6 @@
 import { LayoutContext } from '@/contexts/LayoutContext';
 import type { LayoutType } from '@/types/layout';
-import { useMemo, useState, type ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 
 export function LayoutProvider({ children }: LayoutProviderProps) {
     const [current, setCurrent] = useState<cytoscape.LayoutOptions | undefined>(undefined);
@@ -12,24 +12,12 @@ export function LayoutProvider({ children }: LayoutProviderProps) {
     const [rows, setRows] = useState(3);
     const [cols, setCols] = useState(3);
 
-    const circleLayout = useMemo(() => ({ radius, setRadius }), [radius]);
-    const gridLayout = useMemo(() => ({ rows, setRows, cols, setCols }), [rows, cols]);
+    const circleLayout = { radius, setRadius };
+    const gridLayout = { rows, setRows, cols, setCols };
 
-    const generalLayout = useMemo(
-        () => ({
-            current,
-            setCurrent,
-            type,
-            setType,
-        }),
-        [current, type]
-    );
+    const generalLayout = { current, setCurrent, type, setType };
 
-    const value = {
-        ...generalLayout,
-        circle: circleLayout,
-        grid: gridLayout,
-    };
+    const value = { ...generalLayout, circle: circleLayout, grid: gridLayout };
 
     return <LayoutContext.Provider value={value}>{children}</LayoutContext.Provider>;
 }
