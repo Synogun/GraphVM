@@ -15,4 +15,10 @@ export type GraphContextProperties = {
         edgeMode: 'path' | 'complete';
         setEdgeMode: (edgeMode: 'path' | 'complete') => void;
     };
+    registry: {
+        register: (id: string, instance: GraphInstance) => void;
+        unregister: (id: string) => void;
+        get: (id: string) => GraphInstance;
+        subscribe: (id: string, callback: (instance: GraphInstance) => void) => () => void;
+    };
 };

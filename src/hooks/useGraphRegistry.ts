@@ -1,62 +1,32 @@
+import { useGraphProperties } from '@/contexts/GraphContext';
 import { useEffect, useState } from 'react';
 import type { GraphInstance } from '../types/graph';
 
-const registry = new Map<string, GraphInstance>();
-const subscribers = new Map<string, Set<() => void>>();
-
 export function useRegisterGraph(id: string, api: GraphInstance) {
-    useEffect(() => {
-        registry.set(id, api);
-        subscribers.get(id)?.forEach((callback) => {
-            callback();
-        });
-
-        return () => {
-            registry.delete(id);
-        };
-    }, [id, api]);
-}
-
-export function useGetGraph(id: string): GraphInstance {
-    const [api, setApi] = useState<GraphInstance>(() => registry.get(id) ?? null);
+    const { registry } = useGraphProperties();
 
     useEffect(() => {
         if (api) {
-            return;
-        } // Already have the api
-
-        const onGraphRegistered = () => {
-            const registeredApi = registry.get(id);
-            if (registeredApi) {
-                setApi(registeredApi);
-            }
-        };
-
-        onGraphRegistered();
-
-        if (!subscribers.has(id)) {
-            subscribers.set(id, new Set());
+            registry.register(id, api);
         }
-
-        const subscriberSet = subscribers.get(id);
-
-        if (!subscriberSet) {
-            console.warn("This shouldn't happen");
-            return;
-        }
-
-        const callback = () => {
-            onGraphRegistered();
-        };
-        subscriberSet.add(callback);
 
         return () => {
-            subscriberSet.delete(callback);
-            if (subscriberSet.size === 0) {
-                subscribers.delete(id);
+            if (api) {
+                registry.unregister(id);
             }
         };
-    }, [id, api]);
+    }, [id, api, registry]);
+}
+
+export function useGetGraph(id: string): GraphInstance {
+    const { registry } = useGraphProperties();
+    const [api, setApi] = useState<GraphInstance>(() => registry.get(id));
+
+    useEffect(() => {
+        return registry.subscribe(id, (instance) => {
+            setApi(instance);
+        });
+    }, [id, registry]);
 
     return api;
 }
