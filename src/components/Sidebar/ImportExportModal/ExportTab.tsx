@@ -1,3 +1,4 @@
+import { useGraphProperties } from '@/contexts/GraphContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { sheetToPlain } from '@/services/DefaultStyleService';
 import type { EdgesData } from '@/types/edges';
@@ -25,14 +26,18 @@ type ExportTabProps = {
 };
 
 export function ExportTab({ ref, onExportSuccess, onReadyStateChange }: ExportTabProps) {
-    const graph = useGetGraph('main-graph');
+    const graphRef = useGetGraph('main-graph');
     const [exportFormat, setExportFormat] = useState<'text' | 'json' | 'png' | 'jpg'>('text');
     const [exportOptions, setExportOptions] = useState<Record<string, string | boolean>>({});
 
-    const isGraphReadyToExport = useMemo(() => graph && graph.elements().length > 0, [graph]);
+    const {
+        nodes: { count: nodeCount },
+    } = useGraphProperties();
+
+    const isGraphReadyToExport = useMemo(() => nodeCount > 0, [nodeCount]);
 
     useEffect(() => {
-        onReadyStateChange(isGraphReadyToExport ?? false);
+        onReadyStateChange(isGraphReadyToExport);
     }, [isGraphReadyToExport, onReadyStateChange]);
 
     const cleanup = () => {
@@ -49,7 +54,7 @@ export function ExportTab({ ref, onExportSuccess, onReadyStateChange }: ExportTa
     }, []);
 
     const handleExport = () => {
-        if (!isGraphReadyToExport || !graph) {
+        if (!isGraphReadyToExport || !graphRef.current) {
             return;
         }
 
@@ -59,8 +64,8 @@ export function ExportTab({ ref, onExportSuccess, onReadyStateChange }: ExportTa
         if (fileNameInput.value) {
             fileName = fileNameInput.value
                 .replace('{TIMESTAMP}', Date.now().toString())
-                .replace('{NODE_COUNT}', graph.nodes().length.toString())
-                .replace('{EDGE_COUNT}', graph.edges().length.toString())
+                .replace('{NODE_COUNT}', nodeCount.toString())
+                .replace('{EDGE_COUNT}', graphRef.current.edges().length.toString())
                 .replace(/[^a-zA-Z0-9-_]/g, '-');
         }
 
@@ -69,9 +74,9 @@ export function ExportTab({ ref, onExportSuccess, onReadyStateChange }: ExportTa
         let fileType = '';
 
         if (exportFormat === 'json') {
-            graph.elements().unselect();
+            graphRef.current.elements().unselect();
 
-            const json = graph.json() as CytoscapeJson;
+            const json = graphRef.current.json() as CytoscapeJson;
             if (json.style) {
                 try {
                     const plainStylesheet = sheetToPlain(json.style);
@@ -94,21 +99,26 @@ export function ExportTab({ ref, onExportSuccess, onReadyStateChange }: ExportTa
                 options = { ...options, quality: 1 };
             }
 
-            dataStr = exportFormat === 'png' ? graph.png(options) : graph.jpg(options);
+            dataStr =
+                exportFormat === 'png'
+                    ? graphRef.current.png(options)
+                    : graphRef.current.jpg(options);
             fileNameWithExt = `${fileName}.${exportFormat}`;
             fileType = `image/${exportFormat}`;
         } else {
-            dataStr = graph
+            dataStr = graphRef.current
                 .edges()
                 .map((edge) => {
+                    if (!graphRef.current) return '';
+
                     const {
                         source: sourceId = '',
                         target: targetId = '',
                         weight = 1,
                     } = edge.data() as EdgesData;
 
-                    const sourceLabel = graph.$id(sourceId).data('label') as string;
-                    const targetLabel = graph.$id(targetId).data('label') as string;
+                    const sourceLabel = graphRef.current.$id(sourceId).data('label') as string;
+                    const targetLabel = graphRef.current.$id(targetId).data('label') as string;
 
                     const weightStr = weight !== 1 ? ' ' + weight.toString() : '';
 
@@ -213,7 +223,7 @@ export function ExportTab({ ref, onExportSuccess, onReadyStateChange }: ExportTa
                 </fieldset>
                 // .421-64
             )}
-            {!(graph?.nodes().length ?? false) && (
+            {!nodeCount && (
                 <p>
                     The graph has no elemens to export. <br />
                     Try adding some!

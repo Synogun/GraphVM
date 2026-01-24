@@ -1,32 +1,36 @@
 import { useGraphProperties } from '@/contexts/GraphContext';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, type RefObject } from 'react';
 import type { GraphInstance } from '../types/graph';
 
-export function useRegisterGraph(id: string, api: GraphInstance) {
+export function useRegisterGraph(id: string, api: RefObject<GraphInstance>) {
     const { registry } = useGraphProperties();
 
     useEffect(() => {
-        if (api) {
-            registry.register(id, api);
+        if (api.current) {
+            registry.register(id, api.current);
         }
 
         return () => {
-            if (api) {
+            if (registry.get(id)) {
                 registry.unregister(id);
             }
         };
     }, [id, api, registry]);
 }
 
-export function useGetGraph(id: string): GraphInstance {
+export function useGetGraph(id: string): RefObject<GraphInstance> {
     const { registry } = useGraphProperties();
-    const [api, setApi] = useState<GraphInstance>(() => registry.get(id));
+    const core = useRef<GraphInstance>(null);
 
     useEffect(() => {
+        if (registry.get(id)) {
+            core.current = registry.get(id);
+        }
+
         return registry.subscribe(id, (instance) => {
-            setApi(instance);
+            core.current = instance;
         });
     }, [id, registry]);
 
-    return api;
+    return core;
 }

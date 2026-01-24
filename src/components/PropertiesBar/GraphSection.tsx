@@ -4,27 +4,27 @@ import { useEffect } from 'react';
 import ElementCounter from './ElementCounter';
 
 export function GraphSection() {
-    const graph = useGetGraph('main-graph');
+    const graphRef = useGetGraph('main-graph');
     const {
         nodes: { count: nodeCount, setCount: setNodeCount },
         edges: { count: edgeCount, setCount: setEdgeCount },
     } = useGraphProperties();
 
     useEffect(() => {
-        if (!graph) {
+        if (!graphRef.current) {
             return;
         }
 
-        const currentNodeCount = graph.nodes().length;
+        const currentNodeCount = graphRef.current.nodes().length;
         if (nodeCount !== currentNodeCount) {
             setNodeCount(currentNodeCount);
         }
 
-        const currentEdgeCount = graph.edges().length;
+        const currentEdgeCount = graphRef.current.edges().length;
         if (edgeCount !== currentEdgeCount) {
             setEdgeCount(currentEdgeCount);
         }
-    }, [graph, nodeCount, edgeCount, setNodeCount, setEdgeCount]);
+    }, [graphRef, nodeCount, edgeCount, setNodeCount, setEdgeCount]);
 
     return (
         <>

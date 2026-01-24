@@ -8,7 +8,7 @@ import { findPropertyValueMode } from '@/utils';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
 export function EdgesSection({ visible = true }: EdgesSectionProps) {
-    const graph = useGetGraph('main-graph');
+    const graphRef = useGetGraph('main-graph');
     const {
         labelStyle,
         setLabelStyle,
@@ -27,7 +27,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
     } = useGraphProperties();
 
     useEffect(() => {
-        if (!graph) {
+        if (!graphRef.current) {
             return;
         }
         if (!selectedEdges) {
@@ -55,10 +55,10 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         setLineStyle(modeLineStyle);
         setCurveStyle(isEdgeCurve(modeCurve) ? modeCurve : 'bezier');
         setWeight(Number(modeWeight));
-    }, [graph, selectedEdges, setLabelStyle, setColor, setLineStyle, setCurveStyle, setWeight]);
+    }, [graphRef, selectedEdges, setLabelStyle, setColor, setLineStyle, setCurveStyle, setWeight]);
 
     const handleChangeLabel = (e: ChangeEvent<HTMLSelectElement>) => {
-        if (!graph) {
+        if (!graphRef.current) {
             return;
         }
         if (!selectedEdges) {
@@ -72,7 +72,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
     };
 
     const handleChangeWeight = (e: ChangeEvent<HTMLInputElement>) => {
-        if (!graph) {
+        if (!graphRef.current) {
             return;
         }
         if (!selectedEdges) {
@@ -86,7 +86,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
     };
 
     const handleChangeColor = (e: ChangeEvent<HTMLInputElement>) => {
-        if (!graph) {
+        if (!graphRef.current) {
             return;
         }
         if (!selectedEdges) {
@@ -98,7 +98,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
     };
 
     const handleChangeLineStyle = (e: ChangeEvent<HTMLSelectElement>) => {
-        if (!graph) {
+        if (!graphRef.current) {
             return;
         }
         if (!selectedEdges) {
@@ -112,7 +112,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
     };
 
     const handleChangeCurveStyle = (e: ChangeEvent<HTMLSelectElement>) => {
-        if (!graph) {
+        if (!graphRef.current) {
             return;
         }
         if (!selectedEdges) {

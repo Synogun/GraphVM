@@ -6,7 +6,7 @@ import { isLayoutType } from '@/types/layoutTypeGuards';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
 export function LayoutSection({ visible = true }: LayoutSectionProps) {
-    const graph = useGetGraph('main-graph');
+    const graphRef = useGetGraph('main-graph');
     const {
         type: layoutType,
         setType: setLayoutType,
@@ -16,7 +16,7 @@ export function LayoutSection({ visible = true }: LayoutSectionProps) {
     } = useLayoutProperties();
 
     useEffect(() => {
-        if (!graph) return;
+        if (!graphRef.current) return;
 
         let options: cytoscape.LayoutOptions = {
             name: layoutType,
@@ -44,9 +44,9 @@ export function LayoutSection({ visible = true }: LayoutSectionProps) {
         }
 
         setCurrentLayout(options);
-        arrangeGraph(graph, options);
+        arrangeGraph(graphRef.current, options);
     }, [
-        graph,
+        graphRef,
         layoutType,
         circleLayout.radius,
         gridLayout.rows,
@@ -74,8 +74,8 @@ export function LayoutSection({ visible = true }: LayoutSectionProps) {
     };
 
     const handleRandomLayout = () => {
-        if (!graph) return;
-        arrangeGraph(graph, { name: 'random' });
+        if (!graphRef.current) return;
+        arrangeGraph(graphRef.current, { name: 'random' });
     };
 
     const selectTypeOptions = useMemo(() => {

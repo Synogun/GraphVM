@@ -21,7 +21,7 @@ type ImportTabProps = {
 };
 
 export function ImportTab({ ref, onImportSuccess, onReadyStateChange }: ImportTabProps) {
-    const graph = useGetGraph('main-graph');
+    const graphRef = useGetGraph('main-graph');
 
     const { current: currentLayout } = useLayoutProperties();
 
@@ -117,12 +117,12 @@ export function ImportTab({ ref, onImportSuccess, onReadyStateChange }: ImportTa
     };
 
     const handleImport = () => {
-        if (!importData || !graph) {
+        if (!importData || !graphRef.current) {
             return;
         }
 
-        graph.elements().remove();
-        graph.json(importData as { elements: cytoscape.ElementDefinition[] });
+        graphRef.current.elements().remove();
+        graphRef.current.json(importData as { elements: cytoscape.ElementDefinition[] });
 
         cleanup();
         onImportSuccess();

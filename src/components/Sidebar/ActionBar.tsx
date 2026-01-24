@@ -43,7 +43,7 @@ export function ActionBar({ children }: ActionBarProps) {
     } = useModals();
 
     const { current: currentLayout } = useLayoutProperties();
-    const graph = useGetGraph('main-graph');
+    const graphRef = useGetGraph('main-graph');
     const edgeModeStyle = edgeMode === 'path' ? 'btn-outline' : 'btn-accent';
     const pathMode = edgeMode === 'complete';
     const isDeleteBtnDisabled = verifyIfBtnDisable(selectedNodes, selectedEdges);
@@ -61,11 +61,11 @@ export function ActionBar({ children }: ActionBarProps) {
     };
 
     const handleArrangeGraph = () => {
-        if (!graph) {
+        if (!graphRef.current) {
             return;
         }
 
-        arrangeGraph(graph, currentLayout ?? { name: 'circle' });
+        arrangeGraph(graphRef.current, currentLayout ?? { name: 'circle' });
     };
 
     const handleSettings = () => {
@@ -77,32 +77,32 @@ export function ActionBar({ children }: ActionBarProps) {
     };
 
     const handleCenterGraph = () => {
-        if (!graph) {
+        if (!graphRef.current) {
             return;
         }
 
-        const currentSelected = graph.elements(':selected');
-        centerGraph(graph, currentSelected, 30);
+        const currentSelected = graphRef.current.elements(':selected');
+        centerGraph(graphRef.current, currentSelected, 30);
     };
 
     const handleAddNode = () => {
-        if (!graph) {
+        if (!graphRef.current) {
             return;
         }
 
-        addNode(graph);
+        addNode(graphRef.current);
 
-        const currentNodeCount = graph.nodes().length;
+        const currentNodeCount = graphRef.current.nodes().length;
         setNodeCount(currentNodeCount);
         handleArrangeGraph();
     };
 
     const handleAddEdges = () => {
-        if (!graph) {
+        if (!graphRef.current) {
             return;
         }
 
-        const currentSelectedNodes: unknown = graph.data('nodeSelectionOrder');
+        const currentSelectedNodes: unknown = graphRef.current.data('nodeSelectionOrder');
 
         if (!isArrayOfStrings(currentSelectedNodes)) {
             return;
@@ -116,9 +116,9 @@ export function ActionBar({ children }: ActionBarProps) {
 
         const edgeData = { weight, color, style: lineStyle, curve: curveStyle };
 
-        addEdges(graph, edgeData, edgeMode, currentSelectedNodes);
+        addEdges(graphRef.current, edgeData, edgeMode, currentSelectedNodes);
 
-        const currentEdgeCount = graph.edges().length;
+        const currentEdgeCount = graphRef.current.edges().length;
         setEdgeCount(currentEdgeCount);
         handleArrangeGraph();
     };
@@ -128,34 +128,34 @@ export function ActionBar({ children }: ActionBarProps) {
     };
 
     const handleDeleteSelected = () => {
-        if (!graph) {
+        if (!graphRef.current) {
             return;
         }
 
-        let selectedElements = graph.elements(':selected');
+        let selectedElements = graphRef.current.elements(':selected');
         if (selectedElements.length === 0) {
             return;
         }
 
         const nodesToRemove = selectedElements.filter('node');
         if (nodesToRemove.length > 0) {
-            removeNodes(graph, nodesToRemove);
+            removeNodes(graphRef.current, nodesToRemove);
 
-            const empty = graph.collection();
+            const empty = graphRef.current.collection();
             setSelectedNodes(empty);
-            setNodeCount(graph.nodes().length - nodesToRemove.length);
-            graph.data('nodeSelectionOrder', []);
+            setNodeCount(graphRef.current.nodes().length - nodesToRemove.length);
+            graphRef.current.data('nodeSelectionOrder', []);
         }
 
-        selectedElements = graph.elements(':selected');
+        selectedElements = graphRef.current.elements(':selected');
         const edgesToRemove = selectedElements.filter('edge');
         if (edgesToRemove.length > 0) {
-            removeEdges(graph, edgesToRemove);
+            removeEdges(graphRef.current, edgesToRemove);
 
-            const empty = graph.collection();
+            const empty = graphRef.current.collection();
             setSelectedEdges(empty);
-            setEdgeCount(graph.edges().length - edgesToRemove.length);
-            graph.data('edgeSelectionOrder', []);
+            setEdgeCount(graphRef.current.edges().length - edgesToRemove.length);
+            graphRef.current.data('edgeSelectionOrder', []);
         }
     };
 

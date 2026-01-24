@@ -1,14 +1,14 @@
 import { useGraphProperties } from '@/contexts/GraphContext';
 import { destroyGraph, newGraph } from '@/services/GraphService';
 import type cytoscape from 'cytoscape';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useRegisterGraph } from '../hooks/useGraphRegistry';
 import { isArrayOfStrings } from '../types/typeGuards';
 import type { GraphInstance } from '@/types/graph';
 
 export function GraphCanvas({ containerId }: GraphCanvasProps) {
-    const [graph, setGraph] = useState<GraphInstance>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+    const graphRef = useRef<GraphInstance>(null);
 
     const {
         nodes: { setSelected: setSelectedNodes },
@@ -63,15 +63,15 @@ export function GraphCanvas({ containerId }: GraphCanvasProps) {
         newCore.on('select', 'node, edge', handleElementSelection);
         newCore.on('unselect', 'node, edge', handleElementSelection);
 
-        setGraph(newCore);
+        graphRef.current = newCore;
 
         return () => {
             destroyGraph(newCore);
-            setGraph(null);
+            graphRef.current = null;
         };
     }, [containerId, setSelectedNodes, setSelectedEdges]);
 
-    useRegisterGraph(containerId, graph);
+    useRegisterGraph(containerId, graphRef);
 
     return <div className="h-full w-full bg-base-100" ref={containerRef} id={containerId} />;
 }

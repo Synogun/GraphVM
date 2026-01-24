@@ -7,7 +7,7 @@ import { findPropertyValueMode } from '@/utils';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
 export function NodesSection({ visible = true }: NodeSectionProps) {
-    const graph = useGetGraph('main-graph');
+    const graphRef = useGetGraph('main-graph');
     const { color, setColor, shape, setShape } = useNodeProperties();
 
     const {
@@ -15,7 +15,7 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
     } = useGraphProperties();
 
     useEffect(() => {
-        if (!graph) {
+        if (!graphRef.current) {
             return;
         }
         if (!selectedNodes) {
@@ -33,7 +33,7 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
             setColor(modeColor);
             setShape(modeShape);
         }
-    }, [graph, selectedNodes, setColor, setShape]);
+    }, [graphRef, selectedNodes, setColor, setShape]);
 
     // const handleChangeLabel = (e: ChangeEvent<HTMLInputElement>) => {
     //     if (!graph) { return; }
@@ -46,7 +46,7 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
     // };
 
     const handleChangeColor = (e: ChangeEvent<HTMLInputElement>) => {
-        if (!graph) {
+        if (!graphRef.current) {
             return;
         }
         if (!selectedNodes) {
@@ -58,7 +58,7 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
     };
 
     const handleChangeShape = (e: ChangeEvent<HTMLSelectElement>) => {
-        if (!graph) {
+        if (!graphRef.current) {
             return;
         }
         if (!selectedNodes) {

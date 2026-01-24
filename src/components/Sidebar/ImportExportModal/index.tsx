@@ -20,13 +20,11 @@ type ExportTabRef = {
 
 export function ImportExportModal() {
     const modals = useModals();
-    const graph = useGetGraph('main-graph');
+    const graphRef = useGetGraph('main-graph');
     const { current: currentLayout } = useLayoutProperties();
 
     const [activeTab, setActiveTab] = useState<'import' | 'export'>('import');
-    const [isActionReady, setIsActionReady] = useState(
-        activeTab === 'export' && graph !== null && graph.nodes().length > 0
-    );
+    const [isActionReady, setIsActionReady] = useState(false);
 
     const exportTabRef = useRef<ExportTabRef>(null);
     const importTabRef = useRef<ImportTabRef>(null);
@@ -40,11 +38,11 @@ export function ImportExportModal() {
         setActiveTab('import');
         modals.setIsImportExportModalOpen(false);
 
-        if (!graph) {
+        if (!graphRef.current) {
             return;
         }
 
-        arrangeGraph(graph, currentLayout);
+        arrangeGraph(graphRef.current, currentLayout);
     };
 
     const handleAction = () => {
