@@ -1,5 +1,5 @@
 import { type ChangeEvent } from 'react';
-import { MdPalette } from 'react-icons/md';
+import { AppIcons } from '../AppIcons';
 
 function ColorInput({ label, value, onChange, className = '' }: ColorInputProps) {
     return (
@@ -18,7 +18,7 @@ function ColorInput({ label, value, onChange, className = '' }: ColorInputProps)
     );
 }
 
-const paletteIcon = <MdPalette className="opacity-50" size="1.5em" />;
+const paletteIcon = <AppIcons.ColorPalette className="opacity-50" size="1.5em" />;
 
 type ColorInputProps = {
     label?: string;

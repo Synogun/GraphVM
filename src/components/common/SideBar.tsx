@@ -1,10 +1,7 @@
 import { type ReactNode } from 'react';
-import {
-    TbLayoutSidebarLeftCollapseFilled,
-    TbLayoutSidebarLeftExpandFilled,
-    TbLayoutSidebarRightCollapseFilled,
-    TbLayoutSidebarRightExpandFilled,
-} from 'react-icons/tb';
+import { AppIcons } from './AppIcons';
+
+const ICON_SIZE = '1.5em';
 
 export function SideBar({
     id,
@@ -70,29 +67,29 @@ const iconHandlers = {
     left: {
         open: (
             <>
-                <TbLayoutSidebarLeftExpandFilled className="swap-off h-10 w-10" size="1.5em " />
+                <AppIcons.SidebarLeftExpand className="swap-off h-10 w-10" size={ICON_SIZE} />
             </>
         ),
         close: (
             <>
-                <TbLayoutSidebarLeftCollapseFilled className="swap-on h-10 w-10" size="1.5em " />
+                <AppIcons.SidebarLeftCollapse className="swap-on h-10 w-10" size={ICON_SIZE} />
             </>
         ),
     },
     right: {
         open: (
             <>
-                <TbLayoutSidebarRightExpandFilled
+                <AppIcons.SidebarRightExpand
                     className="swap-off h-10 w-10 fill-current"
-                    size="1.5em "
+                    size={ICON_SIZE}
                 />
             </>
         ),
         close: (
             <>
-                <TbLayoutSidebarRightCollapseFilled
+                <AppIcons.SidebarRightCollapse
                     className="swap-on h-10 w-10 fill-current"
-                    size="1.5em "
+                    size={ICON_SIZE}
                 />
             </>
         ),

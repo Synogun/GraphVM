@@ -9,20 +9,13 @@ import { addNode, removeNodes } from '@/services/NodesService';
 import { isArrayOfStrings } from '@/types/typeGuards';
 import { isDev } from '@/utils/general';
 import type { ChangeEvent, ReactNode } from 'react';
-import { AiOutlineNodeIndex } from 'react-icons/ai';
-import { BsNodePlus } from 'react-icons/bs';
-import { FaGithub } from 'react-icons/fa';
-import { FaCode } from 'react-icons/fa6';
-import { FiHelpCircle } from 'react-icons/fi';
-import { GoTrash } from 'react-icons/go';
-import { MdFilterCenterFocus, MdSettings } from 'react-icons/md';
-import { PiFediverseLogo, PiGraph, PiLineSegments, PiShuffle } from 'react-icons/pi';
-import { RiSave3Fill } from 'react-icons/ri';
-import { SideBar } from '../common/SideBar';
+import { SideBar } from './common/SideBar';
 import { Logger } from '@Logger';
-import { TbReport } from 'react-icons/tb';
+import { AppIcons } from './common/AppIcons';
 
 const logger = Logger.createContextLogger('ActionBar');
+
+const ICON_SIZE = '1.5em';
 
 export function ActionBar({ children }: ActionBarProps) {
     const {
@@ -175,21 +168,21 @@ export function ActionBar({ children }: ActionBarProps) {
                     </div>
 
                     <ActionButton
-                        icon={actionIcons.newGraph}
+                        icon={<AppIcons.NewGraph size={ICON_SIZE} />}
                         label="New Graph"
                         margin="my-1"
                         onClick={handleNewGraph}
                     />
 
                     <ActionButton
-                        icon={actionIcons.algorithms}
+                        icon={<AppIcons.Algorithms size={ICON_SIZE} />}
                         label="Algorithms"
                         margin="my-1"
                         onClick={handleAlgorithms}
                     />
 
                     <ActionButton
-                        icon={actionIcons.importExport}
+                        icon={<AppIcons.ImportExport size={ICON_SIZE} />}
                         label="Import / Export"
                         margin="my-1"
                         onClick={handleImportExport}
@@ -200,14 +193,14 @@ export function ActionBar({ children }: ActionBarProps) {
                     </div>
 
                     <ActionButton
-                        icon={actionIcons.arrange}
+                        icon={<AppIcons.Arrange size={ICON_SIZE} />}
                         label="Arrange"
                         margin="my-1"
                         onClick={handleArrangeGraph}
                     />
 
                     <ActionButton
-                        icon={actionIcons.center}
+                        icon={<AppIcons.Center size={ICON_SIZE} />}
                         label="Center"
                         margin="my-1"
                         onClick={handleCenterGraph}
@@ -218,14 +211,14 @@ export function ActionBar({ children }: ActionBarProps) {
                     </div>
 
                     <ActionButton
-                        icon={actionIcons.addNode}
+                        icon={<AppIcons.AddNode size={ICON_SIZE} />}
                         label="Add node"
                         margin="my-1"
                         onClick={handleAddNode}
                     />
 
                     <ActionButton
-                        icon={actionIcons.addEdges}
+                        icon={<AppIcons.AddEdges size={ICON_SIZE} />}
                         label="Add Edges(s)"
                         margin="my-1"
                         onClick={handleAddEdges}
@@ -236,16 +229,16 @@ export function ActionBar({ children }: ActionBarProps) {
                     >
                         <input checked={pathMode} onChange={handleToggleEdgeMode} type="checkbox" />
                         <div className="swap-off flex items-center text-center gap-5">
-                            {actionIcons.pathEdgeMode} Path Mode
+                            <AppIcons.PathEdgeMode size={ICON_SIZE} /> Path Mode
                         </div>
                         <div className="swap-on flex items-center text-center gap-2">
-                            {actionIcons.completeEdgeMode} Complete Mode
+                            <AppIcons.CompleteEdgeMode size={ICON_SIZE} /> Complete Mode
                         </div>
                     </label>
 
                     <ActionButton
                         disabled={isDeleteBtnDisabled}
-                        icon={actionIcons.deleteElements}
+                        icon={<AppIcons.DeleteElements size={ICON_SIZE} />}
                         isDelete={true}
                         label="Delete Selected"
                         margin="my-1"
@@ -257,14 +250,14 @@ export function ActionBar({ children }: ActionBarProps) {
                     </div>
 
                     <ActionButton
-                        icon={actionIcons.settings}
+                        icon={<AppIcons.Settings size={ICON_SIZE} />}
                         label="Settings"
                         margin="my-1"
                         onClick={handleSettings}
                     />
 
                     <ActionButton
-                        icon={actionIcons.help}
+                        icon={<AppIcons.Help size={ICON_SIZE} />}
                         label="Help"
                         margin="my-1"
                         onClick={handleHelp}
@@ -282,7 +275,7 @@ export function ActionBar({ children }: ActionBarProps) {
 
                     {isDev() && (
                         <ActionButton
-                            icon={actionIcons.logs}
+                            icon={<AppIcons.DebugLogs size={ICON_SIZE} />}
                             label="Download Logs"
                             margin="my-1"
                             onClick={() => {
@@ -330,24 +323,6 @@ function ActionButton({
         </button>
     );
 }
-
-const ICON_SIZE = '1.5em';
-const actionIcons = {
-    newGraph: <PiGraph size={ICON_SIZE} />,
-    algorithms: <FaCode size={ICON_SIZE} />,
-    importExport: <RiSave3Fill size={ICON_SIZE} />,
-    arrange: <PiShuffle size={ICON_SIZE} />,
-    center: <MdFilterCenterFocus size={ICON_SIZE} />,
-    addNode: <BsNodePlus size={ICON_SIZE} />,
-    addEdges: <AiOutlineNodeIndex size={ICON_SIZE} />,
-    pathEdgeMode: <PiLineSegments size={ICON_SIZE} />,
-    completeEdgeMode: <PiFediverseLogo size={ICON_SIZE} />,
-    deleteElements: <GoTrash size={ICON_SIZE} />,
-    settings: <MdSettings size={ICON_SIZE} />,
-    help: <FiHelpCircle size={ICON_SIZE} />,
-    github: <FaGithub size={ICON_SIZE} />,
-    logs: <TbReport size={ICON_SIZE} />,
-};
 
 // ---------- Type Definitions ----------
 
