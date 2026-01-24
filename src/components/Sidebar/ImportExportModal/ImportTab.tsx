@@ -13,12 +13,9 @@ import {
     type ChangeEvent,
     type Ref,
 } from 'react';
+import { Logger } from '@Logger';
 
-type ImportTabProps = {
-    ref: Ref<{ handleImport: () => void }>;
-    onImportSuccess: () => void;
-    onReadyStateChange: (isReady: boolean) => void;
-};
+const logger = Logger.createContextLogger('ImportTab');
 
 export function ImportTab({ ref, onImportSuccess, onReadyStateChange }: ImportTabProps) {
     const graphRef = useGetGraph('main-graph');
@@ -59,7 +56,7 @@ export function ImportTab({ ref, onImportSuccess, onReadyStateChange }: ImportTa
         }
 
         const content = await file.text().catch((error: unknown) => {
-            console.error('Error reading file:', error);
+            logger.error('Error reading file:', error);
             throw error;
         });
 
@@ -92,7 +89,7 @@ export function ImportTab({ ref, onImportSuccess, onReadyStateChange }: ImportTa
                 dataToImport = { elements };
             }
         } catch (error) {
-            console.error(`Invalid ${fileType} file\n`, error);
+            logger.error(`Invalid ${fileType} file\n`, error);
             return false;
         }
 
@@ -107,7 +104,7 @@ export function ImportTab({ ref, onImportSuccess, onReadyStateChange }: ImportTa
 
             setPreviewCy(newPreviewCy);
         } catch (error) {
-            console.error('Error initializing Cytoscape with imported data:', error);
+            logger.error('Error initializing Cytoscape with imported data:', error);
             return false;
         }
 
@@ -132,7 +129,7 @@ export function ImportTab({ ref, onImportSuccess, onReadyStateChange }: ImportTa
 
     const handleFileSelectWrapper = (event: React.ChangeEvent<HTMLInputElement>) => {
         handleFileSelect(event).catch((error: unknown) => {
-            console.error('Error handling file select:', error);
+            logger.error('Error handling file select:', error);
         });
     };
 
@@ -161,3 +158,9 @@ export function ImportTab({ ref, onImportSuccess, onReadyStateChange }: ImportTa
         </div>
     );
 }
+
+type ImportTabProps = {
+    ref: Ref<{ handleImport: () => void }>;
+    onImportSuccess: () => void;
+    onReadyStateChange: (isReady: boolean) => void;
+};

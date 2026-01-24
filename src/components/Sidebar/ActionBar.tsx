@@ -19,6 +19,9 @@ import { MdFilterCenterFocus, MdSettings } from 'react-icons/md';
 import { PiFediverseLogo, PiGraph, PiLineSegments, PiShuffle } from 'react-icons/pi';
 import { RiSave3Fill } from 'react-icons/ri';
 import { SideBar } from '../common/SideBar';
+import { Logger } from '@Logger';
+
+const logger = Logger.createContextLogger('ActionBar');
 
 export function ActionBar({ children }: ActionBarProps) {
     const {
@@ -104,11 +107,12 @@ export function ActionBar({ children }: ActionBarProps) {
         const currentSelectedNodes: unknown = graphRef.current.data('nodeSelectionOrder');
 
         if (!isArrayOfStrings(currentSelectedNodes)) {
+            logger.error('Invalid selection order data');
             return;
         }
 
         if (currentSelectedNodes.length < 2) {
-            console.warn('Select at least two nodes to create an edge.');
+            logger.warn('Select at least two nodes to create an edge.');
             // TODO: Show user feedback
             return;
         }

@@ -1,5 +1,8 @@
 import type cytoscape from 'cytoscape';
 import { DefaultStyleService } from './DefaultStyleService';
+import { Logger } from '@Logger';
+
+const logger = Logger.createContextLogger('LayoutService');
 
 export function arrangeGraph(core: cytoscape.Core, options?: cytoscape.LayoutOptions): void {
     const defaultStyleService = DefaultStyleService.getInstance();
@@ -10,7 +13,7 @@ export function arrangeGraph(core: cytoscape.Core, options?: cytoscape.LayoutOpt
     };
 
     core.layout(layoutOptions).run();
-    console.log('arrangeGraph > arranged graph with', layoutOptions.name, 'layout');
+    logger.info('arrangeGraph > arranged graph with', layoutOptions.name, 'layout');
 }
 
 export function centerGraph(core: cytoscape.Core, eles?: cytoscape.Collection, padding = 30): void {
@@ -20,5 +23,5 @@ export function centerGraph(core: cytoscape.Core, eles?: cytoscape.Collection, p
         core.fit(core.nodes(), padding);
     }
 
-    console.log('centerGraph > centered graph on', eles?.length ? eles.toArray() : 'all nodes');
+    logger.info('centerGraph > centered graph on', eles?.length ? eles.toArray() : 'all nodes');
 }

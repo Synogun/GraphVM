@@ -9,6 +9,9 @@ export default defineConfig({
     resolve: {
         alias: {
             '@': '/src',
+
+            // Very specific but useful aliases
+            '@Logger': '/src/utils/Logger',
         },
     },
     dev: {

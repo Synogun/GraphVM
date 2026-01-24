@@ -2,8 +2,9 @@ import type { ElementsDefinition } from 'cytoscape';
 import { DefaultStyleService } from './DefaultStyleService';
 import { makeNodeId } from './NodesService';
 import { makeEdgeId } from './EdgesServices';
+import { Logger } from '@Logger';
 
-export type FileType = 'application/json' | 'text/plain';
+const logger = Logger.createContextLogger('ImportExportService');
 
 export function isFileValid(file: File) {
     const validType = file.type === 'application/json' || file.type === 'text/plain';
@@ -39,10 +40,9 @@ export function parseTextData(data: string, type: FileType): ElementsDefinition 
         .replaceAll('\r', '')
         .split('\n')
         .map((line) => line.replaceAll(/\s+/g, ' ').trim().split(separator));
-    console.log('Data Preview:', lines);
 
     if (!isDataValid(data, type)) {
-        console.error('Invalid data format');
+        logger.warn('Invalid data format');
         return false;
     }
 
@@ -79,7 +79,7 @@ export function parseTextData(data: string, type: FileType): ElementsDefinition 
             }
         }
     } catch (error) {
-        console.error('Error parsing edge data:', error);
+        logger.error('Error parsing edge data:', error);
         return false;
     }
 
@@ -93,3 +93,5 @@ export function parseTextData(data: string, type: FileType): ElementsDefinition 
 
     return { nodes, edges };
 }
+
+export type FileType = 'application/json' | 'text/plain';

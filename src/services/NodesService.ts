@@ -1,6 +1,9 @@
 import type cytoscape from 'cytoscape';
 import { DefaultStyleService } from './DefaultStyleService';
 import { removeEdges } from './EdgesServices';
+import { Logger } from '@Logger';
+
+const logger = Logger.createContextLogger('NodesService');
 
 export function makeNodeId() {
     return `node-${Date.now().toString()}-${Math.floor(Math.random() * 10000).toString()}`;
@@ -32,7 +35,7 @@ export function addNode(
     });
 
     core.data('numNodes', numNodes + 1);
-    console.log('addNode > added node with id:', newId, core.data());
+    logger.info('addNode > added node with id:', newId, core.data());
 }
 
 export function addNodes(
@@ -62,7 +65,7 @@ export function addNodes(
 
     core.add(newNodes);
     core.data('numNodes', numNodes + newNodes.length);
-    console.log(
+    logger.info(
         'addNodes > added nodes with ids:',
         newNodes.map((node) => node.data.id),
         core.data()
@@ -71,13 +74,13 @@ export function addNodes(
 
 export function removeNodes(core: cytoscape.Core, nodes: cytoscape.NodeCollection): void {
     if (nodes.length === 0) {
-        console.log('removeNode > Select at least one node');
+        logger.warn('removeNode > Select at least one node');
         return;
     }
 
     nodes.forEach((node) => {
         if (!core.hasElementWithId(node.id())) {
-            console.log('removeNode > Node not found in graph:', node.id());
+            logger.warn('removeNode > Node not found in graph:', node.id());
             return;
         }
         const nodeEdges = node.connectedEdges();
@@ -90,7 +93,7 @@ export function removeNodes(core: cytoscape.Core, nodes: cytoscape.NodeCollectio
     });
 
     core.data('numNodes', core.nodes().length);
-    console.log('removeNode > removed', nodes.length, 'node(s)');
+    logger.info('removeNode > removed', nodes.length, 'node(s)');
 }
 
 export function updateNodes(
@@ -100,7 +103,7 @@ export function updateNodes(
     value: string
 ): void {
     if (nodes.length === 0) {
-        console.log('updateNodes > Select at least one node');
+        logger.warn('updateNodes > Select at least one node');
         return;
     }
 
@@ -110,5 +113,5 @@ export function updateNodes(
         node.data(property, value);
     });
 
-    console.log('updateNodes > updated', nodesCollection.length, 'node(s)');
+    logger.info('updateNodes > updated', nodesCollection.length, 'node(s)');
 }

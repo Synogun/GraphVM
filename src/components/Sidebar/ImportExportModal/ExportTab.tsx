@@ -13,17 +13,9 @@ import {
     type ChangeEvent,
     type Ref,
 } from 'react';
+import { Logger } from '@Logger';
 
-type CytoscapeJson = {
-    style?: StylesheetCSS[];
-    [key: string]: unknown;
-};
-
-type ExportTabProps = {
-    ref: Ref<{ handleExport: () => void }>;
-    onExportSuccess: () => void;
-    onReadyStateChange: (isReady: boolean) => void;
-};
+const logger = Logger.createContextLogger('ExportTab');
 
 export function ExportTab({ ref, onExportSuccess, onReadyStateChange }: ExportTabProps) {
     const graphRef = useGetGraph('main-graph');
@@ -82,7 +74,7 @@ export function ExportTab({ ref, onExportSuccess, onReadyStateChange }: ExportTa
                     const plainStylesheet = sheetToPlain(json.style);
                     json.style = plainStylesheet;
                 } catch (error) {
-                    console.error('Error converting stylesheet to plain format:', error);
+                    logger.error('Error converting stylesheet to plain format:', error);
                 }
             }
 
@@ -232,3 +224,14 @@ export function ExportTab({ ref, onExportSuccess, onReadyStateChange }: ExportTa
         </div>
     );
 }
+
+type CytoscapeJson = {
+    style?: StylesheetCSS[];
+    [key: string]: unknown;
+};
+
+type ExportTabProps = {
+    ref: Ref<{ handleExport: () => void }>;
+    onExportSuccess: () => void;
+    onReadyStateChange: (isReady: boolean) => void;
+};

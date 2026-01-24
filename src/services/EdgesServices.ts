@@ -1,5 +1,8 @@
 import type { EdgesData } from '@/types/edges';
 import { DefaultStyleService } from './DefaultStyleService';
+import { Logger } from '@Logger';
+
+const logger = Logger.createContextLogger('EdgesServices');
 
 export function makeEdgeId() {
     return `edge-${Date.now().toString()}-${Math.floor(Math.random() * 10000).toString()}`;
@@ -11,11 +14,11 @@ export function addEdge(
     classes?: string[]
 ): void {
     if (!options.data.source) {
-        console.log('addEdge > Source node is required');
+        logger.warn('addEdge > Source node is required');
         return;
     }
     if (!options.data.target) {
-        console.log('addEdge > Target node is required');
+        logger.warn('addEdge > Target node is required');
         return;
     }
 
@@ -41,7 +44,7 @@ export function addEdge(
     }
 
     core.data('numEdges', core.edges().length);
-    console.log(
+    logger.info(
         'addEdge > added edge with source',
         options.data.source,
         'and target',
@@ -56,7 +59,7 @@ export function addEdges(
     edges: string[]
 ): void {
     if (edges.length < 2) {
-        console.log('addPath > Provide at least two edge definitions to create a path');
+        logger.warn('addPath > Provide at least two edge definitions to create a path');
         // TODO: Show user feedback
         return;
     }
@@ -90,20 +93,20 @@ export function addEdges(
 
 export function removeEdges(core: cytoscape.Core, edges: cytoscape.EdgeCollection): void {
     if (edges.length === 0) {
-        console.log('removeEdge > Select at least one edge');
+        logger.warn('removeEdge > Select at least one edge');
         return;
     }
 
     edges.forEach((edge) => {
         if (!core.hasElementWithId(edge.id())) {
-            console.log('removeEdge > Edge not found in graph:', edge.id());
+            logger.warn('removeEdge > Edge not found in graph:', edge.id());
             return;
         }
 
         // this.removedEdges.push(edge);
         core.remove(edge);
     });
-    console.log('removeEdge > removed', edges.length, 'edge(s)');
+    logger.info('removeEdge > removed', edges.length, 'edge(s)');
 }
 
 export function updateEdges(
@@ -113,7 +116,7 @@ export function updateEdges(
     value: string | number
 ): void {
     if (edges.length === 0) {
-        console.log('updateEdges > Select at least one edge');
+        logger.warn('updateEdges > Select at least one edge');
         return;
     }
 
@@ -134,5 +137,5 @@ export function updateEdges(
         edgesCollection.map((ele) => ele.data(property, value));
     }
 
-    console.log('updateEdges > updated', edgesCollection.length, 'edge(s)');
+    logger.info('updateEdges > updated', edgesCollection.length, 'edge(s)');
 }

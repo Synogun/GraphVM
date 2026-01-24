@@ -24,7 +24,8 @@
         "noUncheckedSideEffectImports": true,
         "baseUrl": "./src",
         "paths": {
-            "@/*": ["./*"]
+            "@/*": ["./*"],
+            "@Logger": ["./utils/Logger"]
         }
     },
     "include": ["src"]

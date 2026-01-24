@@ -1,5 +1,8 @@
 import cytoscape from 'cytoscape';
 import { DefaultStyleService } from './DefaultStyleService';
+import { Logger } from '@Logger';
+
+const logger = Logger.createContextLogger('GraphService');
 
 export function newGraph(
     containerId?: string,
@@ -27,6 +30,7 @@ export function newGraph(
     newGraph.data('numNodes', newGraph.nodes().length);
     newGraph.data('numEdges', newGraph.edges().length);
 
+    logger.info('newGraph > created new graph instance in container:', containerId);
     return newGraph;
 }
 
@@ -38,5 +42,5 @@ export function destroyGraph(core: cytoscape.Core): void {
     }
 
     core.destroy();
-    console.log('destroyGraph > destroyed graph');
+    logger.info('destroyGraph > destroyed graph');
 }

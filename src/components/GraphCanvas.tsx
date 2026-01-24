@@ -5,6 +5,9 @@ import { useEffect, useRef } from 'react';
 import { useRegisterGraph } from '../hooks/useGraphRegistry';
 import { isArrayOfStrings } from '../types/typeGuards';
 import type { GraphInstance } from '@/types/graph';
+import { Logger } from '@Logger';
+
+const logger = Logger.createContextLogger('GraphCanvas');
 
 export function GraphCanvas({ containerId }: GraphCanvasProps) {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -38,8 +41,7 @@ export function GraphCanvas({ containerId }: GraphCanvasProps) {
                 !isArrayOfStrings(currentSelectedNodes) ||
                 !isArrayOfStrings(currentSelectedEdges)
             ) {
-                console.log('event', e);
-                console.error('Invalid selection order data');
+                logger.error('Invalid selection order data');
                 return;
             }
             const targetNodes = target.filter('node').map((n) => n.id());
