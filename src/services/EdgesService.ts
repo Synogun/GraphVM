@@ -2,7 +2,7 @@ import type { EdgesData } from '@/types/edges';
 import { DefaultStyleService } from './DefaultStyleService';
 import { Logger } from '@Logger';
 
-const logger = Logger.createContextLogger('EdgesServices');
+const logger = Logger.createContextLogger('EdgesService');
 
 export function makeEdgeId() {
     return `edge-${Date.now().toString()}-${Math.floor(Math.random() * 10000).toString()}`;

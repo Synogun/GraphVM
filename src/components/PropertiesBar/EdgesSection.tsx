@@ -2,7 +2,7 @@ import { ColorInput, NumberInput, SelectInput } from '@/components/common/inputs
 import { useEdgesProperties } from '@/contexts/EdgesContext';
 import { useGraphProperties } from '@/contexts/GraphContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
-import { updateEdges } from '@/services/EdgesServices';
+import { updateEdges } from '@/services/EdgesService';
 import { isEdgeCurve } from '@/types/edgesTypeGuards';
 import { findPropertyValueMode } from '@/utils/elements';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
@@ -170,9 +170,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
 }
 
 const labelStyleOptions = ['hidden', 'weight', 'index'];
-
 const lineStyleOptions = ['solid', 'dashed', 'dotted'];
-
 const curveStyleOptions = [
     'haystack',
     'straight',

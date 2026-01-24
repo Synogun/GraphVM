@@ -1,7 +1,7 @@
 import type { ElementsDefinition } from 'cytoscape';
 import { DefaultStyleService } from './DefaultStyleService';
 import { makeNodeId } from './NodesService';
-import { makeEdgeId } from './EdgesServices';
+import { makeEdgeId } from './EdgesService';
 import { Logger } from '@Logger';
 
 const logger = Logger.createContextLogger('ImportExportService');
