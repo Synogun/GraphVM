@@ -7,7 +7,7 @@ export function useNodeProperties() {
     const context = useContext(NodesContext);
 
     if (context === undefined) {
-        throw new Error('useNodeProperties must be used within a PropertiesProvider');
+        throw new Error('useNodeProperties must be used within a NodesProvider');
     }
     return context;
 }

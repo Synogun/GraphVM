@@ -7,7 +7,7 @@ export function useEdgesProperties() {
     const context = useContext(EdgesContext);
 
     if (context === undefined) {
-        throw new Error('useEdgesProperties must be used within a PropertiesProvider');
+        throw new Error('useEdgesProperties must be used within an EdgesProvider');
     }
 
     return context;
