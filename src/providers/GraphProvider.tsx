@@ -1,6 +1,6 @@
 import { GraphContext } from '@/contexts/GraphContext';
-import { useMemo, useState, type ReactNode } from 'react';
 import type { GraphInstance } from '@/types/graph';
+import { useMemo, useState, type ReactNode } from 'react';
 
 export function GraphProvider({ children }: GraphProviderProps) {
     const [nodeCount, setNodeCount] = useState(0);

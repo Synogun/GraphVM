@@ -1,7 +1,7 @@
+import { Logger } from '@Logger';
 import type cytoscape from 'cytoscape';
 import { DefaultStyleService } from './DefaultStyleService';
 import { removeEdges } from './EdgesService';
-import { Logger } from '@Logger';
 
 const logger = Logger.createContextLogger('NodesService');
 

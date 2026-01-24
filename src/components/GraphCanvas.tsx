@@ -1,11 +1,11 @@
 import { useGraphProperties } from '@/contexts/GraphContext';
 import { destroyGraph, newGraph } from '@/services/GraphService';
+import type { GraphInstance } from '@/types/graph';
+import { Logger } from '@Logger';
 import type cytoscape from 'cytoscape';
 import { useEffect, useRef } from 'react';
 import { useRegisterGraph } from '../hooks/useGraphRegistry';
 import { isArrayOfStrings } from '../types/typeGuards';
-import type { GraphInstance } from '@/types/graph';
-import { Logger } from '@Logger';
 
 const logger = Logger.createContextLogger('GraphCanvas');
 

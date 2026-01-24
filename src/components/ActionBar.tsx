@@ -8,10 +8,10 @@ import { arrangeGraph, centerGraph } from '@/services/LayoutService';
 import { addNode, removeNodes } from '@/services/NodesService';
 import { isArrayOfStrings } from '@/types/typeGuards';
 import { isDev } from '@/utils/general';
-import type { ChangeEvent, ReactNode } from 'react';
-import { SideBar } from './common/SideBar';
 import { Logger } from '@Logger';
+import type { ChangeEvent, ReactNode } from 'react';
 import { AppIcons } from './common/AppIcons';
+import { SideBar } from './common/SideBar';
 
 const logger = Logger.createContextLogger('ActionBar');
 

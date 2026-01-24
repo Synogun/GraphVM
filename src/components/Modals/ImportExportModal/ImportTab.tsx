@@ -3,6 +3,7 @@ import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { newGraph } from '@/services/GraphService';
 import { isFileValid, parseTextData, type FileType } from '@/services/ImportExportService';
 import { arrangeGraph } from '@/services/LayoutService';
+import { Logger } from '@Logger';
 import cytoscape, { type CytoscapeOptions } from 'cytoscape';
 import {
     useCallback,
@@ -13,7 +14,6 @@ import {
     type ChangeEvent,
     type Ref,
 } from 'react';
-import { Logger } from '@Logger';
 
 const logger = Logger.createContextLogger('ImportTab');
 

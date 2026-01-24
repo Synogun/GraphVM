@@ -1,6 +1,6 @@
+import { Logger } from '@Logger';
 import cytoscape from 'cytoscape';
 import { DefaultStyleService } from './DefaultStyleService';
-import { Logger } from '@Logger';
 
 const logger = Logger.createContextLogger('GraphService');
 

@@ -1,6 +1,6 @@
 import type { EdgesData } from '@/types/edges';
-import { DefaultStyleService } from './DefaultStyleService';
 import { Logger } from '@Logger';
+import { DefaultStyleService } from './DefaultStyleService';
 
 const logger = Logger.createContextLogger('EdgesService');
 
