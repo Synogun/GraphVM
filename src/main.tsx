@@ -1,9 +1,9 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { App } from './App';
-import './index.css';
-import { ModalsProvider } from './providers/ModalsProvider.js';
-import { isDev } from './utils.js';
+import { App } from '@/App';
+import '@/index.css';
+import { ModalsProvider } from '@/providers/ModalsProvider.js';
+import { isDev } from '@/utils/general';
 
 const rootElement = document.getElementById('root');
 

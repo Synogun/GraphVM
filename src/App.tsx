@@ -3,11 +3,11 @@ import { GraphCanvas } from '@/components/GraphCanvas';
 import { LoadingHero } from '@/components/LoadingHero';
 import { PropertiesBar } from '@/components/PropertiesBar';
 import { PropertiesProvider } from '@/providers/PropertiesProvider';
-import { isDev } from '@/utils';
+import { isDev } from '@/utils/general';
 import { useEffect, useState } from 'react';
-import Modal from './components/common/Modal';
-import { ImportExportModal } from './components/Sidebar/ImportExportModal';
-import { useModals } from './contexts/ModalsContext';
+import Modal from '@/components/common/Modal';
+import { ImportExportModal } from '@/components/Sidebar/ImportExportModal';
+import { useModals } from '@/contexts/ModalsContext';
 
 export function App() {
     const [loadingApp, setLoadingApp] = useState(true);

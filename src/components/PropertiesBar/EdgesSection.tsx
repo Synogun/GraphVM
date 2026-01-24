@@ -4,7 +4,7 @@ import { useGraphProperties } from '@/contexts/GraphContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { updateEdges } from '@/services/EdgesServices';
 import { isEdgeCurve } from '@/types/edgesTypeGuards';
-import { findPropertyValueMode } from '@/utils';
+import { findPropertyValueMode } from '@/utils/elements';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
 export function EdgesSection({ visible = true }: EdgesSectionProps) {

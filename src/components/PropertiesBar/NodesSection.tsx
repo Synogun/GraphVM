@@ -3,7 +3,7 @@ import { useGraphProperties } from '@/contexts/GraphContext';
 import { useNodeProperties } from '@/contexts/NodesContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { updateNodes } from '@/services/NodesService';
-import { findPropertyValueMode } from '@/utils';
+import { findPropertyValueMode } from '@/utils/elements';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
 export function NodesSection({ visible = true }: NodeSectionProps) {

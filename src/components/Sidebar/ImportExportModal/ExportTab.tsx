@@ -2,7 +2,7 @@ import { useGraphProperties } from '@/contexts/GraphContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { sheetToPlain } from '@/services/DefaultStyleService';
 import type { EdgesData } from '@/types/edges';
-import { makeBlobAndDownload } from '@/utils';
+import { makeBlobAndDownload } from '@/utils/general';
 import type { StylesheetCSS } from 'cytoscape';
 import {
     useCallback,

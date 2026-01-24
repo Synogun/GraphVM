@@ -7,7 +7,7 @@ import { addEdges, removeEdges } from '@/services/EdgesServices';
 import { arrangeGraph, centerGraph } from '@/services/LayoutService';
 import { addNode, removeNodes } from '@/services/NodesService';
 import { isArrayOfStrings } from '@/types/typeGuards';
-import { isDev } from '@/utils';
+import { isDev } from '@/utils/general';
 import type { ChangeEvent, ReactNode } from 'react';
 import { AiOutlineNodeIndex } from 'react-icons/ai';
 import { BsNodePlus } from 'react-icons/bs';
