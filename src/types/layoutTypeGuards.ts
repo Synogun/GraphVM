@@ -1,7 +1,17 @@
+import { isDev } from '@/utils/general';
 import type { LayoutType } from './layout';
 
-export function isLayoutType(value: string): value is LayoutType {
-    const validLayouts = ['null', 'circle', 'random', 'grid', 'concentric', 'breadthfirst', 'cose'];
+export const ValidGraphLayouts = [
+    'circle',
+    'grid',
+    'concentric',
+    'breadthfirst',
+    'cose',
+    'preset',
+    'random',
+    ...(isDev() ? ['null'] : []),
+];
 
-    return validLayouts.includes(value);
+export function isLayoutType(value: string): value is LayoutType {
+    return ValidGraphLayouts.includes(value);
 }

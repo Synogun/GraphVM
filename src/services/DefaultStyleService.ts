@@ -1,5 +1,5 @@
 import type { EdgesData } from '@/types/edges';
-import { isEdgeArrowShape, isEdgeCurve, isEdgeStyle } from '@/types/edgesTypeGuards';
+import { isEdgeArrowShape, isEdgeCurve, isEdgeLineStyle } from '@/types/edgesTypeGuards';
 import type { NodesData } from '@/types/nodes';
 import { isNodeShape } from '@/types/nodesTypeGuards';
 import {
@@ -129,7 +129,7 @@ export function getNodeShape(e: NodeSingular) {
 
 export function getEdgeStyle(e: EdgeSingular) {
     const style: unknown = e.data('style');
-    return isEdgeStyle(style) ? style : 'solid';
+    return isEdgeLineStyle(style) ? style : 'solid';
 }
 
 export function getEdgeCurve(e: EdgeSingular) {
@@ -147,6 +147,7 @@ export function sheetToPlain(stylesheet: StylesheetCSS[]): StylesheetCSS[] {
      *
      * I'M NOT PROUD OF THIS CODE, BUT IT WORKS FOR NOW.
      * DON'T JUDGE ME.
+     * TODO: Refactor this mess later
      *
      */
     const plainStylesheet = JSON.parse(JSON.stringify(stylesheet)) as StylesheetCSS[];

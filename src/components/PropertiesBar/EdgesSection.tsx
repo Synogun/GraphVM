@@ -3,8 +3,13 @@ import { useEdgesProperties } from '@/contexts/EdgesContext';
 import { useGraphProperties } from '@/contexts/GraphContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { updateEdges } from '@/services/EdgesService';
-import { isEdgeCurve } from '@/types/edgesTypeGuards';
-import { findPropertyValueMode } from '@/utils/elements';
+import {
+    isEdgeCurve,
+    ValidEdgeCurves,
+    ValidEdgeLabelStyle,
+    ValidEdgeLineStyles,
+} from '@/types/edgesTypeGuards';
+import { findPropertyValueMode, parseKebabCase } from '@/utils/elements';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
 export function EdgesSection({ visible = true }: EdgesSectionProps) {
@@ -112,22 +117,22 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
     };
 
     const selectLabelOptions = useMemo(() => {
-        return labelStyleOptions.map((style) => ({
-            label: style.charAt(0).toUpperCase() + style.slice(1),
+        return ValidEdgeLabelStyle.map((style) => ({
+            label: parseKebabCase(style),
             value: style,
         }));
     }, []);
 
     const selectLineStyleOptions = useMemo(() => {
-        return lineStyleOptions.map((style) => ({
-            label: style.charAt(0).toUpperCase() + style.slice(1),
+        return ValidEdgeLineStyles.map((style) => ({
+            label: parseKebabCase(style),
             value: style,
         }));
     }, []);
 
     const selectCurveStyleOptions = useMemo(() => {
-        return curveStyleOptions.map((style) => ({
-            label: style.charAt(0).toUpperCase() + style.slice(1),
+        return ValidEdgeCurves.map((style) => ({
+            label: parseKebabCase(style),
             value: style,
         }));
     }, []);
@@ -168,20 +173,6 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         </div>
     );
 }
-
-const labelStyleOptions = ['hidden', 'weight', 'index'];
-const lineStyleOptions = ['solid', 'dashed', 'dotted'];
-const curveStyleOptions = [
-    'haystack',
-    'straight',
-    'straight-triangle',
-    'bezier',
-    'unbundled-bezier',
-    'segments',
-    'round-segments',
-    'taxi',
-    'round-taxi',
-];
 
 type EdgesSectionProps = {
     visible?: boolean;

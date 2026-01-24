@@ -3,7 +3,8 @@ import { useGraphProperties } from '@/contexts/GraphContext';
 import { useNodeProperties } from '@/contexts/NodesContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { updateNodes } from '@/services/NodesService';
-import { findPropertyValueMode } from '@/utils/elements';
+import { ValidNodeShapes } from '@/types/nodesTypeGuards';
+import { findPropertyValueMode, parseKebabCase } from '@/utils/elements';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
 export function NodesSection({ visible = true }: NodeSectionProps) {
@@ -67,8 +68,9 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
     };
 
     const selectShapeOptions = useMemo(() => {
-        return shapeOptions.map((shape) => ({
-            label: shape.charAt(0).toUpperCase() + shape.slice(1),
+        // TODO: Addres shape types wich works only with specific edge styles
+        return ValidNodeShapes.map((shape) => ({
+            label: parseKebabCase(shape),
             value: shape,
         }));
     }, []);
@@ -97,33 +99,6 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
         </div>
     );
 }
-
-const shapeOptions = [
-    'ellipse',
-    'triangle',
-    'round-triangle',
-    'rectangle',
-    'round-rectangle',
-    'bottom-round-rectangle',
-    'cut-rectangle',
-    'barrel',
-    'rhomboid',
-    'right-rhomboid',
-    'diamond',
-    'round-diamond',
-    'pentagon',
-    'round-pentagon',
-    'hexagon',
-    'round-hexagon',
-    'concave-hexagon',
-    'heptagon',
-    'round-heptagon',
-    'octagon',
-    'round-octagon',
-    'star',
-    'round-star',
-    'vee',
-];
 
 type NodeSectionProps = {
     visible?: boolean;
