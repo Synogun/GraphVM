@@ -94,7 +94,8 @@ export function removeNodes(core: cytoscape.Core, nodes: cytoscape.NodeCollectio
 }
 
 export function updateNodes(
-    nodes: cytoscape.NodeCollection,
+    core: cytoscape.Core,
+    nodes: string[],
     property: string,
     value: string
 ): void {
@@ -103,9 +104,11 @@ export function updateNodes(
         return;
     }
 
-    nodes.forEach((node) => {
+    const nodesCollection = core.nodes().filter((n) => nodes.includes(n.id()));
+
+    nodesCollection.forEach((node) => {
         node.data(property, value);
     });
 
-    console.log('updateNodes > updated', nodes.length, 'node(s)');
+    console.log('updateNodes > updated', nodesCollection.length, 'node(s)');
 }

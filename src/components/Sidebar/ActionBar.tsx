@@ -8,7 +8,6 @@ import { arrangeGraph, centerGraph } from '@/services/LayoutService';
 import { addNode, removeNodes } from '@/services/NodesService';
 import { isArrayOfStrings } from '@/types/typeGuards';
 import { isDev } from '@/utils';
-import type cytoscape from 'cytoscape';
 import type { ChangeEvent, ReactNode } from 'react';
 import { AiOutlineNodeIndex } from 'react-icons/ai';
 import { BsNodePlus } from 'react-icons/bs';
@@ -46,7 +45,7 @@ export function ActionBar({ children }: ActionBarProps) {
     const graphRef = useGetGraph('main-graph');
     const edgeModeStyle = edgeMode === 'path' ? 'btn-outline' : 'btn-accent';
     const pathMode = edgeMode === 'complete';
-    const isDeleteBtnDisabled = verifyIfBtnDisable(selectedNodes, selectedEdges);
+    const isDeleteBtnDisabled = selectedNodes.length === 0 && selectedEdges.length === 0;
 
     const handleNewGraph = () => {
         location.reload();
@@ -141,8 +140,7 @@ export function ActionBar({ children }: ActionBarProps) {
         if (nodesToRemove.length > 0) {
             removeNodes(graphRef.current, nodesToRemove);
 
-            const empty = graphRef.current.collection();
-            setSelectedNodes(empty);
+            setSelectedNodes([]);
             setNodeCount(graphRef.current.nodes().length - nodesToRemove.length);
             graphRef.current.data('nodeSelectionOrder', []);
         }
@@ -152,8 +150,7 @@ export function ActionBar({ children }: ActionBarProps) {
         if (edgesToRemove.length > 0) {
             removeEdges(graphRef.current, edgesToRemove);
 
-            const empty = graphRef.current.collection();
-            setSelectedEdges(empty);
+            setSelectedEdges([]);
             setEdgeCount(graphRef.current.edges().length - edgesToRemove.length);
             graphRef.current.data('edgeSelectionOrder', []);
         }
@@ -333,16 +330,6 @@ const actionIcons = {
     help: <FiHelpCircle size="1.5em" />,
     github: <FaGithub size="1.5em" />,
 };
-
-function verifyIfBtnDisable(
-    selectedNodes: cytoscape.NodeCollection | null,
-    selectedEdges: cytoscape.EdgeCollection | null
-) {
-    return (
-        (selectedNodes === null || selectedNodes.length === 0) &&
-        (selectedEdges === null || selectedEdges.length === 0)
-    );
-}
 
 // ---------- Type Definitions ----------
 

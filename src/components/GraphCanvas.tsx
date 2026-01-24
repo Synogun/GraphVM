@@ -56,8 +56,8 @@ export function GraphCanvas({ containerId }: GraphCanvasProps) {
             core.data('nodeSelectionOrder', nodeSelectionOrder);
             core.data('edgeSelectionOrder', edgeSelectionOrder);
 
-            setSelectedNodes(core.nodes(':selected'));
-            setSelectedEdges(core.edges(':selected'));
+            setSelectedNodes(core.nodes(':selected').map((n) => n.id()));
+            setSelectedEdges(core.edges(':selected').map((e) => e.id()));
         };
 
         newCore.on('select', 'node, edge', handleElementSelection);

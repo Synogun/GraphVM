@@ -4,14 +4,14 @@ export type GraphContextProperties = {
     nodes: {
         count: number;
         setCount: (count: number) => void;
-        selected: cytoscape.NodeCollection | null;
-        setSelected: (nodes: cytoscape.NodeCollection | null) => void;
+        selected: string[];
+        setSelected: (nodes: string[]) => void;
     };
     edges: {
         count: number;
         setCount: (count: number) => void;
-        selected: cytoscape.EdgeCollection | null;
-        setSelected: (edges: cytoscape.EdgeCollection | null) => void;
+        selected: string[];
+        setSelected: (edges: string[]) => void;
         edgeMode: 'path' | 'complete';
         setEdgeMode: (edgeMode: 'path' | 'complete') => void;
     };

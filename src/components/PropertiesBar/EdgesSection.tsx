@@ -30,9 +30,6 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         if (!graphRef.current) {
             return;
         }
-        if (!selectedEdges) {
-            return;
-        }
 
         if (selectedEdges.length === 0) {
             setLabelStyle('hidden');
@@ -43,12 +40,16 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
             return;
         }
 
+        const edgeCollection = graphRef.current
+            .edges()
+            .filter((e) => selectedEdges.includes(e.id()));
+
         // Find the mode (most common value) for each property among selected edges
-        const modeLabel = findPropertyValueMode(selectedEdges, 'label') ?? 'hidden';
-        const modeColor = findPropertyValueMode(selectedEdges, 'color') ?? '#cccccc';
-        const modeLineStyle = findPropertyValueMode(selectedEdges, 'style') ?? 'solid';
-        const modeCurve = findPropertyValueMode(selectedEdges, 'curve');
-        const modeWeight = findPropertyValueMode(selectedEdges, 'weight') ?? 1;
+        const modeLabel = findPropertyValueMode(edgeCollection, 'label') ?? 'hidden';
+        const modeColor = findPropertyValueMode(edgeCollection, 'color') ?? '#cccccc';
+        const modeLineStyle = findPropertyValueMode(edgeCollection, 'style') ?? 'solid';
+        const modeCurve = findPropertyValueMode(edgeCollection, 'curve') ?? 'bezier';
+        const modeWeight = findPropertyValueMode(edgeCollection, 'weight') ?? 1;
 
         setLabelStyle(modeLabel);
         setColor(modeColor);
@@ -61,13 +62,10 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         if (!graphRef.current) {
             return;
         }
-        if (!selectedEdges) {
-            return;
-        }
 
         const { value } = e.target;
 
-        updateEdges(selectedEdges, 'label', value);
+        updateEdges(graphRef.current, selectedEdges, 'label', value);
         setLabelStyle(value);
     };
 
@@ -75,13 +73,10 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         if (!graphRef.current) {
             return;
         }
-        if (!selectedEdges) {
-            return;
-        }
 
         const { value } = e.target;
 
-        updateEdges(selectedEdges, 'weight', Number(value));
+        updateEdges(graphRef.current, selectedEdges, 'weight', Number(value));
         setWeight(Number(value));
     };
 
@@ -89,11 +84,8 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         if (!graphRef.current) {
             return;
         }
-        if (!selectedEdges) {
-            return;
-        }
 
-        updateEdges(selectedEdges, 'color', e.target.value);
+        updateEdges(graphRef.current, selectedEdges, 'color', e.target.value);
         setColor(e.target.value);
     };
 
@@ -101,13 +93,10 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         if (!graphRef.current) {
             return;
         }
-        if (!selectedEdges) {
-            return;
-        }
 
         const { value } = e.target;
 
-        updateEdges(selectedEdges, 'style', value);
+        updateEdges(graphRef.current, selectedEdges, 'style', value);
         setLineStyle(value);
     };
 
@@ -115,13 +104,10 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         if (!graphRef.current) {
             return;
         }
-        if (!selectedEdges) {
-            return;
-        }
 
         const { value } = e.target;
 
-        updateEdges(selectedEdges, 'curve', value);
+        updateEdges(graphRef.current, selectedEdges, 'curve', value);
         setCurveStyle(isEdgeCurve(value) ? value : 'bezier');
     };
 

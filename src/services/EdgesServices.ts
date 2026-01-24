@@ -107,7 +107,8 @@ export function removeEdges(core: cytoscape.Core, edges: cytoscape.EdgeCollectio
 }
 
 export function updateEdges(
-    edges: cytoscape.EdgeCollection,
+    core: cytoscape.Core,
+    edges: string[],
     property: string,
     value: string | number
 ): void {
@@ -116,17 +117,22 @@ export function updateEdges(
         return;
     }
 
+    const edgesCollection = core.edges().filter((e) => edges.includes(e.id()));
+
     if (property === 'weight' && String(value).trim() === '') {
-        edges.data('weight', 1);
+        // Weight fallback to default
+        edgesCollection.data('weight', 1);
     } else if (property === 'label') {
-        edges.map((ele) => {
+        // Update label with class for styling
+        edgesCollection.map((ele) => {
             ele.removeClass(`edge-label-${String(ele.data('label'))}`);
             ele.data('label', value);
             ele.addClass(`edge-label-${String(value)}`);
         });
     } else {
-        edges.map((ele) => ele.data(property, value));
+        // Generic property update
+        edgesCollection.map((ele) => ele.data(property, value));
     }
 
-    console.log('updateEdges > updated', edges.length, 'edge(s)');
+    console.log('updateEdges > updated', edgesCollection.length, 'edge(s)');
 }

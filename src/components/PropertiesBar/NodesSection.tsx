@@ -18,17 +18,18 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
         if (!graphRef.current) {
             return;
         }
-        if (!selectedNodes) {
-            return;
-        }
 
         if (selectedNodes.length === 0) {
             setColor('#999999');
             setShape('ellipse');
             return;
         } else {
-            const modeColor = findPropertyValueMode(selectedNodes, 'color') ?? '#999999';
-            const modeShape = findPropertyValueMode(selectedNodes, 'shape') ?? 'ellipse';
+            const nodeCollection = graphRef.current
+                .nodes()
+                .filter((n) => selectedNodes.includes(n.id()));
+
+            const modeColor = findPropertyValueMode(nodeCollection, 'color') ?? '#999999';
+            const modeShape = findPropertyValueMode(nodeCollection, 'shape') ?? 'ellipse';
 
             setColor(modeColor);
             setShape(modeShape);
@@ -49,11 +50,8 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
         if (!graphRef.current) {
             return;
         }
-        if (!selectedNodes) {
-            return;
-        }
 
-        updateNodes(selectedNodes, 'color', e.target.value);
+        updateNodes(graphRef.current, selectedNodes, 'color', e.target.value);
         setColor(e.target.value);
     };
 
@@ -61,13 +59,10 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
         if (!graphRef.current) {
             return;
         }
-        if (!selectedNodes) {
-            return;
-        }
 
         const { value } = e.target;
 
-        updateNodes(selectedNodes, 'shape', value);
+        updateNodes(graphRef.current, selectedNodes, 'shape', value);
         setShape(value);
     };
 

@@ -4,11 +4,11 @@ import type { GraphInstance } from '@/types/graph';
 
 export function GraphProvider({ children }: GraphProviderProps) {
     const [nodeCount, setNodeCount] = useState(0);
-    const [selectedNodes, setSelectedNodes] = useState<cytoscape.NodeCollection | null>(null);
+    const [selectedNodes, setSelectedNodes] = useState<string[]>([]);
 
     const [edgeMode, setEdgeMode] = useState<'path' | 'complete'>('path');
     const [edgeCount, setEdgeCount] = useState(0);
-    const [selectedEdges, setSelectedEdges] = useState<cytoscape.EdgeCollection | null>(null);
+    const [selectedEdges, setSelectedEdges] = useState<string[]>([]);
 
     const nodes = {
         count: nodeCount,
