@@ -18,12 +18,7 @@ export function isEdgeCurve(value: unknown): value is EdgeCurveStyle {
     return typeof value === 'string' && ValidEdgeCurves.includes(value as EdgeCurveStyle);
 }
 
-export const ValidEdgeLineStyles: cytoscape.Css.LineStyle[] = [
-    'solid',
-    'dotted',
-    'dashed',
-    'double',
-];
+export const ValidEdgeLineStyles: cytoscape.Css.LineStyle[] = ['solid', 'dotted', 'dashed'];
 
 export function isEdgeLineStyle(value: unknown): value is cytoscape.Css.LineStyle {
     return (
