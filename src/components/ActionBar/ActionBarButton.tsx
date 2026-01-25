@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 
+export const ActionBarButtonStyle = 'btn-outline hover:btn-accent focus:btn-accent';
+
 export function ActionBarButton({
     label,
     icon,
@@ -8,11 +10,16 @@ export function ActionBarButton({
     margin = 'my-1',
     disabled = false,
     isDelete = false,
+    className = '',
 }: ActionBarButtonProps) {
-    const classStyle = isDelete ? 'btn-error' : 'btn-outline hover:btn-accent focus:btn-accent';
+    const classStyle = isDelete ? 'btn-error' : ActionBarButtonStyle;
 
     return (
-        <button className={`btn ${classStyle} ${margin}`} disabled={disabled} onClick={onClick}>
+        <button
+            className={`btn ${classStyle} ${margin} ${className}`}
+            disabled={disabled}
+            onClick={onClick}
+        >
             {icon ? <span>{icon}</span> : null}
             {!condensed ? label : null}
         </button>
@@ -27,4 +34,5 @@ type ActionBarButtonProps = {
     margin?: string;
     condensed?: boolean;
     disabled?: boolean;
+    className?: string;
 };

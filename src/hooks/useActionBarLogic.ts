@@ -167,7 +167,6 @@ export function useActionBarLogic() {
         handleToggleEdgeMode,
         handleDeleteSelected,
         isDeleteBtnDisabled: selectedNodes.length === 0 && selectedEdges.length === 0,
-        pathMode: edgeMode === 'complete',
-        edgeModeStyle: edgeMode === 'path' ? 'btn-outline' : 'btn-accent',
+        isCompleteEdgeMode: edgeMode === 'complete',
     };
 }

@@ -5,6 +5,7 @@ import { type ReactNode } from 'react';
 import { AppIcons } from '../common/AppIcons';
 import { SideBar } from '../common/SideBar';
 import { ActionBarButton } from './ActionBarButton';
+import { ActionBarEdgeModeButton } from './ActionBarEdgeModeButton';
 
 const ICON_SIZE = '1.5em';
 
@@ -22,8 +23,7 @@ export function ActionBar({ children }: ActionBarProps) {
         handleSettings,
         handleHelp,
         isDeleteBtnDisabled,
-        pathMode,
-        edgeModeStyle,
+        isCompleteEdgeMode,
     } = useActionBarLogic();
 
     const SidebarChildren = (
@@ -89,15 +89,11 @@ export function ActionBar({ children }: ActionBarProps) {
                 onClick={handleAddEdges}
             />
 
-            <label className={`btn ${edgeModeStyle} hover:btn-accent swap hover:swap-rotate my-1`}>
-                <input checked={pathMode} onChange={handleToggleEdgeMode} type="checkbox" />
-                <div className="swap-off flex items-center text-center gap-5">
-                    {AppIcons.PathEdgeMode({ size: ICON_SIZE })} Path Mode
-                </div>
-                <div className="swap-on flex items-center text-center gap-2">
-                    {AppIcons.CompleteEdgeMode({ size: ICON_SIZE })} Complete Mode
-                </div>
-            </label>
+            <ActionBarEdgeModeButton
+                isCompleteEdgeMode={isCompleteEdgeMode}
+                handleToggleEdgeMode={handleToggleEdgeMode}
+                iconSize={ICON_SIZE}
+            />
 
             <ActionBarButton
                 disabled={isDeleteBtnDisabled}
