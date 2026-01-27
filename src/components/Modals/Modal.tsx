@@ -36,13 +36,15 @@ export function Modal({ id, title, children, show, onClose, actions, className }
 
     return (
         <dialog ref={modalRef} className={`modal ${className ?? ''}`} id={id}>
-            <div className="modal-box max-h-[90vh] max-w-[80vw] overflow-y-auto">
+            <div className="modal-box max-h-[90vh] max-w-[70vw] overflow-y-auto">
                 <h3 className="font-bold text-lg">{title ?? ' '}</h3>
-                <div className="pt-4 pb-2">{children ?? ' '}</div>
-                <div className="modal-action mt-3">
+                <div className="pt-2 pb-2">{children ?? ' '}</div>
+                <div className="modal-action mt-2">
                     {actions ?? (
                         <form method="dialog">
-                            <button className="btn">Close</button>
+                            <button className="btn" onClick={onClose}>
+                                Close
+                            </button>
                         </form>
                     )}
                 </div>
@@ -63,5 +65,3 @@ type ModalProps = {
     actions?: React.ReactNode;
     className?: string;
 };
-
-export default Modal;

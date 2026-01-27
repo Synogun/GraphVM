@@ -11,6 +11,7 @@ export default defineConfig({
             '@': '/src',
 
             // Very specific but useful aliases
+            ...makeDouble('@Modals', '/src/components/Modals'),
             '@Logger': '/src/utils/Logger',
         },
     },
@@ -18,3 +19,10 @@ export default defineConfig({
         sourcemap: true,
     },
 });
+
+function makeDouble(alias: string, aliasPath: string) {
+    return {
+        [alias]: aliasPath,
+        [`${alias}/*`]: `${aliasPath}/*`,
+    };
+}

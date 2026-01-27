@@ -1,8 +1,8 @@
-import Modal from '@/components/common/Modal';
 import { useLayoutProperties } from '@/contexts/LayoutContext';
 import { useModals } from '@/contexts/ModalsContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { arrangeGraph } from '@/services/LayoutService';
+import { Modal } from '@Modals';
 import { useCallback, useRef, useState } from 'react';
 import { ExportTab } from './ExportTab';
 import { ImportTab } from './ImportTab';
@@ -82,9 +82,10 @@ export function ImportExportModal() {
             <p className="text-base-content/70">
                 Manage your graph data by importing or exporting in various formats.
             </p>
-            <main className="flex-grow pt-3">
+            <main className="grow pt-3">
                 <div className="border-b border-base-300">
                     <nav aria-label="Tabs" className="flex space-x-5">
+                        {/* TODO: Checkout https://daisyui.com/components/tab/ and consider daisyUI tabs */}
                         <TabBtn activeTab={activeTab} setActiveTab={setActiveTab} type="import" />
                         <TabBtn activeTab={activeTab} setActiveTab={setActiveTab} type="export" />
                     </nav>

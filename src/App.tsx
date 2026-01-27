@@ -1,12 +1,11 @@
 import { ActionBar } from '@/components/ActionBar';
-import Modal from '@/components/common/Modal';
 import { GraphCanvas } from '@/components/GraphCanvas';
 import { LoadingHero } from '@/components/LoadingHero';
-import { ImportExportModal } from '@/components/Modals/ImportExportModal';
 import { PropertiesBar } from '@/components/PropertiesBar';
 import { useModals } from '@/contexts/ModalsContext';
 import { PropertiesProvider } from '@/providers/PropertiesProvider';
 import { isDev } from '@/utils/general';
+import { HelpModal, ImportExportModal, Modal } from '@Modals';
 import { useEffect, useState } from 'react';
 
 export function App() {
@@ -52,14 +51,7 @@ export function App() {
                             show={modals.isSettingsModalOpen}
                             title="Settings"
                         />
-                        <Modal
-                            id="help-modal"
-                            onClose={() => {
-                                modals.setIsHelpModalOpen(false);
-                            }}
-                            show={modals.isHelpModalOpen}
-                            title="Help"
-                        />
+                        <HelpModal />
                         <GraphCanvas containerId="main-graph" />
                     </ActionBar>
                 </PropertiesBar>

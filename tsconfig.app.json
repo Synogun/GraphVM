@@ -25,7 +25,9 @@
         "baseUrl": "./src",
         "paths": {
             "@/*": ["./*"],
-            "@Logger": ["./utils/Logger"]
+            "@Logger": ["./utils/Logger"],
+            "@Modals": ["./components/Modals"],
+            "@Modals/*": ["./components/Modals/*"]
         }
     },
     "include": ["src"]

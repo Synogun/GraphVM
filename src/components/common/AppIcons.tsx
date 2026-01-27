@@ -1,9 +1,9 @@
 import { AiOutlineNodeIndex } from 'react-icons/ai';
-import { BsNodePlus } from 'react-icons/bs';
 import { FaGithub } from 'react-icons/fa';
 import { FaCode } from 'react-icons/fa6';
 import { FiHelpCircle } from 'react-icons/fi';
 import { GoTrash } from 'react-icons/go';
+import { IoAddCircleOutline } from 'react-icons/io5';
 import { MdFilterCenterFocus, MdPalette, MdSettings } from 'react-icons/md';
 import { PiFediverseLogo, PiGraph, PiLineSegments, PiShuffle } from 'react-icons/pi';
 import { RiSave3Fill } from 'react-icons/ri';
@@ -32,7 +32,7 @@ export const AppIcons = {
         <MdFilterCenterFocus size={size} className={className} />
     ),
     AddNode: ({ size, className }: AppIconPropsParams) => (
-        <BsNodePlus size={size} className={className} />
+        <IoAddCircleOutline size={size} className={className} />
     ),
     AddEdges: ({ size, className }: AppIconPropsParams) => (
         <AiOutlineNodeIndex size={size} className={className} />
