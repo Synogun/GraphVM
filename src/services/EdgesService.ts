@@ -1,4 +1,5 @@
 import type { EdgesData } from '@/types/edges';
+import { isEdgeArrowShape, isEdgeCurve, isEdgeLineStyle } from '@/types/edgesTypeGuards';
 import { Logger } from '@Logger';
 import { DefaultStyleService } from './DefaultStyleService';
 
@@ -24,7 +25,7 @@ export function addEdge(
 
     const defaultStyleService = DefaultStyleService.getInstance();
     const newIdIndex = core.edges().length + 1;
-    const newId = `edge-${Date.now().toString()}-${newIdIndex.toString()}`;
+    const newId = makeEdgeId();
 
     const newEdgeData = {
         ...defaultStyleService.getEdgesData(), // default edge data
@@ -54,7 +55,7 @@ export function addEdge(
 
 export function addEdges(
     core: cytoscape.Core,
-    data: EdgesData,
+    data: Partial<EdgesData>,
     edgeMode = 'path',
     edges: string[]
 ): void {
@@ -68,9 +69,9 @@ export function addEdges(
         for (let i = 0; i < edges.length; i++) {
             addEdge(core, {
                 data: {
+                    ...data,
                     source: edges[i],
                     target: edges[i + 1],
-                    ...data,
                 },
             });
         }
@@ -81,9 +82,9 @@ export function addEdges(
             for (let j = 0; j < i; j++) {
                 addEdge(core, {
                     data: {
+                        ...data,
                         source: edges[i],
                         target: edges[j],
-                        ...data,
                     },
                 });
             }
@@ -120,22 +121,36 @@ export function updateEdges(
         return;
     }
 
+    const defaultEdgesData = DefaultStyleService.getInstance().getEdgesData();
     const edgesCollection = core.edges().filter((e) => edges.includes(e.id()));
 
-    if (property === 'weight' && String(value).trim() === '') {
-        // Weight fallback to default
-        edgesCollection.data('weight', 1);
-    } else if (property === 'label') {
-        // Update label with class for styling
-        edgesCollection.map((ele) => {
-            ele.removeClass(`edge-label-${String(ele.data('label'))}`);
-            ele.data('label', value);
-            ele.addClass(`edge-label-${String(value)}`);
-        });
-    } else {
-        // Generic property update
-        edgesCollection.map((ele) => ele.data(property, value));
+    const customValidation = [
+        {
+            property: 'weight',
+            validate: (val: string | number) => !isNaN(Number(val)),
+            default: defaultEdgesData.weight,
+        },
+        { property: 'style', validate: isEdgeLineStyle, default: defaultEdgesData.style },
+        { property: 'curve', validate: isEdgeCurve, default: defaultEdgesData.curve },
+        {
+            property: 'arrowShape',
+            validate: isEdgeArrowShape,
+            default: defaultEdgesData.arrowShape,
+        },
+    ];
+
+    let parsedValue = value;
+    if (customValidation.some((v) => v.property === property)) {
+        const validator = customValidation.find((v) => v.property === property);
+
+        if (!validator) {
+            logger.warn('updateEdges > No validator found for property:', property);
+            return;
+        }
+
+        parsedValue = validator.validate(value) ? value : validator.default;
     }
 
+    edgesCollection.data(property, parsedValue);
     logger.info('updateEdges > updated', edgesCollection.length, 'edge(s)');
 }

@@ -2,9 +2,11 @@ import { ColorInput, NumberInput, SelectInput } from '@/components/common/inputs
 import { useEdgesProperties } from '@/contexts/EdgesContext';
 import { useGraphProperties } from '@/contexts/GraphContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
+import { DefaultStyleService } from '@/services/DefaultStyleService';
 import { updateEdges } from '@/services/EdgesService';
 import {
     isEdgeCurve,
+    isEdgeLineStyle,
     ValidEdgeCurves,
     ValidEdgeLabelStyle,
     ValidEdgeLineStyles,
@@ -36,12 +38,14 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
             return;
         }
 
+        const defaultEdgesData = DefaultStyleService.getInstance().getEdgesData();
+
         if (selectedEdges.length === 0) {
-            setLabelStyle('hidden');
-            setColor('#cccccc');
-            setLineStyle('solid');
-            setCurveStyle('bezier');
-            setWeight(1);
+            setLabelStyle(defaultEdgesData.label);
+            setColor(defaultEdgesData.color);
+            setLineStyle(defaultEdgesData.style);
+            setCurveStyle(defaultEdgesData.curve);
+            setWeight(defaultEdgesData.weight);
             return;
         }
 
@@ -50,17 +54,19 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
             .filter((e) => selectedEdges.includes(e.id()));
 
         // Find the mode (most common value) for each property among selected edges
-        const modeLabel = findPropertyValueMode(edgeCollection, 'label') ?? 'hidden';
-        const modeColor = findPropertyValueMode(edgeCollection, 'color') ?? '#cccccc';
-        const modeLineStyle = findPropertyValueMode(edgeCollection, 'style') ?? 'solid';
-        const modeCurve = findPropertyValueMode(edgeCollection, 'curve') ?? 'bezier';
-        const modeWeight = findPropertyValueMode(edgeCollection, 'weight') ?? 1;
+        const modeLabel = findPropertyValueMode(edgeCollection, 'label') ?? defaultEdgesData.label;
+        const modeColor = findPropertyValueMode(edgeCollection, 'color') ?? defaultEdgesData.color;
+        const modeLineStyle =
+            findPropertyValueMode(edgeCollection, 'style') ?? defaultEdgesData.style;
+        const modeCurve = findPropertyValueMode(edgeCollection, 'curve') ?? defaultEdgesData.curve;
+        const modeWeight =
+            findPropertyValueMode(edgeCollection, 'weight') ?? defaultEdgesData.weight;
 
         setLabelStyle(modeLabel);
         setColor(modeColor);
-        setLineStyle(modeLineStyle);
-        setCurveStyle(isEdgeCurve(modeCurve) ? modeCurve : 'bezier');
-        setWeight(Number(modeWeight));
+        setLineStyle(isEdgeLineStyle(modeLineStyle) ? modeLineStyle : defaultEdgesData.style);
+        setCurveStyle(isEdgeCurve(modeCurve) ? modeCurve : defaultEdgesData.curve);
+        setWeight(Number(modeWeight) || defaultEdgesData.weight);
     }, [graphRef, selectedEdges, setLabelStyle, setColor, setLineStyle, setCurveStyle, setWeight]);
 
     const handleChangeLabel = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -70,7 +76,13 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
 
         const { value } = e.target;
 
-        updateEdges(graphRef.current, selectedEdges, 'label', value);
+        if (selectedEdges.length === 0) {
+            const defaultStyleService = DefaultStyleService.getInstance();
+            defaultStyleService.setEdgesData({ label: value });
+        } else {
+            updateEdges(graphRef.current, selectedEdges, 'label', value);
+        }
+
         setLabelStyle(value);
     };
 
@@ -81,7 +93,17 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
 
         const { value } = e.target;
 
-        updateEdges(graphRef.current, selectedEdges, 'weight', Number(value));
+        if (isNaN(Number(value)) || value === '' || Number(value) < 0) {
+            return;
+        }
+
+        if (selectedEdges.length === 0) {
+            const defaultStyleService = DefaultStyleService.getInstance();
+            defaultStyleService.setEdgesData({ weight: Number(value) });
+        } else {
+            updateEdges(graphRef.current, selectedEdges, 'weight', Number(value));
+        }
+
         setWeight(Number(value));
     };
 
@@ -90,7 +112,13 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
             return;
         }
 
-        updateEdges(graphRef.current, selectedEdges, 'color', e.target.value);
+        if (selectedEdges.length === 0) {
+            const defaultStyleService = DefaultStyleService.getInstance();
+            defaultStyleService.setEdgesData({ color: e.target.value });
+        } else {
+            updateEdges(graphRef.current, selectedEdges, 'color', e.target.value);
+        }
+
         setColor(e.target.value);
     };
 
@@ -100,9 +128,19 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         }
 
         const { value } = e.target;
+        const defaultStyleService = DefaultStyleService.getInstance();
 
-        updateEdges(graphRef.current, selectedEdges, 'style', value);
-        setLineStyle(value);
+        const parsedValue =
+            value && isEdgeLineStyle(value) ? value : defaultStyleService.getEdgesData().style;
+
+        if (selectedEdges.length === 0) {
+            const defaultStyleService = DefaultStyleService.getInstance();
+            defaultStyleService.setEdgesData({ style: parsedValue });
+        } else {
+            updateEdges(graphRef.current, selectedEdges, 'style', parsedValue);
+        }
+
+        setLineStyle(parsedValue);
     };
 
     const handleChangeCurveStyle = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -111,9 +149,18 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         }
 
         const { value } = e.target;
+        const defaultStyleService = DefaultStyleService.getInstance();
 
-        updateEdges(graphRef.current, selectedEdges, 'curve', value);
-        setCurveStyle(isEdgeCurve(value) ? value : 'bezier');
+        const parsedValue =
+            value && isEdgeCurve(value) ? value : defaultStyleService.getEdgesData().curve;
+
+        if (selectedEdges.length === 0) {
+            defaultStyleService.setEdgesData({ curve: parsedValue });
+        } else {
+            updateEdges(graphRef.current, selectedEdges, 'curve', parsedValue);
+        }
+
+        setCurveStyle(parsedValue);
     };
 
     const selectLabelOptions = useMemo(() => {
@@ -143,6 +190,8 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
                 <h1 className="text-lg font-bold text-center">Edges</h1>
             </div>
 
+            <NumberInput label="Weight" onChange={handleChangeWeight} value={weight} />
+
             <SelectInput
                 label="Label Style"
                 onChange={handleChangeLabel}
@@ -150,8 +199,6 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
                 selectTitle="Pick a label style"
                 value={labelStyle}
             />
-
-            <NumberInput label="Weight" onChange={handleChangeWeight} value={weight} />
 
             <ColorInput label="Color" onChange={handleChangeColor} value={color} />
 

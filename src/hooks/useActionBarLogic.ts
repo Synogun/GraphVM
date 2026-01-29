@@ -1,4 +1,3 @@
-import { useEdgesProperties } from '@/contexts/EdgesContext';
 import { useGraphProperties } from '@/contexts/GraphContext';
 import { useLayoutProperties } from '@/contexts/LayoutContext';
 import { useModals } from '@/contexts/ModalsContext';
@@ -25,8 +24,6 @@ export function useActionBarLogic() {
             setCount: setEdgeCount,
         },
     } = useGraphProperties();
-
-    const { weight, color, lineStyle, curveStyle } = useEdgesProperties();
 
     const {
         setIsAlgorithmsModalOpen,
@@ -98,21 +95,10 @@ export function useActionBarLogic() {
             return;
         }
 
-        const edgeData = { weight, color, style: lineStyle, curve: curveStyle };
-
-        addEdges(cy, edgeData, edgeMode, currentSelectedNodes);
+        addEdges(cy, {}, edgeMode, currentSelectedNodes);
         setEdgeCount(cy.edges().length);
         handleArrangeGraph();
-    }, [
-        color,
-        curveStyle,
-        edgeMode,
-        graphRef,
-        handleArrangeGraph,
-        lineStyle,
-        setEdgeCount,
-        weight,
-    ]);
+    }, [edgeMode, graphRef, handleArrangeGraph, setEdgeCount]);
 
     const handleToggleEdgeMode = useCallback(
         (e: ChangeEvent<HTMLInputElement>) => {

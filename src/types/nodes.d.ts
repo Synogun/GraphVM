@@ -1,10 +1,10 @@
 import type cytoscape from 'cytoscape';
 
 export type NodesData = {
-    id?: string;
-    label?: string;
-    color?: string;
-    shape?: {} & cytoscape.Css.NodeShape;
+    id: string;
+    label: string;
+    color: string;
+    shape: {} & cytoscape.Css.NodeShape;
 };
 
 export type NodeContextProperties = {

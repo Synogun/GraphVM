@@ -18,7 +18,7 @@ export function addNode(
     const numNodes = core.nodes().length;
 
     const newIdIndex = numNodes + 1;
-    const newId = `node-${Date.now().toString()}-${newIdIndex.toString()}`;
+    const newId = makeNodeId();
 
     const newNodeData = {
         ...defaultStyleService.getNodesData(),

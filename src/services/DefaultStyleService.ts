@@ -70,7 +70,7 @@ export class DefaultStyleService {
     public getGraphOptions(): CytoscapeOptions {
         return this.graphOptions;
     }
-    public setGraphOptions(options: CytoscapeOptions): void {
+    public setGraphOptions(options: Partial<CytoscapeOptions>): void {
         this.graphOptions = {
             ...this.graphOptions,
             ...options,
@@ -83,7 +83,7 @@ export class DefaultStyleService {
     public getLayoutOptions(): LayoutOptions {
         return this.layoutOptions;
     }
-    public setLayoutOptions(options: LayoutOptions): void {
+    public setLayoutOptions(options: Partial<LayoutOptions>): void {
         this.layoutOptions = {
             ...this.layoutOptions,
             ...options,
@@ -101,7 +101,7 @@ export class DefaultStyleService {
     public getNodesData(): NodesData {
         return this.nodesData;
     }
-    public setNodesData(data: NodesData): void {
+    public setNodesData(data: Partial<NodesData>): void {
         this.nodesData = {
             ...this.nodesData,
             ...data,
@@ -114,7 +114,7 @@ export class DefaultStyleService {
     public getEdgesData(): EdgesData {
         return this.edgesData;
     }
-    public setEdgesData(data: EdgesData): void {
+    public setEdgesData(data: Partial<EdgesData>): void {
         this.edgesData = {
             ...this.edgesData,
             ...data,
@@ -125,6 +125,22 @@ export class DefaultStyleService {
 export function getNodeShape(e: NodeSingular) {
     const shape: unknown = e.data('shape');
     return isNodeShape(shape) ? shape : 'ellipse';
+}
+
+export function getEdgeLabel(e: EdgeSingular) {
+    const label: unknown = e.data('label');
+    const defaultEdgesData = DefaultStyleService.getInstance().getEdgesData();
+
+    if (typeof label === 'string') {
+        if (label === 'hidden') return '';
+        if (label === 'weight') return String(e.data('weight'));
+        if (label === 'index') return String(e.data('index'));
+        if (label === 'custom') {
+            // TODO: implement custom label parsing with {propertyName} syntax
+        }
+    }
+
+    return defaultEdgesData.label;
 }
 
 export function getEdgeStyle(e: EdgeSingular) {
@@ -211,6 +227,7 @@ const defaultStylesheet: StylesheetCSS[] = [
         selector: 'edge',
         css: {
             width: 3,
+            label: getEdgeLabel,
             'line-color': 'data(color)',
             'line-style': getEdgeStyle,
             'curve-style': getEdgeCurve,
@@ -289,11 +306,16 @@ const defaultGraphOptions: CytoscapeOptions = {
 };
 
 const defaultNodesData: NodesData = {
+    id: '',
+    label: '',
     color: '#999999',
     shape: 'ellipse',
 };
 
 const defaultEdgesData: EdgesData = {
+    id: '',
+    source: '',
+    target: '',
     weight: 1,
     label: 'hidden',
     color: '#cccccc',

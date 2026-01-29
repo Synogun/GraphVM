@@ -9,15 +9,15 @@ export type EdgeCurveStyle =
     | 'round-segments';
 
 export type EdgesData = {
-    id?: string;
-    source?: string;
-    target?: string;
-    weight?: number;
-    label?: string;
-    color?: string;
-    style?: string;
-    curve?: EdgeCurveStyle;
-    arrowShape?: string;
+    id: string;
+    source: string;
+    target: string;
+    weight: number;
+    label: string;
+    color: string;
+    style: string;
+    curve: EdgeCurveStyle;
+    arrowShape: string;
 };
 
 export type EdgesContextProperties = {
