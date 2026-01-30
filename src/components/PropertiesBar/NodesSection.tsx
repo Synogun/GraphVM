@@ -29,8 +29,10 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
                 .nodes()
                 .filter((n) => selectedNodes.includes(n.id()));
 
-            const modeColor = findPropertyValueMode(nodeCollection, 'color') ?? '#999999';
-            const modeShape = findPropertyValueMode(nodeCollection, 'shape') ?? 'ellipse';
+            const modeColor =
+                findPropertyValueMode(nodeCollection, 'color') ?? '#999999';
+            const modeShape =
+                findPropertyValueMode(nodeCollection, 'shape') ?? 'ellipse';
 
             setColor(modeColor);
             setShape(modeShape);
@@ -87,7 +89,11 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
                 // value={ nodeProperties.label }
             /> */}
 
-            <ColorInput label="Color" onChange={handleChangeColor} value={color} />
+            <ColorInput
+                label="Color"
+                onChange={handleChangeColor}
+                value={color}
+            />
 
             <SelectInput
                 label="Shape"

@@ -19,7 +19,11 @@ function SelectInput({
                 {selectTitle && (
                     <>
                         <option
-                            key={selectTitle.replace(' ', '-') + '-' + 'type-dropdown-title'}
+                            key={
+                                selectTitle.replace(' ', '-') +
+                                '-' +
+                                'type-dropdown-title'
+                            }
                             disabled={true}
                         >
                             {selectTitle}
@@ -29,7 +33,9 @@ function SelectInput({
 
                 {options.map((option) => (
                     <option
-                        key={option.label.replace(' ', '-') + '-' + option.value}
+                        key={
+                            option.label.replace(' ', '-') + '-' + option.value
+                        }
                         value={option.value}
                     >
                         {option.label}

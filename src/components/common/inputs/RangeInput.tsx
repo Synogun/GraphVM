@@ -26,7 +26,11 @@ function RangeInput({
                 />
                 {numberInput && (
                     <>
-                        <NumberInput max={max} onChange={onChange} value={value} />
+                        <NumberInput
+                            max={max}
+                            onChange={onChange}
+                            value={value}
+                        />
                         {/* <input
                         className='w-25 p-1 text-center input hover:input-accent focus:input-accent'
                         max={ max }

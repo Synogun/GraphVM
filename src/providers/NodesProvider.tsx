@@ -12,7 +12,9 @@ export function NodesProvider({ children }: NodesProviderProps) {
         setShape,
     };
 
-    return <NodesContext.Provider value={value}>{children}</NodesContext.Provider>;
+    return (
+        <NodesContext.Provider value={value}>{children}</NodesContext.Provider>
+    );
 }
 
 type NodesProviderProps = {

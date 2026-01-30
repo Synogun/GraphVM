@@ -19,8 +19,14 @@ export function SideBar({
         side: side === 'left' ? 'left-4' : 'right-4',
         icon:
             side === 'left'
-                ? { open: iconHandlers.left.open, close: iconHandlers.left.close }
-                : { open: iconHandlers.right.open, close: iconHandlers.right.close },
+                ? {
+                      open: iconHandlers.left.open,
+                      close: iconHandlers.left.close,
+                  }
+                : {
+                      open: iconHandlers.right.open,
+                      close: iconHandlers.right.close,
+                  },
     };
 
     return (
@@ -54,8 +60,14 @@ export function SideBar({
             </div>
 
             <div className={`drawer-side z-20 ${sideClassName ?? ''}`}>
-                <label aria-label="close sidebar" className="drawer-overlay" htmlFor={inputId} />
-                <ul className={`menu bg-base-200 text-base-content min-h-full ${sidebarWidth} p-4`}>
+                <label
+                    aria-label="close sidebar"
+                    className="drawer-overlay"
+                    htmlFor={inputId}
+                />
+                <ul
+                    className={`menu bg-base-200 text-base-content min-h-full ${sidebarWidth} p-4`}
+                >
                     {sidebarChildren}
                 </ul>
             </div>
@@ -67,12 +79,18 @@ const iconHandlers = {
     left: {
         open: (
             <>
-                <AppIcons.SidebarLeftExpand className="swap-off h-10 w-10" size={ICON_SIZE} />
+                <AppIcons.SidebarLeftExpand
+                    className="swap-off h-10 w-10"
+                    size={ICON_SIZE}
+                />
             </>
         ),
         close: (
             <>
-                <AppIcons.SidebarLeftCollapse className="swap-on h-10 w-10" size={ICON_SIZE} />
+                <AppIcons.SidebarLeftCollapse
+                    className="swap-on h-10 w-10"
+                    size={ICON_SIZE}
+                />
             </>
         ),
     },

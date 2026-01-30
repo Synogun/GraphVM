@@ -15,7 +15,11 @@ const DEFAULT_LAYOUT = { name: 'circle' };
 
 export function useActionBarLogic() {
     const {
-        nodes: { setCount: setNodeCount, selected: selectedNodes, setSelected: setSelectedNodes },
+        nodes: {
+            setCount: setNodeCount,
+            selected: selectedNodes,
+            setSelected: setSelectedNodes,
+        },
         edges: {
             edgeMode,
             setEdgeMode,
@@ -135,7 +139,13 @@ export function useActionBarLogic() {
             setEdgeCount(graphRef.current.edges().length);
             graphRef.current.data('edgeSelectionOrder', []);
         }
-    }, [graphRef, setSelectedNodes, setNodeCount, setSelectedEdges, setEdgeCount]);
+    }, [
+        graphRef,
+        setSelectedNodes,
+        setNodeCount,
+        setSelectedEdges,
+        setEdgeCount,
+    ]);
 
     return {
         edgeMode,
@@ -152,7 +162,8 @@ export function useActionBarLogic() {
         handleAddEdges,
         handleToggleEdgeMode,
         handleDeleteSelected,
-        isDeleteBtnDisabled: selectedNodes.length === 0 && selectedEdges.length === 0,
+        isDeleteBtnDisabled:
+            selectedNodes.length === 0 && selectedEdges.length === 0,
         isCompleteEdgeMode: edgeMode === 'complete',
     };
 }

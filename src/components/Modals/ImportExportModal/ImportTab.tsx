@@ -1,7 +1,11 @@
 import { useLayoutProperties } from '@/contexts/LayoutContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { newGraph } from '@/services/GraphService';
-import { isFileValid, parseTextData, type FileType } from '@/services/ImportExportService';
+import {
+    isFileValid,
+    parseTextData,
+    type FileType,
+} from '@/services/ImportExportService';
 import { arrangeGraph } from '@/services/LayoutService';
 import { Logger } from '@Logger';
 import cytoscape, { type CytoscapeOptions } from 'cytoscape';
@@ -17,7 +21,11 @@ import {
 
 const logger = Logger.createContextLogger('ImportTab');
 
-export function ImportTab({ ref, onImportSuccess, onReadyStateChange }: ImportTabProps) {
+export function ImportTab({
+    ref,
+    onImportSuccess,
+    onReadyStateChange,
+}: ImportTabProps) {
     const graphRef = useGetGraph('main-graph');
 
     const { current: currentLayout } = useLayoutProperties();
@@ -104,7 +112,10 @@ export function ImportTab({ ref, onImportSuccess, onReadyStateChange }: ImportTa
 
             setPreviewCy(newPreviewCy);
         } catch (error) {
-            logger.error('Error initializing Cytoscape with imported data:', error);
+            logger.error(
+                'Error initializing Cytoscape with imported data:',
+                error
+            );
             return false;
         }
 
@@ -119,7 +130,9 @@ export function ImportTab({ ref, onImportSuccess, onReadyStateChange }: ImportTa
         }
 
         graphRef.current.elements().remove();
-        graphRef.current.json(importData as { elements: cytoscape.ElementDefinition[] });
+        graphRef.current.json(
+            importData as { elements: cytoscape.ElementDefinition[] }
+        );
 
         cleanup();
         onImportSuccess();
@@ -127,7 +140,9 @@ export function ImportTab({ ref, onImportSuccess, onReadyStateChange }: ImportTa
 
     useImperativeHandle(ref, () => ({ handleImport, cleanup }));
 
-    const handleFileSelectWrapper = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileSelectWrapper = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
         handleFileSelect(event).catch((error: unknown) => {
             logger.error('Error handling file select:', error);
         });
@@ -136,24 +151,39 @@ export function ImportTab({ ref, onImportSuccess, onReadyStateChange }: ImportTa
     return (
         <div className="space-y-6">
             <fieldset className="fieldset">
-                <label className="text-sm font-medium text-base-content" htmlFor="file-upload">
+                <label
+                    className="text-sm font-medium text-base-content"
+                    htmlFor="file-upload"
+                >
                     Upload File
                 </label>
                 <input
                     ref={fileInputRef}
-                    className={'file-input w-full' + (!importData ? '' : ' file-input-accent')}
+                    className={
+                        'file-input w-full' +
+                        (!importData ? '' : ' file-input-accent')
+                    }
                     onChange={handleFileSelectWrapper}
                     type="file"
                 />
                 <label className="label">Max size 2MB</label>
             </fieldset>
-            <h3 className="text-sm font-medium text-base-content">Data Preview</h3>
+            <h3 className="text-sm font-medium text-base-content">
+                Data Preview
+            </h3>
             <div className="relative p-2 text-center">
                 <div className="absolute left-7 top-9 flex flex-col items-center gap-2 z-10 text-xs select-none">
-                    <span id="preview-node-count">Nodes: {previewCy?.nodes().length ?? 0}</span>
-                    <span id="preview-edge-count">Edges: {previewCy?.edges().length ?? 0}</span>
+                    <span id="preview-node-count">
+                        Nodes: {previewCy?.nodes().length ?? 0}
+                    </span>
+                    <span id="preview-edge-count">
+                        Edges: {previewCy?.edges().length ?? 0}
+                    </span>
                 </div>
-                <div className="mt-2 w-full rounded-lg bg-base-300 h-100" id="data-preview-cy" />
+                <div
+                    className="mt-2 w-full rounded-lg bg-base-300 h-100"
+                    id="data-preview-cy"
+                />
             </div>
         </div>
     );

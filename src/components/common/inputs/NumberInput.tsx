@@ -1,6 +1,14 @@
 import { type ChangeEvent } from 'react';
 
-function NumberInput({ label, value, onChange, max, min, step, className = '' }: NumberInputProps) {
+function NumberInput({
+    label,
+    value,
+    onChange,
+    max,
+    min,
+    step,
+    className = '',
+}: NumberInputProps) {
     return (
         <fieldset className="fieldset">
             {label && <legend className="fieldset-legend">{label}</legend>}

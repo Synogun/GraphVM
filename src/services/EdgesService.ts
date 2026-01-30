@@ -1,5 +1,9 @@
 import type { EdgesData } from '@/types/edges';
-import { isEdgeArrowShape, isEdgeCurve, isEdgeLineStyle } from '@/types/edgesTypeGuards';
+import {
+    isEdgeArrowShape,
+    isEdgeCurve,
+    isEdgeLineStyle,
+} from '@/types/edgesTypeGuards';
 import { Logger } from '@Logger';
 import { DefaultStyleService } from './DefaultStyleService';
 
@@ -60,7 +64,9 @@ export function addEdges(
     data?: Partial<EdgesData>
 ): void {
     if (edges.length < 2) {
-        logger.warn('addPath > Provide at least two edge definitions to create a path');
+        logger.warn(
+            'addPath > Provide at least two edge definitions to create a path'
+        );
         // TODO: Show user feedback
         return;
     }
@@ -92,7 +98,10 @@ export function addEdges(
     }
 }
 
-export function removeEdges(core: cytoscape.Core, edges: cytoscape.EdgeCollection): void {
+export function removeEdges(
+    core: cytoscape.Core,
+    edges: cytoscape.EdgeCollection
+): void {
     if (edges.length === 0) {
         logger.warn('removeEdge > Select at least one edge');
         return;
@@ -130,8 +139,16 @@ export function updateEdges(
             validate: (val: string | number) => !isNaN(Number(val)),
             default: defaultEdgesData.weight,
         },
-        { property: 'style', validate: isEdgeLineStyle, default: defaultEdgesData.style },
-        { property: 'curve', validate: isEdgeCurve, default: defaultEdgesData.curve },
+        {
+            property: 'style',
+            validate: isEdgeLineStyle,
+            default: defaultEdgesData.style,
+        },
+        {
+            property: 'curve',
+            validate: isEdgeCurve,
+            default: defaultEdgesData.curve,
+        },
         {
             property: 'arrowShape',
             validate: isEdgeArrowShape,
@@ -144,7 +161,10 @@ export function updateEdges(
         const validator = customValidation.find((v) => v.property === property);
 
         if (!validator) {
-            logger.warn('updateEdges > No validator found for property:', property);
+            logger.warn(
+                'updateEdges > No validator found for property:',
+                property
+            );
             return;
         }
 

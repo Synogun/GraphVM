@@ -1,5 +1,9 @@
 import type { EdgesData } from '@/types/edges';
-import { isEdgeArrowShape, isEdgeCurve, isEdgeLineStyle } from '@/types/edgesTypeGuards';
+import {
+    isEdgeArrowShape,
+    isEdgeCurve,
+    isEdgeLineStyle,
+} from '@/types/edgesTypeGuards';
 import type { NodesData } from '@/types/nodes';
 import { isNodeShape } from '@/types/nodesTypeGuards';
 import {
@@ -34,7 +38,9 @@ export class DefaultStyleService {
     public resetStylesheet(): void {
         this.stylesheet = [...defaultStylesheet];
     }
-    public getStylesheet(selector?: string): StylesheetCSS[] | StylesheetCSS | null {
+    public getStylesheet(
+        selector?: string
+    ): StylesheetCSS[] | StylesheetCSS | null {
         if (!selector) return this.stylesheet;
 
         const found = this.stylesheet.find((s) => s.selector === selector);
@@ -43,11 +49,16 @@ export class DefaultStyleService {
     public setStylesheet(styles: StylesheetCSS | StylesheetCSS[]): void {
         if (Array.isArray(styles)) {
             this.stylesheet = styles;
-            this.graphOptions = { ...this.graphOptions, style: this.stylesheet };
+            this.graphOptions = {
+                ...this.graphOptions,
+                style: this.stylesheet,
+            };
             return;
         }
 
-        const index = this.stylesheet.findIndex((s) => s.selector === styles.selector);
+        const index = this.stylesheet.findIndex(
+            (s) => s.selector === styles.selector
+        );
         if (index !== -1) {
             this.stylesheet[index] = styles;
         } else {
@@ -166,12 +177,17 @@ export function sheetToPlain(stylesheet: StylesheetCSS[]): StylesheetCSS[] {
      * TODO: Refactor this mess later
      *
      */
-    const plainStylesheet = JSON.parse(JSON.stringify(stylesheet)) as StylesheetCSS[];
+    const plainStylesheet = JSON.parse(
+        JSON.stringify(stylesheet)
+    ) as StylesheetCSS[];
     const propertyMap = {
         shape: { toPlain: 'data(shape)', toSheet: getNodeShape },
         'line-style': { toPlain: 'data(style)', toSheet: getEdgeStyle },
         'curve-style': { toPlain: 'data(curve)', toSheet: getEdgeCurve },
-        'target-arrow-shape': { toPlain: 'data(arrowShape)', toSheet: getEdgeArrowShape },
+        'target-arrow-shape': {
+            toPlain: 'data(arrowShape)',
+            toSheet: getEdgeArrowShape,
+        },
     };
 
     for (const style of plainStylesheet) {

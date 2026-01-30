@@ -30,7 +30,10 @@ export function newGraph(
     newGraph.data('numNodes', newGraph.nodes().length);
     newGraph.data('numEdges', newGraph.edges().length);
 
-    logger.info('newGraph > created new graph instance in container:', containerId);
+    logger.info(
+        'newGraph > created new graph instance in container:',
+        containerId
+    );
     return newGraph;
 }
 

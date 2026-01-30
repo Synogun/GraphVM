@@ -1,7 +1,12 @@
 import { type ChangeEvent } from 'react';
 import { AppIcons } from '../AppIcons';
 
-function ColorInput({ label, value, onChange, className = '' }: ColorInputProps) {
+function ColorInput({
+    label,
+    value,
+    onChange,
+    className = '',
+}: ColorInputProps) {
     return (
         <fieldset className="fieldset">
             {label && <legend className="fieldset-legend">{label}</legend>}
@@ -18,7 +23,9 @@ function ColorInput({ label, value, onChange, className = '' }: ColorInputProps)
     );
 }
 
-const paletteIcon = <AppIcons.ColorPalette className="opacity-50" size="1.5em" />;
+const paletteIcon = (
+    <AppIcons.ColorPalette className="opacity-50" size="1.5em" />
+);
 
 type ColorInputProps = {
     label?: string;

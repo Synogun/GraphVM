@@ -6,7 +6,8 @@ export function EdgesProvider({ children }: EdgesProviderProps) {
     const [labelStyle, setLabelStyle] = useState<EdgeLabelStyle>('hidden');
     const [weight, setWeight] = useState(1);
     const [color, setColor] = useState('#cccccc');
-    const [lineStyle, setLineStyle] = useState<cytoscape.Css.LineStyle>('solid');
+    const [lineStyle, setLineStyle] =
+        useState<cytoscape.Css.LineStyle>('solid');
     const [curveStyle, setCurveStyle] = useState<EdgeCurveStyle>('bezier');
 
     const value = {
@@ -22,7 +23,9 @@ export function EdgesProvider({ children }: EdgesProviderProps) {
         setCurveStyle,
     };
 
-    return <EdgesContext.Provider value={value}>{children}</EdgesContext.Provider>;
+    return (
+        <EdgesContext.Provider value={value}>{children}</EdgesContext.Provider>
+    );
 }
 
 type EdgesProviderProps = {

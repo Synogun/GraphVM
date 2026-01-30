@@ -7,7 +7,8 @@ import { makeNodeId } from './NodesService';
 const logger = Logger.createContextLogger('ImportExportService');
 
 export function isFileValid(file: File) {
-    const validType = file.type === 'application/json' || file.type === 'text/plain';
+    const validType =
+        file.type === 'application/json' || file.type === 'text/plain';
 
     const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
 
@@ -33,7 +34,10 @@ export function isDataValid(data: string, type: FileType) {
     return isValid;
 }
 
-export function parseTextData(data: string, type: FileType): ElementsDefinition | false {
+export function parseTextData(
+    data: string,
+    type: FileType
+): ElementsDefinition | false {
     const separator = ' ';
 
     const lines = data
@@ -56,7 +60,9 @@ export function parseTextData(data: string, type: FileType): ElementsDefinition 
                 continue;
             }
 
-            const [sourceLabel, targetLabel, weight = 1] = line.map((val) => val.trim());
+            const [sourceLabel, targetLabel, weight = 1] = line.map((val) =>
+                val.trim()
+            );
 
             const sourceId = nodeMap.get(sourceLabel) ?? makeNodeId();
             const targetId = nodeMap.get(targetLabel) ?? makeNodeId();

@@ -17,10 +17,18 @@ import {
 
 const logger = Logger.createContextLogger('ExportTab');
 
-export function ExportTab({ ref, onExportSuccess, onReadyStateChange }: ExportTabProps) {
+export function ExportTab({
+    ref,
+    onExportSuccess,
+    onReadyStateChange,
+}: ExportTabProps) {
     const graphRef = useGetGraph('main-graph');
-    const [exportFormat, setExportFormat] = useState<'text' | 'json' | 'png' | 'jpg'>('text');
-    const [exportOptions, setExportOptions] = useState<Record<string, string | boolean>>({});
+    const [exportFormat, setExportFormat] = useState<
+        'text' | 'json' | 'png' | 'jpg'
+    >('text');
+    const [exportOptions, setExportOptions] = useState<
+        Record<string, string | boolean>
+    >({});
 
     const {
         nodes: { count: nodeCount },
@@ -33,31 +41,43 @@ export function ExportTab({ ref, onExportSuccess, onReadyStateChange }: ExportTa
     }, [isGraphReadyToExport, onReadyStateChange]);
 
     const cleanup = () => {
-        const filenameInput = document.getElementById('file-name') as HTMLInputElement;
+        const filenameInput = document.getElementById(
+            'file-name'
+        ) as HTMLInputElement;
         filenameInput.value = '';
 
-        const select = document.getElementById('export-format') as HTMLSelectElement;
+        const select = document.getElementById(
+            'export-format'
+        ) as HTMLSelectElement;
         select.value = 'text';
     };
 
-    const handleFormatChange = useCallback((e: ChangeEvent<HTMLSelectElement>) => {
-        setExportFormat(e.target.value as 'text' | 'json' | 'png' | 'jpg');
-        setExportOptions({});
-    }, []);
+    const handleFormatChange = useCallback(
+        (e: ChangeEvent<HTMLSelectElement>) => {
+            setExportFormat(e.target.value as 'text' | 'json' | 'png' | 'jpg');
+            setExportOptions({});
+        },
+        []
+    );
 
     const handleExport = () => {
         if (!isGraphReadyToExport || !graphRef.current) {
             return;
         }
 
-        const fileNameInput = document.getElementById('file-name') as HTMLInputElement;
+        const fileNameInput = document.getElementById(
+            'file-name'
+        ) as HTMLInputElement;
         let fileName = `${Date.now().toString()}-graphvm-export`;
 
         if (fileNameInput.value) {
             fileName = fileNameInput.value
                 .replace('{TIMESTAMP}', Date.now().toString())
                 .replace('{NODE_COUNT}', nodeCount.toString())
-                .replace('{EDGE_COUNT}', graphRef.current.edges().length.toString())
+                .replace(
+                    '{EDGE_COUNT}',
+                    graphRef.current.edges().length.toString()
+                )
                 .replace(/[^a-zA-Z0-9-_]/g, '-');
         }
 
@@ -74,7 +94,10 @@ export function ExportTab({ ref, onExportSuccess, onReadyStateChange }: ExportTa
                     const plainStylesheet = sheetToPlain(json.style);
                     json.style = plainStylesheet;
                 } catch (error) {
-                    logger.error('Error converting stylesheet to plain format:', error);
+                    logger.error(
+                        'Error converting stylesheet to plain format:',
+                        error
+                    );
                 }
             }
 
@@ -109,10 +132,15 @@ export function ExportTab({ ref, onExportSuccess, onReadyStateChange }: ExportTa
                         weight = 1,
                     } = edge.data() as EdgesData;
 
-                    const sourceLabel = graphRef.current.$id(sourceId).data('label') as string;
-                    const targetLabel = graphRef.current.$id(targetId).data('label') as string;
+                    const sourceLabel = graphRef.current
+                        .$id(sourceId)
+                        .data('label') as string;
+                    const targetLabel = graphRef.current
+                        .$id(targetId)
+                        .data('label') as string;
 
-                    const weightStr = weight !== 1 ? ' ' + weight.toString() : '';
+                    const weightStr =
+                        weight !== 1 ? ' ' + weight.toString() : '';
 
                     return `${sourceLabel} ${targetLabel}${weightStr}`;
                 })
@@ -131,7 +159,10 @@ export function ExportTab({ ref, onExportSuccess, onReadyStateChange }: ExportTa
     return (
         <div className="space-y-6">
             <fieldset className="fieldset">
-                <label className="text-sm font-medium text-base-content" htmlFor="file-name">
+                <label
+                    className="text-sm font-medium text-base-content"
+                    htmlFor="file-name"
+                >
                     File Name
                 </label>
                 <input
@@ -144,7 +175,10 @@ export function ExportTab({ ref, onExportSuccess, onReadyStateChange }: ExportTa
             </fieldset>
 
             <fieldset className="fieldset">
-                <label className="text-sm font-medium text-base-content" htmlFor="export-format">
+                <label
+                    className="text-sm font-medium text-base-content"
+                    htmlFor="export-format"
+                >
                     Export Format
                 </label>
                 <select
@@ -188,8 +222,12 @@ export function ExportTab({ ref, onExportSuccess, onReadyStateChange }: ExportTa
                                     type="checkbox"
                                 />
                                 <div className="flex flex-col items-start">
-                                    <span className="label-text">Fit Graph</span>
-                                    <span className="font-thin">Center before exporting</span>
+                                    <span className="label-text">
+                                        Fit Graph
+                                    </span>
+                                    <span className="font-thin">
+                                        Center before exporting
+                                    </span>
                                 </div>
                             </label>
                             <label className="label cursor-pointer justify-start gap-3 rounded-lg border border-base-300 p-3 hover:border-accent">
@@ -206,8 +244,12 @@ export function ExportTab({ ref, onExportSuccess, onReadyStateChange }: ExportTa
                                     type="color"
                                 />
                                 <div className="flex flex-col items-start">
-                                    <span className="label-text">Background Color</span>
-                                    <span className="font-thin">Defaults to transparent</span>
+                                    <span className="label-text">
+                                        Background Color
+                                    </span>
+                                    <span className="font-thin">
+                                        Defaults to transparent
+                                    </span>
                                 </div>
                             </label>
                         </div>

@@ -1,6 +1,8 @@
 import { createContext, useContext } from 'react';
 
-export const ModalsContext = createContext<ModalsContextProperties | undefined>(undefined);
+export const ModalsContext = createContext<ModalsContextProperties | undefined>(
+    undefined
+);
 
 export function useModals() {
     const context = useContext(ModalsContext);

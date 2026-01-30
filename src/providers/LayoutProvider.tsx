@@ -3,7 +3,9 @@ import type { LayoutType } from '@/types/layout';
 import { useState, type ReactNode } from 'react';
 
 export function LayoutProvider({ children }: LayoutProviderProps) {
-    const [current, setCurrent] = useState<cytoscape.LayoutOptions | undefined>(undefined);
+    const [current, setCurrent] = useState<cytoscape.LayoutOptions | undefined>(
+        undefined
+    );
 
     const [type, setType] = useState<LayoutType>('circle');
 
@@ -19,7 +21,11 @@ export function LayoutProvider({ children }: LayoutProviderProps) {
 
     const value = { ...generalLayout, circle: circleLayout, grid: gridLayout };
 
-    return <LayoutContext.Provider value={value}>{children}</LayoutContext.Provider>;
+    return (
+        <LayoutContext.Provider value={value}>
+            {children}
+        </LayoutContext.Provider>
+    );
 }
 
 export type LayoutProviderProps = {

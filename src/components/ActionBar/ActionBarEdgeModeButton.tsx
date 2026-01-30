@@ -16,7 +16,11 @@ export function ActionBarEdgeModeButton({
         <label
             className={`btn ${activeColor} hover:btn-accent swap hover:swap-rotate my-1 ${className}`}
         >
-            <input checked={isCompleteEdgeMode} onChange={handleToggleEdgeMode} type="checkbox" />
+            <input
+                checked={isCompleteEdgeMode}
+                onChange={handleToggleEdgeMode}
+                type="checkbox"
+            />
             <div className={`swap-off ${swapStyle}`}>
                 {AppIcons.PathEdgeMode({ size: iconSize })} Path Mode
             </div>

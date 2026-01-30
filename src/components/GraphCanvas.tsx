@@ -34,8 +34,10 @@ export function GraphCanvas({ containerId }: GraphCanvasProps) {
             const target = e.target as cytoscape.Collection;
             const core = e.cy;
 
-            const currentSelectedNodes: unknown = core.data('nodeSelectionOrder');
-            const currentSelectedEdges: unknown = core.data('edgeSelectionOrder');
+            const currentSelectedNodes: unknown =
+                core.data('nodeSelectionOrder');
+            const currentSelectedEdges: unknown =
+                core.data('edgeSelectionOrder');
 
             if (
                 !isArrayOfStrings(currentSelectedNodes) ||
@@ -51,8 +53,12 @@ export function GraphCanvas({ containerId }: GraphCanvasProps) {
             let edgeSelectionOrder = [...currentSelectedEdges, ...targetEdges];
 
             if (e.type === 'unselect') {
-                nodeSelectionOrder = nodeSelectionOrder.filter((id) => !targetNodes.includes(id));
-                edgeSelectionOrder = edgeSelectionOrder.filter((id) => !targetEdges.includes(id));
+                nodeSelectionOrder = nodeSelectionOrder.filter(
+                    (id) => !targetNodes.includes(id)
+                );
+                edgeSelectionOrder = edgeSelectionOrder.filter(
+                    (id) => !targetEdges.includes(id)
+                );
             }
 
             core.data('nodeSelectionOrder', nodeSelectionOrder);
@@ -75,7 +81,13 @@ export function GraphCanvas({ containerId }: GraphCanvasProps) {
 
     useRegisterGraph(containerId, graphRef);
 
-    return <div className="h-full w-full bg-base-100" ref={containerRef} id={containerId} />;
+    return (
+        <div
+            className="h-full w-full bg-base-100"
+            ref={containerRef}
+            id={containerId}
+        />
+    );
 }
 
 type GraphCanvasProps = {

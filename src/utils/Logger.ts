@@ -35,7 +35,12 @@ export const Logger = {
      * @param message - the log message
      * @param args - additional arguments to include in the log
      */
-    _store: (level: string, context: string, message: string, args: unknown[]) => {
+    _store: (
+        level: string,
+        context: string,
+        message: string,
+        args: unknown[]
+    ) => {
         const timestamp = new Date().toISOString();
         const argsStr = args
             .map((arg) => {
@@ -62,7 +67,8 @@ export const Logger = {
             })
             .join(' ');
 
-        const logEntry = `[${timestamp}] [${level}] [${context}] ${message} ${argsStr}`.trim();
+        const logEntry =
+            `[${timestamp}] [${level}] [${context}] ${message} ${argsStr}`.trim();
         Logger.logs.push(logEntry);
     },
 
@@ -136,7 +142,10 @@ export const Logger = {
     debug: (context: string, message: string, ...args: unknown[]) => {
         Logger._store('DEBUG', context, message, args);
         if (isDev()) {
-            console.debug(`${Logger._getTimestamp()}[DEBUG] [${context}] ${message}`, ...args);
+            console.debug(
+                `${Logger._getTimestamp()}[DEBUG] [${context}] ${message}`,
+                ...args
+            );
         }
     },
 
@@ -148,7 +157,10 @@ export const Logger = {
      */
     info: (context: string, message: string, ...args: unknown[]) => {
         Logger._store('INFO', context, message, args);
-        console.info(`${Logger._getTimestamp()}[INFO] [${context}] ${message}`, ...args);
+        console.info(
+            `${Logger._getTimestamp()}[INFO] [${context}] ${message}`,
+            ...args
+        );
     },
 
     /**
@@ -159,7 +171,10 @@ export const Logger = {
      */
     warn: (context: string, message: string, ...args: unknown[]) => {
         Logger._store('WARN', context, message, args);
-        console.warn(`${Logger._getTimestamp()}[WARN] [${context}] ${message}`, ...args);
+        console.warn(
+            `${Logger._getTimestamp()}[WARN] [${context}] ${message}`,
+            ...args
+        );
     },
 
     /**
@@ -170,6 +185,9 @@ export const Logger = {
      */
     error: (context: string, message: string, ...args: unknown[]) => {
         Logger._store('ERROR', context, message, args);
-        console.error(`${Logger._getTimestamp()}[ERROR] [${context}] ${message}`, ...args);
+        console.error(
+            `${Logger._getTimestamp()}[ERROR] [${context}] ${message}`,
+            ...args
+        );
     },
 };

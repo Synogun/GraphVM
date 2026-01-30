@@ -1,6 +1,14 @@
 import React, { useEffect, useRef } from 'react';
 
-export function Modal({ id, title, children, show, onClose, actions, className }: ModalProps) {
+export function Modal({
+    id,
+    title,
+    children,
+    show,
+    onClose,
+    actions,
+    className,
+}: ModalProps) {
     const modalRef = useRef<HTMLDialogElement>(null);
 
     useEffect(() => {

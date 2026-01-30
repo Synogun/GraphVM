@@ -5,7 +5,12 @@ import { FiHelpCircle } from 'react-icons/fi';
 import { GoTrash } from 'react-icons/go';
 import { IoAddCircleOutline } from 'react-icons/io5';
 import { MdFilterCenterFocus, MdPalette, MdSettings } from 'react-icons/md';
-import { PiFediverseLogo, PiGraph, PiLineSegments, PiShuffle } from 'react-icons/pi';
+import {
+    PiFediverseLogo,
+    PiGraph,
+    PiLineSegments,
+    PiShuffle,
+} from 'react-icons/pi';
 import { RiSave3Fill } from 'react-icons/ri';
 import {
     TbLayoutSidebarLeftCollapseFilled,

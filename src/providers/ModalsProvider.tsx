@@ -5,7 +5,8 @@ export function ModalsProvider({ children }: ModalsProviderProps) {
     const [isAlgorithmsModalOpen, setIsAlgorithmsModalOpen] = useState(false);
     const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
     const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-    const [isImportExportModalOpen, setIsImportExportModalOpen] = useState(false);
+    const [isImportExportModalOpen, setIsImportExportModalOpen] =
+        useState(false);
 
     const value = {
         isAlgorithmsModalOpen,
@@ -18,7 +19,11 @@ export function ModalsProvider({ children }: ModalsProviderProps) {
         setIsImportExportModalOpen,
     };
 
-    return <ModalsContext.Provider value={value}>{children}</ModalsContext.Provider>;
+    return (
+        <ModalsContext.Provider value={value}>
+            {children}
+        </ModalsContext.Provider>
+    );
 }
 
 type ModalsProviderProps = {

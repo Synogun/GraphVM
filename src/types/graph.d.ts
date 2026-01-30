@@ -19,6 +19,9 @@ export type GraphContextProperties = {
         register: (id: string, instance: GraphInstance) => void;
         unregister: (id: string) => void;
         get: (id: string) => GraphInstance;
-        subscribe: (id: string, callback: (instance: GraphInstance) => void) => () => void;
+        subscribe: (
+            id: string,
+            callback: (instance: GraphInstance) => void
+        ) => () => void;
     };
 };

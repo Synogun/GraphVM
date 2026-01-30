@@ -65,7 +65,11 @@ export function ImportExportModal() {
             title="Import / Export Graph"
             actions={
                 <>
-                    <button className="btn btn-ghost" onClick={handleClose} type="button">
+                    <button
+                        className="btn btn-ghost"
+                        onClick={handleClose}
+                        type="button"
+                    >
                         Cancel
                     </button>
                     <button
@@ -80,14 +84,23 @@ export function ImportExportModal() {
             }
         >
             <p className="text-base-content/70">
-                Manage your graph data by importing or exporting in various formats.
+                Manage your graph data by importing or exporting in various
+                formats.
             </p>
             <main className="grow pt-3">
                 <div className="border-b border-base-300">
                     <nav aria-label="Tabs" className="flex space-x-5">
                         {/* TODO: Checkout https://daisyui.com/components/tab/ and consider daisyUI tabs */}
-                        <TabBtn activeTab={activeTab} setActiveTab={setActiveTab} type="import" />
-                        <TabBtn activeTab={activeTab} setActiveTab={setActiveTab} type="export" />
+                        <TabBtn
+                            activeTab={activeTab}
+                            setActiveTab={setActiveTab}
+                            type="import"
+                        />
+                        <TabBtn
+                            activeTab={activeTab}
+                            setActiveTab={setActiveTab}
+                            type="export"
+                        />
                     </nav>
                 </div>
                 <div className="pt-6 pb-4">

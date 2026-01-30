@@ -13,6 +13,7 @@
         "pre:build": "npm run lint",
         "build": "tsc -b && vite build",
         "lint": "eslint ./src --fix",
+        "format": "prettier --write \"src/**/*\"",
         "preview": "vite preview"
     },
     "dependencies": {

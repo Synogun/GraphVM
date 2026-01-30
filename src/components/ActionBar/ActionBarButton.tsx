@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 
-export const ActionBarButtonStyle = 'btn-outline hover:btn-accent focus:btn-accent';
+export const ActionBarButtonStyle =
+    'btn-outline hover:btn-accent focus:btn-accent';
 
 export function ActionBarButton({
     label,

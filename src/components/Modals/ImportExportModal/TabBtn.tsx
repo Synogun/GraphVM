@@ -3,7 +3,9 @@ const nonSelectedStyle =
 
 export function TabBtn({ type, activeTab, setActiveTab }: TabBtnProps) {
     const hoverStyle =
-        activeTab === type ? 'border-accent-content text-accent-content' : nonSelectedStyle;
+        activeTab === type
+            ? 'border-accent-content text-accent-content'
+            : nonSelectedStyle;
 
     return (
         <a

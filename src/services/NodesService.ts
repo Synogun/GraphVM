@@ -72,7 +72,10 @@ export function addNodes(
     );
 }
 
-export function removeNodes(core: cytoscape.Core, nodes: cytoscape.NodeCollection): void {
+export function removeNodes(
+    core: cytoscape.Core,
+    nodes: cytoscape.NodeCollection
+): void {
     if (nodes.length === 0) {
         logger.warn('removeNode > Select at least one node');
         return;
