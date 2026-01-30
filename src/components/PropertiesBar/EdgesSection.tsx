@@ -6,6 +6,7 @@ import { DefaultStyleService } from '@/services/DefaultStyleService';
 import { updateEdges } from '@/services/EdgesService';
 import {
     isEdgeCurve,
+    isEdgeLabelStyle,
     isEdgeLineStyle,
     ValidEdgeCurves,
     ValidEdgeLabelStyle,
@@ -53,7 +54,6 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
             .edges()
             .filter((e) => selectedEdges.includes(e.id()));
 
-        // Find the mode (most common value) for each property among selected edges
         const modeLabel = findPropertyValueMode(edgeCollection, 'label') ?? defaultEdgesData.label;
         const modeColor = findPropertyValueMode(edgeCollection, 'color') ?? defaultEdgesData.color;
         const modeLineStyle =
@@ -62,7 +62,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         const modeWeight =
             findPropertyValueMode(edgeCollection, 'weight') ?? defaultEdgesData.weight;
 
-        setLabelStyle(modeLabel);
+        setLabelStyle(isEdgeLabelStyle(modeLabel) ? modeLabel : defaultEdgesData.label);
         setColor(modeColor);
         setLineStyle(isEdgeLineStyle(modeLineStyle) ? modeLineStyle : defaultEdgesData.style);
         setCurveStyle(isEdgeCurve(modeCurve) ? modeCurve : defaultEdgesData.curve);
@@ -75,15 +75,18 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         }
 
         const { value } = e.target;
+        const defaultStyleService = DefaultStyleService.getInstance();
+
+        const parsedValue =
+            value && isEdgeLabelStyle(value) ? value : defaultStyleService.getEdgesData().label;
 
         if (selectedEdges.length === 0) {
-            const defaultStyleService = DefaultStyleService.getInstance();
-            defaultStyleService.setEdgesData({ label: value });
+            defaultStyleService.setEdgesData({ label: parsedValue });
         } else {
-            updateEdges(graphRef.current, selectedEdges, 'label', value);
+            updateEdges(graphRef.current, selectedEdges, 'label', parsedValue);
         }
 
-        setLabelStyle(value);
+        setLabelStyle(parsedValue);
     };
 
     const handleChangeWeight = (e: ChangeEvent<HTMLInputElement>) => {
@@ -92,19 +95,20 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         }
 
         const { value } = e.target;
+        const defaultStyleService = DefaultStyleService.getInstance();
 
-        if (isNaN(Number(value)) || value === '' || Number(value) < 0) {
-            return;
-        }
+        const parsedValue =
+            value && !isNaN(Number(value))
+                ? Number(value)
+                : defaultStyleService.getEdgesData().weight;
 
         if (selectedEdges.length === 0) {
-            const defaultStyleService = DefaultStyleService.getInstance();
-            defaultStyleService.setEdgesData({ weight: Number(value) });
+            defaultStyleService.setEdgesData({ weight: parsedValue });
         } else {
-            updateEdges(graphRef.current, selectedEdges, 'weight', Number(value));
+            updateEdges(graphRef.current, selectedEdges, 'weight', parsedValue);
         }
 
-        setWeight(Number(value));
+        setWeight(parsedValue);
     };
 
     const handleChangeColor = (e: ChangeEvent<HTMLInputElement>) => {
@@ -134,7 +138,6 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
             value && isEdgeLineStyle(value) ? value : defaultStyleService.getEdgesData().style;
 
         if (selectedEdges.length === 0) {
-            const defaultStyleService = DefaultStyleService.getInstance();
             defaultStyleService.setEdgesData({ style: parsedValue });
         } else {
             updateEdges(graphRef.current, selectedEdges, 'style', parsedValue);

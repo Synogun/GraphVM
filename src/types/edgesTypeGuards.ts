@@ -1,5 +1,5 @@
 import type cytoscape from 'cytoscape';
-import type { EdgeCurveStyle } from './edges';
+import type { EdgeCurveStyle, EdgeLabelStyle } from './edges';
 
 export const ValidEdgeCurves: EdgeCurveStyle[] = [
     'bezier',
@@ -13,17 +13,13 @@ export const ValidEdgeCurves: EdgeCurveStyle[] = [
 ];
 
 export function isEdgeCurve(value: unknown): value is EdgeCurveStyle {
-    if (!value) return false;
-
-    return typeof value === 'string' && ValidEdgeCurves.includes(value as EdgeCurveStyle);
+    return typeof value === 'string' && (ValidEdgeCurves as string[]).includes(value);
 }
 
 export const ValidEdgeLineStyles: cytoscape.Css.LineStyle[] = ['solid', 'dotted', 'dashed'];
 
 export function isEdgeLineStyle(value: unknown): value is cytoscape.Css.LineStyle {
-    return (
-        typeof value === 'string' && ValidEdgeLineStyles.includes(value as cytoscape.Css.LineStyle)
-    );
+    return typeof value === 'string' && (ValidEdgeLineStyles as string[]).includes(value);
 }
 
 export const ValidEdgeArrowShapes: cytoscape.Css.ArrowShape[] = [
@@ -42,10 +38,16 @@ export const ValidEdgeArrowShapes: cytoscape.Css.ArrowShape[] = [
 ];
 
 export function isEdgeArrowShape(value: unknown): value is cytoscape.Css.ArrowShape {
-    return (
-        typeof value === 'string' &&
-        ValidEdgeArrowShapes.includes(value as cytoscape.Css.ArrowShape)
-    );
+    return typeof value === 'string' && (ValidEdgeArrowShapes as string[]).includes(value);
 }
 
-export const ValidEdgeLabelStyle = ['hidden', 'weight', 'index'];
+export const ValidEdgeLabelStyle: EdgeLabelStyle[] = [
+    'hidden',
+    'weight',
+    'index',
+    // 'custom'
+];
+
+export function isEdgeLabelStyle(value: unknown): value is EdgeLabelStyle {
+    return typeof value === 'string' && (ValidEdgeLabelStyle as string[]).includes(value);
+}

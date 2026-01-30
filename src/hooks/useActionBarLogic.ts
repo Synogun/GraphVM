@@ -95,7 +95,7 @@ export function useActionBarLogic() {
             return;
         }
 
-        addEdges(cy, {}, edgeMode, currentSelectedNodes);
+        addEdges(cy, currentSelectedNodes, edgeMode);
         setEdgeCount(cy.edges().length);
         handleArrangeGraph();
     }, [edgeMode, graphRef, handleArrangeGraph, setEdgeCount]);

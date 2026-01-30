@@ -55,9 +55,9 @@ export function addEdge(
 
 export function addEdges(
     core: cytoscape.Core,
-    data: Partial<EdgesData>,
+    edges: string[],
     edgeMode = 'path',
-    edges: string[]
+    data?: Partial<EdgesData>
 ): void {
     if (edges.length < 2) {
         logger.warn('addPath > Provide at least two edge definitions to create a path');
@@ -69,7 +69,7 @@ export function addEdges(
         for (let i = 0; i < edges.length; i++) {
             addEdge(core, {
                 data: {
-                    ...data,
+                    ...(data ?? {}),
                     source: edges[i],
                     target: edges[i + 1],
                 },
@@ -82,7 +82,7 @@ export function addEdges(
             for (let j = 0; j < i; j++) {
                 addEdge(core, {
                     data: {
-                        ...data,
+                        ...(data ?? {}),
                         source: edges[i],
                         target: edges[j],
                     },

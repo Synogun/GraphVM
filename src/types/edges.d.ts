@@ -1,3 +1,5 @@
+import type cytoscape from 'cytoscape';
+
 export type EdgeCurveStyle =
     | 'haystack'
     | 'straight'
@@ -8,21 +10,23 @@ export type EdgeCurveStyle =
     | 'round-taxi'
     | 'round-segments';
 
+export type EdgeLabelStyle = 'hidden' | 'weight' | 'index' | 'custom';
+
 export type EdgesData = {
     id: string;
     source: string;
     target: string;
     weight: number;
-    label: string;
+    label: EdgeLabelStyle;
     color: string;
-    style: string;
+    style: cytoscape.Css.LineStyle;
     curve: EdgeCurveStyle;
-    arrowShape: string;
+    arrowShape: cytoscape.Css.ArrowShape;
 };
 
 export type EdgesContextProperties = {
-    labelStyle: string;
-    setLabelStyle: (labelStyle: string) => void;
+    labelStyle: EdgeLabelStyle;
+    setLabelStyle: (labelStyle: EdgeLabelStyle) => void;
 
     weight: number;
     setWeight: (weight: number) => void;
@@ -30,8 +34,8 @@ export type EdgesContextProperties = {
     color: string;
     setColor: (color: string) => void;
 
-    lineStyle: string;
-    setLineStyle: (lineStyle: string) => void;
+    lineStyle: cytoscape.Css.LineStyle;
+    setLineStyle: (lineStyle: cytoscape.Css.LineStyle) => void;
 
     curveStyle: EdgeCurveStyle;
     setCurveStyle: (curveStyle: EdgeCurveStyle) => void;

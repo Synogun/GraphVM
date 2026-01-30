@@ -1,12 +1,12 @@
 import { EdgesContext } from '@/contexts/EdgesContext';
-import type { EdgeCurveStyle } from '@/types/edges';
+import type { EdgeCurveStyle, EdgeLabelStyle } from '@/types/edges';
 import { useState, type ReactNode } from 'react';
 
 export function EdgesProvider({ children }: EdgesProviderProps) {
-    const [labelStyle, setLabelStyle] = useState('hidden');
+    const [labelStyle, setLabelStyle] = useState<EdgeLabelStyle>('hidden');
     const [weight, setWeight] = useState(1);
     const [color, setColor] = useState('#cccccc');
-    const [lineStyle, setLineStyle] = useState('solid');
+    const [lineStyle, setLineStyle] = useState<cytoscape.Css.LineStyle>('solid');
     const [curveStyle, setCurveStyle] = useState<EdgeCurveStyle>('bezier');
 
     const value = {
