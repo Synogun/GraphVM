@@ -32,6 +32,6 @@ export const ValidNodeShapes: cytoscape.Css.NodeShape[] = [
 export function isNodeShape(value: unknown): value is cytoscape.Css.NodeShape {
     return (
         typeof value === 'string' &&
-        ValidNodeShapes.includes(value as cytoscape.Css.NodeShape)
+        (ValidNodeShapes as string[]).includes(value)
     );
 }

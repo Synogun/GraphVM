@@ -3,7 +3,7 @@ import { useState, type ReactNode } from 'react';
 
 export function NodesProvider({ children }: NodesProviderProps) {
     const [color, setColor] = useState('#999999');
-    const [shape, setShape] = useState('ellipse');
+    const [shape, setShape] = useState<cytoscape.Css.NodeShape>('ellipse');
 
     const value = {
         color,

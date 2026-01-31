@@ -1,3 +1,4 @@
+import { isNodeShape } from '@/types/nodesTypeGuards';
 import { Logger } from '@Logger';
 import type cytoscape from 'cytoscape';
 import { DefaultStyleService } from './DefaultStyleService';
@@ -110,11 +111,32 @@ export function updateNodes(
         return;
     }
 
+    const defaultNodesData = DefaultStyleService.getInstance().getNodesData();
     const nodesCollection = core.nodes().filter((n) => nodes.includes(n.id()));
 
-    nodesCollection.forEach((node) => {
-        node.data(property, value);
-    });
+    const customValidation = [
+        {
+            property: 'shape',
+            validate: isNodeShape,
+            default: defaultNodesData.shape,
+        },
+    ];
 
+    let parsedValue = value;
+    if (customValidation.some((v) => v.property === property)) {
+        const validator = customValidation.find((v) => v.property === property);
+
+        if (!validator) {
+            logger.warn(
+                'updateNodes > No validator found for property:',
+                property
+            );
+            return;
+        }
+
+        parsedValue = validator.validate(value) ? value : validator.default;
+    }
+
+    nodesCollection.data(property, parsedValue);
     logger.info('updateNodes > updated', nodesCollection.length, 'node(s)');
 }

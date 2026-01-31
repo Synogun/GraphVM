@@ -2,8 +2,9 @@ import { ColorInput, SelectInput } from '@/components/common/inputs';
 import { useGraphProperties } from '@/contexts/GraphContext';
 import { useNodeProperties } from '@/contexts/NodesContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
+import { DefaultStyleService } from '@/services/DefaultStyleService';
 import { updateNodes } from '@/services/NodesService';
-import { ValidNodeShapes } from '@/types/nodesTypeGuards';
+import { isNodeShape, ValidNodeShapes } from '@/types/nodesTypeGuards';
 import { findPropertyValueMode, parseKebabCase } from '@/utils/elements';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
@@ -20,27 +21,32 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
             return;
         }
 
+        const defaultNodeData =
+            DefaultStyleService.getInstance().getNodesData();
+
         if (selectedNodes.length === 0) {
-            setColor('#999999');
-            setShape('ellipse');
+            setColor(defaultNodeData.color);
+            setShape(defaultNodeData.shape);
             return;
-        } else {
-            const nodeCollection = graphRef.current
-                .nodes()
-                .filter((n) => selectedNodes.includes(n.id()));
-
-            const modeColor =
-                findPropertyValueMode(nodeCollection, 'color') ?? '#999999';
-            const modeShape =
-                findPropertyValueMode(nodeCollection, 'shape') ?? 'ellipse';
-
-            setColor(modeColor);
-            setShape(modeShape);
         }
+
+        const nodeCollection = graphRef.current
+            .nodes()
+            .filter((n) => selectedNodes.includes(n.id()));
+
+        const modeColor =
+            findPropertyValueMode(nodeCollection, 'color') ??
+            defaultNodeData.color;
+        const modeShape =
+            findPropertyValueMode(nodeCollection, 'shape') ??
+            defaultNodeData.shape;
+
+        setColor(modeColor);
+        setShape(isNodeShape(modeShape) ? modeShape : defaultNodeData.shape);
     }, [graphRef, selectedNodes, setColor, setShape]);
 
     // const handleChangeLabel = (e: ChangeEvent<HTMLInputElement>) => {
-    //     if (!graph) { return; }
+    //     if (!graphRef.current) { return; }
 
     //     const selectedNodes = selectedNodes;
     //     const { value: rawValue } = e.target;
@@ -54,7 +60,18 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
             return;
         }
 
-        updateNodes(graphRef.current, selectedNodes, 'color', e.target.value);
+        if (selectedNodes.length === 0) {
+            const defaultStyleService = DefaultStyleService.getInstance();
+            defaultStyleService.setNodesData({ color: e.target.value });
+        } else {
+            updateNodes(
+                graphRef.current,
+                selectedNodes,
+                'color',
+                e.target.value
+            );
+        }
+
         setColor(e.target.value);
     };
 
@@ -63,10 +80,20 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
             return;
         }
 
+        const defaultStyleService = DefaultStyleService.getInstance();
         const { value } = e.target;
 
-        updateNodes(graphRef.current, selectedNodes, 'shape', value);
-        setShape(value);
+        const parsedValue: cytoscape.Css.NodeShape = isNodeShape(value)
+            ? value
+            : defaultStyleService.getNodesData().shape;
+
+        if (selectedNodes.length === 0) {
+            defaultStyleService.setNodesData({ shape: parsedValue });
+        } else {
+            updateNodes(graphRef.current, selectedNodes, 'shape', parsedValue);
+        }
+
+        setShape(parsedValue);
     };
 
     const selectShapeOptions = useMemo(() => {
