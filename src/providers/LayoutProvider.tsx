@@ -1,18 +1,29 @@
+import { DefaultLayoutOptions } from '@/config/graphDefaults';
 import { LayoutContext } from '@/contexts/LayoutContext';
 import type { LayoutType } from '@/types/layout';
+import { isLayoutType } from '@/types/layoutTypeGuards';
 import { useState, type ReactNode } from 'react';
 
 export function LayoutProvider({ children }: LayoutProviderProps) {
+    const {
+        name: defaultLayoutType,
+        radius: defaultRadius,
+        rows: defaultRows,
+        cols: defaultCols,
+    } = DefaultLayoutOptions;
+
     const [current, setCurrent] = useState<cytoscape.LayoutOptions | undefined>(
         undefined
     );
 
-    const [type, setType] = useState<LayoutType>('circle');
+    const [type, setType] = useState<LayoutType>(
+        isLayoutType(defaultLayoutType) ? defaultLayoutType : 'circle'
+    );
 
-    const [radius, setRadius] = useState(100);
+    const [radius, setRadius] = useState(defaultRadius);
 
-    const [rows, setRows] = useState(3);
-    const [cols, setCols] = useState(3);
+    const [rows, setRows] = useState(defaultRows);
+    const [cols, setCols] = useState(defaultCols);
 
     const circleLayout = { radius, setRadius };
     const gridLayout = { rows, setRows, cols, setCols };

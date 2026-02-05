@@ -1,9 +1,12 @@
+import { DefaultNodesData } from '@/config/graphDefaults';
 import { NodesContext } from '@/contexts/NodesContext';
 import { useState, type ReactNode } from 'react';
 
 export function NodesProvider({ children }: NodesProviderProps) {
-    const [color, setColor] = useState('#999999');
-    const [shape, setShape] = useState<cytoscape.Css.NodeShape>('ellipse');
+    const { color: defaultColor, shape: defaultShape } = DefaultNodesData;
+
+    const [color, setColor] = useState(defaultColor);
+    const [shape, setShape] = useState<cytoscape.Css.NodeShape>(defaultShape);
 
     const value = {
         color,
