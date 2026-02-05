@@ -1,9 +1,10 @@
 import { useGraphProperties } from '@/contexts/GraphContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
-import type { EdgesData } from '@/types/edges';
+import { mapElementsToText } from '@/services/ImportExportService';
 import { makeBlobAndDownload } from '@/utils/general';
 import { sheetToPlain } from '@/utils/styleHelpers';
 import { Logger } from '@Logger';
+import type cytoscape from 'cytoscape';
 import type { StylesheetCSS } from 'cytoscape';
 import {
     useCallback,
@@ -27,7 +28,7 @@ export function ExportTab({
         'text' | 'json' | 'png' | 'jpg'
     >('text');
     const [exportOptions, setExportOptions] = useState<
-        Record<string, string | boolean>
+        cytoscape.ExportStringOptions & cytoscape.ExportJpgStringOptions
     >({});
 
     const {
@@ -105,13 +106,14 @@ export function ExportTab({
             fileNameWithExt = `${fileName}.json`;
             fileType = 'application/json';
         } else if (exportFormat === 'png' || exportFormat === 'jpg') {
-            let options: { full: boolean; bg: string; quality?: number } = {
-                full: true,
-                bg: '#ffffff',
+            let options: cytoscape.ExportStringOptions &
+                cytoscape.ExportJpgStringOptions = {
+                full: exportOptions.full ?? true,
+                bg: exportOptions.bg,
             };
 
             if (exportFormat === 'jpg') {
-                options = { ...options, quality: 1 };
+                options = { ...options, bg: exportOptions.bg, quality: 1 };
             }
 
             dataStr =
@@ -121,30 +123,8 @@ export function ExportTab({
             fileNameWithExt = `${fileName}.${exportFormat}`;
             fileType = `image/${exportFormat}`;
         } else {
-            dataStr = graphRef.current
-                .edges()
-                .map((edge) => {
-                    if (!graphRef.current) return '';
-
-                    const {
-                        source: sourceId,
-                        target: targetId,
-                        weight,
-                    } = edge.data() as EdgesData;
-
-                    const sourceLabel = graphRef.current
-                        .$id(sourceId)
-                        .data('label') as string;
-                    const targetLabel = graphRef.current
-                        .$id(targetId)
-                        .data('label') as string;
-
-                    const weightStr =
-                        weight !== 1 ? ' ' + weight.toString() : '';
-
-                    return `${sourceLabel} ${targetLabel}${weightStr}`;
-                })
-                .join('\n');
+            // exportFormat === 'text'
+            dataStr = mapElementsToText(graphRef.current);
             fileNameWithExt = `${fileName}.txt`;
             fileType = 'text/plain';
         }
@@ -211,13 +191,13 @@ export function ExportTab({
                             <label className="label cursor-pointer justify-start gap-3 rounded-lg border border-base-300 p-3 hover:border-accent">
                                 <input
                                     className="toggle toggle-accent"
-                                    defaultChecked={!exportOptions.fitGraph}
+                                    defaultChecked={!exportOptions.full}
                                     id="option-fit-graph"
                                     onChange={(e) => {
-                                        setExportOptions({
-                                            ...exportOptions,
-                                            fitGraph: e.target.checked,
-                                        });
+                                        setExportOptions((prev) => ({
+                                            ...prev,
+                                            full: e.target.checked,
+                                        }));
                                     }}
                                     type="checkbox"
                                 />
@@ -236,10 +216,11 @@ export function ExportTab({
                                     defaultValue={undefined}
                                     id="option-bg-color"
                                     onChange={(e) => {
-                                        setExportOptions({
-                                            ...exportOptions,
-                                            bgColor: e.target.value,
-                                        });
+                                        console.log(e.target.value);
+                                        setExportOptions((prev) => ({
+                                            ...prev,
+                                            bg: e.target.value,
+                                        }));
                                     }}
                                     type="color"
                                 />

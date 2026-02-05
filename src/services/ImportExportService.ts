@@ -2,6 +2,7 @@ import { DefaultEdgesData, DefaultNodesData } from '@/config/graphDefaults';
 import type { EdgesData } from '@/types/edges';
 import type { NodesData } from '@/types/nodes';
 import { Logger } from '@Logger';
+import type cytoscape from 'cytoscape';
 import type { ElementsDefinition } from 'cytoscape';
 import { makeEdgeId } from './EdgesService';
 import { makeNodeId } from './NodesService';
@@ -17,15 +18,19 @@ export function isFileValid(file: File) {
     return validType && file.size <= maxSizeInBytes;
 }
 
-export function isDataValid(data: string, type: FileType) {
+export function isDataValid(data: string, type: FileType, separator: string) {
     if (type !== 'text/plain') {
         return false;
     }
 
     let isValid = true;
-    const separator = ' ';
+    const parsedData = data.replaceAll('\r', '').split('\n');
 
-    for (const line of data.replaceAll('\r', '').split('\n')) {
+    if (parsedData.length < 1) {
+        return false;
+    }
+
+    for (const line of parsedData) {
         const values = line.split(separator);
         if (values.length < 2 || values.length > 3) {
             isValid = false;
@@ -43,15 +48,22 @@ export function parseTextData(
 ): ElementsDefinition | false {
     const separator = ' ';
 
+    if (!isDataValid(data, type, separator)) {
+        logger.warn('Invalid data format');
+        return false;
+    }
+
     const lines = data
         .replaceAll('\r', '')
         .split('\n')
         .map((line) => line.replaceAll(/\s+/g, ' ').trim().split(separator));
 
-    if (!isDataValid(data, type)) {
-        logger.warn('Invalid data format');
+    if (lines.length < 1) {
+        logger.warn('No data to parse');
         return false;
     }
+
+    const [numNodes] = lines.shift()?.map(Number) ?? [0];
 
     const currentNodesData = {
         ...DefaultNodesData,
@@ -63,7 +75,7 @@ export function parseTextData(
     };
 
     const nodeMap = new Map<string, string>();
-    const edges = [];
+    const edges: cytoscape.EdgeDefinition[] = [];
 
     try {
         for (const line of lines) {
@@ -108,7 +120,50 @@ export function parseTextData(
         },
     }));
 
+    if (numNodes !== nodes.length) {
+        for (let i = nodes.length; i < numNodes; i++) {
+            const newId = makeNodeId();
+            const newIndex = nodes.length + 1;
+            nodes.push({
+                data: {
+                    ...currentNodesData,
+                    id: newId,
+                    label: newIndex.toString(),
+                },
+            });
+        }
+    }
+
     return { nodes, edges };
+}
+
+export function mapElementsToText(graph: cytoscape.Core): string {
+    let dataStr = `${graph.nodes().length.toString()} ${graph.edges().length.toString()}\n`;
+
+    // Map Edges
+    dataStr += graph
+        .edges()
+        .map((edge) => {
+            const {
+                source: sourceId,
+                target: targetId,
+                weight,
+            } = edge.data() as EdgesData;
+
+            const sourceLabel = graph.$id(sourceId).data('label') as string;
+            const targetLabel = graph.$id(targetId).data('label') as string;
+
+            let text = `${sourceLabel} ${targetLabel}`;
+
+            if (weight && weight !== 1) {
+                text += ` ${weight.toString()}`;
+            }
+
+            return text;
+        })
+        .join('\n');
+
+    return dataStr;
 }
 
 export type FileType = 'application/json' | 'text/plain';

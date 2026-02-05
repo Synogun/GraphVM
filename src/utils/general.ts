@@ -30,11 +30,11 @@ export function makeBlobAndDownload(
     fileType: string,
     exportFormat?: string
 ): void {
-    if (fileType === 'png' || fileType === 'jpg') {
+    if (fileType === 'image/png' || fileType === 'image/jpg') {
         const a = document.createElement('a');
 
         a.href = dataStr;
-        a.download = `${fileName}.${exportFormat ?? ''}`;
+        a.download = `${fileName}${exportFormat ? `.${exportFormat}` : ''}`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -46,7 +46,7 @@ export function makeBlobAndDownload(
     const a = document.createElement('a');
 
     a.href = url;
-    a.download = fileName;
+    a.download = `${fileName}${exportFormat ? `.${exportFormat}` : ''}`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
