@@ -1,6 +1,10 @@
+import {
+    DefaultEdgesData,
+    DefaultGraphOptions,
+    DefaultNodesData,
+} from '@/config/graphDefaults';
 import { Logger } from '@Logger';
 import cytoscape from 'cytoscape';
-import { DefaultStyleService } from './DefaultStyleService';
 
 const logger = Logger.createContextLogger('GraphService');
 
@@ -8,24 +12,20 @@ export function newGraph(
     containerId?: string,
     options?: cytoscape.CytoscapeOptions
 ): cytoscape.Core {
-    const ConfigManager = DefaultStyleService.getInstance();
-
     containerId ??= 'main-graph';
 
     const graphOptions = {
-        ...ConfigManager.getGraphOptions(), // default graph options
+        ...DefaultGraphOptions,
         ...options,
-    };
-
-    graphOptions.data = {
-        ...ConfigManager.getNodesData(), // default graph data
-        ...(options?.data ?? {}),
     };
 
     const newGraph = cytoscape({
         ...graphOptions,
         container: document.getElementById(containerId),
     });
+
+    newGraph.data('defaultNodesData', { ...DefaultNodesData });
+    newGraph.data('defaultEdgesData', { ...DefaultEdgesData });
 
     newGraph.data('numNodes', newGraph.nodes().length);
     newGraph.data('numEdges', newGraph.edges().length);

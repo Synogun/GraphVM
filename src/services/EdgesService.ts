@@ -4,13 +4,16 @@ import {
     isEdgeCurve,
     isEdgeLineStyle,
 } from '@/types/edgesTypeGuards';
+import { getDefaultEdgesData } from '@/utils/styleHelpers';
 import { Logger } from '@Logger';
-import { DefaultStyleService } from './DefaultStyleService';
 
 const logger = Logger.createContextLogger('EdgesService');
 
 export function makeEdgeId() {
-    return `edge-${Date.now().toString()}-${Math.floor(Math.random() * 10000).toString()}`;
+    const currentTime = Date.now().toString();
+    const randomInteger = Math.floor(Math.random() * 10000).toString();
+
+    return `edge-${currentTime}-${randomInteger}`;
 }
 
 export function addEdge(
@@ -27,12 +30,12 @@ export function addEdge(
         return;
     }
 
-    const defaultStyleService = DefaultStyleService.getInstance();
+    const defaultEdgesData = getDefaultEdgesData(core);
     const newIdIndex = core.edges().length + 1;
     const newId = makeEdgeId();
 
     const newEdgeData = {
-        ...defaultStyleService.getEdgesData(), // default edge data
+        ...defaultEdgesData, // default edge data
         id: newId,
         index: newIdIndex,
         ...options.data,
@@ -41,11 +44,11 @@ export function addEdge(
     core.add({
         group: 'edges',
         data: newEdgeData,
-        classes: classes ?? [],
+        classes: [...(classes ?? [])],
     });
 
     if (core.data('directed')) {
-        core.edges(`#${newId}`).addClass('directed');
+        core.$id(newId).addClass('directed');
     }
 
     core.data('numEdges', core.edges().length);
@@ -130,7 +133,7 @@ export function updateEdges(
         return;
     }
 
-    const defaultEdgesData = DefaultStyleService.getInstance().getEdgesData();
+    const defaultEdgesData = getDefaultEdgesData(core);
     const edgesCollection = core.edges().filter((e) => edges.includes(e.id()));
 
     const customValidation = [

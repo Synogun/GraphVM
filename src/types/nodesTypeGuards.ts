@@ -1,4 +1,5 @@
 import type cytoscape from 'cytoscape';
+import type { NodesData } from './nodes';
 
 export const ValidNodeShapes: cytoscape.Css.NodeShape[] = [
     'ellipse',
@@ -34,4 +35,14 @@ export function isNodeShape(value: unknown): value is cytoscape.Css.NodeShape {
         typeof value === 'string' &&
         (ValidNodeShapes as string[]).includes(value)
     );
+}
+
+export function isDefaultNodeData(data: unknown): data is NodesData {
+    if (typeof data !== 'object' || data === null) {
+        return false;
+    }
+
+    const requiredProperties = ['color', 'shape', 'label'];
+
+    return requiredProperties.every((prop) => prop in data);
 }

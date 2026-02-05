@@ -6,7 +6,6 @@ import {
 import { useEdgesProperties } from '@/contexts/EdgesContext';
 import { useGraphProperties } from '@/contexts/GraphContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
-import { DefaultStyleService } from '@/services/DefaultStyleService';
 import { updateEdges } from '@/services/EdgesService';
 import {
     isEdgeCurve,
@@ -17,6 +16,7 @@ import {
     ValidEdgeLineStyles,
 } from '@/types/edgesTypeGuards';
 import { findPropertyValueMode, parseKebabCase } from '@/utils/elements';
+import { getDefaultEdgesData, setDefaultEdgesData } from '@/utils/styleHelpers';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
 export function EdgesSection({ visible = true }: EdgesSectionProps) {
@@ -43,15 +43,20 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
             return;
         }
 
-        const defaultEdgesData =
-            DefaultStyleService.getInstance().getEdgesData();
+        const {
+            label: defaultEdgesLabel,
+            color: defaultEdgesColor,
+            style: defaultEdgesStyle,
+            curve: defaultEdgesCurve,
+            weight: defaultEdgesWeight,
+        } = getDefaultEdgesData(graphRef.current);
 
         if (selectedEdges.length === 0) {
-            setLabelStyle(defaultEdgesData.label);
-            setColor(defaultEdgesData.color);
-            setLineStyle(defaultEdgesData.style);
-            setCurveStyle(defaultEdgesData.curve);
-            setWeight(defaultEdgesData.weight);
+            setLabelStyle(defaultEdgesLabel);
+            setColor(defaultEdgesColor);
+            setLineStyle(defaultEdgesStyle);
+            setCurveStyle(defaultEdgesCurve);
+            setWeight(defaultEdgesWeight);
             return;
         }
 
@@ -60,34 +65,26 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
             .filter((e) => selectedEdges.includes(e.id()));
 
         const modeLabel =
-            findPropertyValueMode(edgeCollection, 'label') ??
-            defaultEdgesData.label;
+            findPropertyValueMode(edgeCollection, 'label') ?? defaultEdgesLabel;
         const modeColor =
-            findPropertyValueMode(edgeCollection, 'color') ??
-            defaultEdgesData.color;
+            findPropertyValueMode(edgeCollection, 'color') ?? defaultEdgesColor;
         const modeLineStyle =
-            findPropertyValueMode(edgeCollection, 'style') ??
-            defaultEdgesData.style;
+            findPropertyValueMode(edgeCollection, 'style') ?? defaultEdgesStyle;
         const modeCurve =
-            findPropertyValueMode(edgeCollection, 'curve') ??
-            defaultEdgesData.curve;
+            findPropertyValueMode(edgeCollection, 'curve') ?? defaultEdgesCurve;
         const modeWeight =
             findPropertyValueMode(edgeCollection, 'weight') ??
-            defaultEdgesData.weight;
+            defaultEdgesWeight;
 
         setLabelStyle(
-            isEdgeLabelStyle(modeLabel) ? modeLabel : defaultEdgesData.label
+            isEdgeLabelStyle(modeLabel) ? modeLabel : defaultEdgesLabel
         );
         setColor(modeColor);
         setLineStyle(
-            isEdgeLineStyle(modeLineStyle)
-                ? modeLineStyle
-                : defaultEdgesData.style
+            isEdgeLineStyle(modeLineStyle) ? modeLineStyle : defaultEdgesStyle
         );
-        setCurveStyle(
-            isEdgeCurve(modeCurve) ? modeCurve : defaultEdgesData.curve
-        );
-        setWeight(Number(modeWeight) || defaultEdgesData.weight);
+        setCurveStyle(isEdgeCurve(modeCurve) ? modeCurve : defaultEdgesCurve);
+        setWeight(Number(modeWeight) || defaultEdgesWeight);
     }, [
         graphRef,
         selectedEdges,
@@ -104,15 +101,13 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         }
 
         const { value } = e.target;
-        const defaultStyleService = DefaultStyleService.getInstance();
+        const currentDefaults = getDefaultEdgesData(graphRef.current);
 
         const parsedValue =
-            value && isEdgeLabelStyle(value)
-                ? value
-                : defaultStyleService.getEdgesData().label;
+            value && isEdgeLabelStyle(value) ? value : currentDefaults.label;
 
         if (selectedEdges.length === 0) {
-            defaultStyleService.setEdgesData({ label: parsedValue });
+            setDefaultEdgesData(graphRef.current, { label: parsedValue });
         } else {
             updateEdges(graphRef.current, selectedEdges, 'label', parsedValue);
         }
@@ -126,15 +121,15 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         }
 
         const { value } = e.target;
-        const defaultStyleService = DefaultStyleService.getInstance();
+        const currentDefaults = getDefaultEdgesData(graphRef.current);
 
         const parsedValue =
             value && !isNaN(Number(value))
                 ? Number(value)
-                : defaultStyleService.getEdgesData().weight;
+                : currentDefaults.weight;
 
         if (selectedEdges.length === 0) {
-            defaultStyleService.setEdgesData({ weight: parsedValue });
+            setDefaultEdgesData(graphRef.current, { weight: parsedValue });
         } else {
             updateEdges(graphRef.current, selectedEdges, 'weight', parsedValue);
         }
@@ -148,8 +143,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         }
 
         if (selectedEdges.length === 0) {
-            const defaultStyleService = DefaultStyleService.getInstance();
-            defaultStyleService.setEdgesData({ color: e.target.value });
+            setDefaultEdgesData(graphRef.current, { color: e.target.value });
         } else {
             updateEdges(
                 graphRef.current,
@@ -168,15 +162,13 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         }
 
         const { value } = e.target;
-        const defaultStyleService = DefaultStyleService.getInstance();
+        const currentDefaults = getDefaultEdgesData(graphRef.current);
 
         const parsedValue =
-            value && isEdgeLineStyle(value)
-                ? value
-                : defaultStyleService.getEdgesData().style;
+            value && isEdgeLineStyle(value) ? value : currentDefaults.style;
 
         if (selectedEdges.length === 0) {
-            defaultStyleService.setEdgesData({ style: parsedValue });
+            setDefaultEdgesData(graphRef.current, { style: parsedValue });
         } else {
             updateEdges(graphRef.current, selectedEdges, 'style', parsedValue);
         }
@@ -190,15 +182,13 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         }
 
         const { value } = e.target;
-        const defaultStyleService = DefaultStyleService.getInstance();
+        const currentDefaults = getDefaultEdgesData(graphRef.current);
 
         const parsedValue =
-            value && isEdgeCurve(value)
-                ? value
-                : defaultStyleService.getEdgesData().curve;
+            value && isEdgeCurve(value) ? value : currentDefaults.curve;
 
         if (selectedEdges.length === 0) {
-            defaultStyleService.setEdgesData({ curve: parsedValue });
+            setDefaultEdgesData(graphRef.current, { curve: parsedValue });
         } else {
             updateEdges(graphRef.current, selectedEdges, 'curve', parsedValue);
         }

@@ -1,5 +1,5 @@
 import type cytoscape from 'cytoscape';
-import type { EdgeCurveStyle, EdgeLabelStyle } from './edges';
+import type { EdgeCurveStyle, EdgeLabelStyle, EdgesData } from './edges';
 
 export const ValidEdgeCurves: EdgeCurveStyle[] = [
     'bezier',
@@ -70,4 +70,21 @@ export function isEdgeLabelStyle(value: unknown): value is EdgeLabelStyle {
         typeof value === 'string' &&
         (ValidEdgeLabelStyle as string[]).includes(value)
     );
+}
+
+export function isDefaultEdgeData(data: unknown): data is EdgesData {
+    if (typeof data !== 'object' || data === null) {
+        return false;
+    }
+
+    const requiredProperties = [
+        'color',
+        'label',
+        'weight',
+        'style',
+        'curve',
+        'arrowShape',
+    ];
+
+    return requiredProperties.every((prop) => prop in data);
 }

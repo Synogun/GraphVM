@@ -1,6 +1,6 @@
+import { DefaultLayoutOptions } from '@/config/graphDefaults';
 import { Logger } from '@Logger';
 import type cytoscape from 'cytoscape';
-import { DefaultStyleService } from './DefaultStyleService';
 
 const logger = Logger.createContextLogger('LayoutService');
 
@@ -8,10 +8,8 @@ export function arrangeGraph(
     core: cytoscape.Core,
     options?: cytoscape.LayoutOptions
 ): void {
-    const defaultStyleService = DefaultStyleService.getInstance();
-
     const layoutOptions: cytoscape.LayoutOptions = {
-        ...defaultStyleService.getLayoutOptions(),
+        ...DefaultLayoutOptions,
         ...(options ?? {}),
     };
 

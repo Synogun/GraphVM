@@ -7,6 +7,7 @@ import {
     type FileType,
 } from '@/services/ImportExportService';
 import { arrangeGraph } from '@/services/LayoutService';
+import { getDefaultEdgesData, getDefaultNodesData } from '@/utils/styleHelpers';
 import { Logger } from '@Logger';
 import cytoscape, { type CytoscapeOptions } from 'cytoscape';
 import {
@@ -89,7 +90,15 @@ export function ImportTab({
                 // FUTURE: Validate JSON structure
                 dataToImport = JSON.parse(data) as CytoscapeOptions;
             } else {
-                const elements = parseTextData(data, fileType);
+                let defaults;
+                if (graphRef.current) {
+                    defaults = {
+                        nodes: getDefaultNodesData(graphRef.current),
+                        edges: getDefaultEdgesData(graphRef.current),
+                    };
+                }
+
+                const elements = parseTextData(data, fileType, defaults);
                 if (elements === false) {
                     throw new SyntaxError('Invalid text data format');
                 }

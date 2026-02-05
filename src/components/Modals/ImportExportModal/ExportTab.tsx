@@ -1,8 +1,8 @@
 import { useGraphProperties } from '@/contexts/GraphContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
-import { sheetToPlain } from '@/services/DefaultStyleService';
 import type { EdgesData } from '@/types/edges';
 import { makeBlobAndDownload } from '@/utils/general';
+import { sheetToPlain } from '@/utils/styleHelpers';
 import { Logger } from '@Logger';
 import type { StylesheetCSS } from 'cytoscape';
 import {
@@ -127,9 +127,9 @@ export function ExportTab({
                     if (!graphRef.current) return '';
 
                     const {
-                        source: sourceId = '',
-                        target: targetId = '',
-                        weight = 1,
+                        source: sourceId,
+                        target: targetId,
+                        weight,
                     } = edge.data() as EdgesData;
 
                     const sourceLabel = graphRef.current

@@ -1,13 +1,16 @@
 import { isNodeShape } from '@/types/nodesTypeGuards';
+import { getDefaultNodesData } from '@/utils/styleHelpers';
 import { Logger } from '@Logger';
 import type cytoscape from 'cytoscape';
-import { DefaultStyleService } from './DefaultStyleService';
 import { removeEdges } from './EdgesService';
 
 const logger = Logger.createContextLogger('NodesService');
 
 export function makeNodeId() {
-    return `node-${Date.now().toString()}-${Math.floor(Math.random() * 10000).toString()}`;
+    const currentTime = Date.now().toString();
+    const randomInteger = Math.floor(Math.random() * 10000).toString();
+
+    return `node-${currentTime}-${randomInteger}`;
 }
 
 export function addNode(
@@ -15,14 +18,12 @@ export function addNode(
     options?: cytoscape.NodeDefinition,
     classes?: string[]
 ): void {
-    const defaultStyleService = DefaultStyleService.getInstance();
-    const numNodes = core.nodes().length;
-
-    const newIdIndex = numNodes + 1;
+    const defaultNodesData = getDefaultNodesData(core);
+    const newIdIndex = core.nodes().length + 1;
     const newId = makeNodeId();
 
     const newNodeData = {
-        ...defaultStyleService.getNodesData(),
+        ...defaultNodesData,
         id: newId,
         index: newIdIndex,
         label: newIdIndex.toString(),
@@ -32,10 +33,10 @@ export function addNode(
     core.add({
         group: 'nodes',
         data: newNodeData,
-        classes: classes ?? [],
+        classes: [...(classes ?? [])],
     });
 
-    core.data('numNodes', numNodes + 1);
+    core.data('numNodes', core.nodes().length);
     logger.info('addNode > added node with id:', newId, core.data());
 }
 
@@ -44,7 +45,7 @@ export function addNodes(
     nodesData: cytoscape.NodeDefinition[],
     classes?: string[]
 ): void {
-    const defaultStyleService = DefaultStyleService.getInstance();
+    const defaultNodesData = getDefaultNodesData(core);
     const numNodes = core.nodes().length;
 
     const newNodes = nodesData.map((nodeData, index) => {
@@ -53,9 +54,9 @@ export function addNodes(
 
         return {
             ...nodeData,
-            classes: classes ?? [],
+            classes: [...(classes ?? [])],
             data: {
-                ...defaultStyleService.getNodesData(),
+                ...defaultNodesData,
                 id: newId,
                 index: newIdIndex,
                 label: newIdIndex.toString(),
@@ -111,7 +112,7 @@ export function updateNodes(
         return;
     }
 
-    const defaultNodesData = DefaultStyleService.getInstance().getNodesData();
+    const defaultNodesData = getDefaultNodesData(core);
     const nodesCollection = core.nodes().filter((n) => nodes.includes(n.id()));
 
     const customValidation = [

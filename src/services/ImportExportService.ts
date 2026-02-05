@@ -1,6 +1,8 @@
+import { DefaultEdgesData, DefaultNodesData } from '@/config/graphDefaults';
+import type { EdgesData } from '@/types/edges';
+import type { NodesData } from '@/types/nodes';
 import { Logger } from '@Logger';
 import type { ElementsDefinition } from 'cytoscape';
-import { DefaultStyleService } from './DefaultStyleService';
 import { makeEdgeId } from './EdgesService';
 import { makeNodeId } from './NodesService';
 
@@ -36,7 +38,8 @@ export function isDataValid(data: string, type: FileType) {
 
 export function parseTextData(
     data: string,
-    type: FileType
+    type: FileType,
+    defaults?: { nodes: NodesData; edges: EdgesData }
 ): ElementsDefinition | false {
     const separator = ' ';
 
@@ -50,7 +53,15 @@ export function parseTextData(
         return false;
     }
 
-    const ConfigManager = DefaultStyleService.getInstance();
+    const currentNodesData = {
+        ...DefaultNodesData,
+        ...(defaults?.nodes ?? {}),
+    };
+    const currentEdgesData = {
+        ...DefaultEdgesData,
+        ...(defaults?.edges ?? {}),
+    };
+
     const nodeMap = new Map<string, string>();
     const edges = [];
 
@@ -69,7 +80,7 @@ export function parseTextData(
 
             edges.push({
                 data: {
-                    ...ConfigManager.getEdgesData(),
+                    ...currentEdgesData,
                     id: makeEdgeId(),
                     source: sourceId,
                     target: targetId,
@@ -91,7 +102,7 @@ export function parseTextData(
 
     const nodes = Array.from(nodeMap.entries()).map(([label, id]) => ({
         data: {
-            ...ConfigManager.getNodesData(),
+            ...currentNodesData,
             id,
             label,
         },
