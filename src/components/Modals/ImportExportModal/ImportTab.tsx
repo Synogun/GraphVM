@@ -7,10 +7,7 @@ import {
     type FileType,
 } from '@/services/ImportExportService';
 import { arrangeGraph } from '@/services/LayoutService';
-import {
-    isCytoscapeOptions,
-    isStylesheetStyleArray,
-} from '@/types/graphTypeGuards';
+import { isCytoscapeOptions, isStylesheetStyleArray } from '@/types/graphTypeGuards';
 import {
     getDefaultEdgesData,
     getDefaultNodesData,
@@ -102,10 +99,7 @@ export function ImportTab({
                 }
 
                 if (isStylesheetStyleArray(jsonData.style)) {
-                    jsonData.style = transformStylesheet(
-                        jsonData.style,
-                        'sheet'
-                    );
+                    jsonData.style = transformStylesheet(jsonData.style, 'sheet');
                 }
 
                 dataToImport = { ...jsonData };
@@ -141,10 +135,7 @@ export function ImportTab({
 
             setPreviewCy(newPreviewCy);
         } catch (error) {
-            logger.error(
-                'Error initializing Cytoscape with imported data:',
-                error
-            );
+            logger.error('Error initializing Cytoscape with imported data:', error);
             return false;
         }
 
@@ -169,9 +160,7 @@ export function ImportTab({
 
     useImperativeHandle(ref, () => ({ handleImport, cleanup }));
 
-    const handleFileSelectWrapper = (
-        event: React.ChangeEvent<HTMLInputElement>
-    ) => {
+    const handleFileSelectWrapper = (event: React.ChangeEvent<HTMLInputElement>) => {
         handleFileSelect(event).catch((error: unknown) => {
             logger.error('Error handling file select:', error);
         });
@@ -197,9 +186,7 @@ export function ImportTab({
                 />
                 <label className="label">Max size 2MB</label>
             </fieldset>
-            <h3 className="text-sm font-medium text-base-content">
-                Data Preview
-            </h3>
+            <h3 className="text-sm font-medium text-base-content">Data Preview</h3>
             <div className="relative p-2 text-center">
                 <div className="absolute left-7 top-9 flex flex-col items-center gap-2 z-10 text-xs select-none">
                     <span id="preview-node-count">

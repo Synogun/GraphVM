@@ -10,8 +10,7 @@ import { makeNodeId } from './NodesService';
 const logger = Logger.createContextLogger('ImportExportService');
 
 export function isFileValid(file: File) {
-    const validType =
-        file.type === 'application/json' || file.type === 'text/plain';
+    const validType = file.type === 'application/json' || file.type === 'text/plain';
 
     const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
 

@@ -61,12 +61,7 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
         if (selectedNodes.length === 0) {
             setDefaultNodesData(graphRef.current, { color: e.target.value });
         } else {
-            updateNodes(
-                graphRef.current,
-                selectedNodes,
-                'color',
-                e.target.value
-            );
+            updateNodes(graphRef.current, selectedNodes, 'color', e.target.value);
         }
 
         setColor(e.target.value);
@@ -113,11 +108,7 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
                 // value={ nodeProperties.label }
             /> */}
 
-            <ColorInput
-                label="Color"
-                onChange={handleChangeColor}
-                value={color}
-            />
+            <ColorInput label="Color" onChange={handleChangeColor} value={color} />
 
             <SelectInput
                 label="Shape"

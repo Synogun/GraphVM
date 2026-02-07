@@ -32,9 +32,8 @@ export function HelpElementsInfo() {
                             Choose a edge insertion mode:
                             <ul className="list-disc list-inside ml-4">
                                 <li>
-                                    <strong>Path Mode</strong>: Connects nodes
-                                    in the order they were selected (A→B→C) when
-                                    in{' '}
+                                    <strong>Path Mode</strong>: Connects nodes in the
+                                    order they were selected (A→B→C) when in{' '}
                                     <ActionBarButton
                                         label="Path Mode"
                                         className="px-1 btn-xs"
@@ -46,9 +45,9 @@ export function HelpElementsInfo() {
                                     mode.
                                 </li>
                                 <li>
-                                    <strong>Complete Mode</strong>: Connects
-                                    every selected node to every other selected
-                                    node when in{' '}
+                                    <strong>Complete Mode</strong>: Connects every
+                                    selected node to every other selected node when
+                                    in{' '}
                                     <ActionBarEdgeModeButton
                                         isCompleteEdgeMode={true}
                                         iconSize={16}
@@ -73,8 +72,8 @@ export function HelpElementsInfo() {
                     <strong>Deleting Elements:</strong>
                     <ul className="list-decimal list-inside ml-6 mt-1 text-sm text-base-content/80">
                         <li>
-                            Select one or more nodes or edges by clicking them
-                            (or drag-selecting).
+                            Select one or more nodes or edges by clicking them (or
+                            drag-selecting).
                         </li>
                         <li>
                             Click the{' '}

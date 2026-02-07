@@ -84,8 +84,7 @@ export function ImportExportModal() {
             }
         >
             <p className="text-base-content/70">
-                Manage your graph data by importing or exporting in various
-                formats.
+                Manage your graph data by importing or exporting in various formats.
             </p>
             <main className="grow pt-3">
                 <div className="border-b border-base-300">

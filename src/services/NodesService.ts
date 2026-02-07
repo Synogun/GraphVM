@@ -128,10 +128,7 @@ export function updateNodes(
         const validator = customValidation.find((v) => v.property === property);
 
         if (!validator) {
-            logger.warn(
-                'updateNodes > No validator found for property:',
-                property
-            );
+            logger.warn('updateNodes > No validator found for property:', property);
             return;
         }
 

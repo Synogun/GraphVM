@@ -1,8 +1,4 @@
-import {
-    ColorInput,
-    NumberInput,
-    SelectInput,
-} from '@/components/common/inputs';
+import { ColorInput, NumberInput, SelectInput } from '@/components/common/inputs';
 import { useEdgesProperties } from '@/contexts/EdgesContext';
 import { useGraphProperties } from '@/contexts/GraphContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
@@ -73,12 +69,9 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         const modeCurve =
             findPropertyValueMode(edgeCollection, 'curve') ?? defaultEdgesCurve;
         const modeWeight =
-            findPropertyValueMode(edgeCollection, 'weight') ??
-            defaultEdgesWeight;
+            findPropertyValueMode(edgeCollection, 'weight') ?? defaultEdgesWeight;
 
-        setLabelStyle(
-            isEdgeLabelStyle(modeLabel) ? modeLabel : defaultEdgesLabel
-        );
+        setLabelStyle(isEdgeLabelStyle(modeLabel) ? modeLabel : defaultEdgesLabel);
         setColor(modeColor);
         setLineStyle(
             isEdgeLineStyle(modeLineStyle) ? modeLineStyle : defaultEdgesStyle
@@ -124,9 +117,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         const currentDefaults = getDefaultEdgesData(graphRef.current);
 
         const parsedValue =
-            value && !isNaN(Number(value))
-                ? Number(value)
-                : currentDefaults.weight;
+            value && !isNaN(Number(value)) ? Number(value) : currentDefaults.weight;
 
         if (selectedEdges.length === 0) {
             setDefaultEdgesData(graphRef.current, { weight: parsedValue });
@@ -145,12 +136,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         if (selectedEdges.length === 0) {
             setDefaultEdgesData(graphRef.current, { color: e.target.value });
         } else {
-            updateEdges(
-                graphRef.current,
-                selectedEdges,
-                'color',
-                e.target.value
-            );
+            updateEdges(graphRef.current, selectedEdges, 'color', e.target.value);
         }
 
         setColor(e.target.value);
@@ -237,11 +223,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
                 value={labelStyle}
             />
 
-            <ColorInput
-                label="Color"
-                onChange={handleChangeColor}
-                value={color}
-            />
+            <ColorInput label="Color" onChange={handleChangeColor} value={color} />
 
             <SelectInput
                 label="Line Style"

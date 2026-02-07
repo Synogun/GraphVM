@@ -1,10 +1,7 @@
 import { useGraphProperties } from '@/contexts/GraphContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { mapElementsToText } from '@/services/ImportExportService';
-import {
-    isCytoscapeOptions,
-    isStylesheetStyleArray,
-} from '@/types/graphTypeGuards';
+import { isCytoscapeOptions, isStylesheetStyleArray } from '@/types/graphTypeGuards';
 import { makeBlobAndDownload } from '@/utils/general';
 import { transformStylesheet } from '@/utils/styleHelpers';
 import { Logger } from '@Logger';
@@ -50,19 +47,14 @@ export function ExportTab({
         ) as HTMLInputElement;
         filenameInput.value = '';
 
-        const select = document.getElementById(
-            'export-format'
-        ) as HTMLSelectElement;
+        const select = document.getElementById('export-format') as HTMLSelectElement;
         select.value = 'text';
     };
 
-    const handleFormatChange = useCallback(
-        (e: ChangeEvent<HTMLSelectElement>) => {
-            setExportFormat(e.target.value as 'text' | 'json' | 'png' | 'jpg');
-            setExportOptions({});
-        },
-        []
-    );
+    const handleFormatChange = useCallback((e: ChangeEvent<HTMLSelectElement>) => {
+        setExportFormat(e.target.value as 'text' | 'json' | 'png' | 'jpg');
+        setExportOptions({});
+    }, []);
 
     const handleExport = () => {
         if (!isGraphReadyToExport || !graphRef.current) {
@@ -78,10 +70,7 @@ export function ExportTab({
             fileName = fileNameInput.value
                 .replace('{TIMESTAMP}', Date.now().toString())
                 .replace('{NODE_COUNT}', nodeCount.toString())
-                .replace(
-                    '{EDGE_COUNT}',
-                    graphRef.current.edges().length.toString()
-                )
+                .replace('{EDGE_COUNT}', graphRef.current.edges().length.toString())
                 .replace(/[^a-zA-Z0-9-_]/g, '-');
         }
 
@@ -203,9 +192,7 @@ export function ExportTab({
                                     type="checkbox"
                                 />
                                 <div className="flex flex-col items-start">
-                                    <span className="label-text">
-                                        Fit Graph
-                                    </span>
+                                    <span className="label-text">Fit Graph</span>
                                     <span className="font-thin">
                                         Center before exporting
                                     </span>

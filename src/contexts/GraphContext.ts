@@ -9,9 +9,7 @@ export function useGraphProperties() {
     const context = useContext(GraphContext);
 
     if (context === undefined) {
-        throw new Error(
-            'useGraphProperties must be used within a GraphProvider'
-        );
+        throw new Error('useGraphProperties must be used within a GraphProvider');
     }
 
     return context;

@@ -28,10 +28,7 @@ export function GraphProvider({ children }: GraphProviderProps) {
 
     const registry = useMemo(() => {
         const instances = new Map<string, GraphInstance>();
-        const listeners = new Map<
-            string,
-            Set<(instance: GraphInstance) => void>
-        >();
+        const listeners = new Map<string, Set<(instance: GraphInstance) => void>>();
 
         const notify = (id: string) => {
             const instance = instances.get(id) ?? null;
@@ -50,10 +47,7 @@ export function GraphProvider({ children }: GraphProviderProps) {
                 notify(id);
             },
             get: (id: string) => instances.get(id) ?? null,
-            subscribe: (
-                id: string,
-                callback: (instance: GraphInstance) => void
-            ) => {
+            subscribe: (id: string, callback: (instance: GraphInstance) => void) => {
                 if (!listeners.has(id)) {
                     listeners.set(id, new Set());
                 }
@@ -77,9 +71,7 @@ export function GraphProvider({ children }: GraphProviderProps) {
 
     const value = { nodes, edges, registry };
 
-    return (
-        <GraphContext.Provider value={value}>{children}</GraphContext.Provider>
-    );
+    return <GraphContext.Provider value={value}>{children}</GraphContext.Provider>;
 }
 
 type GraphProviderProps = {

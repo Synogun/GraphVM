@@ -33,9 +33,7 @@ function SelectInput({
 
                 {options.map((option) => (
                     <option
-                        key={
-                            option.label.replace(' ', '-') + '-' + option.value
-                        }
+                        key={option.label.replace(' ', '-') + '-' + option.value}
                         value={option.value}
                     >
                         {option.label}

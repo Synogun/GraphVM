@@ -34,10 +34,8 @@ export function GraphCanvas({ containerId }: GraphCanvasProps) {
             const target = e.target as cytoscape.Collection;
             const core = e.cy;
 
-            const currentSelectedNodes: unknown =
-                core.data('nodeSelectionOrder');
-            const currentSelectedEdges: unknown =
-                core.data('edgeSelectionOrder');
+            const currentSelectedNodes: unknown = core.data('nodeSelectionOrder');
+            const currentSelectedEdges: unknown = core.data('edgeSelectionOrder');
 
             if (
                 !isArrayOfStrings(currentSelectedNodes) ||

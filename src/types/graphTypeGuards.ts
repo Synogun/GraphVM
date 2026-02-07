@@ -13,9 +13,7 @@ export function isStylesheetCSSArray(value: unknown): value is StylesheetCSS[] {
     );
 }
 
-export function isStylesheetStyleArray(
-    value: unknown
-): value is StylesheetStyle[] {
+export function isStylesheetStyleArray(value: unknown): value is StylesheetStyle[] {
     return (
         Array.isArray(value) &&
         value.every(

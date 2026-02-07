@@ -35,12 +35,7 @@ export const Logger = {
      * @param message - the log message
      * @param args - additional arguments to include in the log
      */
-    _store: (
-        level: string,
-        context: string,
-        message: string,
-        args: unknown[]
-    ) => {
+    _store: (level: string, context: string, message: string, args: unknown[]) => {
         const timestamp = new Date().toISOString();
         const argsStr = args
             .map((arg) => {

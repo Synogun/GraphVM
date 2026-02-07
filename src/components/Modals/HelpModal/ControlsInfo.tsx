@@ -12,8 +12,7 @@ export function ControlsInfo() {
                 <li>
                     <strong>Zoom</strong>:
                     <p className="inline ml-2 mt-1 text-sm text-base-content/80">
-                        Use the mouse wheel or trackpad gesture to zoom in and
-                        out.
+                        Use the mouse wheel or trackpad gesture to zoom in and out.
                     </p>
                 </li>
             </ul>
@@ -22,8 +21,8 @@ export function ControlsInfo() {
                 <li>
                     <strong>Move</strong>:
                     <p className="inline ml-2 mt-1 text-sm text-base-content/80">
-                        Click and drag nodes to reposition them on the canvas.
-                        Its edges will adjust accordingly.
+                        Click and drag nodes to reposition them on the canvas. Its
+                        edges will adjust accordingly.
                     </p>
                 </li>
                 <li>
@@ -32,8 +31,8 @@ export function ControlsInfo() {
                         <li>Click on a node or edge to select it.</li>
                         <li>Shift + Click to select multiple elements.</li>
                         <li>
-                            Click and drag on the background to drag-select
-                            multiple elements.
+                            Click and drag on the background to drag-select multiple
+                            elements.
                         </li>
                     </ul>
                 </li>

@@ -14,11 +14,7 @@ export function arrangeGraph(
     };
 
     core.layout(layoutOptions).run();
-    logger.info(
-        'arrangeGraph > arranged graph with',
-        layoutOptions.name,
-        'layout'
-    );
+    logger.info('arrangeGraph > arranged graph with', layoutOptions.name, 'layout');
 }
 
 export function centerGraph(

@@ -38,9 +38,7 @@ export class DefaultStyleService {
     public resetStylesheet(): void {
         this.stylesheet = [...defaultStylesheet];
     }
-    public getStylesheet(
-        selector?: string
-    ): StylesheetCSS[] | StylesheetCSS | null {
+    public getStylesheet(selector?: string): StylesheetCSS[] | StylesheetCSS | null {
         if (!selector) return this.stylesheet;
 
         const found = this.stylesheet.find((s) => s.selector === selector);

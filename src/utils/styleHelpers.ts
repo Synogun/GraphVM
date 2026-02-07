@@ -151,10 +151,7 @@ export function transformStylesheet(
         const css = styleBlock.style as Record<string, string>;
 
         for (const key of Object.keys(css)) {
-            if (
-                styleBlock.selector.includes('node') &&
-                key in nodesPropertyMap
-            ) {
+            if (styleBlock.selector.includes('node') && key in nodesPropertyMap) {
                 const nodeKey = key as keyof typeof nodesPropertyMap;
                 (styleBlock.style as Record<string, unknown>)[key] =
                     format === 'json'

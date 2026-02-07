@@ -139,13 +139,7 @@ export function useActionBarLogic() {
             setEdgeCount(graphRef.current.edges().length);
             graphRef.current.data('edgeSelectionOrder', []);
         }
-    }, [
-        graphRef,
-        setSelectedNodes,
-        setNodeCount,
-        setSelectedEdges,
-        setEdgeCount,
-    ]);
+    }, [graphRef, setSelectedNodes, setNodeCount, setSelectedEdges, setEdgeCount]);
 
     return {
         edgeMode,

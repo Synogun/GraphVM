@@ -164,10 +164,7 @@ export function updateEdges(
         const validator = customValidation.find((v) => v.property === property);
 
         if (!validator) {
-            logger.warn(
-                'updateEdges > No validator found for property:',
-                property
-            );
+            logger.warn('updateEdges > No validator found for property:', property);
             return;
         }
 

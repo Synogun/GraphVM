@@ -12,14 +12,12 @@ export function EdgesProvider({ children }: EdgesProviderProps) {
         curve: defaultCurveStyle,
     } = DefaultEdgesData;
 
-    const [labelStyle, setLabelStyle] =
-        useState<EdgeLabelStyle>(defaultLabelStyle);
+    const [labelStyle, setLabelStyle] = useState<EdgeLabelStyle>(defaultLabelStyle);
     const [weight, setWeight] = useState(defaultWeight);
     const [color, setColor] = useState(defaultColor);
     const [lineStyle, setLineStyle] =
         useState<cytoscape.Css.LineStyle>(defaultLineStyle);
-    const [curveStyle, setCurveStyle] =
-        useState<EdgeCurveStyle>(defaultCurveStyle);
+    const [curveStyle, setCurveStyle] = useState<EdgeCurveStyle>(defaultCurveStyle);
 
     const value = {
         labelStyle,
@@ -34,9 +32,7 @@ export function EdgesProvider({ children }: EdgesProviderProps) {
         setCurveStyle,
     };
 
-    return (
-        <EdgesContext.Provider value={value}>{children}</EdgesContext.Provider>
-    );
+    return <EdgesContext.Provider value={value}>{children}</EdgesContext.Provider>;
 }
 
 type EdgesProviderProps = {

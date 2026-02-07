@@ -9,9 +9,7 @@ export function useLayoutProperties() {
     const context = useContext(LayoutContext);
 
     if (context === undefined) {
-        throw new Error(
-            'useLayoutProperties must be used within a LayoutProvider'
-        );
+        throw new Error('useLayoutProperties must be used within a LayoutProvider');
     }
 
     return context;

@@ -32,11 +32,7 @@ export function LayoutProvider({ children }: LayoutProviderProps) {
 
     const value = { ...generalLayout, circle: circleLayout, grid: gridLayout };
 
-    return (
-        <LayoutContext.Provider value={value}>
-            {children}
-        </LayoutContext.Provider>
-    );
+    return <LayoutContext.Provider value={value}>{children}</LayoutContext.Provider>;
 }
 
 export type LayoutProviderProps = {

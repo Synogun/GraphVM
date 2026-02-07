@@ -14,8 +14,7 @@ export const ValidEdgeCurves: EdgeCurveStyle[] = [
 
 export function isEdgeCurve(value: unknown): value is EdgeCurveStyle {
     return (
-        typeof value === 'string' &&
-        (ValidEdgeCurves as string[]).includes(value)
+        typeof value === 'string' && (ValidEdgeCurves as string[]).includes(value)
     );
 }
 
@@ -25,9 +24,7 @@ export const ValidEdgeLineStyles: cytoscape.Css.LineStyle[] = [
     'dashed',
 ];
 
-export function isEdgeLineStyle(
-    value: unknown
-): value is cytoscape.Css.LineStyle {
+export function isEdgeLineStyle(value: unknown): value is cytoscape.Css.LineStyle {
     return (
         typeof value === 'string' &&
         (ValidEdgeLineStyles as string[]).includes(value)
@@ -49,9 +46,7 @@ export const ValidEdgeArrowShapes: cytoscape.Css.ArrowShape[] = [
     'none',
 ];
 
-export function isEdgeArrowShape(
-    value: unknown
-): value is cytoscape.Css.ArrowShape {
+export function isEdgeArrowShape(value: unknown): value is cytoscape.Css.ArrowShape {
     return (
         typeof value === 'string' &&
         (ValidEdgeArrowShapes as string[]).includes(value)
