@@ -11,7 +11,7 @@ import { isDefaultNodeData, isNodeShape } from '@/types/nodesTypeGuards';
 import {
     type EdgeSingular,
     type NodeSingular,
-    type StylesheetCSS,
+    type StylesheetStyle,
 } from 'cytoscape';
 
 /**
@@ -129,38 +129,48 @@ export function getEdgeArrowShape(e: EdgeSingular): cytoscape.Css.ArrowShape {
     return 'triangle';
 }
 
-export function sheetToPlain(stylesheet: StylesheetCSS[]): StylesheetCSS[] {
-    /**
-     *
-     * I'M NOT PROUD OF THIS CODE, BUT IT WORKS FOR NOW.
-     * DON'T JUDGE ME.
-     * TODO: Refactor this mess later
-     *
-     */
-    const plainStylesheet = JSON.parse(
-        JSON.stringify(stylesheet)
-    ) as StylesheetCSS[];
-    const propertyMap = {
-        shape: { toPlain: 'data(shape)', toSheet: getNodeShape },
-        'line-style': { toPlain: 'data(style)', toSheet: getEdgeStyle },
-        'curve-style': { toPlain: 'data(curve)', toSheet: getEdgeCurve },
+export function transformStylesheet(
+    stylesheet: StylesheetStyle[],
+    format: 'sheet' | 'json' = 'json'
+): StylesheetStyle[] {
+    const nodesPropertyMap = {
+        shape: { toJson: 'data(shape)', toSheet: getNodeShape },
+    };
+
+    const edgesPropertyMap = {
+        label: { toJson: 'data(label)', toSheet: getEdgeLabel },
+        'line-style': { toJson: 'data(style)', toSheet: getEdgeStyle },
+        'curve-style': { toJson: 'data(curve)', toSheet: getEdgeCurve },
         'target-arrow-shape': {
-            toPlain: 'data(arrowShape)',
+            toJson: 'data(arrowShape)',
             toSheet: getEdgeArrowShape,
         },
     };
 
-    for (const style of plainStylesheet) {
-        //@ts-expect-error For some reason the object reaches with a .style but TS can't infer it
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        for (const [key, value] of Object.entries(style.style)) {
-            if (value !== 'fn' || !(key in propertyMap)) continue;
+    for (const styleBlock of stylesheet) {
+        const css = styleBlock.style as Record<string, string>;
 
-            const propKey = key as keyof typeof propertyMap;
-            //@ts-expect-error For some reason the object reaches with a .style but TS can't infer it
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            style.style[propKey] = propertyMap[propKey].toPlain;
+        for (const key of Object.keys(css)) {
+            if (
+                styleBlock.selector.includes('node') &&
+                key in nodesPropertyMap
+            ) {
+                const nodeKey = key as keyof typeof nodesPropertyMap;
+                (styleBlock.style as Record<string, unknown>)[key] =
+                    format === 'json'
+                        ? nodesPropertyMap[nodeKey].toJson
+                        : nodesPropertyMap[nodeKey].toSheet;
+            } else if (
+                styleBlock.selector.includes('edge') &&
+                key in edgesPropertyMap
+            ) {
+                const edgeKey = key as keyof typeof edgesPropertyMap;
+                (styleBlock.style as Record<string, unknown>)[key] =
+                    format === 'json'
+                        ? edgesPropertyMap[edgeKey].toJson
+                        : edgesPropertyMap[edgeKey].toSheet;
+            }
         }
     }
-    return plainStylesheet;
+    return stylesheet;
 }

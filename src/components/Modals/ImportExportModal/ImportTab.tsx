@@ -7,7 +7,15 @@ import {
     type FileType,
 } from '@/services/ImportExportService';
 import { arrangeGraph } from '@/services/LayoutService';
-import { getDefaultEdgesData, getDefaultNodesData } from '@/utils/styleHelpers';
+import {
+    isCytoscapeOptions,
+    isStylesheetStyleArray,
+} from '@/types/graphTypeGuards';
+import {
+    getDefaultEdgesData,
+    getDefaultNodesData,
+    transformStylesheet,
+} from '@/utils/styleHelpers';
 import { Logger } from '@Logger';
 import cytoscape, { type CytoscapeOptions } from 'cytoscape';
 import {
@@ -87,8 +95,20 @@ export function ImportTab({
         let dataToImport: CytoscapeOptions;
         try {
             if (fileType === 'application/json') {
-                // FUTURE: Validate JSON structure
-                dataToImport = JSON.parse(data) as CytoscapeOptions;
+                const jsonData: unknown = JSON.parse(data);
+
+                if (!isCytoscapeOptions(jsonData)) {
+                    throw new SyntaxError('Invalid Cytoscape JSON format');
+                }
+
+                if (isStylesheetStyleArray(jsonData.style)) {
+                    jsonData.style = transformStylesheet(
+                        jsonData.style,
+                        'sheet'
+                    );
+                }
+
+                dataToImport = { ...jsonData };
             } else {
                 let defaults;
                 if (graphRef.current) {

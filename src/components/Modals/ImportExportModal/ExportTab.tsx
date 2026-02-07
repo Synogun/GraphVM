@@ -1,11 +1,14 @@
 import { useGraphProperties } from '@/contexts/GraphContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { mapElementsToText } from '@/services/ImportExportService';
+import {
+    isCytoscapeOptions,
+    isStylesheetStyleArray,
+} from '@/types/graphTypeGuards';
 import { makeBlobAndDownload } from '@/utils/general';
-import { sheetToPlain } from '@/utils/styleHelpers';
+import { transformStylesheet } from '@/utils/styleHelpers';
 import { Logger } from '@Logger';
 import type cytoscape from 'cytoscape';
-import type { StylesheetCSS } from 'cytoscape';
 import {
     useCallback,
     useEffect,
@@ -89,17 +92,15 @@ export function ExportTab({
         if (exportFormat === 'json') {
             graphRef.current.elements().unselect();
 
-            const json = graphRef.current.json() as CytoscapeJson;
-            if (json.style) {
-                try {
-                    const plainStylesheet = sheetToPlain(json.style);
-                    json.style = plainStylesheet;
-                } catch (error) {
-                    logger.error(
-                        'Error converting stylesheet to plain format:',
-                        error
-                    );
-                }
+            const json = graphRef.current.json();
+
+            if (!isCytoscapeOptions(json)) {
+                logger.error('Invalid Cytoscape options:', json);
+                return;
+            }
+
+            if (isStylesheetStyleArray(json.style)) {
+                json.style = transformStylesheet(json.style, 'json');
             }
 
             dataStr = JSON.stringify(json);
@@ -247,11 +248,6 @@ export function ExportTab({
         </div>
     );
 }
-
-type CytoscapeJson = {
-    style?: StylesheetCSS[];
-    [key: string]: unknown;
-};
 
 type ExportTabProps = {
     ref: Ref<{ handleExport: () => void }>;
