@@ -50,7 +50,14 @@ export function App() {
                             }}
                             show={modals.isSettingsModalOpen}
                             title="Settings"
-                        />
+                        >
+                            <div className="flex flex-col gap-4">
+                                <p className="text-sm text-base-content/80">
+                                    W.I.P. - Settings will be added in a future
+                                    update.
+                                </p>
+                            </div>
+                        </Modal>
                         <HelpModal />
                         <GraphCanvas containerId="main-graph" />
                     </ActionBar>
