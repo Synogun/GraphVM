@@ -1,4 +1,4 @@
-import { useGraphProperties } from '@/contexts/GraphContext';
+import { useGraphProperties } from '@Contexts';
 import { useEffect, useRef, type RefObject } from 'react';
 import type { GraphInstance } from '../types/graph';
 

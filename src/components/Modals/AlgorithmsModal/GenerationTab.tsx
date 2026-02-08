@@ -1,10 +1,10 @@
-import SelectInput from '@/components/common/inputs/SelectInput';
 import { DefaultGenerationParams } from '@/config/algorithmDefaults';
 import {
     isGenerationFamily,
     ValidGenerationFamilies,
 } from '@/types/algorithmTypeGuards';
 import type { GenerationFamily, GenerationParams } from '@/types/algorithms';
+import { SelectInput } from '@Inputs';
 import { Logger } from '@Logger';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import {

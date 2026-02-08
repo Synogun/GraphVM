@@ -1,11 +1,9 @@
-import { useGraphProperties } from '@/contexts/GraphContext';
-import { useLayoutProperties } from '@/contexts/LayoutContext';
-import { useModals } from '@/contexts/ModalsContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { addEdges, removeEdges } from '@/services/EdgesService';
 import { arrangeGraph, centerGraph } from '@/services/LayoutService';
 import { addNode, removeNodes } from '@/services/NodesService';
 import { isArrayOfStrings } from '@/types/typeGuards';
+import { useGraphProperties, useLayoutProperties, useModals } from '@Contexts';
 import { Logger } from '@Logger';
 import { useCallback, type ChangeEvent } from 'react';
 

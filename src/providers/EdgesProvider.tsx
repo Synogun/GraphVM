@@ -1,6 +1,6 @@
 import { DefaultEdgesData } from '@/config/graphDefaults';
-import { EdgesContext } from '@/contexts/EdgesContext';
 import type { EdgeCurveStyle, EdgeLabelStyle } from '@/types/edges';
+import { EdgesContext } from '@Contexts';
 import { useState, type ReactNode } from 'react';
 
 export function EdgesProvider({ children }: EdgesProviderProps) {

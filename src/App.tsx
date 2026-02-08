@@ -2,9 +2,9 @@ import { ActionBar } from '@/components/ActionBar';
 import { GraphCanvas } from '@/components/GraphCanvas';
 import { LoadingHero } from '@/components/LoadingHero';
 import { PropertiesBar } from '@/components/PropertiesBar';
-import { useModals } from '@/contexts/ModalsContext';
 import { PropertiesProvider } from '@/providers/PropertiesProvider';
 import { isDev } from '@/utils/general';
+import { useModals } from '@Contexts';
 import { AlgorithmsModal, HelpModal, ImportExportModal, Modal } from '@Modals';
 import { useEffect, useState } from 'react';
 

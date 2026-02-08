@@ -1,4 +1,3 @@
-import { NumberInput } from '@/components/common/inputs';
 import {
     DefaultBipartiteGenerationParams,
     DefaultCageGenerationParams,
@@ -16,6 +15,7 @@ import {
     MinimumWheelGenerationParams,
 } from '@/config/algorithmDefaults';
 import type { GenerationParams } from '@/types/algorithms';
+import { NumberInput } from '@Inputs';
 import type { ChangeEvent } from 'react';
 
 type ParamsInputProps = {

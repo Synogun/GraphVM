@@ -1,7 +1,4 @@
-import { ColorInput, NumberInput, SelectInput } from '@/components/common/inputs';
 import { DefaultEdgesData } from '@/config/graphDefaults';
-import { useEdgesProperties } from '@/contexts/EdgesContext';
-import { useGraphProperties } from '@/contexts/GraphContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { updateEdges } from '@/services/EdgesService';
 import {
@@ -14,6 +11,8 @@ import {
 } from '@/types/edgesTypeGuards';
 import { findPropertyValueMode, parseKebabCase } from '@/utils/elements';
 import { getDefaultEdgesData, setDefaultEdgesData } from '@/utils/styleHelpers';
+import { useEdgesProperties, useGraphProperties } from '@Contexts';
+import { ColorInput, NumberInput, SelectInput } from '@Inputs';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
 export function EdgesSection({ visible = true }: EdgesSectionProps) {

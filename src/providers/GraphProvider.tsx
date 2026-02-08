@@ -1,5 +1,5 @@
-import { GraphContext } from '@/contexts/GraphContext';
 import type { GraphInstance } from '@/types/graph';
+import { GraphContext } from '@Contexts';
 import { useMemo, useState, type ReactNode } from 'react';
 
 export function GraphProvider({ children }: GraphProviderProps) {

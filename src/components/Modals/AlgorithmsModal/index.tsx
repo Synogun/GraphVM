@@ -1,5 +1,5 @@
 import { AppIcons } from '@/components/common/AppIcons';
-import { useModals } from '@/contexts/ModalsContext';
+import { useModals } from '@Contexts';
 import { Modal } from '@Modals';
 import { useRef, useState } from 'react';
 import { GenerationTab, type GenerationTabRef } from './GenerationTab';

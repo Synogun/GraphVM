@@ -1,5 +1,5 @@
 import { DefaultNodesData } from '@/config/graphDefaults';
-import { NodesContext } from '@/contexts/NodesContext';
+import { NodesContext } from '@Contexts';
 import { useState, type ReactNode } from 'react';
 
 export function NodesProvider({ children }: NodesProviderProps) {

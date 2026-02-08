@@ -1,7 +1,7 @@
 import { DefaultLayoutOptions } from '@/config/layoutDefaults';
-import { LayoutContext } from '@/contexts/LayoutContext';
 import type { LayoutType } from '@/types/layout';
 import { isLayoutType } from '@/types/layoutTypeGuards';
+import { LayoutContext } from '@Contexts';
 import { useState, type ReactNode } from 'react';
 
 export function LayoutProvider({ children }: LayoutProviderProps) {

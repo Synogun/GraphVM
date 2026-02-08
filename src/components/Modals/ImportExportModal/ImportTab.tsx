@@ -1,4 +1,3 @@
-import { useLayoutProperties } from '@/contexts/LayoutContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { newGraph } from '@/services/GraphService';
 import {
@@ -13,6 +12,7 @@ import {
     getDefaultNodesData,
     transformStylesheet,
 } from '@/utils/styleHelpers';
+import { useLayoutProperties } from '@Contexts';
 import { Logger } from '@Logger';
 import cytoscape, { type CytoscapeOptions } from 'cytoscape';
 import {

@@ -1,4 +1,4 @@
-import { ModalsContext } from '@/contexts/ModalsContext';
+import { ModalsContext } from '@Contexts';
 import { useState, type ReactNode } from 'react';
 
 export function ModalsProvider({ children }: ModalsProviderProps) {

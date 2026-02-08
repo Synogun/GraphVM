@@ -1,7 +1,6 @@
-import { useLayoutProperties } from '@/contexts/LayoutContext';
-import { useModals } from '@/contexts/ModalsContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { arrangeGraph } from '@/services/LayoutService';
+import { useLayoutProperties, useModals } from '@Contexts';
 import { Modal } from '@Modals';
 import { useCallback, useRef, useState } from 'react';
 import { ExportTab } from './ExportTab';

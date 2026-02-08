@@ -25,9 +25,11 @@
         "baseUrl": "./src",
         "paths": {
             "@/*": ["./*"],
-            "@Logger": ["./utils/Logger"],
             "@Modals": ["./components/Modals"],
-            "@Modals/*": ["./components/Modals/*"]
+            "@Modals/*": ["./components/Modals/*"],
+            "@Inputs": ["./components/common/inputs"],
+            "@Contexts": ["./contexts"],
+            "@Logger": ["./utils/Logger"]
         }
     },
     "include": ["src"]

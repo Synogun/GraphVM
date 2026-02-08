@@ -12,6 +12,8 @@ export default defineConfig({
 
             // Very specific but useful aliases
             ...makeDouble('@Modals', '/src/components/Modals'),
+            '@Inputs': '/src/components/common/inputs',
+            '@Contexts': '/src/contexts',
             '@Logger': '/src/utils/Logger',
         },
     },

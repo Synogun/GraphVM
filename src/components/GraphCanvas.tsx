@@ -1,6 +1,6 @@
-import { useGraphProperties } from '@/contexts/GraphContext';
 import { destroyGraph, newGraph } from '@/services/GraphService';
 import type { GraphInstance } from '@/types/graph';
+import { useGraphProperties } from '@Contexts';
 import { Logger } from '@Logger';
 import type cytoscape from 'cytoscape';
 import { useEffect, useRef } from 'react';

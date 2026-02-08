@@ -1,4 +1,4 @@
-import { useModals } from '@/contexts/ModalsContext';
+import { useModals } from '@Contexts';
 import { Modal } from '@Modals';
 import { ControlsInfo } from './ControlsInfo';
 import { HelpElementsInfo } from './HelpElementsInfo';

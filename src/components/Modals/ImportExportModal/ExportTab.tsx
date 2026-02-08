@@ -1,9 +1,9 @@
-import { useGraphProperties } from '@/contexts/GraphContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { mapElementsToText } from '@/services/ImportExportService';
 import { isCytoscapeOptions, isStylesheetStyleArray } from '@/types/graphTypeGuards';
 import { makeBlobAndDownload } from '@/utils/general';
 import { transformStylesheet } from '@/utils/styleHelpers';
+import { useGraphProperties } from '@Contexts';
 import { Logger } from '@Logger';
 import type cytoscape from 'cytoscape';
 import {

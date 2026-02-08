@@ -1,12 +1,11 @@
-import { ColorInput, SelectInput } from '@/components/common/inputs';
 import { DefaultNodesData } from '@/config/graphDefaults';
-import { useGraphProperties } from '@/contexts/GraphContext';
-import { useNodeProperties } from '@/contexts/NodesContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { updateNodes } from '@/services/NodesService';
 import { isNodeShape, ValidNodeShapes } from '@/types/nodesTypeGuards';
 import { findPropertyValueMode, parseKebabCase } from '@/utils/elements';
 import { getDefaultNodesData, setDefaultNodesData } from '@/utils/styleHelpers';
+import { useGraphProperties, useNodeProperties } from '@Contexts';
+import { ColorInput, SelectInput } from '@Inputs';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
 export function NodesSection({ visible = true }: NodeSectionProps) {
