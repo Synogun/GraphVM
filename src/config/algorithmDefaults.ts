@@ -22,7 +22,7 @@ export const DefaultCompleteGenerationParams: CompleteGraphParams = {
 
 export const MinimumCompleteGenerationParams: CompleteGraphParams = {
     family: 'complete',
-    nodeCount: 3,
+    nodeCount: 3, // K3
 };
 
 export const DefaultGridGenerationParams: GridGraphParams = {
@@ -33,8 +33,8 @@ export const DefaultGridGenerationParams: GridGraphParams = {
 
 export const MinimumGridGenerationParams: GridGraphParams = {
     family: 'grid',
-    rows: 1,
-    cols: 1,
+    rows: 1, // Impossible to have 0 or negative rows
+    cols: 1, // Impossible to have 0 or negative columns
 };
 
 export const DefaultCircleGenerationParams: CircleGraphParams = {
@@ -44,7 +44,7 @@ export const DefaultCircleGenerationParams: CircleGraphParams = {
 
 export const MinimumCircleGenerationParams: CircleGraphParams = {
     family: 'circle',
-    nodeCount: 3,
+    nodeCount: 3, // Minimum to form a circle - C3
 };
 
 export const DefaultStarGenerationParams: StarGraphParams = {
@@ -54,7 +54,7 @@ export const DefaultStarGenerationParams: StarGraphParams = {
 
 export const MinimumStarGenerationParams: StarGraphParams = {
     family: 'star',
-    nodeCount: 3,
+    nodeCount: 3, // Minimum to form a star - S3
 };
 
 export const DefaultWheelGenerationParams: WheelGraphParams = {
@@ -64,7 +64,7 @@ export const DefaultWheelGenerationParams: WheelGraphParams = {
 
 export const MinimumWheelGenerationParams: WheelGraphParams = {
     family: 'wheel',
-    nodeCount: 3,
+    nodeCount: 3, // Minimum to form a wheel - W3
 };
 
 export const DefaultBipartiteGenerationParams: BipartiteGraphParams = {
@@ -75,8 +75,8 @@ export const DefaultBipartiteGenerationParams: BipartiteGraphParams = {
 
 export const MinimumBipartiteGenerationParams: BipartiteGraphParams = {
     family: 'bipartite',
-    setASize: 1,
-    setBSize: 1,
+    setASize: 1, // No empty sets
+    setBSize: 1, // No empty sets
 };
 
 export const DefaultCompleteBipartiteGenerationParams: CompleteBipartiteGraphParams =
@@ -89,8 +89,8 @@ export const DefaultCompleteBipartiteGenerationParams: CompleteBipartiteGraphPar
 export const MinimumCompleteBipartiteGenerationParams: CompleteBipartiteGraphParams =
     {
         family: 'complete-bipartite',
-        setASize: 1,
-        setBSize: 1,
+        setASize: 1, // No empty sets
+        setBSize: 1, // No empty sets
     };
 
 export const DefaultCageGenerationParams: CageGraphParams = {
@@ -101,6 +101,6 @@ export const DefaultCageGenerationParams: CageGraphParams = {
 
 export const MinimumCageGenerationParams: CageGraphParams = {
     family: 'cage',
-    degree: 2,
-    girth: 3,
+    degree: 2, // Minimum degree for a cage graph is 2 (a cycle)
+    girth: 3, // Minimum girth for a cage graph is 3 (a triangle)
 };
