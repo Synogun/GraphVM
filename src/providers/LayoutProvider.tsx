@@ -1,4 +1,4 @@
-import { DefaultLayoutOptions } from '@/config/graphDefaults';
+import { DefaultLayoutOptions } from '@/config/layoutDefaults';
 import { LayoutContext } from '@/contexts/LayoutContext';
 import type { LayoutType } from '@/types/layout';
 import { isLayoutType } from '@/types/layoutTypeGuards';

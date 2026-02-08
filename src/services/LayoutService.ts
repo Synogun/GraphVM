@@ -1,4 +1,4 @@
-import { DefaultLayoutOptions } from '@/config/graphDefaults';
+import { DefaultLayoutOptions } from '@/config/layoutDefaults';
 import { Logger } from '@Logger';
 import type cytoscape from 'cytoscape';
 

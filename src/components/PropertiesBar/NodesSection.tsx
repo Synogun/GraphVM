@@ -1,4 +1,5 @@
 import { ColorInput, SelectInput } from '@/components/common/inputs';
+import { DefaultNodesData } from '@/config/graphDefaults';
 import { useGraphProperties } from '@/contexts/GraphContext';
 import { useNodeProperties } from '@/contexts/NodesContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
@@ -102,13 +103,19 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
                 <h1 className="text-lg font-bold text-center">Nodes</h1>
             </div>
 
-            {/* <TextInput
+            {/* <SelectInput
                 label='Label'
                 onChange={ handleChangeLabel }
                 // value={ nodeProperties.label }
             /> */}
 
-            <ColorInput label="Color" onChange={handleChangeColor} value={color} />
+            <ColorInput
+                label="Color"
+                onChange={handleChangeColor}
+                value={color}
+                defaultValue={DefaultNodesData.color}
+                tooltip={{ content: 'Determine the color of the nodes.' }}
+            />
 
             <SelectInput
                 label="Shape"
@@ -116,6 +123,8 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
                 options={selectShapeOptions}
                 selectTitle="Pick a node shape"
                 value={shape}
+                defaultValue={DefaultNodesData.shape}
+                tooltip={{ content: 'Determine the shape of the nodes.' }}
             />
         </div>
     );

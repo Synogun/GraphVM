@@ -8,6 +8,7 @@ import {
     getNodeShape,
 } from '@/utils/styleHelpers';
 import type { CytoscapeOptions, StylesheetCSS } from 'cytoscape';
+import { DefaultLayoutOptions } from './layoutDefaults';
 
 export const DefaultNodesData: NodesData = {
     id: '',
@@ -26,25 +27,6 @@ export const DefaultEdgesData: EdgesData = {
     style: 'solid',
     curve: 'bezier',
     arrowShape: 'triangle',
-};
-
-export const DefaultLayoutOptions = {
-    name: 'circle',
-
-    animate: true,
-    animationDuration: 500,
-    animationEasing: 'ease-in-out',
-
-    fit: true,
-    spacingFactor: 1.5,
-
-    radius: 100,
-
-    rows: 3,
-    cols: 3,
-    condensed: true,
-
-    minNodeSpacing: 10,
 };
 
 export const DefaultStylesheet: StylesheetCSS[] = [

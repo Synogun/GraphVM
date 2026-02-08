@@ -1,4 +1,8 @@
 import { RangeInput, SelectInput } from '@/components/common/inputs';
+import {
+    DefaultGridLayoutOptions,
+    DefaultLayoutOptions,
+} from '@/config/layoutDefaults';
 import { useLayoutProperties } from '@/contexts/LayoutContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { arrangeGraph } from '@/services/LayoutService';
@@ -101,6 +105,10 @@ export function LayoutSection({ visible = true }: LayoutSectionProps) {
                     options={selectTypeOptions}
                     selectTitle="Pick a layout type"
                     value={layoutType}
+                    defaultValue={DefaultLayoutOptions.name}
+                    tooltip={{
+                        content: 'Select the layout algorithm for arranging nodes.',
+                    }}
                 />
 
                 {/* {layoutType === 'circle' && (
@@ -114,6 +122,7 @@ export function LayoutSection({ visible = true }: LayoutSectionProps) {
                             onChange={handleChangeCircleRadius}
                             step={1}
                             value={circleLayout.radius}
+                            defaultValue={DefaultCircleLayoutOptions.radius}
                         />
                     </>
                 )} */}
@@ -129,6 +138,7 @@ export function LayoutSection({ visible = true }: LayoutSectionProps) {
                             onChange={handleChangeGridRows}
                             step={1}
                             value={gridLayout.rows}
+                            defaultValue={DefaultGridLayoutOptions.rows}
                         /> */}
 
                         <RangeInput
@@ -138,6 +148,11 @@ export function LayoutSection({ visible = true }: LayoutSectionProps) {
                             onChange={handleChangeGridCols}
                             step={1}
                             value={gridLayout.cols}
+                            defaultValue={DefaultGridLayoutOptions.cols}
+                            tooltip={{
+                                content:
+                                    'Determine the number of columns in the grid layout.',
+                            }}
                         />
                     </>
                 )}

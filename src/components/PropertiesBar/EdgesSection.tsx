@@ -1,4 +1,5 @@
 import { ColorInput, NumberInput, SelectInput } from '@/components/common/inputs';
+import { DefaultEdgesData } from '@/config/graphDefaults';
 import { useEdgesProperties } from '@/contexts/EdgesContext';
 import { useGraphProperties } from '@/contexts/GraphContext';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
@@ -213,6 +214,8 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
                 label="Weight"
                 onChange={handleChangeWeight}
                 value={weight}
+                defaultValue={DefaultEdgesData.weight}
+                tooltip={{ content: 'Determine the weight of the edges.' }}
             />
 
             <SelectInput
@@ -221,9 +224,19 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
                 options={selectLabelOptions}
                 selectTitle="Pick a label style"
                 value={labelStyle}
+                defaultValue={DefaultEdgesData.label}
+                tooltip={{
+                    content: 'Determine the text that appears on the edges.',
+                }}
             />
 
-            <ColorInput label="Color" onChange={handleChangeColor} value={color} />
+            <ColorInput
+                label="Color"
+                onChange={handleChangeColor}
+                value={color}
+                defaultValue={DefaultEdgesData.color}
+                tooltip={{ content: 'Determine the color of the edges.' }}
+            />
 
             <SelectInput
                 label="Line Style"
@@ -231,6 +244,10 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
                 options={selectLineStyleOptions}
                 selectTitle="Pick a line style"
                 value={lineStyle}
+                defaultValue={DefaultEdgesData.style}
+                tooltip={{
+                    content: 'Determine the pattern used to draw the edges.',
+                }}
             />
 
             <SelectInput
@@ -239,6 +256,10 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
                 options={selectCurveStyleOptions}
                 selectTitle="Pick a curve style"
                 value={curveStyle}
+                defaultValue={DefaultEdgesData.curve}
+                tooltip={{
+                    content: 'Determine the curvature style of the edges. ',
+                }}
             />
         </div>
     );
