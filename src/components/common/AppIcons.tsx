@@ -3,7 +3,7 @@ import { FaGithub } from 'react-icons/fa';
 import { FaCode } from 'react-icons/fa6';
 import { FiHelpCircle } from 'react-icons/fi';
 import { GoTrash } from 'react-icons/go';
-import { IoAddCircleOutline } from 'react-icons/io5';
+import { IoAddCircleOutline, IoCloseCircle } from 'react-icons/io5';
 import { MdFilterCenterFocus, MdPalette, MdSettings } from 'react-icons/md';
 import { PiFediverseLogo, PiGraph, PiLineSegments, PiShuffle } from 'react-icons/pi';
 import { RiSave3Fill } from 'react-icons/ri';
@@ -51,6 +51,9 @@ export const AppIcons = {
     ),
     Help: ({ size, className }: AppIconPropsParams) => (
         <FiHelpCircle size={size} className={className} />
+    ),
+    CloseCircle: ({ size, className }: AppIconPropsParams) => (
+        <IoCloseCircle size={size} className={className} />
     ),
     Github: ({ size, className }: AppIconPropsParams) => (
         <FaGithub size={size} className={className} />

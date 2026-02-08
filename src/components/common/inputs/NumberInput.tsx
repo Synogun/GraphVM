@@ -1,4 +1,5 @@
-import { type ChangeEvent } from 'react';
+import { type ChangeEvent, type ReactNode } from 'react';
+import { FieldWrapper } from './FieldWrapper';
 
 function NumberInput({
     label,
@@ -8,12 +9,38 @@ function NumberInput({
     min,
     step,
     className = '',
+    tooltip,
+    defaultValue,
+    allowClear = true,
 }: NumberInputProps) {
+    const isModified =
+        allowClear &&
+        defaultValue !== undefined &&
+        value !== undefined &&
+        value !== defaultValue;
+
+    const handleReset = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (defaultValue === undefined || !onChange) {
+            return;
+        }
+
+        onChange({
+            target: { value: String(defaultValue) },
+        } as ChangeEvent<HTMLInputElement>);
+    };
+
     return (
-        <fieldset className="fieldset">
-            {label && <legend className="fieldset-legend">{label}</legend>}
+        <FieldWrapper
+            label={label}
+            onReset={handleReset}
+            showReset={isModified}
+            tooltip={tooltip}
+        >
             <input
-                className={`w-25 input p-1 text-center hover:input-accent focus:input-accent ${className}`}
+                className={`w-full input p-1 text-center ${highlightStyle} ${className}`}
                 max={max}
                 min={min}
                 onChange={onChange}
@@ -21,18 +48,25 @@ function NumberInput({
                 type="number"
                 value={value}
             />
-        </fieldset>
+        </FieldWrapper>
     );
 }
 
+const highlightStyle = 'hover:input-accent focus:input-accent';
 type NumberInputProps = {
-    label?: string;
+    label: string;
     value?: number;
     onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
     max?: number;
     min?: number;
     step?: number;
     className?: string;
+    tooltip?: {
+        icon?: ReactNode;
+        content: ReactNode;
+    };
+    defaultValue?: number;
+    allowClear?: boolean;
 };
 
 export default NumberInput;

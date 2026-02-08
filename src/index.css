@@ -16,3 +16,17 @@ body {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: thin; /* Firefox */
 }
+
+/* Tooltip Customization */
+.tooltip-content {
+    visibility: hidden;
+    position: absolute;
+    z-index: 50;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltip-content {
+    visibility: visible;
+    opacity: 1;
+}

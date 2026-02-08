@@ -1,4 +1,5 @@
-import { type ChangeEvent } from 'react';
+import { type ChangeEvent, type ReactNode } from 'react';
+import { FieldWrapper } from './FieldWrapper';
 import NumberInput from './NumberInput';
 
 function RangeInput({
@@ -10,13 +11,39 @@ function RangeInput({
     min,
     step,
     className = '',
+    tooltip,
+    defaultValue,
+    allowClear = true,
 }: RangeInputProps) {
+    const isModified =
+        allowClear &&
+        defaultValue !== undefined &&
+        value !== undefined &&
+        value !== defaultValue;
+
+    const handleReset = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (defaultValue === undefined || !onChange) {
+            return;
+        }
+
+        onChange({
+            target: { value: String(defaultValue) },
+        } as ChangeEvent<HTMLInputElement>);
+    };
+
     return (
-        <fieldset className="fieldset">
-            {label && <legend className="fieldset-legend">{label}</legend>}
-            <div className="flex items-center gap-2">
+        <FieldWrapper
+            label={label}
+            onReset={handleReset}
+            showReset={isModified}
+            tooltip={tooltip}
+        >
+            <div className="flex items-center gap-2 w-full">
                 <input
-                    className={`range hover:range-accent focus:range-accent ${className}`}
+                    className={`range ${highlightRangeStyle} ${className}`}
                     max={max}
                     min={min}
                     onChange={onChange}
@@ -26,25 +53,23 @@ function RangeInput({
                 />
                 {numberInput && (
                     <>
-                        <NumberInput max={max} onChange={onChange} value={value} />
-                        {/* <input
-                        className='w-25 p-1 text-center input hover:input-accent focus:input-accent'
-                        max={ max }
-                        min={ min }
-                        onChange={ onChange }
-                        step={ step }
-                        type='number'
-                        value={ value }
-                    /> */}
+                        <NumberInput
+                            label=""
+                            max={max}
+                            onChange={onChange}
+                            value={value}
+                        />
                     </>
                 )}
             </div>
-        </fieldset>
+        </FieldWrapper>
     );
 }
 
+const highlightRangeStyle = 'hover:range-accent focus:range-accent';
+
 type RangeInputProps = {
-    label?: string;
+    label: string;
     numberInput?: boolean;
     value?: number;
     onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -52,6 +77,12 @@ type RangeInputProps = {
     min?: number;
     step?: number;
     className?: string;
+    tooltip?: {
+        icon?: ReactNode;
+        content: ReactNode;
+    };
+    defaultValue?: number;
+    allowClear?: boolean;
 };
 
 export default RangeInput;

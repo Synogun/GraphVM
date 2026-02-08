@@ -1,4 +1,5 @@
-import { type ChangeEvent } from 'react';
+import { type ChangeEvent, type ReactNode } from 'react';
+import { FieldWrapper } from './FieldWrapper';
 
 function SelectInput({
     value,
@@ -7,29 +8,55 @@ function SelectInput({
     selectTitle,
     onChange,
     className = '',
+    tooltip,
+    defaultValue,
+    allowClear = true,
 }: SelectInputProps) {
+    const isModified =
+        allowClear &&
+        defaultValue !== undefined &&
+        value !== undefined &&
+        value !== defaultValue;
+
+    const handleReset = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (defaultValue === undefined || !onChange) {
+            return;
+        }
+
+        onChange({
+            target: { value: defaultValue },
+        } as ChangeEvent<HTMLSelectElement>);
+    };
+
+    const selectTitleOption = (
+        <option
+            key={
+                selectTitle
+                    ? `${selectTitle.replace(' ', '-')}-type-dropdown-title`
+                    : 'no-title-type-dropdown-title'
+            }
+            disabled={true}
+        >
+            {selectTitle}
+        </option>
+    );
+
     return (
-        <fieldset className="fieldset">
-            {label && <legend className="fieldset-legend">{label}</legend>}
+        <FieldWrapper
+            label={label}
+            onReset={handleReset}
+            showReset={isModified}
+            tooltip={tooltip}
+        >
             <select
-                className={`select hover:select-accent focus:select-accent cursor-pointer ${className}`}
+                className={`select hover:select-accent focus:select-accent cursor-pointer w-full ${className}`}
                 onChange={onChange}
                 value={value}
             >
-                {selectTitle && (
-                    <>
-                        <option
-                            key={
-                                selectTitle.replace(' ', '-') +
-                                '-' +
-                                'type-dropdown-title'
-                            }
-                            disabled={true}
-                        >
-                            {selectTitle}
-                        </option>
-                    </>
-                )}
+                {selectTitle && selectTitleOption}
 
                 {options.map((option) => (
                     <option
@@ -40,17 +67,23 @@ function SelectInput({
                     </option>
                 ))}
             </select>
-        </fieldset>
+        </FieldWrapper>
     );
 }
 
 type SelectInputProps = {
-    label?: string;
+    label: string;
     selectTitle?: string;
     value?: string;
     onChange?: (e: ChangeEvent<HTMLSelectElement>) => void;
     options: { value: string; label: string }[];
     className?: string;
+    tooltip?: {
+        icon?: ReactNode;
+        content: ReactNode;
+    };
+    defaultValue?: string;
+    allowClear?: boolean;
 };
 
 export default SelectInput;
