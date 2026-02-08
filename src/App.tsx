@@ -5,7 +5,7 @@ import { PropertiesBar } from '@/components/PropertiesBar';
 import { useModals } from '@/contexts/ModalsContext';
 import { PropertiesProvider } from '@/providers/PropertiesProvider';
 import { isDev } from '@/utils/general';
-import { HelpModal, ImportExportModal, Modal } from '@Modals';
+import { AlgorithmsModal, HelpModal, ImportExportModal, Modal } from '@Modals';
 import { useEffect, useState } from 'react';
 
 export function App() {
@@ -34,14 +34,7 @@ export function App() {
             <PropertiesProvider>
                 <PropertiesBar>
                     <ActionBar>
-                        <Modal
-                            id="algorithms-modal"
-                            onClose={() => {
-                                modals.setIsAlgorithmsModalOpen(false);
-                            }}
-                            show={modals.isAlgorithmsModalOpen}
-                            title="Algorithms"
-                        />
+                        <AlgorithmsModal />
                         <ImportExportModal />
                         <Modal
                             id="settings-modal"
@@ -53,8 +46,7 @@ export function App() {
                         >
                             <div className="flex flex-col gap-4">
                                 <p className="text-sm text-base-content/80">
-                                    W.I.P. - Settings will be added in a future
-                                    update.
+                                    Settings will be added in a future update.
                                 </p>
                             </div>
                         </Modal>
