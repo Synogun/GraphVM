@@ -123,8 +123,9 @@ export function HelpModal() {
                         <div className="collapse-content">
                             <ul className="list-disc list-inside ml-2 space-y-1">
                                 <li>
-                                    <strong>Algorithms</strong>: Run graph algorithms
-                                    (DFS, BFS, Dijkstra, etc.) from the Action Bar.
+                                    <strong>Algorithms</strong>: Create graph from
+                                    families or run graph algorithms (DFS, BFS,
+                                    Dijkstra, etc.) from the Action Bar.
                                 </li>
                                 <li>
                                     <strong>Import/Export</strong>: Save your work as
