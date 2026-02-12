@@ -1,7 +1,7 @@
-import { destroyGraph, newGraph } from '@/services/GraphService';
+import { destroyGraph, newGraph } from '@/services/graphService';
 import type { GraphInstance } from '@/types/graph';
+import { Logger } from '@/utils/logger';
 import { useGraphProperties } from '@Contexts';
-import { Logger } from '@Logger';
 import type cytoscape from 'cytoscape';
 import { useEffect, useRef } from 'react';
 import { useRegisterGraph } from '../hooks/useGraphRegistry';

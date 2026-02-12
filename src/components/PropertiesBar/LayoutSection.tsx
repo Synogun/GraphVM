@@ -3,7 +3,7 @@ import {
     DefaultLayoutOptions,
 } from '@/config/layoutDefaults';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
-import { arrangeGraph } from '@/services/LayoutService';
+import { arrangeGraph } from '@/services/layoutService';
 import { isLayoutType, ValidGraphLayouts } from '@/types/layoutTypeGuards';
 import { useLayoutProperties } from '@Contexts';
 import { RangeInput, SelectInput } from '@Inputs';

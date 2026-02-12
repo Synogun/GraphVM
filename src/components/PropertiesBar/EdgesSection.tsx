@@ -1,6 +1,6 @@
 import { DefaultEdgesData } from '@/config/graphDefaults';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
-import { updateEdges } from '@/services/EdgesService';
+import { updateEdges } from '@/services/edgesService';
 import {
     isEdgeCurve,
     isEdgeLabelStyle,

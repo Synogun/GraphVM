@@ -1,19 +1,19 @@
 import { useGetGraph } from '@/hooks/useGraphRegistry';
-import { newGraph } from '@/services/GraphService';
+import { newGraph } from '@/services/graphService';
 import {
     isFileValid,
     parseTextData,
     type FileType,
-} from '@/services/ImportExportService';
-import { arrangeGraph } from '@/services/LayoutService';
+} from '@/services/importExportService';
+import { arrangeGraph } from '@/services/layoutService';
 import { isCytoscapeOptions, isStylesheetStyleArray } from '@/types/graphTypeGuards';
+import { Logger } from '@/utils/logger';
 import {
     getDefaultEdgesData,
     getDefaultNodesData,
     transformStylesheet,
 } from '@/utils/styleHelpers';
 import { useLayoutProperties } from '@Contexts';
-import { Logger } from '@Logger';
 import cytoscape, { type CytoscapeOptions } from 'cytoscape';
 import {
     useCallback,

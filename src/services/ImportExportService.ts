@@ -1,11 +1,11 @@
 import { DefaultEdgesData, DefaultNodesData } from '@/config/graphDefaults';
 import type { EdgesData } from '@/types/edges';
 import type { NodesData } from '@/types/nodes';
-import { Logger } from '@Logger';
+import { Logger } from '@/utils/logger';
 import type cytoscape from 'cytoscape';
 import type { ElementsDefinition } from 'cytoscape';
-import { makeEdgeId } from './EdgesService';
-import { makeNodeId } from './NodesService';
+import { makeEdgeId } from './edgesService';
+import { makeNodeId } from './nodesService';
 
 const logger = Logger.createContextLogger('ImportExportService');
 

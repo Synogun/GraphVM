@@ -1,10 +1,10 @@
 import { useGetGraph } from '@/hooks/useGraphRegistry';
-import { addEdges, removeEdges } from '@/services/EdgesService';
-import { arrangeGraph, centerGraph } from '@/services/LayoutService';
-import { addNode, removeNodes } from '@/services/NodesService';
+import { addEdges, removeEdges } from '@/services/edgesService';
+import { arrangeGraph, centerGraph } from '@/services/layoutService';
+import { addNode, removeNodes } from '@/services/nodesService';
 import { isArrayOfStrings } from '@/types/typeGuards';
+import { Logger } from '@/utils/logger';
 import { useGraphProperties, useLayoutProperties, useModals } from '@Contexts';
-import { Logger } from '@Logger';
 import { useCallback, type ChangeEvent } from 'react';
 
 const logger = Logger.createContextLogger('ActionBarLogic');

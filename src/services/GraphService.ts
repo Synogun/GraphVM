@@ -3,7 +3,7 @@ import {
     DefaultGraphOptions,
     DefaultNodesData,
 } from '@/config/graphDefaults';
-import { Logger } from '@Logger';
+import { Logger } from '@/utils/logger';
 import cytoscape from 'cytoscape';
 
 const logger = Logger.createContextLogger('GraphService');

@@ -1,5 +1,5 @@
 import { useGetGraph } from '@/hooks/useGraphRegistry';
-import { arrangeGraph } from '@/services/LayoutService';
+import { arrangeGraph } from '@/services/layoutService';
 import { useLayoutProperties, useModals } from '@Contexts';
 import { Modal } from '@Modals';
 import { useCallback, useRef, useState } from 'react';

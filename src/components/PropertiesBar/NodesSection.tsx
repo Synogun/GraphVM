@@ -1,6 +1,6 @@
 import { DefaultNodesData } from '@/config/graphDefaults';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
-import { updateNodes } from '@/services/NodesService';
+import { updateNodes } from '@/services/nodesService';
 import { isNodeShape, ValidNodeShapes } from '@/types/nodesTypeGuards';
 import { findPropertyValueMode, parseKebabCase } from '@/utils/elements';
 import { getDefaultNodesData, setDefaultNodesData } from '@/utils/styleHelpers';
