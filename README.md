@@ -1,9 +1,5 @@
-<!-- markdownlint-disable MD033 -->
-<!-- markdownlint-disable MD028 -->
-
 # <center>GraphVM</center>
 
-<!-- omit from toc -->
 <!-- TODO: Add badges related to the used libs instead of dev stack -->
 
 [![Licence](https://img.shields.io/github/license/Ileriayo/markdown-badges?style=for-the-badge)](./LICENSE)
