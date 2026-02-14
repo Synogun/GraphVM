@@ -10,6 +10,7 @@
         "update": "npx ncu --format group",
         "update-u": "npx ncu --format group -u",
         "dev": "vite",
+        "dev:host": "vite --host",
         "pre:build": "npm run lint",
         "build": "tsc -b && vite build",
         "lint": "eslint ./src --fix",

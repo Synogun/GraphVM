@@ -26,8 +26,8 @@ import {
     ValidGenerationFamilies,
 } from '@/types/algorithmTypeGuards';
 import type { GenerationFamily, GenerationParams } from '@/types/algorithms';
-import { Logger } from '@/utils/logger';
 import { SelectInput } from '@Inputs';
+import { Logger } from '@Logger';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import {
     BipartiteParamsInput,

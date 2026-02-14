@@ -1,4 +1,5 @@
 import type { EdgesData } from '@/types/edges';
+import type { AutopanOptions } from '@/types/graph';
 import type { NodesData } from '@/types/nodes';
 import {
     getEdgeArrowShape,
@@ -117,6 +118,12 @@ export const DefaultStylesheet: StylesheetCSS[] = [
         },
     },
 ];
+
+export const DefaultAutopanOptions: AutopanOptions = {
+    selector: 'node',
+    speed: 8,
+    margin: 25,
+};
 
 export const DefaultGraphOptions: CytoscapeOptions = {
     layout: DefaultLayoutOptions,

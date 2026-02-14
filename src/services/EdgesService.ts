@@ -4,8 +4,8 @@ import {
     isEdgeCurve,
     isEdgeLineStyle,
 } from '@/types/edgesTypeGuards';
-import { Logger } from '@/utils/logger';
 import { getDefaultEdgesData } from '@/utils/styleHelpers';
+import { Logger } from '@Logger';
 
 const logger = Logger.createContextLogger('EdgesService');
 

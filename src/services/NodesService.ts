@@ -1,6 +1,6 @@
 import { isNodeShape } from '@/types/nodesTypeGuards';
-import { Logger } from '@/utils/logger';
 import { getDefaultNodesData } from '@/utils/styleHelpers';
+import { Logger } from '@Logger';
 import type cytoscape from 'cytoscape';
 import { removeEdges } from './edgesService';
 

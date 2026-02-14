@@ -18,7 +18,7 @@ import type {
     StarGraphParams,
     WheelGraphParams,
 } from '@/types/algorithms';
-import { Logger } from '@/utils/logger';
+import { Logger } from '@Logger';
 import type cytoscape from 'cytoscape';
 import { addEdge, addEdges } from '../edgesService';
 import { arrangeGraph } from '../layoutService';

@@ -1,7 +1,7 @@
 import { DefaultEdgesData, DefaultNodesData } from '@/config/graphDefaults';
 import type { EdgesData } from '@/types/edges';
 import type { NodesData } from '@/types/nodes';
-import { Logger } from '@/utils/logger';
+import { Logger } from '@Logger';
 import type cytoscape from 'cytoscape';
 import type { ElementsDefinition } from 'cytoscape';
 import { makeEdgeId } from './edgesService';

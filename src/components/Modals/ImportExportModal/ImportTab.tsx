@@ -7,13 +7,13 @@ import {
 } from '@/services/importExportService';
 import { arrangeGraph } from '@/services/layoutService';
 import { isCytoscapeOptions, isStylesheetStyleArray } from '@/types/graphTypeGuards';
-import { Logger } from '@/utils/logger';
 import {
     getDefaultEdgesData,
     getDefaultNodesData,
     transformStylesheet,
 } from '@/utils/styleHelpers';
 import { useLayoutProperties } from '@Contexts';
+import { Logger } from '@Logger';
 import cytoscape, { type CytoscapeOptions } from 'cytoscape';
 import {
     useCallback,

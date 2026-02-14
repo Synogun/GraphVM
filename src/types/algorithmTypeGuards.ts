@@ -106,7 +106,8 @@ export function isSimpleGraphParams(
 ): params is SimpleGraphParams {
     return (
         params.family === 'simple' &&
-        typeof params.degree === 'number' &&
+        typeof params.nodeCount === 'number' &&
+        typeof params.edgeCount === 'number' &&
         (params.applyFcoseLayout === undefined ||
             typeof params.applyFcoseLayout === 'boolean')
     );

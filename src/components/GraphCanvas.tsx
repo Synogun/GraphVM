@@ -1,7 +1,8 @@
+import { bindAutopan } from '@/services/autopanService';
 import { destroyGraph, newGraph } from '@/services/graphService';
 import type { GraphInstance } from '@/types/graph';
-import { Logger } from '@/utils/logger';
 import { useGraphProperties } from '@Contexts';
+import { Logger } from '@Logger';
 import type cytoscape from 'cytoscape';
 import { useEffect, useRef } from 'react';
 import { useRegisterGraph } from '../hooks/useGraphRegistry';
@@ -69,9 +70,12 @@ export function GraphCanvas({ containerId }: GraphCanvasProps) {
         newCore.on('select', 'node, edge', handleElementSelection);
         newCore.on('unselect', 'node, edge', handleElementSelection);
 
+        const cleanupAutopan = bindAutopan(newCore);
+
         graphRef.current = newCore;
 
         return () => {
+            cleanupAutopan();
             destroyGraph(newCore);
             graphRef.current = null;
         };

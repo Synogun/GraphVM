@@ -1,6 +1,6 @@
 import { useActionBarLogic } from '@/hooks/useActionBarLogic';
 import { isDev } from '@/utils/general';
-import { Logger } from '@/utils/logger';
+import { Logger } from '@Logger';
 import { type ReactNode } from 'react';
 import { AppIcons } from '../common/AppIcons';
 import { SideBar } from '../common/SideBar';

@@ -1,5 +1,14 @@
 export type GraphInstance = cytoscape.Core | null;
 
+export type AutopanOptions = {
+    /** CSS selector for elements that trigger autopan on drag. */
+    selector: string;
+    /** Speed multiplier for panning when elements exceed canvas bounds. */
+    speed: number;
+    /** Activation margin (px) from each viewport edge where autopan engages. */
+    margin: number;
+};
+
 export type GraphContextProperties = {
     nodes: {
         count: number;

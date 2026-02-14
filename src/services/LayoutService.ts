@@ -1,5 +1,5 @@
 import { DefaultLayoutOptions } from '@/config/layoutDefaults';
-import { Logger } from '@/utils/logger';
+import { Logger } from '@Logger';
 import type cytoscape from 'cytoscape';
 
 const logger = Logger.createContextLogger('LayoutService');
