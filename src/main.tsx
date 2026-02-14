@@ -1,6 +1,7 @@
 import { App } from '@/App';
 import '@/index.css';
 import { ModalsProvider } from '@/providers/ModalsProvider.js';
+import '@/styles/animations.css';
 import { isDev } from '@/utils/general';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -21,7 +22,9 @@ const appComponent = isDev() ? (
         </ModalsProvider>
     </StrictMode>
 ) : (
-    <App />
+    <ModalsProvider>
+        <App />
+    </ModalsProvider>
 );
 
 createRoot(rootElement).render(appComponent);

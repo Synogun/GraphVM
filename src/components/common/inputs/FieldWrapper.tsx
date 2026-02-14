@@ -16,7 +16,7 @@ export type FieldWrapperProps = {
 
 export function FieldWrapper({
     label,
-    children,
+    children: input,
     tooltip,
     onReset,
     showReset,
@@ -33,7 +33,7 @@ export function FieldWrapper({
                 </span>
                 {showReset && onReset && <ResetHandle onClick={onReset} />}
             </legend>
-            {children}
+            {input}
         </fieldset>
     );
 }

@@ -1,9 +1,9 @@
 import { AiOutlineNodeIndex } from 'react-icons/ai';
-import { FaGithub } from 'react-icons/fa';
+import { FaCheck, FaGithub } from 'react-icons/fa';
 import { FaCode } from 'react-icons/fa6';
 import { FiHelpCircle } from 'react-icons/fi';
 import { GoTrash } from 'react-icons/go';
-import { IoAddCircleOutline, IoCloseCircle } from 'react-icons/io5';
+import { IoAddCircleOutline, IoClose, IoCloseCircle } from 'react-icons/io5';
 import { MdFilterCenterFocus, MdPalette, MdSettings } from 'react-icons/md';
 import { PiFediverseLogo, PiGraph, PiLineSegments, PiShuffle } from 'react-icons/pi';
 import { RiSave3Fill } from 'react-icons/ri';
@@ -52,6 +52,9 @@ export const AppIcons = {
     Help: ({ size, className }: AppIconPropsParams) => (
         <FiHelpCircle size={size} className={className} />
     ),
+    Close: ({ size, className, ariaLabel }: AppIconPropsParams) => (
+        <IoClose size={size} className={className} aria-label={ariaLabel} />
+    ),
     CloseCircle: ({ size, className }: AppIconPropsParams) => (
         <IoCloseCircle size={size} className={className} />
     ),
@@ -76,9 +79,13 @@ export const AppIcons = {
     SidebarRightExpand: ({ size, className }: AppIconPropsParams) => (
         <TbLayoutSidebarRightExpandFilled size={size} className={className} />
     ),
+    Checkmark: ({ size, className, ariaLabel }: AppIconPropsParams) => (
+        <FaCheck size={size} className={className} aria-label={ariaLabel} />
+    ),
 };
 
 type AppIconPropsParams = {
     size?: number | string;
     className?: string;
+    ariaLabel?: string;
 };
