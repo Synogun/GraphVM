@@ -1,5 +1,5 @@
 export const DefaultLayoutOptions = {
-    name: 'circle',
+    name: 'fcose',
 
     animate: true,
     animationDuration: 500,
@@ -33,9 +33,9 @@ export const DefaultCircleLayoutOptions = {
     radius: 100,
 };
 
-export const DefaultCoseLayoutOptions = {
+export const DefaultFcoseLayoutOptions = {
     ...DefaultLayoutOptions,
-    name: 'cose',
+    name: 'fcose',
 
     idealEdgeLength: 100,
     nodeOverlap: 20,

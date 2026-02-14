@@ -63,7 +63,7 @@ export function addEdge(
 export function addEdges(
     core: cytoscape.Core,
     edges: string[],
-    edgeMode = 'path',
+    edgeMode: 'path' | 'complete' = 'path',
     data?: Partial<EdgesData>
 ): void {
     if (edges.length < 2) {

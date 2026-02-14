@@ -5,7 +5,7 @@ export type LayoutType =
     | 'grid'
     | 'concentric'
     | 'breadthfirst'
-    | 'cose';
+    | 'fcose';
 
 export type LayoutContextProperties = {
     current: cytoscape.LayoutOptions | undefined;

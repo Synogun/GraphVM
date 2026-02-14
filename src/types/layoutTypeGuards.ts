@@ -6,7 +6,7 @@ export const ValidGraphLayouts = [
     'grid',
     'concentric',
     'breadthfirst',
-    'cose',
+    'fcose',
     'preset',
     'random',
     ...(isDev() ? ['null'] : []),
