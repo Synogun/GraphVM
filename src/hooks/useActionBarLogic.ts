@@ -38,8 +38,18 @@ export function useActionBarLogic() {
     const graphRef = useGetGraph('main-graph');
 
     const handleNewGraph = useCallback(() => {
-        location.reload();
-    }, []);
+        const cy = graphRef.current;
+
+        if (!cy) return;
+
+        cy.elements().remove();
+        setNodeCount(0);
+        setEdgeCount(0);
+        setSelectedNodes([]);
+        setSelectedEdges([]);
+        cy.data('nodeSelectionOrder', []);
+        cy.data('edgeSelectionOrder', []);
+    }, [graphRef, setEdgeCount, setNodeCount, setSelectedEdges, setSelectedNodes]);
 
     const handleAlgorithms = useCallback(() => {
         setIsAlgorithmsModalOpen(true);
