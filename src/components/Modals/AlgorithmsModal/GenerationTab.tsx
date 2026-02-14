@@ -1,4 +1,26 @@
-import { DefaultGenerationParams } from '@/config/algorithmDefaults';
+import {
+    DefaultBipartiteGenerationParams,
+    DefaultCircleGenerationParams,
+    DefaultCompleteBipartiteGenerationParams,
+    DefaultCompleteGenerationParams,
+    DefaultGenerationParams,
+    DefaultGridGenerationParams,
+    DefaultSimpleGenerationParams,
+    DefaultStarGenerationParams,
+    DefaultWheelGenerationParams,
+} from '@/config/algorithmDefaults';
+import { useLayoutProperties } from '@/contexts';
+import { useGetGraph } from '@/hooks/useGraphRegistry';
+import {
+    generateBipartiteGraph,
+    generateCircleGraph,
+    generateCompleteBipartiteGraph,
+    generateCompleteGraph,
+    generateGridGraph,
+    generateSimpleGraph,
+    generateStarGraph,
+    generateWheelGraph,
+} from '@/services/algorithms/generationAlgorithmsService';
 import {
     isGenerationFamily,
     ValidGenerationFamilies,
@@ -9,27 +31,94 @@ import { SelectInput } from '@Inputs';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import {
     BipartiteParamsInput,
-    CageParamsInput,
     CircleParamsInput,
     CompleteParamsInput,
     GridParamsInput,
+    SimpleParamsInput,
     StarParamsInput,
     WheelParamsInput,
 } from './AlgorithmsParamsSection';
 
 const logger = Logger.createContextLogger('GenerationTab');
 
-const FAMILY_DESCRIPTIONS: Record<GenerationFamily, string> = {
-    complete: 'Every node is connected to every other distinct node.',
-    grid: 'Nodes are arranged in a regular grid lattice structure.',
-    circle: 'Nodes are connected in a simple closed loop.',
-    star: 'One central node connected to N outer leaves.',
-    wheel: 'A cycle graph with an additional central hub connected to all other nodes.',
-    bipartite:
-        'Two disjoint sets of vertices where edges only connect vertices from different sets.',
-    'complete-bipartite':
-        'Two disjoint sets where every vertex in one set is connected to every vertex in the other.',
-    cage: 'A graph in which it has a specified degree and maximum circle length.',
+const FAMILY_MAP: Record<
+    GenerationFamily,
+    {
+        params: GenerationParams;
+        description: string;
+    }
+> = {
+    complete: {
+        params: {
+            family: 'complete',
+            nodeCount: DefaultCompleteGenerationParams.nodeCount,
+        },
+        description: 'Every node is connected to every other distinct node.',
+    },
+    grid: {
+        params: {
+            family: 'grid',
+            rows: DefaultGridGenerationParams.rows,
+            cols: DefaultGridGenerationParams.cols,
+            applyGridLayout: true,
+        },
+        description: 'Nodes are arranged in a simple grid lattice structure.',
+    },
+    circle: {
+        params: {
+            family: 'circle',
+            nodeCount: DefaultCircleGenerationParams.nodeCount,
+            applyCircleLayout: true,
+        },
+        description: 'Nodes are connected in a simple closed loop.',
+    },
+    star: {
+        params: {
+            family: 'star',
+            nodeCount: DefaultStarGenerationParams.nodeCount,
+            applyConcentricLayout: true,
+        },
+        description: 'One central node connected to N outer leaves.',
+    },
+    wheel: {
+        params: {
+            family: 'wheel',
+            nodeCount: DefaultWheelGenerationParams.nodeCount,
+            applyConcentricLayout: true,
+        },
+        description:
+            'A cycle graph with an additional central hub connected to all other nodes.',
+    },
+    bipartite: {
+        params: {
+            family: 'bipartite',
+            setASize: DefaultBipartiteGenerationParams.setASize,
+            setBSize: DefaultBipartiteGenerationParams.setBSize,
+        },
+        description:
+            'Two disjoint sets of vertices where edges only connect vertices from different sets. ' +
+            'The edges between the two sets will be randomly generated.',
+    },
+    'complete-bipartite': {
+        params: {
+            family: 'complete-bipartite',
+            setASize: DefaultCompleteBipartiteGenerationParams.setASize,
+            setBSize: DefaultCompleteBipartiteGenerationParams.setBSize,
+        },
+        description:
+            'Two disjoint sets where every vertex in one set is connected to every vertex in the other.',
+    },
+    simple: {
+        params: {
+            family: 'simple',
+            nodeCount: DefaultSimpleGenerationParams.nodeCount,
+            edgeCount: DefaultSimpleGenerationParams.edgeCount,
+            applyFcoseLayout: true,
+        },
+        description:
+            'A graph with a specified number of nodes and edges, where edges are randomly generated between distinct pairs of nodes. ' +
+            'The generated graph will be simple, meaning it will not contain self-loops or multiple edges between the same pair of nodes.',
+    },
 };
 
 export type GenerationTabRef = {
@@ -41,13 +130,95 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
         ...DefaultGenerationParams,
     });
 
-    useImperativeHandle(ref, () => ({
-        handleRun: () => {
-            setParams({ ...DefaultGenerationParams });
-            logger.info('Running generation with params', params);
-            // TODO: Call actual service here
-        },
-    }));
+    const graph = useGetGraph('main-graph');
+    const {
+        current: currentLayout,
+        setCurrent: setLayout,
+        grid,
+        setType,
+    } = useLayoutProperties();
+
+    const handleRun = () => {
+        if (!graph.current) {
+            logger.error('Graph instance not found in registry');
+            return;
+        }
+
+        let layout = currentLayout;
+        switch (params.family) {
+            case 'complete':
+                generateCompleteGraph(graph.current, params, layout);
+                break;
+            case 'grid':
+                if (params.applyGridLayout) {
+                    layout = {
+                        ...layout,
+                        name: 'grid',
+                        rows: params.rows,
+                        cols: params.cols,
+                    };
+                    setType('grid');
+                    setLayout({ ...layout });
+                    grid.setCols(params.cols);
+                    grid.setRows(params.rows);
+                }
+                generateGridGraph(graph.current, params, layout);
+                break;
+            case 'circle':
+                if (params.applyCircleLayout) {
+                    layout = { ...layout, name: 'circle' };
+                    setType('circle');
+                    setLayout({ ...layout });
+                }
+                generateCircleGraph(graph.current, params, layout);
+                break;
+            case 'star':
+                if (params.applyConcentricLayout) {
+                    layout = { ...layout, name: 'concentric' };
+                    setType('concentric');
+                    setLayout({
+                        ...layout,
+                        name: 'concentric',
+                    });
+                }
+                generateStarGraph(graph.current, params, layout);
+                break;
+            case 'wheel':
+                if (params.applyConcentricLayout) {
+                    layout = { ...layout, name: 'concentric' };
+                    setType('concentric');
+                    setLayout({ ...layout });
+                }
+                generateWheelGraph(graph.current, params, layout);
+                break;
+            // case 'cayley':
+            //     generateCayleyGraph(graph.current, params, layout);
+            //     break;
+            case 'bipartite':
+                generateBipartiteGraph(graph.current, params, layout);
+                break;
+            case 'complete-bipartite':
+                generateCompleteBipartiteGraph(graph.current, params, layout);
+                break;
+            case 'simple':
+                if (params.applyFcoseLayout) {
+                    layout = { ...layout, name: 'circle' };
+                    setType('circle');
+                    setLayout({ ...layout });
+                }
+                generateSimpleGraph(graph.current, params, layout);
+                break;
+
+            default:
+                logger.error(`Invalid graph family selected`);
+                return;
+        }
+
+        setParams({ ...DefaultGenerationParams });
+        logger.info('Running generation with params', params);
+    };
+
+    useImperativeHandle(ref, () => ({ handleRun }));
 
     const updateFamily = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const newFamily = event.target.value;
@@ -57,46 +228,7 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
             return;
         }
 
-        switch (newFamily) {
-            case 'complete':
-                setParams({ family: 'complete', nodeCount: 5 });
-                break;
-            case 'grid':
-                setParams({ family: 'grid', rows: 3, cols: 3 });
-                break;
-            case 'circle':
-                setParams({ family: 'circle', nodeCount: 5 });
-                break;
-            case 'star':
-                setParams({ family: 'star', nodeCount: 5 });
-                break;
-            case 'wheel':
-                setParams({ family: 'wheel', nodeCount: 5 });
-                break;
-            // case 'cayley':
-            //     setParams({
-            //         family: 'cayley',
-            //         group: 'symmetric group S3',
-            //         generators: ['(1 2)', '(1 2 3)'],
-            //     });
-            //     break;
-            case 'bipartite':
-                setParams({ family: 'bipartite', setASize: 3, setBSize: 3 });
-                break;
-            case 'complete-bipartite':
-                setParams({
-                    family: 'complete-bipartite',
-                    setASize: 3,
-                    setBSize: 3,
-                });
-                break;
-            case 'cage':
-                setParams({ family: 'cage', degree: 3, girth: 5 });
-                break;
-            default:
-                setParams({ ...DefaultGenerationParams });
-                break;
-        }
+        setParams(FAMILY_MAP[newFamily].params);
     };
 
     const paramsSection = () => {
@@ -119,8 +251,8 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
                 return (
                     <BipartiteParamsInput params={params} setParams={setParams} />
                 );
-            case 'cage':
-                return <CageParamsInput params={params} setParams={setParams} />;
+            case 'simple':
+                return <SimpleParamsInput params={params} setParams={setParams} />;
             default:
                 return (
                     <div className="text-sm italic text-gray-500">
@@ -152,7 +284,7 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
                         <strong>DESCRIPTION</strong>
                     </span>
                     <div className="flex flex-1 items-center rounded-lg bg-base-200 p-3 text-sm text-base-content/80">
-                        {FAMILY_DESCRIPTIONS[params.family]}
+                        {FAMILY_MAP[params.family].description}
                     </div>
                 </div>
             </div>

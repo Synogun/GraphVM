@@ -1,12 +1,12 @@
 import type {
     BipartiteGraphParams,
-    CageGraphParams,
     CircleGraphParams,
     CompleteBipartiteGraphParams,
     CompleteGraphParams,
     GenerationFamily,
     GenerationParams,
     GridGraphParams,
+    SimpleGraphParams,
     StarGraphParams,
     WheelGraphParams,
 } from './algorithms';
@@ -20,7 +20,7 @@ export const ValidGenerationFamilies: GenerationFamily[] = [
     // 'cayley',
     'bipartite',
     'complete-bipartite',
-    'cage',
+    'simple',
 ];
 
 export function isGenerationFamily(value: unknown): value is GenerationFamily {
@@ -42,26 +42,43 @@ export function isGridGraphParams(
     return (
         params.family === 'grid' &&
         typeof params.rows === 'number' &&
-        typeof params.cols === 'number'
+        typeof params.cols === 'number' &&
+        (params.applyGridLayout === undefined ||
+            typeof params.applyGridLayout === 'boolean')
     );
 }
 
 export function isCircleGraphParams(
     params: GenerationParams
 ): params is CircleGraphParams {
-    return params.family === 'circle' && typeof params.nodeCount === 'number';
+    return (
+        params.family === 'circle' &&
+        typeof params.nodeCount === 'number' &&
+        (params.applyCircleLayout === undefined ||
+            typeof params.applyCircleLayout === 'boolean')
+    );
 }
 
 export function isStarGraphParams(
     params: GenerationParams
 ): params is StarGraphParams {
-    return params.family === 'star' && typeof params.nodeCount === 'number';
+    return (
+        params.family === 'star' &&
+        typeof params.nodeCount === 'number' &&
+        (params.applyConcentricLayout === undefined ||
+            typeof params.applyConcentricLayout === 'boolean')
+    );
 }
 
 export function isWheelGraphParams(
     params: GenerationParams
 ): params is WheelGraphParams {
-    return params.family === 'wheel' && typeof params.nodeCount === 'number';
+    return (
+        params.family === 'wheel' &&
+        typeof params.nodeCount === 'number' &&
+        (params.applyConcentricLayout === undefined ||
+            typeof params.applyConcentricLayout === 'boolean')
+    );
 }
 
 export function isBipartiteGraphParams(
@@ -84,13 +101,14 @@ export function isCompleteBipartiteGraphParams(
     );
 }
 
-export function isCageGraphParams(
+export function isSimpleGraphParams(
     params: GenerationParams
-): params is CageGraphParams {
+): params is SimpleGraphParams {
     return (
-        params.family === 'cage' &&
+        params.family === 'simple' &&
         typeof params.degree === 'number' &&
-        typeof params.girth === 'number'
+        (params.applyFcoseLayout === undefined ||
+            typeof params.applyFcoseLayout === 'boolean')
     );
 }
 
@@ -123,8 +141,8 @@ export function isValidGenerationParams(params: GenerationParams): boolean {
             return isBipartiteGraphParams(params);
         case 'complete-bipartite':
             return isCompleteBipartiteGraphParams(params);
-        case 'cage':
-            return isCageGraphParams(params);
+        case 'simple':
+            return isSimpleGraphParams(params);
         default:
             return false;
     }

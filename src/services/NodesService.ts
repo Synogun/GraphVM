@@ -17,7 +17,7 @@ export function addNode(
     core: cytoscape.Core,
     options?: cytoscape.NodeDefinition,
     classes?: string[]
-): void {
+): cytoscape.NodeSingular {
     const defaultNodesData = getDefaultNodesData(core);
     const newIdIndex = core.nodes().length + 1;
     const newId = makeNodeId();
@@ -38,6 +38,8 @@ export function addNode(
 
     core.data('numNodes', core.nodes().length);
     logger.info('addNode > added node with id:', newId, core.data());
+
+    return core.$id(newId);
 }
 
 export function addNodes(

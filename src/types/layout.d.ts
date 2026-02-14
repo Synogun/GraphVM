@@ -5,6 +5,7 @@ export type LayoutType =
     | 'grid'
     | 'concentric'
     | 'breadthfirst'
+    | 'preset'
     | 'fcose';
 
 export type LayoutContextProperties = {

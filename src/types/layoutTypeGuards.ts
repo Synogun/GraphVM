@@ -1,7 +1,6 @@
-import { isDev } from '@/utils/general';
 import type { LayoutType } from './layout';
 
-export const ValidGraphLayouts = [
+export const ValidGraphLayouts: LayoutType[] = [
     'circle',
     'grid',
     'concentric',
@@ -9,9 +8,10 @@ export const ValidGraphLayouts = [
     'fcose',
     'preset',
     'random',
-    ...(isDev() ? ['null'] : []),
 ];
 
-export function isLayoutType(value: string): value is LayoutType {
-    return ValidGraphLayouts.includes(value);
+export function isLayoutType(value: unknown): value is LayoutType {
+    return (
+        typeof value === 'string' && (ValidGraphLayouts as string[]).includes(value)
+    );
 }

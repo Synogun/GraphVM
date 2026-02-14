@@ -1,21 +1,21 @@
 import {
     DefaultBipartiteGenerationParams,
-    DefaultCageGenerationParams,
     DefaultCircleGenerationParams,
     DefaultCompleteGenerationParams,
     DefaultGridGenerationParams,
+    DefaultSimpleGenerationParams,
     DefaultStarGenerationParams,
     DefaultWheelGenerationParams,
     MinimumBipartiteGenerationParams,
-    MinimumCageGenerationParams,
     MinimumCircleGenerationParams,
     MinimumCompleteGenerationParams,
     MinimumGridGenerationParams,
+    MinimumSimpleGenerationParams,
     MinimumStarGenerationParams,
     MinimumWheelGenerationParams,
 } from '@/config/algorithmDefaults';
 import type { GenerationParams } from '@/types/algorithms';
-import { NumberInput } from '@Inputs';
+import { NumberInput, ToggleInput } from '@Inputs';
 import type { ChangeEvent } from 'react';
 
 type ParamsInputProps = {
@@ -41,7 +41,7 @@ export function CompleteParamsInput({ params, setParams }: ParamsInputProps) {
                 step={1}
                 defaultValue={DefaultCompleteGenerationParams.nodeCount}
                 tooltip={{
-                    content: 'Determines the number of nodes in the complete graph.',
+                    content: 'Determines the total number of nodes in the graph.',
                 }}
                 onChange={(e) => {
                     setParams({ ...params, nodeCount: getInt(e) });
@@ -65,7 +65,10 @@ export function GridParamsInput({ params, setParams }: ParamsInputProps) {
                 max={50}
                 step={1}
                 defaultValue={DefaultGridGenerationParams.rows}
-                tooltip={{ content: 'Determines the number of rows in the grid.' }}
+                tooltip={{
+                    content:
+                        'Sets the number of rows (horizontal) in the grid structure.',
+                }}
                 onChange={(e) => {
                     setParams({ ...params, rows: getInt(e) });
                 }}
@@ -78,10 +81,23 @@ export function GridParamsInput({ params, setParams }: ParamsInputProps) {
                 step={1}
                 defaultValue={DefaultGridGenerationParams.cols}
                 tooltip={{
-                    content: 'Determines the number of columns in the grid.',
+                    content:
+                        'Sets the number of columns (vertical) in the grid structure.',
                 }}
                 onChange={(e) => {
                     setParams({ ...params, cols: getInt(e) });
+                }}
+            />
+            <ToggleInput
+                label="Apply Grid Layout"
+                checked={params.applyGridLayout}
+                defaultValue={DefaultGridGenerationParams.applyGridLayout}
+                tooltip={{
+                    content:
+                        'If enabled, automatically arranges the nodes in a structured grid pattern matching the specified rows and columns.',
+                }}
+                onChange={(e) => {
+                    setParams({ ...params, applyGridLayout: e.target.checked });
                 }}
             />
         </div>
@@ -103,11 +119,27 @@ export function CircleParamsInput({ params, setParams }: ParamsInputProps) {
                 step={1}
                 defaultValue={DefaultCircleGenerationParams.nodeCount}
                 tooltip={{
-                    content: 'Determines the number of nodes in the circle graph.',
+                    content:
+                        'Sets the total number of nodes to generate in the circle graph.',
                 }}
                 onChange={(e) => {
                     setParams({ ...params, nodeCount: getInt(e) });
                 }}
+            />
+            <ToggleInput
+                label="Apply Circle Layout"
+                checked={params.applyCircleLayout}
+                tooltip={{
+                    content:
+                        'If enabled, automatically arranges all nodes in a perfect circle for better visualization.',
+                }}
+                onChange={(e) => {
+                    setParams({
+                        ...params,
+                        applyCircleLayout: e.target.checked,
+                    });
+                }}
+                defaultValue={DefaultCircleGenerationParams.applyCircleLayout}
             />
         </div>
     );
@@ -129,11 +161,26 @@ export function StarParamsInput({ params, setParams }: ParamsInputProps) {
                 defaultValue={DefaultStarGenerationParams.nodeCount}
                 tooltip={{
                     content:
-                        'Determines the number of nodes in the star graph. This does not include the center node.',
+                        'Sets the number of outer nodes surrounding the center. The total node count will be this value plus one (the center node).',
                 }}
                 onChange={(e) => {
                     setParams({ ...params, nodeCount: getInt(e) });
                 }}
+            />
+            <ToggleInput
+                label="Apply Concentric Layout"
+                checked={params.applyConcentricLayout}
+                tooltip={{
+                    content:
+                        'If enabled, places the center node in the middle and arranges all other nodes in a circle around it.',
+                }}
+                onChange={(e) => {
+                    setParams({
+                        ...params,
+                        applyConcentricLayout: e.target.checked,
+                    });
+                }}
+                defaultValue={DefaultStarGenerationParams.applyConcentricLayout}
             />
         </div>
     );
@@ -154,11 +201,26 @@ export function WheelParamsInput({ params, setParams }: ParamsInputProps) {
                 defaultValue={DefaultWheelGenerationParams.nodeCount}
                 tooltip={{
                     content:
-                        'Determines the number of nodes in the wheel graph. This does not include the center node.',
+                        'Sets the number of outer rim nodes. The total node count will be this value plus one (the hub node).',
                 }}
                 onChange={(e) => {
                     setParams({ ...params, nodeCount: getInt(e) });
                 }}
+            />
+            <ToggleInput
+                label="Apply Concentric Layout"
+                checked={params.applyConcentricLayout}
+                tooltip={{
+                    content:
+                        'If enabled, places the hub node in the center and arranges the rim nodes in a circle around it.',
+                }}
+                onChange={(e) => {
+                    setParams({
+                        ...params,
+                        applyConcentricLayout: e.target.checked,
+                    });
+                }}
+                defaultValue={DefaultStarGenerationParams.applyConcentricLayout}
             />
         </div>
     );
@@ -180,7 +242,7 @@ export function BipartiteParamsInput({ params, setParams }: ParamsInputProps) {
                 defaultValue={DefaultBipartiteGenerationParams.setASize}
                 tooltip={{
                     content:
-                        'Determines the number of nodes in set A of the bipartite graph.',
+                        'Sets the number of nodes in the first independent set (Set A). Nodes in this set only connect to nodes in Set B.',
                 }}
                 onChange={(e) => {
                     setParams({
@@ -198,7 +260,7 @@ export function BipartiteParamsInput({ params, setParams }: ParamsInputProps) {
                 defaultValue={DefaultBipartiteGenerationParams.setBSize}
                 tooltip={{
                     content:
-                        'Determines the number of nodes in set B of the bipartite graph.',
+                        'Sets the number of nodes in the second independent set (Set B). Nodes in this set only connect to nodes in Set A.',
                 }}
                 onChange={(e) => {
                     setParams({
@@ -211,48 +273,60 @@ export function BipartiteParamsInput({ params, setParams }: ParamsInputProps) {
     );
 }
 
-export function CageParamsInput({ params, setParams }: ParamsInputProps) {
-    if (params.family !== 'cage') {
+export function SimpleParamsInput({ params, setParams }: ParamsInputProps) {
+    if (params.family !== 'simple') {
         return null;
     }
 
     return (
         <div className="grid grid-cols-3 items-center gap-4">
             <NumberInput
-                label="Degree"
-                value={params.degree}
-                min={MinimumCageGenerationParams.degree}
-                max={10}
+                label="Node Count"
+                value={params.nodeCount}
+                min={MinimumSimpleGenerationParams.nodeCount}
+                max={100}
                 step={1}
-                defaultValue={DefaultCageGenerationParams.degree}
+                defaultValue={DefaultSimpleGenerationParams.nodeCount}
                 tooltip={{
-                    content:
-                        'Determines the degree of each vertex in the cage graph.',
+                    content: 'Sets the number of nodes in the simple graph.',
                 }}
                 onChange={(e) => {
-                    setParams({
-                        ...params,
-                        degree: getInt(e),
-                    });
+                    setParams({ ...params, nodeCount: getInt(e) });
                 }}
             />
             <NumberInput
-                label="Girth"
-                value={params.girth}
-                min={MinimumCageGenerationParams.girth}
-                max={20}
+                label="Edge Count"
+                value={params.edgeCount}
+                min={MinimumSimpleGenerationParams.edgeCount}
+                max={100}
                 step={1}
-                defaultValue={DefaultCageGenerationParams.girth}
+                defaultValue={DefaultSimpleGenerationParams.edgeCount}
                 tooltip={{
                     content:
-                        'Determines the length of the shortest cycle in the cage graph.',
+                        'Sets the number of edges in the simple graph. ' +
+                        'The algorithm will randomly connect pairs of ' +
+                        'nodes until this number of edges is reached, ' +
+                        'ensuring no self-loops or multiple edges between ' +
+                        'the same pair of nodes.',
+                }}
+                onChange={(e) => {
+                    setParams({ ...params, edgeCount: getInt(e) });
+                }}
+            />
+            <ToggleInput
+                label="Apply Fcose Layout"
+                checked={params.applyFcoseLayout}
+                tooltip={{
+                    content:
+                        'If enabled, tries to arrange the nodes using the Fcose layout algorithm to visualize the simple structure.',
                 }}
                 onChange={(e) => {
                     setParams({
                         ...params,
-                        girth: getInt(e),
+                        applyFcoseLayout: e.target.checked,
                     });
                 }}
+                defaultValue={DefaultSimpleGenerationParams.applyFcoseLayout}
             />
         </div>
     );

@@ -7,7 +7,7 @@ export type GenerationFamily =
     // | 'cayley'
     | 'bipartite'
     | 'complete-bipartite'
-    | 'cage';
+    | 'simple';
 
 export type BaseGenerationParams = {
     family: GenerationFamily;
@@ -22,21 +22,25 @@ export type GridGraphParams = {
     family: 'grid';
     rows: number;
     cols: number;
+    applyGridLayout?: boolean;
 } & BaseGenerationParams;
 
 export type CircleGraphParams = {
     family: 'circle';
     nodeCount: number;
+    applyCircleLayout?: boolean;
 } & BaseGenerationParams;
 
 export type StarGraphParams = {
     family: 'star';
     nodeCount: number;
+    applyConcentricLayout?: boolean;
 } & BaseGenerationParams;
 
 export type WheelGraphParams = {
     family: 'wheel';
     nodeCount: number;
+    applyConcentricLayout?: boolean;
 } & BaseGenerationParams;
 
 // export type CayleyGraphParams = {
@@ -57,10 +61,11 @@ export type CompleteBipartiteGraphParams = {
     setBSize: number;
 } & BaseGenerationParams;
 
-export type CageGraphParams = {
-    family: 'cage';
-    degree: number;
-    girth: number;
+export type SimpleGraphParams = {
+    family: 'simple';
+    nodeCount: number;
+    edgeCount: number;
+    applyFcoseLayout?: boolean;
 } & BaseGenerationParams;
 
 export type GenerationParams =
@@ -72,4 +77,4 @@ export type GenerationParams =
     // | CayleyGraphParams
     | BipartiteGraphParams
     | CompleteBipartiteGraphParams
-    | CageGraphParams;
+    | SimpleGraphParams;
