@@ -1,11 +1,12 @@
+import { AppIcons } from '@/components/common/AppIcons';
+import { Tabs, type TabItem } from '@/components/common/tabs';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { arrangeGraph } from '@/services/layoutService';
 import { useLayoutProperties, useModals } from '@Contexts';
 import { Modal } from '@Modals';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { ExportTab } from './ExportTab';
 import { ImportTab } from './ImportTab';
-import { TabBtn } from './TabBtn';
 
 type ImportTabRef = {
     handleImport: () => void;
@@ -17,16 +18,26 @@ type ExportTabRef = {
     cleanup: () => void;
 };
 
+type ImportExportTabId = 'import' | 'export';
+
 export function ImportExportModal() {
     const modals = useModals();
     const graphRef = useGetGraph('main-graph');
     const { current: currentLayout } = useLayoutProperties();
 
-    const [activeTab, setActiveTab] = useState<'import' | 'export'>('import');
+    const [activeTab, setActiveTab] = useState<ImportExportTabId>('import');
     const [isActionReady, setIsActionReady] = useState(false);
 
     const exportTabRef = useRef<ExportTabRef>(null);
     const importTabRef = useRef<ImportTabRef>(null);
+
+    const tabConfig = useMemo<TabItem<ImportExportTabId>[]>(
+        () => [
+            { id: 'import', label: 'Import', icon: <AppIcons.Import size={16} /> },
+            { id: 'export', label: 'Export', icon: <AppIcons.Export size={16} /> },
+        ],
+        []
+    );
 
     const handleClose = () => {
         if (activeTab === 'import') {
@@ -86,21 +97,12 @@ export function ImportExportModal() {
                 Manage your graph data by importing or exporting in various formats.
             </p>
             <main className="grow pt-3">
-                <div className="border-b border-base-300">
-                    <nav aria-label="Tabs" className="flex space-x-5">
-                        {/* TODO: Checkout https://daisyui.com/components/tab/ and consider daisyUI tabs */}
-                        <TabBtn
-                            activeTab={activeTab}
-                            setActiveTab={setActiveTab}
-                            type="import"
-                        />
-                        <TabBtn
-                            activeTab={activeTab}
-                            setActiveTab={setActiveTab}
-                            type="export"
-                        />
-                    </nav>
-                </div>
+                <Tabs
+                    tabs={tabConfig}
+                    activeTab={activeTab}
+                    onTabChange={setActiveTab}
+                    name="import-export-modal-tabs"
+                />
                 <div className="pt-6 pb-4">
                     {activeTab === 'import' && (
                         <ImportTab

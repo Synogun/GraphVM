@@ -1,10 +1,24 @@
+import { Tabs, type TabItem } from '@/components/common/tabs';
 import { useModals } from '@Contexts';
 import { Modal } from '@Modals';
+import { useMemo, useState } from 'react';
 import { ControlsInfo } from './ControlsInfo';
 import { HelpElementsInfo } from './HelpElementsInfo';
 
 export function HelpModal() {
     const modals = useModals();
+    const [activeTab, setActiveTab] = useState<HelpTabId>('intro');
+
+    const tabConfig = useMemo<TabItem<HelpTabId>[]>(
+        () => [
+            { id: 'intro', label: 'Introduction' },
+            { id: 'create', label: 'Creating / Removing' },
+            { id: 'controls', label: 'Controls' },
+            { id: 'customization', label: 'Customization' },
+            { id: 'tools', label: 'Other Tools' },
+        ],
+        []
+    );
 
     const handleClose = () => {
         modals.setIsHelpModalOpen(false);
@@ -22,18 +36,16 @@ export function HelpModal() {
                 application.
             </p>
             <main className="grow pt-3">
-                <div className="border-b border-base-300 mb-4" />
-                <div className="space-y-2">
-                    <div className="collapse collapse-arrow bg-base-100 border border-base-300 hover:border-accent has-[input[type='radio']:checked]:border-accent">
-                        <input
-                            defaultChecked={true}
-                            name="help-accordion"
-                            type="radio"
-                        />
-                        <div className="collapse-title text-lg font-semibold">
-                            Introduction
-                        </div>
-                        <div className="collapse-content">
+                <Tabs
+                    tabs={tabConfig}
+                    activeTab={activeTab}
+                    onTabChange={setActiveTab}
+                    name="help-modal-tabs"
+                />
+                <div className="mt-4 space-y-4">
+                    {activeTab === 'intro' && (
+                        <section>
+                            {/* <h3 className="text-lg font-semibold mb-2">Introduction</h3> */}
                             <p>
                                 GraphVM allows you to create, visualize, and
                                 manipulate graphs. The interface consists of three
@@ -61,35 +73,32 @@ export function HelpModal() {
                                     behavior of nodes and edges in the graph.
                                 </li>
                             </ul>
-                        </div>
-                    </div>
+                        </section>
+                    )}
 
-                    <div className="collapse collapse-arrow bg-base-100 border border-base-300 hover:border-accent has-[input[type='radio']:checked]:border-accent">
-                        <input name="help-accordion" type="radio" />
-                        <div className="collapse-title text-lg font-semibold">
-                            Creating and Removing Elements
-                        </div>
-                        <div className="collapse-content">
+                    {activeTab === 'create' && (
+                        <section>
+                            {/* <h3 className="text-lg font-semibold mb-2">
+                                Creating and Removing Elements
+                            </h3> */}
                             <HelpElementsInfo />
-                        </div>
-                    </div>
+                        </section>
+                    )}
 
-                    <div className="collapse collapse-arrow bg-base-100 border border-base-300 hover:border-accent has-[input[type='radio']:checked]:border-accent">
-                        <input name="help-accordion" type="radio" />
-                        <div className="collapse-title text-lg font-semibold">
-                            Controls and Interaction
-                        </div>
-                        <div className="collapse-content">
+                    {activeTab === 'controls' && (
+                        <section>
+                            {/* <h3 className="text-lg font-semibold mb-2">
+                                Controls and Interaction
+                            </h3> */}
                             <ControlsInfo />
-                        </div>
-                    </div>
+                        </section>
+                    )}
 
-                    <div className="collapse collapse-arrow bg-base-100 border border-base-300 hover:border-accent has-[input[type='radio']:checked]:border-accent">
-                        <input name="help-accordion" type="radio" />
-                        <div className="collapse-title text-lg font-semibold">
-                            Customization
-                        </div>
-                        <div className="collapse-content">
+                    {activeTab === 'customization' && (
+                        <section>
+                            {/* <h3 className="text-lg font-semibold mb-2">
+                                Customization
+                            </h3> */}
                             <p className="mb-2">
                                 Use the <strong>Properties Bar</strong> on the right
                                 to style your graph.
@@ -112,15 +121,14 @@ export function HelpModal() {
                                 Note: If nothing is selected, the properties panel
                                 allows you to set default styles for new elements.
                             </p>
-                        </div>
-                    </div>
+                        </section>
+                    )}
 
-                    <div className="collapse collapse-arrow bg-base-100 border border-base-300 hover:border-accent has-[input[type='radio']:checked]:border-accent">
-                        <input name="help-accordion" type="radio" />
-                        <div className="collapse-title text-lg font-semibold">
-                            Other Tools
-                        </div>
-                        <div className="collapse-content">
+                    {activeTab === 'tools' && (
+                        <section>
+                            {/* <h3 className="text-lg font-semibold mb-2">
+                                Other Tools
+                            </h3> */}
                             <ul className="list-disc list-inside ml-2 space-y-1">
                                 <li>
                                     <strong>Algorithms</strong>: Create graph from
@@ -145,10 +153,12 @@ export function HelpModal() {
                                     settings like theme and preference options.
                                 </li>
                             </ul>
-                        </div>
-                    </div>
+                        </section>
+                    )}
                 </div>
             </main>
         </Modal>
     );
 }
+
+type HelpTabId = 'intro' | 'create' | 'controls' | 'customization' | 'tools';

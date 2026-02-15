@@ -1,4 +1,5 @@
 import { AiOutlineNodeIndex } from 'react-icons/ai';
+import { BiExport, BiImport } from 'react-icons/bi';
 import { FaCheck, FaGithub } from 'react-icons/fa';
 import { FaCode } from 'react-icons/fa6';
 import { FiHelpCircle } from 'react-icons/fi';
@@ -81,6 +82,12 @@ export const AppIcons = {
     ),
     Checkmark: ({ size, className, ariaLabel }: AppIconPropsParams) => (
         <FaCheck size={size} className={className} aria-label={ariaLabel} />
+    ),
+    Import: ({ size, className }: AppIconPropsParams) => (
+        <BiImport size={size} className={className} />
+    ),
+    Export: ({ size, className }: AppIconPropsParams) => (
+        <BiExport size={size} className={className} />
     ),
 };
 

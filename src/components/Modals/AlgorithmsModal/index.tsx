@@ -1,17 +1,33 @@
 import { AppIcons } from '@/components/common/AppIcons';
+import { Tabs, type TabItem } from '@/components/common/tabs';
 import { useModals } from '@Contexts';
 import { Modal } from '@Modals';
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { GenerationTab, type GenerationTabRef } from './GenerationTab';
 
-type Tabs = 'generative' | 'traversal'; // TODO: Add more tabs like pathfinding, optimization, etc. in the future
+type AlgorithmTabId = 'generative' | 'traversal'; // TODO: Add more tabs like pathfinding, optimization, etc. in the future
 
 export function AlgorithmsModal() {
     const { isAlgorithmsModalOpen, setIsAlgorithmsModalOpen } = useModals();
-    const [activeTab, setActiveTab] = useState<Tabs>('generative');
+    const [activeTab, setActiveTab] = useState<AlgorithmTabId>('generative');
     const generationTabRef = useRef<GenerationTabRef>(null);
 
-    const isActiveTab = (tab: Tabs) => (activeTab === tab ? 'tab-active' : '');
+    const tabConfig = useMemo<TabItem<AlgorithmTabId>[]>(
+        () => [
+            {
+                id: 'generative',
+                label: 'Generative',
+                icon: <AppIcons.NewGraph size={16} />, // spacing handled by Tabs component
+            },
+            {
+                id: 'traversal',
+                label: 'Traversal (Soon)',
+                icon: <AppIcons.PathEdgeMode size={16} />,
+                disabled: true,
+            },
+        ],
+        []
+    );
 
     const handleClose = () => {
         setIsAlgorithmsModalOpen(false);
@@ -47,31 +63,12 @@ export function AlgorithmsModal() {
                 Generate common graph families or run algorithms on your graph.
             </p>
 
-            <div
-                role="tablist"
-                className="tabs tabs-border border-b border-base-300"
-            >
-                {/* Generative Tab */}
-                <label className={`tab ${isActiveTab('generative')}`}>
-                    <input
-                        type="radio"
-                        name="algorithms-modal-tabs"
-                        checked={activeTab === 'generative'}
-                        onChange={() => {
-                            setActiveTab('generative');
-                        }}
-                        className="hidden" // Hiding input to style label via tab class
-                    />
-                    <AppIcons.NewGraph size={16} className="mr-2" />
-                    Generative
-                </label>
-                {/* Placeholder for future tabs */}
-                <label className={`tab ${isActiveTab('traversal')}`}>
-                    <input type="radio" name="algorithms-modal-tabs" disabled />
-                    <AppIcons.PathEdgeMode size={16} className="mr-2" />
-                    Traversal (Soon)
-                </label>
-            </div>
+            <Tabs
+                tabs={tabConfig}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+                name="algorithms-modal-tabs"
+            />
 
             <div className="mt-4">
                 {activeTab === 'generative' && (
