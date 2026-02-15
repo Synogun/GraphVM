@@ -21,6 +21,7 @@ export function addEdge(
     options: cytoscape.EdgeDefinition,
     classes?: string[]
 ): void {
+    console.log(options);
     if (!options.data.source) {
         logger.warn('addEdge > Source node is required');
         return;
@@ -80,7 +81,7 @@ export function addEdges(
     }
 
     if (edgeMode === 'path') {
-        for (let i = 0; i < edges.length; i++) {
+        for (let i = 0; i < edges.length - 1; i++) {
             addEdge(core, {
                 data: {
                     ...(data ?? {}),
@@ -92,7 +93,7 @@ export function addEdges(
     }
 
     if (edgeMode === 'complete') {
-        for (let i = 0; i < edges.length; i++) {
+        for (let i = 0; i < edges.length - 1; i++) {
             for (let j = 0; j < i; j++) {
                 addEdge(core, {
                     data: {
