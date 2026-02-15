@@ -10,6 +10,7 @@ export function EdgesProvider({ children }: EdgesProviderProps) {
         color: defaultColor,
         style: defaultLineStyle,
         curve: defaultCurveStyle,
+        arrowShape: defaultArrowShape,
     } = DefaultEdgesData;
 
     const [labelStyle, setLabelStyle] = useState<EdgeLabelStyle>(defaultLabelStyle);
@@ -18,6 +19,8 @@ export function EdgesProvider({ children }: EdgesProviderProps) {
     const [lineStyle, setLineStyle] =
         useState<cytoscape.Css.LineStyle>(defaultLineStyle);
     const [curveStyle, setCurveStyle] = useState<EdgeCurveStyle>(defaultCurveStyle);
+    const [arrowShape, setArrowShape] =
+        useState<cytoscape.Css.ArrowShape>(defaultArrowShape);
 
     const value = {
         labelStyle,
@@ -30,6 +33,8 @@ export function EdgesProvider({ children }: EdgesProviderProps) {
         setLineStyle,
         curveStyle,
         setCurveStyle,
+        arrowShape,
+        setArrowShape,
     };
 
     return <EdgesContext.Provider value={value}>{children}</EdgesContext.Provider>;

@@ -3,6 +3,7 @@ import { GraphContext } from '@Contexts';
 import { useMemo, useState, type ReactNode } from 'react';
 
 export function GraphProvider({ children }: GraphProviderProps) {
+    const [directed, setDirected] = useState(false);
     const [nodeCount, setNodeCount] = useState(0);
     const [selectedNodes, setSelectedNodes] = useState<string[]>([]);
 
@@ -69,7 +70,7 @@ export function GraphProvider({ children }: GraphProviderProps) {
         };
     }, []);
 
-    const value = { nodes, edges, registry };
+    const value = { directed, setDirected, nodes, edges, registry };
 
     return <GraphContext.Provider value={value}>{children}</GraphContext.Provider>;
 }

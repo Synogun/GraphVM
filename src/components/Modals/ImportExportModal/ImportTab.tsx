@@ -1,5 +1,5 @@
 import { useGetGraph } from '@/hooks/useGraphRegistry';
-import { newGraph } from '@/services/graphService';
+import { newGraph, setGraphDirected } from '@/services/graphService';
 import {
     isFileValid,
     parseTextData,
@@ -112,12 +112,15 @@ export function ImportTab({
                     };
                 }
 
-                const elements = parseTextData(data, fileType, defaults);
-                if (elements === false) {
+                const parsed = parseTextData(data, fileType, defaults);
+                if (parsed === false) {
                     throw new SyntaxError('Invalid text data format');
                 }
 
-                dataToImport = { elements };
+                dataToImport = {
+                    elements: parsed.elements,
+                    data: { directed: parsed.directed },
+                };
             }
         } catch (error) {
             logger.error(`Invalid ${fileType} file\n`, error);
@@ -153,6 +156,9 @@ export function ImportTab({
         graphRef.current.json(
             importData as { elements: cytoscape.ElementDefinition[] }
         );
+
+        const directed = Boolean(importData.data?.directed);
+        setGraphDirected(graphRef.current, directed);
 
         cleanup();
         onImportSuccess();

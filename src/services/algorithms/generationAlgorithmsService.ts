@@ -41,8 +41,7 @@ export function generateCompleteGraph(
         return;
     }
 
-    // Clear existing graph
-    graph.elements().remove();
+    clearGraph(graph);
 
     // Add nodes
     for (let i = 0; i < nodeCount; i++) {
@@ -81,8 +80,8 @@ export function generateGridGraph(
         return;
     }
 
-    // Clear existing graph
-    graph.elements().remove();
+    clearGraph(graph);
+
     const totalNodes = rows * cols;
 
     // Add nodes
@@ -143,8 +142,7 @@ export function generateCircleGraph(
         return;
     }
 
-    // Clear existing graph
-    graph.elements().remove();
+    clearGraph(graph);
 
     // Add nodes
     for (let i = 0; i < nodeCount; i++) {
@@ -224,8 +222,7 @@ export function generateWheelGraph(
         return;
     }
 
-    // Clear existing graph
-    graph.elements().remove();
+    clearGraph(graph);
 
     // Connect outer nodes to center
     const centerNode = addNode(graph);
@@ -279,8 +276,7 @@ export function generateBipartiteGraph(
         return;
     }
 
-    // Clear existing graph
-    graph.elements().remove();
+    clearGraph(graph);
 
     // Add nodes for set A
     const setANodes: cytoscape.NodeSingular[] = [];
@@ -332,8 +328,7 @@ export function generateCompleteBipartiteGraph(
         return;
     }
 
-    // Clear existing graph
-    graph.elements().remove();
+    clearGraph(graph);
 
     // Add nodes for set A
     const setANodes: cytoscape.NodeSingular[] = [];
@@ -384,8 +379,7 @@ export function generateSimpleGraph(
         return;
     }
 
-    // Clear existing graph
-    graph.elements().remove();
+    clearGraph(graph);
 
     // Add nodes
     for (let i = 0; i < nodeCount; i++) {
@@ -420,4 +414,11 @@ export function generateSimpleGraph(
     } else if (layout) {
         arrangeGraph(graph, layout);
     }
+}
+
+function clearGraph(graph: cytoscape.Core) {
+    graph.elements().remove();
+    graph.data('directed', false);
+    graph.data('nodeSelectionOrder', []);
+    graph.data('edgeSelectionOrder', []);
 }

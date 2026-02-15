@@ -5,7 +5,7 @@ import { addNode, removeNodes } from '@/services/nodesService';
 import { isArrayOfStrings } from '@/types/typeGuards';
 import { useGraphProperties, useLayoutProperties, useModals } from '@Contexts';
 import { Logger } from '@Logger';
-import { useCallback, type ChangeEvent } from 'react';
+import { useCallback, useEffect, type ChangeEvent } from 'react';
 
 const logger = Logger.createContextLogger('ActionBarLogic');
 
@@ -13,6 +13,8 @@ const DEFAULT_LAYOUT = { name: 'circle' };
 
 export function useActionBarLogic() {
     const {
+        directed,
+        setDirected,
         nodes: {
             setCount: setNodeCount,
             selected: selectedNodes,
@@ -43,13 +45,22 @@ export function useActionBarLogic() {
         if (!cy) return;
 
         cy.elements().remove();
+        cy.data('directed', false);
         setNodeCount(0);
         setEdgeCount(0);
         setSelectedNodes([]);
         setSelectedEdges([]);
         cy.data('nodeSelectionOrder', []);
         cy.data('edgeSelectionOrder', []);
-    }, [graphRef, setEdgeCount, setNodeCount, setSelectedEdges, setSelectedNodes]);
+        setDirected(false);
+    }, [
+        graphRef,
+        setDirected,
+        setEdgeCount,
+        setNodeCount,
+        setSelectedEdges,
+        setSelectedNodes,
+    ]);
 
     const handleAlgorithms = useCallback(() => {
         setIsAlgorithmsModalOpen(true);
@@ -114,10 +125,21 @@ export function useActionBarLogic() {
 
     const handleToggleEdgeMode = useCallback(
         (e: ChangeEvent<HTMLInputElement>) => {
+            if (directed) {
+                logger.warn('Edge mode is locked to path while graph is directed');
+                return;
+            }
             setEdgeMode(e.target.checked ? 'complete' : 'path');
         },
-        [setEdgeMode]
+        [directed, setEdgeMode]
     );
+
+    useEffect(() => {
+        if (directed && edgeMode === 'complete') {
+            setEdgeMode('path');
+            logger.info('Directed graph > forcing edge mode to path');
+        }
+    }, [directed, edgeMode, setEdgeMode]);
 
     const handleDeleteSelected = useCallback(() => {
         if (!graphRef.current) {
@@ -167,5 +189,6 @@ export function useActionBarLogic() {
         isDeleteBtnDisabled:
             selectedNodes.length === 0 && selectedEdges.length === 0,
         isCompleteEdgeMode: edgeMode === 'complete',
+        isEdgeModeLocked: directed,
     };
 }

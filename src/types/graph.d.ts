@@ -10,6 +10,9 @@ export type AutopanOptions = {
 };
 
 export type GraphContextProperties = {
+    directed: boolean;
+    setDirected: (directed: boolean) => void;
+
     nodes: {
         count: number;
         setCount: (count: number) => void;

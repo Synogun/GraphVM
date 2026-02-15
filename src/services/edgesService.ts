@@ -35,7 +35,7 @@ export function addEdge(
     const newId = makeEdgeId();
 
     const newEdgeData = {
-        ...defaultEdgesData, // default edge data
+        ...defaultEdgesData,
         id: newId,
         index: newIdIndex,
         ...options.data,
@@ -47,7 +47,12 @@ export function addEdge(
         classes: [...(classes ?? [])],
     });
 
-    if (core.data('directed')) {
+    const isDirected =
+        options.data.directed && Boolean(options.data.directed)
+            ? Boolean(options.data.directed)
+            : Boolean(core.data('directed'));
+
+    if (isDirected) {
         core.$id(newId).addClass('directed');
     }
 

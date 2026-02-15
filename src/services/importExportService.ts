@@ -44,7 +44,7 @@ export function parseTextData(
     data: string,
     type: FileType,
     defaults?: { nodes: NodesData; edges: EdgesData }
-): ElementsDefinition | false {
+): { elements: ElementsDefinition; directed: boolean } | false {
     const separator = ' ';
 
     if (!isDataValid(data, type, separator)) {
@@ -62,7 +62,10 @@ export function parseTextData(
         return false;
     }
 
-    const [numNodes] = lines.shift()?.map(Number) ?? [0];
+    const headerTokens = lines.shift() ?? [];
+    const [numNodes] = headerTokens.map(Number);
+    const directedHeader = headerTokens[2]?.toUpperCase?.();
+    const directed = directedHeader === 'D';
 
     const currentNodesData = {
         ...DefaultNodesData,
@@ -133,11 +136,13 @@ export function parseTextData(
         }
     }
 
-    return { nodes, edges };
+    return { elements: { nodes, edges }, directed };
 }
 
 export function mapElementsToText(graph: cytoscape.Core): string {
-    let dataStr = `${graph.nodes().length.toString()} ${graph.edges().length.toString()}\n`;
+    const directedFlag = graph.data('directed') ? 'D' : 'U';
+
+    let dataStr = `${graph.nodes().length.toString()} ${graph.edges().length.toString()} ${directedFlag}\n`;
 
     // Map Edges
     dataStr += graph

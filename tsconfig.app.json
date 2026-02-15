@@ -29,7 +29,7 @@
             "@Modals/*": ["./components/Modals/*"],
             "@Inputs": ["./components/common/inputs"],
             "@Contexts": ["./contexts"],
-            "@Logger": ["./utils/Logger"]
+            "@Logger": ["./utils/logger"]
         }
     },
     "include": ["src"]

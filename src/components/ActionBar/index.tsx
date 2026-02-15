@@ -24,6 +24,7 @@ export function ActionBar({ children }: ActionBarProps) {
         handleHelp,
         isDeleteBtnDisabled,
         isCompleteEdgeMode,
+        isEdgeModeLocked,
     } = useActionBarLogic();
 
     const SidebarChildren = (
@@ -93,6 +94,7 @@ export function ActionBar({ children }: ActionBarProps) {
                 isCompleteEdgeMode={isCompleteEdgeMode}
                 handleToggleEdgeMode={handleToggleEdgeMode}
                 iconSize={ICON_SIZE}
+                disabled={isEdgeModeLocked}
             />
 
             <ActionBarButton

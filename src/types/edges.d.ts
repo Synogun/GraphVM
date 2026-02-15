@@ -39,4 +39,7 @@ export type EdgesContextProperties = {
 
     curveStyle: EdgeCurveStyle;
     setCurveStyle: (curveStyle: EdgeCurveStyle) => void;
+
+    arrowShape: cytoscape.Css.ArrowShape;
+    setArrowShape: (arrowShape: cytoscape.Css.ArrowShape) => void;
 };

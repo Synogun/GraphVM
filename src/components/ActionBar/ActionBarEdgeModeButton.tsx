@@ -8,18 +8,25 @@ export function ActionBarEdgeModeButton({
     },
     iconSize = '1.5em',
     className = '',
+    disabled = false,
 }: ActionBarEdgeModeButtonProps) {
-    const activeColor = isCompleteEdgeMode ? 'btn-accent' : 'btn-outline';
+    const activeColor = disabled
+        ? 'btn-disabled'
+        : isCompleteEdgeMode
+          ? 'btn-accent'
+          : 'btn-outline';
     const swapStyle = 'flex mx-auto text-center gap-2';
 
     return (
         <label
             className={`btn ${activeColor} hover:btn-accent swap hover:swap-rotate my-1 ${className}`}
+            aria-disabled={disabled}
         >
             <input
                 checked={isCompleteEdgeMode}
                 onChange={handleToggleEdgeMode}
                 type="checkbox"
+                disabled={disabled}
             />
             <div className={`swap-off ${swapStyle}`}>
                 {AppIcons.PathEdgeMode({ size: iconSize })} Path Mode
@@ -36,4 +43,5 @@ type ActionBarEdgeModeButtonProps = {
     handleToggleEdgeMode?: (e: ChangeEvent<HTMLInputElement>) => void;
     iconSize?: string | number;
     className?: string;
+    disabled?: boolean;
 };

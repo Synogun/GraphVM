@@ -8,6 +8,26 @@ import cytoscape from 'cytoscape';
 
 const logger = Logger.createContextLogger('GraphService');
 
+export function setGraphDirected(
+    core: cytoscape.Core,
+    directed: boolean,
+    edgeIds?: string[]
+): void {
+    core.data('directed', directed);
+
+    const edges = edgeIds
+        ? core.edges().filter((e) => edgeIds.includes(e.id()))
+        : core.edges();
+
+    if (directed) {
+        edges.addClass('directed');
+    } else {
+        edges.removeClass('directed');
+    }
+
+    logger.info('setGraphDirected > set directed to', directed);
+}
+
 export function newGraph(
     containerId?: string,
     options?: cytoscape.CytoscapeOptions
@@ -26,6 +46,13 @@ export function newGraph(
 
     newGraph.data('defaultNodesData', { ...DefaultNodesData });
     newGraph.data('defaultEdgesData', { ...DefaultEdgesData });
+
+    const initialDirected =
+        typeof options?.data === 'object' &&
+        typeof (options.data as Record<string, unknown>).directed === 'boolean'
+            ? ((options.data as Record<string, unknown>).directed as boolean)
+            : false;
+    setGraphDirected(newGraph, initialDirected);
 
     newGraph.data('numNodes', newGraph.nodes().length);
     newGraph.data('numEdges', newGraph.edges().length);

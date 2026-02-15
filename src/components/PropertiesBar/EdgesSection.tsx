@@ -2,9 +2,11 @@ import { DefaultEdgesData } from '@/config/graphDefaults';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { updateEdges } from '@/services/edgesService';
 import {
+    isEdgeArrowShape,
     isEdgeCurve,
     isEdgeLabelStyle,
     isEdgeLineStyle,
+    ValidEdgeArrowShapes,
     ValidEdgeCurves,
     ValidEdgeLabelStyle,
     ValidEdgeLineStyles,
@@ -28,9 +30,12 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         setLineStyle,
         curveStyle,
         setCurveStyle,
+        arrowShape,
+        setArrowShape,
     } = useEdgesProperties();
 
     const {
+        directed,
         edges: { selected: selectedEdges },
     } = useGraphProperties();
 
@@ -45,6 +50,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
             style: defaultEdgesStyle,
             curve: defaultEdgesCurve,
             weight: defaultEdgesWeight,
+            arrowShape: defaultEdgesArrowShape,
         } = getDefaultEdgesData(graphRef.current);
 
         if (selectedEdges.length === 0) {
@@ -70,6 +76,9 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
             findPropertyValueMode(edgeCollection, 'curve') ?? defaultEdgesCurve;
         const modeWeight =
             findPropertyValueMode(edgeCollection, 'weight') ?? defaultEdgesWeight;
+        const modeArrowShape =
+            findPropertyValueMode(edgeCollection, 'arrowShape') ??
+            defaultEdgesArrowShape;
 
         setLabelStyle(isEdgeLabelStyle(modeLabel) ? modeLabel : defaultEdgesLabel);
         setColor(modeColor);
@@ -78,6 +87,11 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         );
         setCurveStyle(isEdgeCurve(modeCurve) ? modeCurve : defaultEdgesCurve);
         setWeight(Number(modeWeight) || defaultEdgesWeight);
+        setArrowShape(
+            isEdgeArrowShape(modeArrowShape)
+                ? modeArrowShape
+                : defaultEdgesArrowShape
+        );
     }, [
         graphRef,
         selectedEdges,
@@ -86,6 +100,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         setLineStyle,
         setCurveStyle,
         setWeight,
+        setArrowShape,
     ]);
 
     const handleChangeLabel = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -182,6 +197,26 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         setCurveStyle(parsedValue);
     };
 
+    const handleChangeArrowShape = (e: ChangeEvent<HTMLSelectElement>) => {
+        if (!graphRef.current) {
+            return;
+        }
+
+        const { value } = e.target;
+        const currentDefaults = getDefaultEdgesData(graphRef.current);
+
+        const parsedValue =
+            value && isEdgeArrowShape(value) ? value : currentDefaults.arrowShape;
+
+        if (selectedEdges.length === 0) {
+            setDefaultEdgesData(graphRef.current, { arrowShape: parsedValue });
+        } else {
+            updateEdges(graphRef.current, selectedEdges, 'arrowShape', parsedValue);
+        }
+
+        setArrowShape(parsedValue);
+    };
+
     const selectLabelOptions = useMemo(() => {
         return ValidEdgeLabelStyle.map((style) => ({
             label: parseKebabCase(style),
@@ -200,6 +235,13 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         return ValidEdgeCurves.map((style) => ({
             label: parseKebabCase(style),
             value: style,
+        }));
+    }, []);
+
+    const selectArrowShapeOptions = useMemo(() => {
+        return ValidEdgeArrowShapes.map((shape) => ({
+            label: parseKebabCase(shape),
+            value: shape,
         }));
     }, []);
 
@@ -260,6 +302,20 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
                     content: 'Determine the curvature style of the edges. ',
                 }}
             />
+
+            {directed && (
+                <SelectInput
+                    label="Arrow Shape"
+                    onChange={handleChangeArrowShape}
+                    options={selectArrowShapeOptions}
+                    selectTitle="Pick an arrow shape"
+                    value={arrowShape}
+                    defaultValue={DefaultEdgesData.arrowShape}
+                    tooltip={{
+                        content: 'Choose the arrow head for directed edges.',
+                    }}
+                />
+            )}
         </div>
     );
 }
