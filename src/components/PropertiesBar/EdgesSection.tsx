@@ -218,31 +218,43 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
     };
 
     const selectLabelOptions = useMemo(() => {
-        return ValidEdgeLabelStyle.map((style) => ({
-            label: parseKebabCase(style),
-            value: style,
-        }));
+        return [
+            { label: '"Pick a label style"', value: '', title: true },
+            ...ValidEdgeLabelStyle.map((style) => ({
+                label: parseKebabCase(style),
+                value: style,
+            })),
+        ];
     }, []);
 
     const selectLineStyleOptions = useMemo(() => {
-        return ValidEdgeLineStyles.map((style) => ({
-            label: parseKebabCase(style),
-            value: style,
-        }));
+        return [
+            { label: '"Pick a line style"', value: '', title: true },
+            ...ValidEdgeLineStyles.map((style) => ({
+                label: parseKebabCase(style),
+                value: style,
+            })),
+        ];
     }, []);
 
     const selectCurveStyleOptions = useMemo(() => {
-        return ValidEdgeCurves.map((style) => ({
-            label: parseKebabCase(style),
-            value: style,
-        }));
+        return [
+            { label: '"Pick a curve style"', value: '', title: true },
+            ...ValidEdgeCurves.map((style) => ({
+                label: parseKebabCase(style),
+                value: style,
+            })),
+        ];
     }, []);
 
     const selectArrowShapeOptions = useMemo(() => {
-        return ValidEdgeArrowShapes.map((shape) => ({
-            label: parseKebabCase(shape),
-            value: shape,
-        }));
+        return [
+            { label: '"Pick an arrow shape"', value: '', title: true },
+            ...ValidEdgeArrowShapes.map((shape) => ({
+                label: parseKebabCase(shape),
+                value: shape,
+            })),
+        ];
     }, []);
 
     return (
@@ -263,7 +275,6 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
                 label="Label Style"
                 onChange={handleChangeLabel}
                 options={selectLabelOptions}
-                selectTitle="Pick a label style"
                 value={labelStyle}
                 defaultValue={DefaultEdgesData.label}
                 tooltip={{
@@ -283,7 +294,6 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
                 label="Line Style"
                 onChange={handleChangeLineStyle}
                 options={selectLineStyleOptions}
-                selectTitle="Pick a line style"
                 value={lineStyle}
                 defaultValue={DefaultEdgesData.style}
                 tooltip={{
@@ -295,7 +305,6 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
                 label="Curve Style"
                 onChange={handleChangeCurveStyle}
                 options={selectCurveStyleOptions}
-                selectTitle="Pick a curve style"
                 value={curveStyle}
                 defaultValue={DefaultEdgesData.curve}
                 tooltip={{
@@ -308,7 +317,6 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
                     label="Arrow Shape"
                     onChange={handleChangeArrowShape}
                     options={selectArrowShapeOptions}
-                    selectTitle="Pick an arrow shape"
                     value={arrowShape}
                     defaultValue={DefaultEdgesData.arrowShape}
                     tooltip={{

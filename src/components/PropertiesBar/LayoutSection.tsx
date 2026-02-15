@@ -5,6 +5,7 @@ import {
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { arrangeGraph } from '@/services/layoutService';
 import { isLayoutType, ValidGraphLayouts } from '@/types/layoutTypeGuards';
+import { parseKebabCase } from '@/utils/elements';
 import { useLayoutProperties } from '@Contexts';
 import { RangeInput, SelectInput } from '@Inputs';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
@@ -86,10 +87,13 @@ export function LayoutSection({ visible = true }: LayoutSectionProps) {
     };
 
     const selectTypeOptions = useMemo(() => {
-        return ValidGraphLayouts.map((option) => ({
-            value: option,
-            label: option.charAt(0).toUpperCase() + option.slice(1),
-        })).sort((a, b) => a.label.localeCompare(b.label));
+        return [
+            { label: 'Pick a layout type', value: '', title: true },
+            ...ValidGraphLayouts.map((option) => ({
+                value: option,
+                label: parseKebabCase(option),
+            })),
+        ].sort((a, b) => a.label.localeCompare(b.label));
     }, []);
 
     return (
@@ -103,7 +107,6 @@ export function LayoutSection({ visible = true }: LayoutSectionProps) {
                     label="Layout Type"
                     onChange={handleChangeLayoutType}
                     options={selectTypeOptions}
-                    selectTitle="Pick a layout type"
                     value={layoutType}
                     defaultValue={DefaultLayoutOptions.name}
                     tooltip={{

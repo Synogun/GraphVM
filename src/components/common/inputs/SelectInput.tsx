@@ -5,7 +5,6 @@ function SelectInput({
     value,
     options,
     label,
-    selectTitle,
     onChange,
     className = '',
     tooltip,
@@ -31,18 +30,19 @@ function SelectInput({
         } as ChangeEvent<HTMLSelectElement>);
     };
 
-    const selectTitleOption = (
-        <option
-            key={
-                selectTitle
-                    ? `${selectTitle.replace(' ', '-')}-type-dropdown-title`
-                    : 'no-title-type-dropdown-title'
-            }
-            disabled={true}
-        >
-            {selectTitle}
-        </option>
-    );
+    const makeOptionValue = ({ value, label, title }: SelectOptionType) => {
+        if (title) {
+            <option key={`${value}-type-dropdown-title`} disabled={true}>
+                {label}
+            </option>;
+        }
+
+        return (
+            <option key={`${value}-option`} value={value}>
+                {label}
+            </option>
+        );
+    };
 
     return (
         <FieldWrapper
@@ -56,27 +56,23 @@ function SelectInput({
                 onChange={onChange}
                 value={value}
             >
-                {selectTitle && selectTitleOption}
-
-                {options.map((option) => (
-                    <option
-                        key={option.label.replace(' ', '-') + '-' + option.value}
-                        value={option.value}
-                    >
-                        {option.label}
-                    </option>
-                ))}
+                {options.map(makeOptionValue)}
             </select>
         </FieldWrapper>
     );
 }
 
+type SelectOptionType = {
+    label: string;
+    value: string;
+    title?: boolean;
+};
+
 type SelectInputProps = {
     label: string;
-    selectTitle?: string;
     value?: string;
     onChange?: (e: ChangeEvent<HTMLSelectElement>) => void;
-    options: { value: string; label: string }[];
+    options: SelectOptionType[];
     className?: string;
     tooltip?: {
         icon?: ReactNode;

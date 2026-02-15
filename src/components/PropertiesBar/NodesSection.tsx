@@ -90,10 +90,13 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
 
     const selectShapeOptions = useMemo(() => {
         // TODO: Addres shape types wich works only with specific edge styles
-        return ValidNodeShapes.map((shape) => ({
-            label: parseKebabCase(shape),
-            value: shape,
-        }));
+        return [
+            { label: 'Pick a node shape', value: '', title: true },
+            ...ValidNodeShapes.map((shape) => ({
+                label: parseKebabCase(shape),
+                value: shape,
+            })),
+        ];
     }, []);
 
     return (
@@ -120,7 +123,6 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
                 label="Shape"
                 onChange={handleChangeShape}
                 options={selectShapeOptions}
-                selectTitle="Pick a node shape"
                 value={shape}
                 defaultValue={DefaultNodesData.shape}
                 tooltip={{ content: 'Determine the shape of the nodes.' }}
