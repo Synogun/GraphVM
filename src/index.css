@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Alan+Sans:wght@300..900&display=swap');
+@import 'tailwindcss';
+@plugin "daisyui" {
+    themes: all;
+}
+
+body {
+    font-family: 'Alan Sans', sans-serif;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: thin; /* Firefox */
+}
+
+/* Tooltip Customization */
+.tooltip-content {
+    visibility: hidden;
+    position: absolute;
+    z-index: 50;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltip-content {
+    visibility: visible;
+    opacity: 1;
+}
