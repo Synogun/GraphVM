@@ -17,6 +17,16 @@ export default defineConfig({
             '@Logger': '/src/utils/logger',
         },
     },
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    cytoscape: ['cytoscape'],
+                    react: ['react', 'react-dom'],
+                },
+            },
+        },
+    },
     dev: {
         sourcemap: true,
     },
