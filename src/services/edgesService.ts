@@ -93,7 +93,7 @@ export function addEdges(
     }
 
     if (edgeMode === 'complete') {
-        for (let i = 0; i < edges.length - 1; i++) {
+        for (let i = 0; i < edges.length; i++) {
             for (let j = 0; j < i; j++) {
                 addEdge(core, {
                     data: {
