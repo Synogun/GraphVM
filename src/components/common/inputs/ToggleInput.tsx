@@ -73,11 +73,11 @@ export function ToggleInput({
                         checked={checked}
                         onChange={handleChange}
                     />
-                    <AppIcons.Close size={'1.7em'} ariaLabel="enabled" />
+                    <AppIcons.Close size={'1.7em'} aria-label="enabled" />
                     <AppIcons.Checkmark
                         size={'1.4em'}
                         className="absolute inset-0 m-auto"
-                        ariaLabel="disabled"
+                        aria-label="disabled"
                     />
                 </label>
                 {flashText && (
