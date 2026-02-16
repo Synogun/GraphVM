@@ -9,25 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `UI` - Introduced a basic modal structure for dialogs.
-- `UI` - Added a custom hook `useGraphRegistry` for managing graph instances.
-- `UI` - Created reusable UI components (`SideBar`, `ColorInput`, `NumberInput`, `RangeInput`, `SelectInput`, `TextInput`).
-- `UI` - Introduced React contexts (`GraphContext`, `LayoutContext`, `NodesContext`, `EdgesContext`, `PropertiesContext`) for centralized state management.
-- `Project` - Implemented a component-based architecture using React.
-- `Project` - Integrated DaisyUI and TailwindCSS for a modernized user interface.
+- `UI` - Implemented a modal system, including Import/Export (text, JSON, PNG, JPG), Help (tabbed documentation), and Algorithms modals.
+- `UI` - Added a `ActionsBar` with buttons for graph manipulation (add/remove nodes and edges, clear graph) and operations.
+- `UI` - Added a `PropertiesBar` with sections for graph info, layout configuration, and global node and edge style selection.
+- `UI` - Added support for directed graph visualization with a toggle in the Properties Bar.
+- `Graph` - Implemented autopan on node drag near viewport edges with configurable speed and margin.
+- `Graph` - Implemented graph generation algorithms service supporting 8 graph families (complete, grid, circle, star, wheel, bipartite, complete bipartite, simple) with configurable parameters.
+- `Project` - Added a centralized Logger system with context-scoped loggers, session log storage, and downloadable log export.
+- `Project` - Added centralized configuration defaults for algorithms, graph styles, and layouts.
+- `Project` - Adopted Prettier for code formatting (`printWidth: 85`, `singleQuote: true`, `trailingComma: 'es5'`).
+- `Workflow` - Added a simplified `deploy_to_pages.yml` workflow for deploying to GitHub Pages.
 
 ### Changed
 
 - `UI` - Replaced default font with 'Alan Sans'.
-- `Project` - Updated project dependencies to their latest versions.
-- `Project` - Improved Vite's Fast Refresh compatibility.
-- `Project` - Added more specific type guards for better type safety.
-- `Project` - Updated `tsconfig.json` with module paths for cleaner imports.
-- `Project` - Reorganized project structure for better modularity, separating components, contexts, hooks, services, and types.
-- `Project` - Migrated project from vanilla JavaScript to a React with TypeScript stack.
+- `UI` - Replaced the previous UI with a new React-based interface using DaisyUI and Tailwind CSS.
+- `Graph` - Replaced `cose` with `fcose` as the default layout algorithm.
+- `Graph` - Encapsulated core graph logic into stateless service functions (`graphService`, `nodesService`, `edgesService`, `layoutService`, `importExportService`).
 - `Project` - Migrated project build process from esbuild to Vite for improved development experience and performance.
-- `Graph` - Encapsulated core graph logic into services.
-- `UI` - Replaced the previous UI with a new React-based interface.
+- `Project` - Updated project dependencies to their latest versions.
+- `Project` - Updated `tsconfig.json` with module paths for cleaner imports (`@/`, `@Logger`, `@Modals`, `@Contexts`, `@Inputs`).
+- `Project` - Reorganized project structure for better modularity, separating components, contexts, hooks, providers, services, config, and types.
 
 ### Fixed
 
@@ -35,9 +37,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-- `Project` - Removed unused functions and import aliases.
-- `Project` - Removed old vanilla JavaScript files and assets, including the `userInterface.ts` and the `src/public` directory.
-- `Workflow` - Removed old workflow files and scripts, simplifying the CI/CD process. Other strategies will be considered in the future.
+- `Project` - Removed old vanilla JavaScript source files (`app.ts`, `graph.ts`, `graphConfig.ts`, `userInterface.ts`) and assets (`src/public`, `docs/`).
+- `Workflow` - Removed old `build_and_deploy.yml` workflow, issue/PR templates, and automation scripts (`calculate_semver.sh`, `fetch_scopes.py`, `update_changelog.py`).
 
 ## [v1.2.0](https://github.com/Synogun/GraphVM/compare/v1.0.22...v1.2.0)
 
