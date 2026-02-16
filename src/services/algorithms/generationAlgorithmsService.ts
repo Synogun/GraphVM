@@ -7,7 +7,7 @@ import {
     MinimumSimpleGenerationParams,
     MinimumStarGenerationParams,
     MinimumWheelGenerationParams,
-} from '@/config/algorithmDefaults';
+} from '@/constants/algorithmDefaults';
 import type {
     BipartiteGraphParams,
     CircleGraphParams,

@@ -8,7 +8,7 @@ import {
     DefaultSimpleGenerationParams,
     DefaultStarGenerationParams,
     DefaultWheelGenerationParams,
-} from '@/config/algorithmDefaults';
+} from '@/constants/algorithmDefaults';
 import { useLayoutProperties } from '@/contexts';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import {

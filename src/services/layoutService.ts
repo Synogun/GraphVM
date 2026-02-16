@@ -1,4 +1,4 @@
-import { DefaultLayoutOptions } from '@/config/layoutDefaults';
+import { DefaultLayoutOptions } from '@/constants/layoutDefaults';
 import { Logger } from '@Logger';
 import type cytoscape from 'cytoscape';
 

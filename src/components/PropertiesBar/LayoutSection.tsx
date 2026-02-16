@@ -1,7 +1,7 @@
 import {
     DefaultGridLayoutOptions,
     DefaultLayoutOptions,
-} from '@/config/layoutDefaults';
+} from '@/constants/layoutDefaults';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { arrangeGraph } from '@/services/layoutService';
 import { isLayoutType, ValidGraphLayouts } from '@/types/layoutTypeGuards';

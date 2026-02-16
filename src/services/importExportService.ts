@@ -1,4 +1,4 @@
-import { DefaultEdgesData, DefaultNodesData } from '@/config/graphDefaults';
+import { DefaultEdgesData, DefaultNodesData } from '@/constants/graphDefaults';
 import type { EdgesData } from '@/types/edges';
 import type { NodesData } from '@/types/nodes';
 import { Logger } from '@Logger';

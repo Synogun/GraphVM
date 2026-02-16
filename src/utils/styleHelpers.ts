@@ -1,4 +1,4 @@
-import { DefaultEdgesData, DefaultNodesData } from '@/config/graphDefaults';
+import { DefaultEdgesData, DefaultNodesData } from '@/constants/graphDefaults';
 import type { EdgeCurveStyle, EdgesData } from '@/types/edges';
 import {
     isDefaultEdgeData,

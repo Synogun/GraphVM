@@ -2,7 +2,7 @@ import {
     DefaultEdgesData,
     DefaultGraphOptions,
     DefaultNodesData,
-} from '@/config/graphDefaults';
+} from '@/constants/graphDefaults';
 import { Logger } from '@Logger';
 import cytoscape from 'cytoscape';
 

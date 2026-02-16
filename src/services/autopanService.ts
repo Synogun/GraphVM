@@ -1,4 +1,4 @@
-import { DefaultAutopanOptions } from '@/config/graphDefaults';
+import { DefaultAutopanOptions } from '@/constants/graphDefaults';
 import type { AutopanOptions } from '@/types/graph';
 import { Logger } from '@Logger';
 import type cytoscape from 'cytoscape';

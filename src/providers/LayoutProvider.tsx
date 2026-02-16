@@ -1,4 +1,4 @@
-import { DefaultLayoutOptions } from '@/config/layoutDefaults';
+import { DefaultLayoutOptions } from '@/constants/layoutDefaults';
 import type { LayoutType } from '@/types/layout';
 import { isLayoutType } from '@/types/layoutTypeGuards';
 import { LayoutContext } from '@Contexts';

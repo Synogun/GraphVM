@@ -1,4 +1,4 @@
-import { DefaultEdgesData } from '@/config/graphDefaults';
+import { DefaultEdgesData } from '@/constants/graphDefaults';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { updateEdges } from '@/services/edgesService';
 import {

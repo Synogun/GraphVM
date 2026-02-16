@@ -1,4 +1,4 @@
-import { DefaultNodesData } from '@/config/graphDefaults';
+import { DefaultNodesData } from '@/constants/graphDefaults';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { updateNodes } from '@/services/nodesService';
 import { isNodeShape, ValidNodeShapes } from '@/types/nodesTypeGuards';
