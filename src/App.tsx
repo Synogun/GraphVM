@@ -12,12 +12,14 @@ export function App() {
     const [loadingApp, setLoadingApp] = useState(true);
 
     useEffect(() => {
-        // Simulate loading time
+        // Simulated loading time - Users thinks its more natural
+        // https://uxmag.com/articles/let-your-users-wait
+        // https://www.reddit.com/r/webdev/comments/ul3tij/does_anyone_add_artificial_loading_time_to_their/
         const timer = setTimeout(
             () => {
                 setLoadingApp(false);
             },
-            !isDev() ? 5.0 * 1000 : 10
+            isDev() ? 0 : 700 + Math.random() * 300 // 700-1000ms
         );
 
         return () => {

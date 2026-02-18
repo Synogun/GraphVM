@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `UI` - Reduced and added clarification comment on artificial loading time of the application.
+
 ### Fixed
 
 ### Removed
