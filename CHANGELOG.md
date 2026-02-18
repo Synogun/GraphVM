@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `DEV` - Fixed an issue with browser expecting css sourcemap.
+
 ### Removed
 
 ## [v2.0.0](https://github.com/Synogun/GraphVM/compare/v1.2.0...v2.0.0)
