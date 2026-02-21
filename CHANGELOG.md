@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+
+- `UI` - Introduced a settings context for managing application settings and defaults.
+
 ### Changed
 
 - `UI` - Reduced and added clarification comment on artificial loading time of the application.
