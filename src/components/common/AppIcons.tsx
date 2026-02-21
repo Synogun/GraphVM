@@ -5,7 +5,12 @@ import { FaCheck, FaGithub } from 'react-icons/fa';
 import { FaCircleInfo, FaCode } from 'react-icons/fa6';
 import { FiHelpCircle } from 'react-icons/fi';
 import { GoTrash } from 'react-icons/go';
-import { IoAddCircleOutline, IoClose, IoCloseCircle } from 'react-icons/io5';
+import {
+    IoAddCircleOutline,
+    IoClose,
+    IoCloseCircle,
+    IoWarningOutline,
+} from 'react-icons/io5';
 import { MdFilterCenterFocus, MdPalette, MdSettings } from 'react-icons/md';
 import { PiFediverseLogo, PiGraph, PiLineSegments, PiShuffle } from 'react-icons/pi';
 import { RiSave3Fill } from 'react-icons/ri';
@@ -51,4 +56,5 @@ export const AppIcons = {
     Import: (props: IconBaseProps) => <BiImport {...props} />,
     Export: (props: IconBaseProps) => <BiExport {...props} />,
     Info: (props: IconBaseProps) => <FaCircleInfo {...props} />,
+    Warning: (props: IconBaseProps) => <IoWarningOutline {...props} />,
 };
