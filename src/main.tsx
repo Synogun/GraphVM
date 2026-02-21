@@ -1,11 +1,11 @@
 import { App } from '@/App';
-import '@/index.css';
 import { ModalsProvider } from '@/providers/ModalsProvider.js';
 import '@/styles/animations.css';
+import '@/styles/main.css';
 import { isDev } from '@/utils/general';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { importCytoscapeExtensions } from './utils/extensions';
+import { importCytoscapeExtensions } from './config/extensions';
 
 importCytoscapeExtensions();
 

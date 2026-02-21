@@ -1,4 +1,4 @@
-import { isDev } from './general';
+import { isDev } from '../utils/general';
 
 /**
  * Logger utility for logging messages with different levels and contexts.
