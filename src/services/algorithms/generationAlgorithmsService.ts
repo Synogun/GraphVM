@@ -1,3 +1,4 @@
+import { ParsedError } from '@/config/parsedError';
 import {
     MinimumBipartiteGenerationParams,
     MinimumCircleGenerationParams,
@@ -18,13 +19,10 @@ import type {
     StarGraphParams,
     WheelGraphParams,
 } from '@/types/algorithms';
-import { Logger } from '@Logger';
 import type cytoscape from 'cytoscape';
 import { addEdge, addEdges } from '../edgesService';
 import { arrangeGraph } from '../layoutService';
 import { addNode } from '../nodesService';
-
-const logger = Logger.createContextLogger('AlgorithmsService');
 
 export function generateCompleteGraph(
     graph: cytoscape.Core,
@@ -35,10 +33,9 @@ export function generateCompleteGraph(
 
     const minimumNodeCount = MinimumCompleteGenerationParams.nodeCount;
     if (nodeCount < minimumNodeCount) {
-        logger.error(
+        throw new ParsedError(
             `Node count must be at least ${minimumNodeCount.toString()} for a valid complete graph.`
         );
-        return;
     }
 
     clearGraph(graph);
@@ -73,11 +70,10 @@ export function generateGridGraph(
     const minimumRows = MinimumGridGenerationParams.rows;
     const minimumCols = MinimumGridGenerationParams.cols;
     if (rows < minimumRows || cols < minimumCols) {
-        logger.error(
+        throw new ParsedError(
             `Rows must be at least ${minimumRows.toString()} and ` +
                 `columns must be at least ${minimumCols.toString()}.`
         );
-        return;
     }
 
     clearGraph(graph);
@@ -136,10 +132,9 @@ export function generateCircleGraph(
 
     const minimumNodeCount = MinimumCircleGenerationParams.nodeCount;
     if (nodeCount < minimumNodeCount) {
-        logger.error(
+        throw new ParsedError(
             `Node count must be at least ${minimumNodeCount.toString()} for a valid circle graph.`
         );
-        return;
     }
 
     clearGraph(graph);
@@ -177,10 +172,9 @@ export function generateStarGraph(
 
     const minimumNodeCount = MinimumStarGenerationParams.nodeCount;
     if (nodeCount < minimumNodeCount) {
-        logger.error(
+        throw new ParsedError(
             `Node count must be at least ${minimumNodeCount.toString()} for a valid star graph.`
         );
-        return;
     }
 
     // Clear existing graph
@@ -216,10 +210,9 @@ export function generateWheelGraph(
 
     const minimumNodeCount = MinimumWheelGenerationParams.nodeCount;
     if (nodeCount < minimumNodeCount) {
-        logger.error(
+        throw new ParsedError(
             `Node count must be at least ${minimumNodeCount.toString()} for a valid wheel graph.`
         );
-        return;
     }
 
     clearGraph(graph);
@@ -270,10 +263,9 @@ export function generateBipartiteGraph(
     const minimumSetASize = MinimumBipartiteGenerationParams.setASize;
     const minimumSetBSize = MinimumBipartiteGenerationParams.setBSize;
     if (setASize < minimumSetASize || setBSize < minimumSetBSize) {
-        logger.error(
+        throw new ParsedError(
             `Set sizes must be at least ${minimumSetASize.toString()} and ${minimumSetBSize.toString()}.`
         );
-        return;
     }
 
     clearGraph(graph);
@@ -322,10 +314,9 @@ export function generateCompleteBipartiteGraph(
     const minimumSetASize = MinimumCompleteBipartiteGenerationParams.setASize;
     const minimumSetBSize = MinimumCompleteBipartiteGenerationParams.setBSize;
     if (setASize < minimumSetASize || setBSize < minimumSetBSize) {
-        logger.error(
+        throw new ParsedError(
             `Set sizes must be at least ${minimumSetASize.toString()} and ${minimumSetBSize.toString()}.`
         );
-        return;
     }
 
     clearGraph(graph);
@@ -372,11 +363,10 @@ export function generateSimpleGraph(
     const minimumNodeCount = MinimumSimpleGenerationParams.nodeCount;
     const minimumEdgeCount = MinimumSimpleGenerationParams.edgeCount;
     if (nodeCount < minimumNodeCount || edgeCount < minimumEdgeCount) {
-        logger.error(
+        throw new ParsedError(
             `Node count must be at least ${minimumNodeCount.toString()} and ` +
                 `edge count must be at least ${minimumEdgeCount.toString()} for a valid simple graph.`
         );
-        return;
     }
 
     clearGraph(graph);

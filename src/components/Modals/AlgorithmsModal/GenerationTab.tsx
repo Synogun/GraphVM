@@ -1,4 +1,4 @@
-import { ParsedErrorToastEnum } from '@/config/parsedError';
+import { ParsedErrorToastEnum, parseError } from '@/config/parsedError';
 import {
     DefaultBipartiteGenerationParams,
     DefaultCircleGenerationParams,
@@ -28,7 +28,7 @@ import {
 import type { GenerationFamily, GenerationParams } from '@/types/algorithms';
 import { useLayoutProperties, useToasts } from '@Contexts';
 import { SelectInput } from '@Inputs';
-import { forwardRef, useImperativeHandle, useState } from 'react';
+import { forwardRef, useImperativeHandle, useMemo, useState } from 'react';
 import {
     BipartiteParamsInput,
     CircleParamsInput,
@@ -145,76 +145,85 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
         }
 
         let layout = currentLayout;
-        switch (params.family) {
-            case 'complete':
-                generateCompleteGraph(graph.current, params, layout);
-                break;
-            case 'grid':
-                if (params.applyGridLayout) {
-                    layout = {
-                        ...layout,
-                        name: 'grid',
-                        rows: params.rows,
-                        cols: params.cols,
-                    };
-                    setType('grid');
-                    setLayout({ ...layout });
-                    grid.setCols(params.cols);
-                    grid.setRows(params.rows);
-                }
-                generateGridGraph(graph.current, params, layout);
-                break;
-            case 'circle':
-                if (params.applyCircleLayout) {
-                    layout = { ...layout, name: 'circle' };
-                    setType('circle');
-                    setLayout({ ...layout });
-                }
-                generateCircleGraph(graph.current, params, layout);
-                break;
-            case 'star':
-                if (params.applyConcentricLayout) {
-                    layout = { ...layout, name: 'concentric' };
-                    setType('concentric');
-                    setLayout({
-                        ...layout,
-                        name: 'concentric',
-                    });
-                }
-                generateStarGraph(graph.current, params, layout);
-                break;
-            case 'wheel':
-                if (params.applyConcentricLayout) {
-                    layout = { ...layout, name: 'concentric' };
-                    setType('concentric');
-                    setLayout({ ...layout });
-                }
-                generateWheelGraph(graph.current, params, layout);
-                break;
-            // case 'cayley':
-            //     generateCayleyGraph(graph.current, params, layout);
-            //     break;
-            case 'bipartite':
-                generateBipartiteGraph(graph.current, params, layout);
-                break;
-            case 'complete-bipartite':
-                generateCompleteBipartiteGraph(graph.current, params, layout);
-                break;
-            case 'simple':
-                if (params.applyFcoseLayout) {
-                    layout = { ...layout, name: 'circle' };
-                    setType('circle');
-                    setLayout({ ...layout });
-                }
-                generateSimpleGraph(graph.current, params, layout);
-                break;
+        try {
+            switch (params.family) {
+                case 'complete':
+                    generateCompleteGraph(graph.current, params, layout);
+                    break;
+                case 'grid':
+                    if (params.applyGridLayout) {
+                        layout = {
+                            ...layout,
+                            name: 'grid',
+                            rows: params.rows,
+                            cols: params.cols,
+                        };
+                        setType('grid');
+                        setLayout({ ...layout });
+                        grid.setCols(params.cols);
+                        grid.setRows(params.rows);
+                    }
+                    generateGridGraph(graph.current, params, layout);
+                    break;
+                case 'circle':
+                    if (params.applyCircleLayout) {
+                        layout = { ...layout, name: 'circle' };
+                        setType('circle');
+                        setLayout({ ...layout });
+                    }
+                    generateCircleGraph(graph.current, params, layout);
+                    break;
+                case 'star':
+                    if (params.applyConcentricLayout) {
+                        layout = { ...layout, name: 'concentric' };
+                        setType('concentric');
+                        setLayout({
+                            ...layout,
+                            name: 'concentric',
+                        });
+                    }
+                    generateStarGraph(graph.current, params, layout);
+                    break;
+                case 'wheel':
+                    if (params.applyConcentricLayout) {
+                        layout = { ...layout, name: 'concentric' };
+                        setType('concentric');
+                        setLayout({ ...layout });
+                    }
+                    generateWheelGraph(graph.current, params, layout);
+                    break;
+                // case 'cayley':
+                //     generateCayleyGraph(graph.current, params, layout);
+                //     break;
+                case 'bipartite':
+                    generateBipartiteGraph(graph.current, params, layout);
+                    break;
+                case 'complete-bipartite':
+                    generateCompleteBipartiteGraph(graph.current, params, layout);
+                    break;
+                case 'simple':
+                    if (params.applyFcoseLayout) {
+                        layout = { ...layout, name: 'circle' };
+                        setType('circle');
+                        setLayout({ ...layout });
+                    }
+                    generateSimpleGraph(graph.current, params, layout);
+                    break;
 
-            default:
-                addToast({
-                    type: 'error',
-                    message: `Invalid graph family selected: ${String(params)}`,
-                });
-                return;
+                default:
+                    addToast({
+                        type: 'error',
+                        message: `Invalid graph family selected: ${String(params)}`,
+                    });
+                    return;
+            }
+        } catch (error) {
+            const parsedError = parseError(error);
+            addToast({
+                type: 'error',
+                message: parsedError.message,
+            });
+            return;
         }
 
         setParams({ ...DefaultGenerationParams });
@@ -271,16 +280,20 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
         }
     };
 
+    const graphFamilySelectOptions = useMemo(() => {
+        return ValidGenerationFamilies.map((family) => ({
+            label: family.charAt(0).toUpperCase() + family.slice(1),
+            value: family,
+        }));
+    }, []);
+
     return (
         <div className="flex flex-col gap-4 py-4">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
                     <SelectInput
                         label="Graph Family"
-                        options={ValidGenerationFamilies.map((family) => ({
-                            label: family.charAt(0).toUpperCase() + family.slice(1),
-                            value: family,
-                        }))}
+                        options={graphFamilySelectOptions}
                         value={params.family}
                         onChange={updateFamily}
                     />
