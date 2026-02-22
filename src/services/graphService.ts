@@ -49,9 +49,6 @@ export function newGraph(
             : false;
     setGraphDirected(newGraph, initialDirected);
 
-    newGraph.data('numNodes', newGraph.nodes().length);
-    newGraph.data('numEdges', newGraph.edges().length);
-
     return newGraph;
 }
 

@@ -34,7 +34,6 @@ export function addNode(
         classes: [...(classes ?? [])],
     });
 
-    core.data('numNodes', core.nodes().length);
     return core.$id(newId);
 }
 
@@ -64,7 +63,6 @@ export function addNodes(
     });
 
     core.add(newNodes);
-    core.data('numNodes', numNodes + newNodes.length);
 }
 
 export function removeNodes(
@@ -89,8 +87,6 @@ export function removeNodes(
         // this.removedNodes.push(node);
         core.remove(node);
     });
-
-    core.data('numNodes', core.nodes().length);
 }
 
 export function updateNodes(
