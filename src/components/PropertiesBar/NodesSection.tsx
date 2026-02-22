@@ -1,10 +1,11 @@
+import { ParsedErrorToastEnum, parseError } from '@/config/parsedError';
 import { DefaultNodesData } from '@/constants/graphDefaults';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { updateNodes } from '@/services/nodesService';
 import { isNodeShape, ValidNodeShapes } from '@/types/nodesTypeGuards';
 import { findPropertyValueMode, parseKebabCase } from '@/utils/elements';
 import { getDefaultNodesData, setDefaultNodesData } from '@/utils/styleHelpers';
-import { useGraphProperties, useNodeProperties } from '@Contexts';
+import { useGraphProperties, useNodeProperties, useToasts } from '@Contexts';
 import { ColorInput, SelectInput } from '@Inputs';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
@@ -16,8 +17,11 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
         nodes: { selected: selectedNodes },
     } = useGraphProperties();
 
+    const { addToast } = useToasts();
+
     useEffect(() => {
         if (!graphRef.current) {
+            addToast(ParsedErrorToastEnum.GraphNotFound);
             return;
         }
 
@@ -41,7 +45,7 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
 
         setColor(modeColor);
         setShape(isNodeShape(modeShape) ? modeShape : defaultNodeShape);
-    }, [graphRef, selectedNodes, setColor, setShape]);
+    }, [graphRef, selectedNodes, setColor, setShape, addToast]);
 
     // const handleChangeLabel = (e: ChangeEvent<HTMLInputElement>) => {
     //     if (!graphRef.current) { return; }
@@ -55,13 +59,25 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
 
     const handleChangeColor = (e: ChangeEvent<HTMLInputElement>) => {
         if (!graphRef.current) {
+            addToast(ParsedErrorToastEnum.GraphNotFound);
             return;
         }
 
         if (selectedNodes.length === 0) {
             setDefaultNodesData(graphRef.current, { color: e.target.value });
         } else {
-            updateNodes(graphRef.current, selectedNodes, 'color', e.target.value);
+            try {
+                updateNodes(
+                    graphRef.current,
+                    selectedNodes,
+                    'color',
+                    e.target.value
+                );
+            } catch (error) {
+                const parsedError = parseError(error);
+                addToast({ type: 'error', message: parsedError.message });
+                return;
+            }
         }
 
         setColor(e.target.value);
@@ -69,6 +85,7 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
 
     const handleChangeShape = (e: ChangeEvent<HTMLSelectElement>) => {
         if (!graphRef.current) {
+            addToast(ParsedErrorToastEnum.GraphNotFound);
             return;
         }
 
@@ -82,7 +99,13 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
         if (selectedNodes.length === 0) {
             setDefaultNodesData(graphRef.current, { shape: parsedValue });
         } else {
-            updateNodes(graphRef.current, selectedNodes, 'shape', parsedValue);
+            try {
+                updateNodes(graphRef.current, selectedNodes, 'shape', parsedValue);
+            } catch (error) {
+                const parsedError = parseError(error);
+                addToast({ type: 'error', message: parsedError.message });
+                return;
+            }
         }
 
         setShape(parsedValue);
