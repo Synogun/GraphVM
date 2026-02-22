@@ -24,39 +24,39 @@ function hasDefaultData(cy: cytoscape.Core): boolean {
     );
 }
 
-export function getDefaultNodesData(cy: cytoscape.Core): NodesData {
-    const defaults: unknown = cy.data('defaultNodesData');
+export function getDefaultNodesData(graph: cytoscape.Core): NodesData {
+    const defaults: unknown = graph.data('defaultNodesData');
     return isDefaultNodeData(defaults) ? defaults : { ...DefaultNodesData };
 }
 
 export function setDefaultNodesData(
-    cy: cytoscape.Core,
+    graph: cytoscape.Core,
     data: Partial<NodesData>
 ): void {
-    const defaults = getDefaultNodesData(cy);
-    cy.data('defaultNodesData', { ...defaults, ...data });
+    const defaults = getDefaultNodesData(graph);
+    graph.data('defaultNodesData', { ...defaults, ...data });
 }
 
-export function getDefaultEdgesData(cy: cytoscape.Core): EdgesData {
-    const defaults: unknown = cy.data('defaultEdgesData');
+export function getDefaultEdgesData(graph: cytoscape.Core): EdgesData {
+    const defaults: unknown = graph.data('defaultEdgesData');
     return isDefaultEdgeData(defaults) ? defaults : { ...DefaultEdgesData };
 }
 
 export function setDefaultEdgesData(
-    cy: cytoscape.Core,
+    graph: cytoscape.Core,
     data: Partial<EdgesData>
 ): void {
-    const defaults = getDefaultEdgesData(cy);
-    cy.data('defaultEdgesData', { ...defaults, ...data });
+    const defaults = getDefaultEdgesData(graph);
+    graph.data('defaultEdgesData', { ...defaults, ...data });
 }
 
 export function getNodeShape(e: NodeSingular): cytoscape.Css.NodeShape {
     const shape: unknown = e.data('shape');
     if (isNodeShape(shape)) return shape;
 
-    const cy = e.cy();
-    if (hasDefaultData(cy)) {
-        const defaults = getDefaultNodesData(cy);
+    const graph = e.cy();
+    if (hasDefaultData(graph)) {
+        const defaults = getDefaultNodesData(graph);
         return defaults.shape;
     }
 
@@ -65,7 +65,7 @@ export function getNodeShape(e: NodeSingular): cytoscape.Css.NodeShape {
 
 export function getEdgeLabel(e: EdgeSingular): string {
     const label: unknown = e.data('label');
-    const cy = e.cy();
+    const graph = e.cy();
 
     let effectiveLabel = 'hidden';
 
@@ -74,8 +74,8 @@ export function getEdgeLabel(e: EdgeSingular): string {
         effectiveLabel = label;
     }
     // 2. Try to use default data
-    else if (hasDefaultData(cy)) {
-        const defaults = getDefaultEdgesData(cy);
+    else if (hasDefaultData(graph)) {
+        const defaults = getDefaultEdgesData(graph);
         effectiveLabel = defaults.label;
     }
 
@@ -94,9 +94,9 @@ export function getEdgeStyle(e: EdgeSingular): cytoscape.Css.LineStyle {
     const style: unknown = e.data('style');
     if (isEdgeLineStyle(style)) return style;
 
-    const cy = e.cy();
-    if (hasDefaultData(cy)) {
-        const defaults = getDefaultEdgesData(cy);
+    const graph = e.cy();
+    if (hasDefaultData(graph)) {
+        const defaults = getDefaultEdgesData(graph);
         return defaults.style;
     }
 
@@ -107,9 +107,9 @@ export function getEdgeCurve(e: EdgeSingular): EdgeCurveStyle {
     const curve: unknown = e.data('curve');
     if (isEdgeCurve(curve)) return curve;
 
-    const cy = e.cy();
-    if (hasDefaultData(cy)) {
-        const defaults = getDefaultEdgesData(cy);
+    const graph = e.cy();
+    if (hasDefaultData(graph)) {
+        const defaults = getDefaultEdgesData(graph);
         return defaults.curve;
     }
 
@@ -120,9 +120,9 @@ export function getEdgeArrowShape(e: EdgeSingular): cytoscape.Css.ArrowShape {
     const shape: unknown = e.data('arrowShape');
     if (isEdgeArrowShape(shape)) return shape;
 
-    const cy = e.cy();
-    if (hasDefaultData(cy)) {
-        const defaults = getDefaultEdgesData(cy);
+    const graph = e.cy();
+    if (hasDefaultData(graph)) {
+        const defaults = getDefaultEdgesData(graph);
         return defaults.arrowShape;
     }
 

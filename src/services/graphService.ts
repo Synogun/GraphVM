@@ -3,10 +3,7 @@ import {
     DefaultGraphOptions,
     DefaultNodesData,
 } from '@/constants/graphDefaults';
-import { Logger } from '@Logger';
 import cytoscape from 'cytoscape';
-
-const logger = Logger.createContextLogger('GraphService');
 
 export function setGraphDirected(
     core: cytoscape.Core,
@@ -24,8 +21,6 @@ export function setGraphDirected(
     } else {
         edges.removeClass('directed');
     }
-
-    logger.info('setGraphDirected > set directed to', directed);
 }
 
 export function newGraph(
@@ -57,7 +52,6 @@ export function newGraph(
     newGraph.data('numNodes', newGraph.nodes().length);
     newGraph.data('numEdges', newGraph.edges().length);
 
-    logger.info('newGraph > created new graph instance in container:', containerId);
     return newGraph;
 }
 
@@ -69,5 +63,4 @@ export function destroyGraph(core: cytoscape.Core): void {
     }
 
     core.destroy();
-    logger.info('destroyGraph > destroyed graph');
 }
