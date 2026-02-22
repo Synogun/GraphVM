@@ -8,10 +8,7 @@ import {
 import { getDefaultEdgesData } from '@/utils/styleHelpers';
 
 export function makeEdgeId() {
-    const currentTime = Date.now().toString();
-    const randomInteger = Math.floor(Math.random() * 10000).toString();
-
-    return `edge-${currentTime}-${randomInteger}`;
+    return crypto.randomUUID();
 }
 
 export function addEdge(
@@ -43,10 +40,9 @@ export function addEdge(
         classes: [...(classes ?? [])],
     });
 
-    const isDirected =
-        options.data.directed && Boolean(options.data.directed)
-            ? Boolean(options.data.directed)
-            : Boolean(core.data('directed'));
+    const isDirected = Boolean(options.data.directed)
+        ? Boolean(options.data.directed)
+        : Boolean(core.data('directed'));
 
     if (isDirected) {
         core.$id(newId).addClass('directed');

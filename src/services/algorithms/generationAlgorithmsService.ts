@@ -178,7 +178,7 @@ export function generateStarGraph(
     }
 
     // Clear existing graph
-    graph.elements().remove();
+    clearGraph(graph);
 
     // Add central node
     const centerNode = addNode(graph);

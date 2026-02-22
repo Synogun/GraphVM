@@ -1,4 +1,4 @@
-import { ParsedErrorToastEnum } from '@/config/parsedError';
+import { ParsedErrorToast } from '@/config/parsedError';
 import {
     DefaultGridLayoutOptions,
     DefaultLayoutOptions,
@@ -25,7 +25,7 @@ export function LayoutSection({ visible = true }: LayoutSectionProps) {
 
     useEffect(() => {
         if (!graphRef.current) {
-            addToast(ParsedErrorToastEnum.GraphNotFound);
+            addToast(ParsedErrorToast.GraphNotFound);
             return;
         }
 
@@ -90,7 +90,7 @@ export function LayoutSection({ visible = true }: LayoutSectionProps) {
 
     const handleRandomLayout = () => {
         if (!graphRef.current) {
-            addToast(ParsedErrorToastEnum.GraphNotFound);
+            addToast(ParsedErrorToast.GraphNotFound);
             return;
         }
         arrangeGraph(graphRef.current, { name: 'random' });

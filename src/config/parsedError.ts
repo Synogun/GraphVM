@@ -30,6 +30,6 @@ export function parseError(error: unknown, context?: Jsonable): ParsedError {
     return new ParsedError(String(error), { context });
 }
 
-export const ParsedErrorToastEnum: Record<string, Omit<ToastData, 'id'>> = {
+export const ParsedErrorToast: Record<string, Omit<ToastData, 'id'>> = {
     GraphNotFound: { type: 'error', message: 'Graph instance not found.' },
 };

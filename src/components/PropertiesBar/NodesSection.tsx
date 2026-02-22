@@ -1,4 +1,4 @@
-import { ParsedErrorToastEnum, parseError } from '@/config/parsedError';
+import { ParsedErrorToast, parseError } from '@/config/parsedError';
 import { DefaultNodesData } from '@/constants/graphDefaults';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { updateNodes } from '@/services/nodesService';
@@ -21,7 +21,7 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
 
     useEffect(() => {
         if (!graphRef.current) {
-            addToast(ParsedErrorToastEnum.GraphNotFound);
+            addToast(ParsedErrorToast.GraphNotFound);
             return;
         }
 
@@ -59,7 +59,7 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
 
     const handleChangeColor = (e: ChangeEvent<HTMLInputElement>) => {
         if (!graphRef.current) {
-            addToast(ParsedErrorToastEnum.GraphNotFound);
+            addToast(ParsedErrorToast.GraphNotFound);
             return;
         }
 
@@ -85,7 +85,7 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
 
     const handleChangeShape = (e: ChangeEvent<HTMLSelectElement>) => {
         if (!graphRef.current) {
-            addToast(ParsedErrorToastEnum.GraphNotFound);
+            addToast(ParsedErrorToast.GraphNotFound);
             return;
         }
 

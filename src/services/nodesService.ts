@@ -5,10 +5,7 @@ import type cytoscape from 'cytoscape';
 import { removeEdges } from './edgesService';
 
 export function makeNodeId() {
-    const currentTime = Date.now().toString();
-    const randomInteger = Math.floor(Math.random() * 10000).toString();
-
-    return `node-${currentTime}-${randomInteger}`;
+    return crypto.randomUUID();
 }
 
 export function addNode(

@@ -1,4 +1,4 @@
-import { ParsedErrorToastEnum, parseError } from '@/config/parsedError';
+import { ParsedErrorToast, parseError } from '@/config/parsedError';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { addEdges, removeEdges } from '@/services/edgesService';
 import { arrangeGraph, centerGraph } from '@/services/layoutService';
@@ -54,7 +54,7 @@ export function useActionBarLogic() {
         const graph = graphRef.current;
 
         if (!graph) {
-            addToast(ParsedErrorToastEnum.GraphNotFound);
+            addToast(ParsedErrorToast.GraphNotFound);
             return;
         }
 
@@ -88,7 +88,7 @@ export function useActionBarLogic() {
     const handleArrangeGraph = useCallback(() => {
         const graph = graphRef.current;
         if (!graph) {
-            addToast(ParsedErrorToastEnum.GraphNotFound);
+            addToast(ParsedErrorToast.GraphNotFound);
             return;
         }
 
@@ -106,7 +106,7 @@ export function useActionBarLogic() {
     const handleCenterGraph = useCallback(() => {
         const graph = graphRef.current;
         if (!graph) {
-            addToast(ParsedErrorToastEnum.GraphNotFound);
+            addToast(ParsedErrorToast.GraphNotFound);
             return;
         }
 
@@ -119,7 +119,7 @@ export function useActionBarLogic() {
     const handleAddNode = useCallback(() => {
         const graph = graphRef.current;
         if (!graph) {
-            addToast(ParsedErrorToastEnum.GraphNotFound);
+            addToast(ParsedErrorToast.GraphNotFound);
             return;
         }
 
@@ -131,7 +131,7 @@ export function useActionBarLogic() {
     const handleAddEdges = useCallback(() => {
         const graph = graphRef.current;
         if (!graph) {
-            addToast(ParsedErrorToastEnum.GraphNotFound);
+            addToast(ParsedErrorToast.GraphNotFound);
             return;
         }
 
@@ -175,7 +175,7 @@ export function useActionBarLogic() {
 
     const handleDeleteSelected = useCallback(() => {
         if (!graphRef.current) {
-            addToast(ParsedErrorToastEnum.GraphNotFound);
+            addToast(ParsedErrorToast.GraphNotFound);
             return;
         }
 

@@ -1,4 +1,4 @@
-import { ParsedErrorToastEnum, parseError } from '@/config/parsedError';
+import { ParsedErrorToast, parseError } from '@/config/parsedError';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { mapElementsToText } from '@/services/importExportService';
 import { isCytoscapeOptions, isStylesheetStyleArray } from '@/types/graphTypeGuards';
@@ -61,7 +61,7 @@ export function ExportTab({
 
     const handleExport = () => {
         if (!graphRef.current) {
-            addToast(ParsedErrorToastEnum.GraphNotFound);
+            addToast(ParsedErrorToast.GraphNotFound);
             return;
         }
 

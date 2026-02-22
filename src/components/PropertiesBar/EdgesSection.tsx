@@ -1,4 +1,4 @@
-import { ParsedErrorToastEnum, parseError } from '@/config/parsedError';
+import { ParsedErrorToast, parseError } from '@/config/parsedError';
 import { DefaultEdgesData } from '@/constants/graphDefaults';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { updateEdges } from '@/services/edgesService';
@@ -44,7 +44,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
 
     useEffect(() => {
         if (!graphRef.current) {
-            addToast(ParsedErrorToastEnum.GraphNotFound);
+            addToast(ParsedErrorToast.GraphNotFound);
             return;
         }
 
@@ -110,7 +110,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
 
     const handleChangeLabel = (e: ChangeEvent<HTMLSelectElement>) => {
         if (!graphRef.current) {
-            addToast(ParsedErrorToastEnum.GraphNotFound);
+            addToast(ParsedErrorToast.GraphNotFound);
             return;
         }
 
@@ -137,7 +137,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
 
     const handleChangeWeight = (e: ChangeEvent<HTMLInputElement>) => {
         if (!graphRef.current) {
-            addToast(ParsedErrorToastEnum.GraphNotFound);
+            addToast(ParsedErrorToast.GraphNotFound);
             return;
         }
 
@@ -164,7 +164,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
 
     const handleChangeColor = (e: ChangeEvent<HTMLInputElement>) => {
         if (!graphRef.current) {
-            addToast(ParsedErrorToastEnum.GraphNotFound);
+            addToast(ParsedErrorToast.GraphNotFound);
             return;
         }
 
@@ -190,7 +190,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
 
     const handleChangeLineStyle = (e: ChangeEvent<HTMLSelectElement>) => {
         if (!graphRef.current) {
-            addToast(ParsedErrorToastEnum.GraphNotFound);
+            addToast(ParsedErrorToast.GraphNotFound);
             return;
         }
 
@@ -217,7 +217,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
 
     const handleChangeCurveStyle = (e: ChangeEvent<HTMLSelectElement>) => {
         if (!graphRef.current) {
-            addToast(ParsedErrorToastEnum.GraphNotFound);
+            addToast(ParsedErrorToast.GraphNotFound);
             return;
         }
 
@@ -244,7 +244,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
 
     const handleChangeArrowShape = (e: ChangeEvent<HTMLSelectElement>) => {
         if (!graphRef.current) {
-            addToast(ParsedErrorToastEnum.GraphNotFound);
+            addToast(ParsedErrorToast.GraphNotFound);
             return;
         }
 

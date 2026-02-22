@@ -1,4 +1,4 @@
-import { ParsedErrorToastEnum, parseError } from '@/config/parsedError';
+import { ParsedErrorToast, parseError } from '@/config/parsedError';
 import {
     DefaultBipartiteGenerationParams,
     DefaultCircleGenerationParams,
@@ -140,7 +140,7 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
 
     const handleRun = () => {
         if (!graph.current) {
-            addToast(ParsedErrorToastEnum.GraphNotFound);
+            addToast(ParsedErrorToast.GraphNotFound);
             return;
         }
 
