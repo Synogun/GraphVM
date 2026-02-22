@@ -377,10 +377,11 @@ export function generateSimpleGraph(
     }
 
     const nodes = graph.nodes();
+    const totalEdgeCount = Math.min(edgeCount, (nodeCount * (nodeCount - 1)) / 2);
 
     // Randomly add edges between nodes until we reach the desired edge count
     const existingEdges = new Set<string>();
-    while (existingEdges.size < edgeCount) {
+    while (existingEdges.size < totalEdgeCount) {
         const sourceIndex = Math.floor(Math.random() * nodeCount);
         const targetIndex = Math.floor(Math.random() * nodeCount);
         if (sourceIndex === targetIndex) continue; // No self-loops

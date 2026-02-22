@@ -16,7 +16,7 @@ import {
 } from '@/constants/algorithmDefaults';
 import type { GenerationParams } from '@/types/algorithms';
 import { NumberInput, ToggleInput } from '@Inputs';
-import type { ChangeEvent } from 'react';
+import { type ChangeEvent } from 'react';
 
 type ParamsInputProps = {
     params: GenerationParams;
@@ -278,6 +278,8 @@ export function SimpleParamsInput({ params, setParams }: ParamsInputProps) {
         return null;
     }
 
+    const maxEdgeCount = Math.floor((params.nodeCount * (params.nodeCount - 1)) / 2);
+
     return (
         <div className="grid grid-cols-3 items-center gap-4">
             <NumberInput
@@ -298,7 +300,7 @@ export function SimpleParamsInput({ params, setParams }: ParamsInputProps) {
                 label="Edge Count"
                 value={params.edgeCount}
                 min={MinimumSimpleGenerationParams.edgeCount}
-                max={100}
+                max={maxEdgeCount}
                 step={1}
                 defaultValue={DefaultSimpleGenerationParams.edgeCount}
                 tooltip={{
@@ -307,7 +309,7 @@ export function SimpleParamsInput({ params, setParams }: ParamsInputProps) {
                         'The algorithm will randomly connect pairs of ' +
                         'nodes until this number of edges is reached, ' +
                         'ensuring no self-loops or multiple edges between ' +
-                        'the same pair of nodes.',
+                        'the same pair of nodes. Maximum possible edges is n*(n-1)/2.',
                 }}
                 onChange={(e) => {
                     setParams({ ...params, edgeCount: getInt(e) });
