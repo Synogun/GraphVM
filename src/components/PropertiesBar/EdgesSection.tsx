@@ -276,7 +276,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
 
     const selectLabelOptions = useMemo(() => {
         return [
-            { label: '"Pick a label style"', value: '', title: true },
+            { label: 'Pick a label style', value: '', title: true },
             ...ValidEdgeLabelStyle.map((style) => ({
                 label: parseKebabCase(style),
                 value: style,
@@ -286,7 +286,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
 
     const selectLineStyleOptions = useMemo(() => {
         return [
-            { label: '"Pick a line style"', value: '', title: true },
+            { label: 'Pick a line style', value: '', title: true },
             ...ValidEdgeLineStyles.map((style) => ({
                 label: parseKebabCase(style),
                 value: style,
@@ -296,7 +296,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
 
     const selectCurveStyleOptions = useMemo(() => {
         return [
-            { label: '"Pick a curve style"', value: '', title: true },
+            { label: 'Pick a curve style', value: '', title: true },
             ...ValidEdgeCurves.map((style) => ({
                 label: parseKebabCase(style),
                 value: style,
@@ -306,7 +306,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
 
     const selectArrowShapeOptions = useMemo(() => {
         return [
-            { label: '"Pick an arrow shape"', value: '', title: true },
+            { label: 'Pick an arrow shape', value: '', title: true },
             ...ValidEdgeArrowShapes.map((shape) => ({
                 label: parseKebabCase(shape),
                 value: shape,
