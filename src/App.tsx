@@ -2,6 +2,7 @@ import { ActionBar } from '@/components/ActionBar';
 import { GraphCanvas } from '@/components/GraphCanvas';
 import { LoadingHero } from '@/components/LoadingHero';
 import { PropertiesBar } from '@/components/PropertiesBar';
+import { ToastArea } from '@/components/ToastArea';
 import { PropertiesProvider } from '@/providers/PropertiesProvider';
 import { isDev } from '@/utils/general';
 import { useModals } from '@Contexts';
@@ -56,6 +57,7 @@ export function App() {
                         <GraphCanvas containerId="main-graph" />
                     </ActionBar>
                 </PropertiesBar>
+                <ToastArea />
             </PropertiesProvider>
         </>
     );

@@ -1,3 +1,4 @@
+import { ParsedErrorToastEnum, parseError } from '@/config/parsedError';
 import { DefaultEdgesData } from '@/constants/graphDefaults';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { updateEdges } from '@/services/edgesService';
@@ -13,7 +14,7 @@ import {
 } from '@/types/edgesTypeGuards';
 import { findPropertyValueMode, parseKebabCase } from '@/utils/elements';
 import { getDefaultEdgesData, setDefaultEdgesData } from '@/utils/styleHelpers';
-import { useEdgesProperties, useGraphProperties } from '@Contexts';
+import { useEdgesProperties, useGraphProperties, useToasts } from '@Contexts';
 import { ColorInput, NumberInput, SelectInput } from '@Inputs';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
@@ -39,8 +40,11 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         edges: { selected: selectedEdges },
     } = useGraphProperties();
 
+    const { addToast } = useToasts();
+
     useEffect(() => {
         if (!graphRef.current) {
+            addToast(ParsedErrorToastEnum.GraphNotFound);
             return;
         }
 
@@ -101,10 +105,12 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         setCurveStyle,
         setWeight,
         setArrowShape,
+        addToast,
     ]);
 
     const handleChangeLabel = (e: ChangeEvent<HTMLSelectElement>) => {
         if (!graphRef.current) {
+            addToast(ParsedErrorToastEnum.GraphNotFound);
             return;
         }
 
@@ -117,7 +123,13 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         if (selectedEdges.length === 0) {
             setDefaultEdgesData(graphRef.current, { label: parsedValue });
         } else {
-            updateEdges(graphRef.current, selectedEdges, 'label', parsedValue);
+            try {
+                updateEdges(graphRef.current, selectedEdges, 'label', parsedValue);
+            } catch (error: unknown) {
+                const parsedError = parseError(error);
+                addToast({ type: 'error', message: parsedError.message });
+                return;
+            }
         }
 
         setLabelStyle(parsedValue);
@@ -125,6 +137,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
 
     const handleChangeWeight = (e: ChangeEvent<HTMLInputElement>) => {
         if (!graphRef.current) {
+            addToast(ParsedErrorToastEnum.GraphNotFound);
             return;
         }
 
@@ -137,7 +150,13 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         if (selectedEdges.length === 0) {
             setDefaultEdgesData(graphRef.current, { weight: parsedValue });
         } else {
-            updateEdges(graphRef.current, selectedEdges, 'weight', parsedValue);
+            try {
+                updateEdges(graphRef.current, selectedEdges, 'weight', parsedValue);
+            } catch (error: unknown) {
+                const parsedError = parseError(error);
+                addToast({ type: 'error', message: parsedError.message });
+                return;
+            }
         }
 
         setWeight(parsedValue);
@@ -145,13 +164,25 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
 
     const handleChangeColor = (e: ChangeEvent<HTMLInputElement>) => {
         if (!graphRef.current) {
+            addToast(ParsedErrorToastEnum.GraphNotFound);
             return;
         }
 
         if (selectedEdges.length === 0) {
             setDefaultEdgesData(graphRef.current, { color: e.target.value });
         } else {
-            updateEdges(graphRef.current, selectedEdges, 'color', e.target.value);
+            try {
+                updateEdges(
+                    graphRef.current,
+                    selectedEdges,
+                    'color',
+                    e.target.value
+                );
+            } catch (error: unknown) {
+                const parsedError = parseError(error);
+                addToast({ type: 'error', message: parsedError.message });
+                return;
+            }
         }
 
         setColor(e.target.value);
@@ -159,6 +190,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
 
     const handleChangeLineStyle = (e: ChangeEvent<HTMLSelectElement>) => {
         if (!graphRef.current) {
+            addToast(ParsedErrorToastEnum.GraphNotFound);
             return;
         }
 
@@ -171,7 +203,13 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         if (selectedEdges.length === 0) {
             setDefaultEdgesData(graphRef.current, { style: parsedValue });
         } else {
-            updateEdges(graphRef.current, selectedEdges, 'style', parsedValue);
+            try {
+                updateEdges(graphRef.current, selectedEdges, 'style', parsedValue);
+            } catch (error: unknown) {
+                const parsedError = parseError(error);
+                addToast({ type: 'error', message: parsedError.message });
+                return;
+            }
         }
 
         setLineStyle(parsedValue);
@@ -179,6 +217,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
 
     const handleChangeCurveStyle = (e: ChangeEvent<HTMLSelectElement>) => {
         if (!graphRef.current) {
+            addToast(ParsedErrorToastEnum.GraphNotFound);
             return;
         }
 
@@ -191,7 +230,13 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         if (selectedEdges.length === 0) {
             setDefaultEdgesData(graphRef.current, { curve: parsedValue });
         } else {
-            updateEdges(graphRef.current, selectedEdges, 'curve', parsedValue);
+            try {
+                updateEdges(graphRef.current, selectedEdges, 'curve', parsedValue);
+            } catch (error: unknown) {
+                const parsedError = parseError(error);
+                addToast({ type: 'error', message: parsedError.message });
+                return;
+            }
         }
 
         setCurveStyle(parsedValue);
@@ -199,6 +244,7 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
 
     const handleChangeArrowShape = (e: ChangeEvent<HTMLSelectElement>) => {
         if (!graphRef.current) {
+            addToast(ParsedErrorToastEnum.GraphNotFound);
             return;
         }
 
@@ -211,7 +257,18 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         if (selectedEdges.length === 0) {
             setDefaultEdgesData(graphRef.current, { arrowShape: parsedValue });
         } else {
-            updateEdges(graphRef.current, selectedEdges, 'arrowShape', parsedValue);
+            try {
+                updateEdges(
+                    graphRef.current,
+                    selectedEdges,
+                    'arrowShape',
+                    parsedValue
+                );
+            } catch (error: unknown) {
+                const parsedError = parseError(error);
+                addToast({ type: 'error', message: parsedError.message });
+                return;
+            }
         }
 
         setArrowShape(parsedValue);

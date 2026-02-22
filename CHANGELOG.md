@@ -9,12 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-
+- `UI` - Added a toast notification system with support for different types (success, error, info) and positions.
 - `UI` - Introduced a settings context for managing application settings and defaults.
 
 ### Changed
 
 - `UI` - Reduced and added clarification comment on artificial loading time of the application.
+- `UI` - Changed `ModalsProvider` to `PopupsProvider` to better reflect its purpose and added support for toasts.
 
 ### Fixed
 

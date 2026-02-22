@@ -37,8 +37,7 @@ export function AlgorithmsModal() {
         if (activeTab === 'generative') {
             generationTabRef.current?.handleRun();
         }
-        // handleClose(); // Optional: Close on run or wait for success?
-        // Usually better to let the operation close it or show feedback, but for now we follow ImportExport pattern
+
         handleClose();
     };
 

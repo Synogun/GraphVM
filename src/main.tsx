@@ -1,5 +1,5 @@
 import { App } from '@/App';
-import { ModalsProvider } from '@/providers/ModalsProvider.js';
+import { PopupsProvider } from '@/providers/PopupsProvider';
 import '@/styles/animations.css';
 import '@/styles/main.css';
 import { isDev } from '@/utils/general';
@@ -17,14 +17,14 @@ if (!rootElement) {
 
 const appComponent = isDev() ? (
     <StrictMode>
-        <ModalsProvider>
+        <PopupsProvider>
             <App />
-        </ModalsProvider>
+        </PopupsProvider>
     </StrictMode>
 ) : (
-    <ModalsProvider>
+    <PopupsProvider>
         <App />
-    </ModalsProvider>
+    </PopupsProvider>
 );
 
 createRoot(rootElement).render(appComponent);

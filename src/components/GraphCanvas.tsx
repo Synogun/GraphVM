@@ -1,14 +1,11 @@
 import { bindAutopan } from '@/services/autopanService';
 import { destroyGraph, newGraph } from '@/services/graphService';
 import type { GraphInstance } from '@/types/graph';
-import { useGraphProperties } from '@Contexts';
-import { Logger } from '@Logger';
+import { useGraphProperties, useToasts } from '@Contexts';
 import type cytoscape from 'cytoscape';
 import { useEffect, useRef } from 'react';
 import { useRegisterGraph } from '../hooks/useGraphRegistry';
 import { isArrayOfStrings } from '../types/typeGuards';
-
-const logger = Logger.createContextLogger('GraphCanvas');
 
 export function GraphCanvas({ containerId }: GraphCanvasProps) {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -19,8 +16,19 @@ export function GraphCanvas({ containerId }: GraphCanvasProps) {
         edges: { setSelected: setSelectedEdges },
     } = useGraphProperties();
 
+    const { addToast } = useToasts();
+    const addToastRef = useRef(addToast);
+
+    useEffect(() => {
+        addToastRef.current = addToast;
+    }, [addToast]);
+
     useEffect(() => {
         if (!containerRef.current) {
+            addToastRef.current({
+                type: 'error',
+                message: 'Graph container not found. Please try again.',
+            });
             return;
         }
 
@@ -42,7 +50,8 @@ export function GraphCanvas({ containerId }: GraphCanvasProps) {
                 !isArrayOfStrings(currentSelectedNodes) ||
                 !isArrayOfStrings(currentSelectedEdges)
             ) {
-                logger.error('Invalid selection order data');
+                const message = 'Invalid selection order data.';
+                addToastRef.current({ type: 'error', message });
                 return;
             }
             const targetNodes = target.filter('node').map((n) => n.id());

@@ -1,13 +1,16 @@
+import { ParsedErrorToastEnum, parseError } from '@/config/parsedError';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { addEdges, removeEdges } from '@/services/edgesService';
 import { arrangeGraph, centerGraph } from '@/services/layoutService';
 import { addNode, removeNodes } from '@/services/nodesService';
 import { isArrayOfStrings } from '@/types/typeGuards';
-import { useGraphProperties, useLayoutProperties, useModals } from '@Contexts';
-import { Logger } from '@Logger';
+import {
+    useGraphProperties,
+    useLayoutProperties,
+    useModals,
+    useToasts,
+} from '@Contexts';
 import { useCallback, useEffect, type ChangeEvent } from 'react';
-
-const logger = Logger.createContextLogger('ActionBarLogic');
 
 const DEFAULT_LAYOUT = { name: 'circle' };
 
@@ -39,19 +42,30 @@ export function useActionBarLogic() {
     const { current: currentLayout } = useLayoutProperties();
     const graphRef = useGetGraph('main-graph');
 
+    const { addToast } = useToasts();
+
+    useEffect(() => {
+        if (directed && edgeMode === 'complete') {
+            setEdgeMode('path');
+        }
+    }, [directed, edgeMode, setEdgeMode]);
+
     const handleNewGraph = useCallback(() => {
-        const cy = graphRef.current;
+        const graph = graphRef.current;
 
-        if (!cy) return;
+        if (!graph) {
+            addToast(ParsedErrorToastEnum.GraphNotFound);
+            return;
+        }
 
-        cy.elements().remove();
-        cy.data('directed', false);
+        graph.elements().remove();
+        graph.data('directed', false);
         setNodeCount(0);
         setEdgeCount(0);
         setSelectedNodes([]);
         setSelectedEdges([]);
-        cy.data('nodeSelectionOrder', []);
-        cy.data('edgeSelectionOrder', []);
+        graph.data('nodeSelectionOrder', []);
+        graph.data('edgeSelectionOrder', []);
         setDirected(false);
     }, [
         graphRef,
@@ -60,6 +74,7 @@ export function useActionBarLogic() {
         setNodeCount,
         setSelectedEdges,
         setSelectedNodes,
+        addToast,
     ]);
 
     const handleAlgorithms = useCallback(() => {
@@ -71,11 +86,14 @@ export function useActionBarLogic() {
     }, [setIsImportExportModalOpen]);
 
     const handleArrangeGraph = useCallback(() => {
-        const cy = graphRef.current;
-        if (!cy) return;
+        const graph = graphRef.current;
+        if (!graph) {
+            addToast(ParsedErrorToastEnum.GraphNotFound);
+            return;
+        }
 
-        arrangeGraph(cy, currentLayout ?? DEFAULT_LAYOUT);
-    }, [graphRef, currentLayout]);
+        arrangeGraph(graph, currentLayout ?? DEFAULT_LAYOUT);
+    }, [graphRef, currentLayout, addToast]);
 
     const handleSettings = useCallback(() => {
         setIsSettingsModalOpen(true);
@@ -86,68 +104,84 @@ export function useActionBarLogic() {
     }, [setIsHelpModalOpen]);
 
     const handleCenterGraph = useCallback(() => {
-        const cy = graphRef.current;
-        if (!cy) return;
+        const graph = graphRef.current;
+        if (!graph) {
+            addToast(ParsedErrorToastEnum.GraphNotFound);
+            return;
+        }
 
-        const currentSelected = cy.elements(':selected');
-        centerGraph(cy, currentSelected, 30);
-    }, [graphRef]);
+        const currentSelected = graph.elements(':selected');
+
+        //TODO: add default padding to graph properties
+        centerGraph(graph, currentSelected, 30);
+    }, [graphRef, addToast]);
 
     const handleAddNode = useCallback(() => {
-        const cy = graphRef.current;
-        if (!cy) return;
+        const graph = graphRef.current;
+        if (!graph) {
+            addToast(ParsedErrorToastEnum.GraphNotFound);
+            return;
+        }
 
-        addNode(cy);
-        setNodeCount(cy.nodes().length);
+        addNode(graph);
+        setNodeCount(graph.nodes().length);
         handleArrangeGraph();
-    }, [graphRef, setNodeCount, handleArrangeGraph]);
+    }, [graphRef, setNodeCount, handleArrangeGraph, addToast]);
 
     const handleAddEdges = useCallback(() => {
-        const cy = graphRef.current;
-        if (!cy) return;
+        const graph = graphRef.current;
+        if (!graph) {
+            addToast(ParsedErrorToastEnum.GraphNotFound);
+            return;
+        }
 
-        const currentSelectedNodes: unknown = cy.data('nodeSelectionOrder');
+        const currentSelectedNodes: unknown = graph.data('nodeSelectionOrder');
 
         if (!isArrayOfStrings(currentSelectedNodes)) {
-            logger.error('Invalid selection order data');
+            addToast({ type: 'warning', message: 'Invalid selection order data.' });
             return;
         }
 
         if (currentSelectedNodes.length < 2) {
-            logger.warn('Select at least two nodes to create an edge.');
+            addToast({ message: 'Select at least two nodes to create an edge.' });
             return;
         }
 
-        addEdges(cy, currentSelectedNodes, edgeMode);
-        setEdgeCount(cy.edges().length);
+        try {
+            addEdges(graph, currentSelectedNodes, edgeMode);
+        } catch (error: unknown) {
+            const parsedError = parseError(error);
+            addToast({ type: 'error', message: parsedError.message });
+            return;
+        }
+
+        setEdgeCount(graph.edges().length);
         handleArrangeGraph();
-    }, [edgeMode, graphRef, handleArrangeGraph, setEdgeCount]);
+    }, [graphRef, edgeMode, setEdgeCount, handleArrangeGraph, addToast]);
 
     const handleToggleEdgeMode = useCallback(
         (e: ChangeEvent<HTMLInputElement>) => {
             if (directed) {
-                logger.warn('Edge mode is locked to path while graph is directed');
+                addToast({
+                    type: 'warning',
+                    message: 'Edge mode is locked to path while graph is directed.',
+                });
                 return;
             }
             setEdgeMode(e.target.checked ? 'complete' : 'path');
         },
-        [directed, setEdgeMode]
+        [directed, setEdgeMode, addToast]
     );
-
-    useEffect(() => {
-        if (directed && edgeMode === 'complete') {
-            setEdgeMode('path');
-            logger.info('Directed graph > forcing edge mode to path');
-        }
-    }, [directed, edgeMode, setEdgeMode]);
 
     const handleDeleteSelected = useCallback(() => {
         if (!graphRef.current) {
+            addToast(ParsedErrorToastEnum.GraphNotFound);
             return;
         }
 
         let selectedElements = graphRef.current.elements(':selected');
         if (selectedElements.length === 0) {
+            addToast({ message: 'Select nodes or edges to delete.' });
             return;
         }
 
@@ -163,13 +197,26 @@ export function useActionBarLogic() {
         selectedElements = graphRef.current.elements(':selected');
         const edgesToRemove = selectedElements.filter('edge');
         if (edgesToRemove.length > 0) {
-            removeEdges(graphRef.current, edgesToRemove);
+            try {
+                removeEdges(graphRef.current, edgesToRemove);
+            } catch (error: unknown) {
+                const parsedError = parseError(error);
+                addToast({ type: 'error', message: parsedError.message });
+                return;
+            }
 
             setSelectedEdges([]);
             setEdgeCount(graphRef.current.edges().length);
             graphRef.current.data('edgeSelectionOrder', []);
         }
-    }, [graphRef, setSelectedNodes, setNodeCount, setSelectedEdges, setEdgeCount]);
+    }, [
+        graphRef,
+        setSelectedNodes,
+        setNodeCount,
+        setSelectedEdges,
+        setEdgeCount,
+        addToast,
+    ]);
 
     return {
         edgeMode,

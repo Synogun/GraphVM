@@ -1,3 +1,4 @@
+import { ParsedErrorToastEnum } from '@/config/parsedError';
 import {
     DefaultBipartiteGenerationParams,
     DefaultCircleGenerationParams,
@@ -9,7 +10,6 @@ import {
     DefaultStarGenerationParams,
     DefaultWheelGenerationParams,
 } from '@/constants/algorithmDefaults';
-import { useLayoutProperties } from '@/contexts';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import {
     generateBipartiteGraph,
@@ -26,8 +26,8 @@ import {
     ValidGenerationFamilies,
 } from '@/types/algorithmTypeGuards';
 import type { GenerationFamily, GenerationParams } from '@/types/algorithms';
+import { useLayoutProperties, useToasts } from '@Contexts';
 import { SelectInput } from '@Inputs';
-import { Logger } from '@Logger';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import {
     BipartiteParamsInput,
@@ -38,8 +38,6 @@ import {
     StarParamsInput,
     WheelParamsInput,
 } from './AlgorithmsParamsSection';
-
-const logger = Logger.createContextLogger('GenerationTab');
 
 const FAMILY_MAP: Record<
     GenerationFamily,
@@ -138,9 +136,11 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
         setType,
     } = useLayoutProperties();
 
+    const { addToast } = useToasts();
+
     const handleRun = () => {
         if (!graph.current) {
-            logger.error('Graph instance not found in registry');
+            addToast(ParsedErrorToastEnum.GraphNotFound);
             return;
         }
 
@@ -210,12 +210,18 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
                 break;
 
             default:
-                logger.error(`Invalid graph family selected`);
+                addToast({
+                    type: 'error',
+                    message: `Invalid graph family selected: ${String(params)}`,
+                });
                 return;
         }
 
         setParams({ ...DefaultGenerationParams });
-        logger.info('Running generation with params', params);
+        addToast({
+            type: 'success',
+            message: 'The graph was generated successfully.',
+        });
     };
 
     useImperativeHandle(ref, () => ({ handleRun }));
@@ -224,7 +230,10 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
         const newFamily = event.target.value;
 
         if (!isGenerationFamily(newFamily)) {
-            logger.warn(`Invalid family selected: ${newFamily}`);
+            addToast({
+                type: 'error',
+                message: `Invalid family selected: ${newFamily}`,
+            });
             return;
         }
 
