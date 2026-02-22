@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - `DEV` - Fixed an issue with browser expecting css sourcemap.
+- `DEV` - Fixed an issue with the logger not capping logs properly, which could lead to memory issues.
 
 ### Removed
 

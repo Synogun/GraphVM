@@ -20,6 +20,17 @@ export const Logger = {
      */
     logs: [] as string[],
 
+    _capLogs: () => {
+        const maxLogs = 5000;
+
+        if (Logger.logs.length > maxLogs) {
+            const numToRemove = Logger.logs.length - maxLogs;
+            for (let i = 0; i < numToRemove; i++) {
+                Logger.logs.shift();
+            }
+        }
+    },
+
     /**
      * Get the current timestamp formatted as ISO string.
      * @returns The formatted timestamp string.
@@ -65,6 +76,7 @@ export const Logger = {
         const logEntry =
             `[${timestamp}] [${level}] [${context}] ${message} ${argsStr}`.trim();
         Logger.logs.push(logEntry);
+        Logger._capLogs();
     },
 
     /**
