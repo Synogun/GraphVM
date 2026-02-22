@@ -1,22 +1,21 @@
+import { ParsedErrorToastEnum, parseError } from '@/config/parsedError';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { mapElementsToText } from '@/services/importExportService';
 import { isCytoscapeOptions, isStylesheetStyleArray } from '@/types/graphTypeGuards';
 import { makeBlobAndDownload } from '@/utils/general';
 import { transformStylesheet } from '@/utils/styleHelpers';
-import { useGraphProperties } from '@Contexts';
-import { Logger } from '@Logger';
+import { useGraphProperties, useToasts } from '@Contexts';
 import type cytoscape from 'cytoscape';
 import {
     useCallback,
     useEffect,
     useImperativeHandle,
     useMemo,
+    useRef,
     useState,
     type ChangeEvent,
     type Ref,
 } from 'react';
-
-const logger = Logger.createContextLogger('ExportTab');
 
 export function ExportTab({
     ref,
@@ -35,20 +34,24 @@ export function ExportTab({
         nodes: { count: nodeCount },
     } = useGraphProperties();
 
+    const { addToast } = useToasts();
+
     const isGraphReadyToExport = useMemo(() => nodeCount > 0, [nodeCount]);
+
+    const exportFormatSelectRef = useRef<HTMLSelectElement>(null);
+    const exportFilenameInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         onReadyStateChange(isGraphReadyToExport);
     }, [isGraphReadyToExport, onReadyStateChange]);
 
     const cleanup = () => {
-        const filenameInput = document.getElementById(
-            'file-name'
-        ) as HTMLInputElement;
-        filenameInput.value = '';
-
-        const select = document.getElementById('export-format') as HTMLSelectElement;
-        select.value = 'text';
+        if (exportFormatSelectRef.current) {
+            exportFormatSelectRef.current.value = 'text';
+        }
+        if (exportFilenameInputRef.current) {
+            exportFilenameInputRef.current.value = '';
+        }
     };
 
     const handleFormatChange = useCallback((e: ChangeEvent<HTMLSelectElement>) => {
@@ -57,17 +60,32 @@ export function ExportTab({
     }, []);
 
     const handleExport = () => {
-        if (!isGraphReadyToExport || !graphRef.current) {
+        if (!graphRef.current) {
+            addToast(ParsedErrorToastEnum.GraphNotFound);
             return;
         }
 
-        const fileNameInput = document.getElementById(
-            'file-name'
-        ) as HTMLInputElement;
+        if (!exportFilenameInputRef.current) {
+            addToast({
+                type: 'error',
+                message: 'Filename input not found. Please try again.',
+            });
+            return;
+        }
+
+        if (!isGraphReadyToExport) {
+            addToast({
+                type: 'error',
+                message:
+                    'The graph is empty. Please add some nodes or edges to export.',
+            });
+            return;
+        }
+
         let fileName = `${Date.now().toString()}-graphvm-export`;
 
-        if (fileNameInput.value) {
-            fileName = fileNameInput.value
+        if (exportFilenameInputRef.current.value) {
+            fileName = exportFilenameInputRef.current.value
                 .replace('{TIMESTAMP}', Date.now().toString())
                 .replace('{NODE_COUNT}', nodeCount.toString())
                 .replace('{EDGE_COUNT}', graphRef.current.edges().length.toString())
@@ -84,7 +102,10 @@ export function ExportTab({
             const json = graphRef.current.json();
 
             if (!isCytoscapeOptions(json)) {
-                logger.error('Invalid Cytoscape options:', json);
+                addToast({
+                    type: 'error',
+                    message: 'Failed to export graph. Invalid graph data.',
+                });
                 return;
             }
 
@@ -92,7 +113,14 @@ export function ExportTab({
                 json.style = transformStylesheet(json.style, 'json');
             }
 
-            dataStr = JSON.stringify(json);
+            try {
+                dataStr = JSON.stringify(json);
+            } catch (error) {
+                const parsedError = parseError(error);
+                addToast({ type: 'error', message: parsedError.message });
+                return;
+            }
+
             fileNameWithExt = `${fileName}.json`;
             fileType = 'application/json';
         } else if (exportFormat === 'png' || exportFormat === 'jpg') {
@@ -113,7 +141,6 @@ export function ExportTab({
             fileNameWithExt = `${fileName}.${exportFormat}`;
             fileType = `image/${exportFormat}`;
         } else {
-            // exportFormat === 'text'
             dataStr = mapElementsToText(graphRef.current);
             fileNameWithExt = `${fileName}.txt`;
             fileType = 'text/plain';
@@ -121,7 +148,10 @@ export function ExportTab({
 
         makeBlobAndDownload(dataStr, fileNameWithExt, fileType);
         onExportSuccess();
-        // TODO: Show notification of successful export
+        addToast({
+            type: 'success',
+            message: 'Graph exported successfully.',
+        });
     };
 
     useImperativeHandle(ref, () => ({ handleExport, cleanup }));
@@ -136,6 +166,7 @@ export function ExportTab({
                     File Name
                 </label>
                 <input
+                    ref={exportFilenameInputRef}
                     className="input input-bordered w-full"
                     id="file-name"
                     name="file-name"
@@ -152,6 +183,7 @@ export function ExportTab({
                     Export Format
                 </label>
                 <select
+                    ref={exportFormatSelectRef}
                     className="select select-bordered w-full"
                     defaultValue="text"
                     id="export-format"
