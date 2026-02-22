@@ -1,3 +1,4 @@
+import { ParsedError } from '@/config/parsedError';
 import type { GraphContextProperties } from '@/types/graph';
 import { createContext, useContext } from 'react';
 
@@ -9,7 +10,9 @@ export function useGraphProperties() {
     const context = useContext(GraphContext);
 
     if (context === undefined) {
-        throw new Error('useGraphProperties must be used within a GraphProvider');
+        throw new ParsedError(
+            'useGraphProperties must be used within a GraphProvider'
+        );
     }
 
     return context;

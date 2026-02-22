@@ -1,3 +1,4 @@
+import { ParsedError } from '@/config/parsedError';
 import type { GraphInstance } from '@/types/graph';
 import { GraphContext } from '@Contexts';
 import { useMemo, useState, type ReactNode } from 'react';
@@ -55,7 +56,10 @@ export function GraphProvider({ children }: GraphProviderProps) {
                 const set = listeners.get(id);
 
                 if (!set) {
-                    throw new Error(`No listeners set found for id: ${id}`);
+                    throw new ParsedError(
+                        `No listeners set found for the graph id`,
+                        { context: { graphId: id } }
+                    );
                 }
 
                 set.add(callback);

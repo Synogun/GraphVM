@@ -1,3 +1,4 @@
+import { ParsedError } from '@/config/parsedError';
 import type { SettingsContextProperties } from '@/types/settings';
 import { createContext, useContext } from 'react';
 
@@ -9,7 +10,7 @@ export function useSettings() {
     const context = useContext(SettingsContext);
 
     if (context === undefined) {
-        throw new Error('useSettings must be used within a SettingsProvider');
+        throw new ParsedError('useSettings must be used within a SettingsProvider');
     }
 
     return context;

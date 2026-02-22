@@ -6,13 +6,14 @@ import { isDev } from '@/utils/general';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { importCytoscapeExtensions } from './config/extensions';
+import { ParsedError } from './config/parsedError';
 
 importCytoscapeExtensions();
 
 const rootElement = document.getElementById('root');
 
 if (!rootElement) {
-    throw new Error('Root element with id "root" not found');
+    throw new ParsedError('Root element with id "root" not found');
 }
 
 const appComponent = isDev() ? (
