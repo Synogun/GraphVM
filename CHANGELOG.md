@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `UI` - Added a toast notification system with support for different types (success, error, info) and positions.
 - `UI` - Introduced a settings context for managing application settings and defaults.
+- `Project` - Added a custom error class `ParsedError` for consistent error handling and user-friendly messages.
 
 ### Changed
 
@@ -21,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `DEV` - Fixed an issue with browser expecting css sourcemap.
 - `DEV` - Fixed an issue with the logger not capping logs properly, which could lead to memory issues.
+- `UI` - Fixed an issue with Select Input options not displaying titles correctly.
 
 ### Removed
 
