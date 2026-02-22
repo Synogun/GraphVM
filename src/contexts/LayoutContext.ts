@@ -1,3 +1,4 @@
+import { ParsedError } from '@/config/parsedError';
 import type { LayoutContextProperties } from '@/types/layout';
 import { createContext, useContext } from 'react';
 
@@ -9,7 +10,9 @@ export function useLayoutProperties() {
     const context = useContext(LayoutContext);
 
     if (context === undefined) {
-        throw new Error('useLayoutProperties must be used within a LayoutProvider');
+        throw new ParsedError(
+            'useLayoutProperties must be used within a LayoutProvider'
+        );
     }
 
     return context;

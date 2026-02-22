@@ -1,3 +1,4 @@
+import { ParsedErrorToastEnum } from '@/config/parsedError';
 import {
     DefaultGridLayoutOptions,
     DefaultLayoutOptions,
@@ -6,7 +7,7 @@ import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { arrangeGraph } from '@/services/layoutService';
 import { isLayoutType, ValidGraphLayouts } from '@/types/layoutTypeGuards';
 import { parseKebabCase } from '@/utils/elements';
-import { useLayoutProperties } from '@Contexts';
+import { useLayoutProperties, useToasts } from '@Contexts';
 import { RangeInput, SelectInput } from '@Inputs';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
@@ -20,8 +21,13 @@ export function LayoutSection({ visible = true }: LayoutSectionProps) {
         setCurrent: setCurrentLayout,
     } = useLayoutProperties();
 
+    const { addToast } = useToasts();
+
     useEffect(() => {
-        if (!graphRef.current) return;
+        if (!graphRef.current) {
+            addToast(ParsedErrorToastEnum.GraphNotFound);
+            return;
+        }
 
         let options: cytoscape.LayoutOptions = {
             name: layoutType,
@@ -58,6 +64,7 @@ export function LayoutSection({ visible = true }: LayoutSectionProps) {
         gridLayout.rows,
         gridLayout.cols,
         setCurrentLayout,
+        addToast,
     ]);
 
     const handleChangeLayoutType = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -82,18 +89,22 @@ export function LayoutSection({ visible = true }: LayoutSectionProps) {
     };
 
     const handleRandomLayout = () => {
-        if (!graphRef.current) return;
+        if (!graphRef.current) {
+            addToast(ParsedErrorToastEnum.GraphNotFound);
+            return;
+        }
         arrangeGraph(graphRef.current, { name: 'random' });
     };
 
     const selectTypeOptions = useMemo(() => {
-        return [
-            { label: 'Pick a layout type', value: '', title: true },
+        const sorted = [
             ...ValidGraphLayouts.map((option) => ({
                 value: option,
                 label: parseKebabCase(option),
             })),
         ].sort((a, b) => a.label.localeCompare(b.label));
+
+        return [{ label: 'Pick a layout type', value: '', title: true }, ...sorted];
     }, []);
 
     return (
