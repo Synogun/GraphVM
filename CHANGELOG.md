@@ -5,7 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/Synogun/GraphVM/compare/v2.0.0...develop)
+## [Unreleased](https://github.com/Synogun/GraphVM/compare/v2.3.0...develop)
+
+### Added
+
+### Changed
+
+### Fixed
+
+## [v2.3.0](https://github.com/Synogun/GraphVM/compare/v2.0.0...v2.3.0)
 
 ### Added
 
@@ -23,8 +31,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `DEV` - Fixed an issue with browser expecting css sourcemap.
 - `DEV` - Fixed an issue with the logger not capping logs properly, which could lead to memory issues.
 - `UI` - Fixed an issue with Select Input options not displaying titles correctly.
-
-### Removed
 
 ## [v2.0.0](https://github.com/Synogun/GraphVM/compare/v1.2.0...v2.0.0)
 
