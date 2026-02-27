@@ -31,14 +31,8 @@ function SelectInput({
     };
 
     const makeOptionValue = ({ value, label, title }: SelectOptionType) => {
-        if (title) {
-            <option key={`${value}-type-dropdown-title`} disabled={true}>
-                {label}
-            </option>;
-        }
-
         return (
-            <option key={`${value}-option`} value={value}>
+            <option key={`${value}-option`} value={value} disabled={title}>
                 {label}
             </option>
         );

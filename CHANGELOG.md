@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/Synogun/GraphVM/compare/v2.0.0...develop)
+## [Unreleased](https://github.com/Synogun/GraphVM/compare/v2.3.0...develop)
 
 ### Added
 
@@ -13,7 +13,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-### Removed
+## [v2.3.0](https://github.com/Synogun/GraphVM/compare/v2.0.0...v2.3.0)
+
+### Added
+
+- `UI` - Added a toast notification system with support for different types (success, error, info) and positions.
+- `UI` - Introduced a settings context for managing application settings and defaults.
+- `Project` - Added a custom error class `ParsedError` for consistent error handling and user-friendly messages.
+
+### Changed
+
+- `UI` - Reduced and added clarification comment on artificial loading time of the application.
+- `UI` - Changed `ModalsProvider` to `PopupsProvider` to better reflect its purpose and added support for toasts.
+
+### Fixed
+
+- `DEV` - Fixed an issue with browser expecting css sourcemap.
+- `DEV` - Fixed an issue with the logger not capping logs properly, which could lead to memory issues.
+- `UI` - Fixed an issue with Select Input options not displaying titles correctly.
 
 ## [v2.0.0](https://github.com/Synogun/GraphVM/compare/v1.2.0...v2.0.0)
 

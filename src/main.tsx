@@ -1,30 +1,31 @@
 import { App } from '@/App';
-import '@/index.css';
-import { ModalsProvider } from '@/providers/ModalsProvider.js';
+import { PopupsProvider } from '@/providers/PopupsProvider';
 import '@/styles/animations.css';
+import '@/styles/main.css';
 import { isDev } from '@/utils/general';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { importCytoscapeExtensions } from './utils/extensions';
+import { importCytoscapeExtensions } from './config/extensions';
+import { ParsedError } from './config/parsedError';
 
 importCytoscapeExtensions();
 
 const rootElement = document.getElementById('root');
 
 if (!rootElement) {
-    throw new Error('Root element with id "root" not found');
+    throw new ParsedError('Root element with id "root" not found');
 }
 
 const appComponent = isDev() ? (
     <StrictMode>
-        <ModalsProvider>
+        <PopupsProvider>
             <App />
-        </ModalsProvider>
+        </PopupsProvider>
     </StrictMode>
 ) : (
-    <ModalsProvider>
+    <PopupsProvider>
         <App />
-    </ModalsProvider>
+    </PopupsProvider>
 );
 
 createRoot(rootElement).render(appComponent);

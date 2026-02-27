@@ -1,9 +1,6 @@
-import { DefaultAutopanOptions } from '@/config/graphDefaults';
+import { DefaultAutopanOptions } from '@/constants/graphDefaults';
 import type { AutopanOptions } from '@/types/graph';
-import { Logger } from '@Logger';
 import type cytoscape from 'cytoscape';
-
-const logger = Logger.createContextLogger('AutopanService');
 
 /**
  * Binds autopan-on-drag behavior to a Cytoscape instance.
@@ -27,7 +24,6 @@ export function bindAutopan(
 
     const container = cy.container();
     if (!container) {
-        logger.warn('bindAutopan > container not found');
         return () => undefined;
     }
 
@@ -146,11 +142,6 @@ export function bindAutopan(
     cy.on('drag', autopanOptions.selector, onDrag);
     cy.on('free', autopanOptions.selector, onFree);
 
-    logger.info('bindAutopan > bound autopan listeners', {
-        selector: autopanOptions.selector,
-        speed: autopanOptions.speed,
-    });
-
     return () => {
         cy.off('grab', autopanOptions.selector, onGrab);
         cy.off('drag', autopanOptions.selector, onDrag);
@@ -159,6 +150,5 @@ export function bindAutopan(
         mousePos = null;
         grabCount = 0;
         cachedRect = null;
-        logger.info('bindAutopan > unbound autopan listeners');
     };
 }

@@ -1,4 +1,4 @@
-import { DefaultNodesData } from '@/config/graphDefaults';
+import { DefaultNodesData } from '@/constants/graphDefaults';
 import { NodesContext } from '@Contexts';
 import { useState, type ReactNode } from 'react';
 

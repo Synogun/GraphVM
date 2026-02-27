@@ -1,3 +1,4 @@
+import { ParsedError } from '@/config/parsedError';
 import type { GraphInstance } from '@/types/graph';
 import { GraphContext } from '@Contexts';
 import { useMemo, useState, type ReactNode } from 'react';
@@ -11,21 +12,27 @@ export function GraphProvider({ children }: GraphProviderProps) {
     const [edgeCount, setEdgeCount] = useState(0);
     const [selectedEdges, setSelectedEdges] = useState<string[]>([]);
 
-    const nodes = {
-        count: nodeCount,
-        setCount: setNodeCount,
-        selected: selectedNodes,
-        setSelected: setSelectedNodes,
-    };
+    const nodes = useMemo(
+        () => ({
+            count: nodeCount,
+            setCount: setNodeCount,
+            selected: selectedNodes,
+            setSelected: setSelectedNodes,
+        }),
+        [nodeCount, selectedNodes]
+    );
 
-    const edges = {
-        count: edgeCount,
-        setCount: setEdgeCount,
-        selected: selectedEdges,
-        setSelected: setSelectedEdges,
-        edgeMode,
-        setEdgeMode,
-    };
+    const edges = useMemo(
+        () => ({
+            count: edgeCount,
+            setCount: setEdgeCount,
+            selected: selectedEdges,
+            setSelected: setSelectedEdges,
+            edgeMode,
+            setEdgeMode,
+        }),
+        [edgeCount, edgeMode, selectedEdges]
+    );
 
     const registry = useMemo(() => {
         const instances = new Map<string, GraphInstance>();
@@ -55,7 +62,10 @@ export function GraphProvider({ children }: GraphProviderProps) {
                 const set = listeners.get(id);
 
                 if (!set) {
-                    throw new Error(`No listeners set found for id: ${id}`);
+                    throw new ParsedError(
+                        `No listeners set found for the graph id`,
+                        { context: { graphId: id } }
+                    );
                 }
 
                 set.add(callback);
@@ -70,7 +80,10 @@ export function GraphProvider({ children }: GraphProviderProps) {
         };
     }, []);
 
-    const value = { directed, setDirected, nodes, edges, registry };
+    const value = useMemo(
+        () => ({ directed, setDirected, nodes, edges, registry }),
+        [directed, edges, nodes, registry]
+    );
 
     return <GraphContext.Provider value={value}>{children}</GraphContext.Provider>;
 }

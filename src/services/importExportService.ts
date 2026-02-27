@@ -1,65 +1,42 @@
-import { DefaultEdgesData, DefaultNodesData } from '@/config/graphDefaults';
+import { ParsedError, parseError } from '@/config/parsedError';
+import { DefaultEdgesData, DefaultNodesData } from '@/constants/graphDefaults';
 import type { EdgesData } from '@/types/edges';
 import type { NodesData } from '@/types/nodes';
-import { Logger } from '@Logger';
 import type cytoscape from 'cytoscape';
-import type { ElementsDefinition } from 'cytoscape';
+import type { CytoscapeOptions } from 'cytoscape';
 import { makeEdgeId } from './edgesService';
 import { makeNodeId } from './nodesService';
 
-const logger = Logger.createContextLogger('ImportExportService');
-
-export function isFileValid(file: File) {
-    const validType = file.type === 'application/json' || file.type === 'text/plain';
-
-    const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
-
-    return validType && file.size <= maxSizeInBytes;
-}
-
-export function isDataValid(data: string, type: FileType, separator: string) {
-    if (type !== 'text/plain') {
+function isDataValid(data: string[][]) {
+    if (data.length < 1) {
         return false;
     }
 
-    let isValid = true;
-    const parsedData = data.replaceAll('\r', '').split('\n');
-
-    if (parsedData.length < 1) {
-        return false;
-    }
-
-    for (const line of parsedData) {
-        const values = line.split(separator);
-        if (values.length < 2 || values.length > 3) {
-            isValid = false;
-            break;
+    for (const line of data) {
+        if (line.length < 2 || line.length > 3) {
+            return false;
         }
     }
 
-    return isValid;
+    return true;
 }
 
 export function parseTextData(
     data: string,
-    type: FileType,
     defaults?: { nodes: NodesData; edges: EdgesData }
-): { elements: ElementsDefinition; directed: boolean } | false {
+): CytoscapeOptions {
     const separator = ' ';
-
-    if (!isDataValid(data, type, separator)) {
-        logger.warn('Invalid data format');
-        return false;
-    }
 
     const lines = data
         .replaceAll('\r', '')
         .split('\n')
         .map((line) => line.replaceAll(/\s+/g, ' ').trim().split(separator));
 
-    if (lines.length < 1) {
-        logger.warn('No data to parse');
-        return false;
+    if (!isDataValid(lines)) {
+        throw new ParsedError(
+            'Invalid file data. Each line must contain 2 or 3 values separated by spaces.',
+            { context: { dataPreview: data.slice(0, 100) } }
+        );
     }
 
     const headerTokens = lines.shift() ?? [];
@@ -110,8 +87,14 @@ export function parseTextData(
             }
         }
     } catch (error) {
-        logger.error('Error parsing edge data:', error);
-        return false;
+        const parsedError = parseError(error);
+        throw new ParsedError(
+            'Error parsing file data. Please ensure it is correctly formatted.',
+            {
+                cause: parsedError,
+                context: { dataPreview: data.slice(0, 100) },
+            }
+        );
     }
 
     const nodes = Array.from(nodeMap.entries()).map(([label, id]) => ({
@@ -136,7 +119,7 @@ export function parseTextData(
         }
     }
 
-    return { elements: { nodes, edges }, directed };
+    return { elements: { nodes, edges }, data: { directed } };
 }
 
 export function mapElementsToText(graph: cytoscape.Core): string {

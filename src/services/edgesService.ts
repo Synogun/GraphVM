@@ -1,3 +1,4 @@
+import { ParsedError } from '@/config/parsedError';
 import type { EdgesData } from '@/types/edges';
 import {
     isEdgeArrowShape,
@@ -5,30 +6,21 @@ import {
     isEdgeLineStyle,
 } from '@/types/edgesTypeGuards';
 import { getDefaultEdgesData } from '@/utils/styleHelpers';
-import { Logger } from '@Logger';
-
-const logger = Logger.createContextLogger('EdgesService');
 
 export function makeEdgeId() {
-    const currentTime = Date.now().toString();
-    const randomInteger = Math.floor(Math.random() * 10000).toString();
-
-    return `edge-${currentTime}-${randomInteger}`;
+    return crypto.randomUUID();
 }
 
 export function addEdge(
     core: cytoscape.Core,
     options: cytoscape.EdgeDefinition,
     classes?: string[]
-): void {
-    console.log(options);
+) {
     if (!options.data.source) {
-        logger.warn('addEdge > Source node is required');
-        return;
+        throw new ParsedError('Source node is required');
     }
     if (!options.data.target) {
-        logger.warn('addEdge > Target node is required');
-        return;
+        throw new ParsedError('Target node is required');
     }
 
     const defaultEdgesData = getDefaultEdgesData(core);
@@ -48,22 +40,15 @@ export function addEdge(
         classes: [...(classes ?? [])],
     });
 
-    const isDirected =
-        options.data.directed && Boolean(options.data.directed)
-            ? Boolean(options.data.directed)
-            : Boolean(core.data('directed'));
+    const isDirected = Boolean(options.data.directed)
+        ? Boolean(options.data.directed)
+        : Boolean(core.data('directed'));
 
     if (isDirected) {
         core.$id(newId).addClass('directed');
     }
 
     core.data('numEdges', core.edges().length);
-    logger.info(
-        'addEdge > added edge with source',
-        options.data.source,
-        'and target',
-        options.data.target
-    );
 }
 
 export function addEdges(
@@ -71,13 +56,9 @@ export function addEdges(
     edges: string[],
     edgeMode: 'path' | 'complete' = 'path',
     data?: Partial<EdgesData>
-): void {
+) {
     if (edges.length < 2) {
-        logger.warn(
-            'addPath > Provide at least two edge definitions to create a path'
-        );
-        // TODO: Show user feedback
-        return;
+        throw new ParsedError('At least two nodes are required to create edges');
     }
 
     if (edgeMode === 'path') {
@@ -107,25 +88,19 @@ export function addEdges(
     }
 }
 
-export function removeEdges(
-    core: cytoscape.Core,
-    edges: cytoscape.EdgeCollection
-): void {
+export function removeEdges(core: cytoscape.Core, edges: cytoscape.EdgeCollection) {
     if (edges.length === 0) {
-        logger.warn('removeEdge > Select at least one edge');
-        return;
+        throw new ParsedError('Select at least one edge to remove');
     }
 
     edges.forEach((edge) => {
         if (!core.hasElementWithId(edge.id())) {
-            logger.warn('removeEdge > Edge not found in graph:', edge.id());
-            return;
+            throw new ParsedError(`Edge with id ${edge.id()} not found in graph`);
         }
 
         // this.removedEdges.push(edge);
         core.remove(edge);
     });
-    logger.info('removeEdge > removed', edges.length, 'edge(s)');
 }
 
 export function updateEdges(
@@ -135,8 +110,7 @@ export function updateEdges(
     value: string | number
 ): void {
     if (edges.length === 0) {
-        logger.warn('updateEdges > Select at least one edge');
-        return;
+        throw new ParsedError('Select at least one edge to update');
     }
 
     const defaultEdgesData = getDefaultEdgesData(core);
@@ -170,13 +144,11 @@ export function updateEdges(
         const validator = customValidation.find((v) => v.property === property);
 
         if (!validator) {
-            logger.warn('updateEdges > No validator found for property:', property);
-            return;
+            throw new ParsedError(`No validator found for property: ${property}`);
         }
 
         parsedValue = validator.validate(value) ? value : validator.default;
     }
 
     edgesCollection.data(property, parsedValue);
-    logger.info('updateEdges > updated', edgesCollection.length, 'edge(s)');
 }

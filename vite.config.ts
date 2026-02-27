@@ -14,7 +14,7 @@ export default defineConfig({
             ...makeDouble('@Modals', '/src/components/Modals'),
             '@Inputs': '/src/components/common/inputs',
             '@Contexts': '/src/contexts',
-            '@Logger': '/src/utils/logger',
+            '@Logger': '/src/config/logger',
         },
     },
     build: {
@@ -27,8 +27,8 @@ export default defineConfig({
             },
         },
     },
-    dev: {
-        sourcemap: true,
+    css: {
+        devSourcemap: true,
     },
 });
 

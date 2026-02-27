@@ -1,16 +1,11 @@
+import { ParsedError } from '@/config/parsedError';
 import { isNodeShape } from '@/types/nodesTypeGuards';
 import { getDefaultNodesData } from '@/utils/styleHelpers';
-import { Logger } from '@Logger';
 import type cytoscape from 'cytoscape';
 import { removeEdges } from './edgesService';
 
-const logger = Logger.createContextLogger('NodesService');
-
 export function makeNodeId() {
-    const currentTime = Date.now().toString();
-    const randomInteger = Math.floor(Math.random() * 10000).toString();
-
-    return `node-${currentTime}-${randomInteger}`;
+    return crypto.randomUUID();
 }
 
 export function addNode(
@@ -35,9 +30,6 @@ export function addNode(
         data: newNodeData,
         classes: [...(classes ?? [])],
     });
-
-    core.data('numNodes', core.nodes().length);
-    logger.info('addNode > added node with id:', newId, core.data());
 
     return core.$id(newId);
 }
@@ -68,12 +60,6 @@ export function addNodes(
     });
 
     core.add(newNodes);
-    core.data('numNodes', numNodes + newNodes.length);
-    logger.info(
-        'addNodes > added nodes with ids:',
-        newNodes.map((node) => node.data.id),
-        core.data()
-    );
 }
 
 export function removeNodes(
@@ -81,14 +67,14 @@ export function removeNodes(
     nodes: cytoscape.NodeCollection
 ): void {
     if (nodes.length === 0) {
-        logger.warn('removeNode > Select at least one node');
-        return;
+        throw new ParsedError('Select at least one node to remove.');
     }
 
     nodes.forEach((node) => {
         if (!core.hasElementWithId(node.id())) {
-            logger.warn('removeNode > Node not found in graph:', node.id());
-            return;
+            throw new ParsedError('Node not found in graph', {
+                context: { nodeId: node.id() },
+            });
         }
         const nodeEdges = node.connectedEdges();
         if (nodeEdges.length > 0) {
@@ -98,9 +84,6 @@ export function removeNodes(
         // this.removedNodes.push(node);
         core.remove(node);
     });
-
-    core.data('numNodes', core.nodes().length);
-    logger.info('removeNode > removed', nodes.length, 'node(s)');
 }
 
 export function updateNodes(
@@ -110,8 +93,7 @@ export function updateNodes(
     value: string
 ): void {
     if (nodes.length === 0) {
-        logger.warn('updateNodes > Select at least one node');
-        return;
+        throw new ParsedError('Select at least one node to update.');
     }
 
     const defaultNodesData = getDefaultNodesData(core);
@@ -130,13 +112,13 @@ export function updateNodes(
         const validator = customValidation.find((v) => v.property === property);
 
         if (!validator) {
-            logger.warn('updateNodes > No validator found for property:', property);
-            return;
+            throw new ParsedError('No validator found for property:', {
+                context: { property },
+            });
         }
 
         parsedValue = validator.validate(value) ? value : validator.default;
     }
 
     nodesCollection.data(property, parsedValue);
-    logger.info('updateNodes > updated', nodesCollection.length, 'node(s)');
 }

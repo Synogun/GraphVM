@@ -1,3 +1,4 @@
+import { ParsedError } from '@/config/parsedError';
 import type { EdgesContextProperties } from '@/types/edges';
 import { createContext, useContext } from 'react';
 
@@ -9,7 +10,9 @@ export function useEdgesProperties() {
     const context = useContext(EdgesContext);
 
     if (context === undefined) {
-        throw new Error('useEdgesProperties must be used within an EdgesProvider');
+        throw new ParsedError(
+            'useEdgesProperties must be used within an EdgesProvider'
+        );
     }
 
     return context;

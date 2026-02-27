@@ -1,8 +1,5 @@
-import { DefaultLayoutOptions } from '@/config/layoutDefaults';
-import { Logger } from '@Logger';
+import { DefaultLayoutOptions } from '@/constants/layoutDefaults';
 import type cytoscape from 'cytoscape';
-
-const logger = Logger.createContextLogger('LayoutService');
 
 export function arrangeGraph(
     core: cytoscape.Core,
@@ -14,7 +11,6 @@ export function arrangeGraph(
     };
 
     core.layout(layoutOptions).run();
-    logger.info('arrangeGraph > arranged graph with', layoutOptions.name, 'layout');
 }
 
 export function centerGraph(
@@ -27,9 +23,4 @@ export function centerGraph(
     } else {
         core.fit(core.nodes(), padding);
     }
-
-    logger.info(
-        'centerGraph > centered graph on',
-        eles?.length ? eles.toArray() : 'all nodes'
-    );
 }

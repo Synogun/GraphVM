@@ -1,3 +1,4 @@
+import { ParsedError } from '@/config/parsedError';
 import type { NodeContextProperties } from '@/types/nodes';
 import { createContext, useContext } from 'react';
 
@@ -9,7 +10,9 @@ export function useNodeProperties() {
     const context = useContext(NodesContext);
 
     if (context === undefined) {
-        throw new Error('useNodeProperties must be used within a NodesProvider');
+        throw new ParsedError(
+            'useNodeProperties must be used within a NodesProvider'
+        );
     }
     return context;
 }

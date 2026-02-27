@@ -1,10 +1,7 @@
+import { ParsedError, ParsedErrorToast, parseError } from '@/config/parsedError';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { newGraph, setGraphDirected } from '@/services/graphService';
-import {
-    isFileValid,
-    parseTextData,
-    type FileType,
-} from '@/services/importExportService';
+import { parseTextData, type FileType } from '@/services/importExportService';
 import { arrangeGraph } from '@/services/layoutService';
 import { isCytoscapeOptions, isStylesheetStyleArray } from '@/types/graphTypeGuards';
 import {
@@ -12,8 +9,7 @@ import {
     getDefaultNodesData,
     transformStylesheet,
 } from '@/utils/styleHelpers';
-import { useLayoutProperties } from '@Contexts';
-import { Logger } from '@Logger';
+import { useLayoutProperties, useToasts } from '@Contexts';
 import cytoscape, { type CytoscapeOptions } from 'cytoscape';
 import {
     useCallback,
@@ -24,8 +20,6 @@ import {
     type ChangeEvent,
     type Ref,
 } from 'react';
-
-const logger = Logger.createContextLogger('ImportTab');
 
 export function ImportTab({
     ref,
@@ -40,6 +34,8 @@ export function ImportTab({
     const [previewCy, setPreviewCy] = useState<cytoscape.Core | null>(null);
 
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const { addToast } = useToasts();
 
     useEffect(() => {
         onReadyStateChange(!!importData);
@@ -58,44 +54,51 @@ export function ImportTab({
     const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0] ?? null;
 
-        const invalidFile = () => {
-            cleanup();
-            // TODO: Display error to user
-            alert(`Invalid file. Please select a JSON or TXT file under 2MB.`);
-        };
+        const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
+        const validType =
+            file?.type === 'application/json' || file?.type === 'text/plain';
 
-        if (!file || !isFileValid(file)) {
-            invalidFile();
+        if (!file || !validType || file.size > maxSizeInBytes) {
+            cleanup();
+            addToast({
+                type: 'error',
+                message: `Invalid file. Please select a JSON or TXT file under 2MB.`,
+            });
             return;
         }
 
-        const content = await file.text().catch((error: unknown) => {
-            logger.error('Error reading file:', error);
-            throw error;
-        });
+        try {
+            const content = await file.text().catch((error: unknown) => {
+                throw new ParsedError('Error reading file. Please try again.', {
+                    cause: parseError(error),
+                });
+            });
 
-        const success = handleDataPreview(content, file.type as FileType);
-        if (!success) {
-            invalidFile();
+            handleDataPreview(content, file.type as FileType);
+        } catch (error: unknown) {
+            const parsedError = parseError(error);
+            addToast({
+                type: 'error',
+                message: parsedError.message,
+            });
+            cleanup();
+            return;
         }
     };
 
     const handleDataPreview = (data: string, fileType: FileType) => {
-        const previewOptions: Partial<CytoscapeOptions> = {
-            userPanningEnabled: false,
-            userZoomingEnabled: false,
-            boxSelectionEnabled: false,
-            autounselectify: true,
-            autoungrabify: true,
-        };
+        if (!graphRef.current) {
+            addToast(ParsedErrorToast.GraphNotFound);
+            return;
+        }
 
         let dataToImport: CytoscapeOptions;
-        try {
-            if (fileType === 'application/json') {
+        if (fileType === 'application/json') {
+            try {
                 const jsonData: unknown = JSON.parse(data);
 
                 if (!isCytoscapeOptions(jsonData)) {
-                    throw new SyntaxError('Invalid Cytoscape JSON format');
+                    throw new ParsedError('Invalid Cytoscape JSON format');
                 }
 
                 if (isStylesheetStyleArray(jsonData.style)) {
@@ -103,74 +106,74 @@ export function ImportTab({
                 }
 
                 dataToImport = { ...jsonData };
-            } else {
-                let defaults;
-                if (graphRef.current) {
-                    defaults = {
-                        nodes: getDefaultNodesData(graphRef.current),
-                        edges: getDefaultEdgesData(graphRef.current),
-                    };
-                }
-
-                const parsed = parseTextData(data, fileType, defaults);
-                if (parsed === false) {
-                    throw new SyntaxError('Invalid text data format');
-                }
-
-                dataToImport = {
-                    elements: parsed.elements,
-                    data: { directed: parsed.directed },
-                };
+            } catch (error) {
+                const parsedError = parseError(error);
+                addToast({ type: 'error', message: parsedError.message });
+                return;
             }
-        } catch (error) {
-            logger.error(`Invalid ${fileType} file\n`, error);
-            return false;
+        } else {
+            const defaults = {
+                nodes: getDefaultNodesData(graphRef.current),
+                edges: getDefaultEdgesData(graphRef.current),
+            };
+
+            try {
+                dataToImport = parseTextData(data, defaults);
+            } catch (error: unknown) {
+                const parsedError = parseError(error);
+                addToast({ type: 'error', message: parsedError.message });
+                return;
+            }
         }
 
-        let newPreviewCy: cytoscape.Core;
         try {
-            newPreviewCy = newGraph('data-preview-cy', {
+            const newPreviewCy = newGraph('data-preview-cy', {
                 ...dataToImport,
-                ...previewOptions,
+                userPanningEnabled: false,
+                userZoomingEnabled: false,
+                boxSelectionEnabled: false,
+                autounselectify: true,
+                autoungrabify: true,
             });
 
             arrangeGraph(newPreviewCy, currentLayout);
-
             setPreviewCy(newPreviewCy);
+            setImportData(dataToImport);
         } catch (error) {
-            logger.error('Error initializing Cytoscape with imported data:', error);
-            return false;
+            const parsedError = parseError(error);
+            addToast({ type: 'error', message: parsedError.message });
+            return;
         }
-
-        setImportData(dataToImport);
-
-        return true;
     };
 
     const handleImport = () => {
-        if (!importData || !graphRef.current) {
+        if (!graphRef.current) {
+            addToast(ParsedErrorToast.GraphNotFound);
+            return;
+        }
+
+        if (!importData) {
+            addToast({
+                type: 'error',
+                message: 'No data to import. Please select a valid file first.',
+            });
             return;
         }
 
         graphRef.current.elements().remove();
-        graphRef.current.json(
-            importData as { elements: cytoscape.ElementDefinition[] }
-        );
+
+        // @ts-expect-error - CytoscapeOptions is not fully compatible with the expected type for json(), but it contains all necessary data for import
+        graphRef.current.json(importData);
 
         const directed = Boolean(importData.data?.directed);
         setGraphDirected(graphRef.current, directed);
 
         cleanup();
         onImportSuccess();
+        addToast({ type: 'success', message: 'Graph imported successfully!' });
     };
 
     useImperativeHandle(ref, () => ({ handleImport, cleanup }));
-
-    const handleFileSelectWrapper = (event: React.ChangeEvent<HTMLInputElement>) => {
-        handleFileSelect(event).catch((error: unknown) => {
-            logger.error('Error handling file select:', error);
-        });
-    };
 
     return (
         <div className="space-y-6">
@@ -187,7 +190,9 @@ export function ImportTab({
                         'file-input w-full' +
                         (!importData ? '' : ' file-input-accent')
                     }
-                    onChange={handleFileSelectWrapper}
+                    onChange={(e) => {
+                        void handleFileSelect(e);
+                    }}
                     type="file"
                 />
                 <label className="label">Max size 2MB</label>
