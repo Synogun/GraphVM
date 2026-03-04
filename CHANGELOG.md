@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `Actions` - Fixed deployment failing but deploying anyway.
+
 ## [v2.3.0](https://github.com/Synogun/GraphVM/compare/v2.0.0...v2.3.0)
 
 ### Added
