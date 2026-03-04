@@ -72,14 +72,28 @@ export function isDefaultEdgeData(data: unknown): data is EdgesData {
         return false;
     }
 
-    const requiredProperties = [
-        'color',
-        'label',
-        'weight',
-        'style',
-        'curve',
-        'arrowShape',
-    ];
+    const candidate = data as Partial<EdgesData>;
 
-    return requiredProperties.every((prop) => prop in data);
+    const hasId = typeof candidate.id === 'string';
+    const hasSource = typeof candidate.source === 'string';
+    const hasTarget = typeof candidate.target === 'string';
+    const hasColor = typeof candidate.color === 'string';
+    const hasWeight =
+        typeof candidate.weight === 'number' && !Number.isNaN(candidate.weight);
+    const hasLabel = isEdgeLabelStyle(candidate.label);
+    const hasStyle = isEdgeLineStyle(candidate.style);
+    const hasCurve = isEdgeCurve(candidate.curve);
+    const hasArrowShape = isEdgeArrowShape(candidate.arrowShape);
+
+    return [
+        hasId,
+        hasSource,
+        hasTarget,
+        hasColor,
+        hasWeight,
+        hasLabel,
+        hasStyle,
+        hasCurve,
+        hasArrowShape,
+    ].every(Boolean);
 }

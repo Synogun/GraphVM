@@ -41,7 +41,12 @@ export function isDefaultNodeData(data: unknown): data is NodesData {
         return false;
     }
 
-    const requiredProperties = ['color', 'shape', 'label'];
+    const candidate = data as Partial<NodesData>;
 
-    return requiredProperties.every((prop) => prop in data);
+    const hasColor = typeof candidate.color === 'string';
+    const hasLabel = typeof candidate.label === 'string';
+    const hasId = typeof candidate.id === 'string';
+    const hasShape = isNodeShape(candidate.shape);
+
+    return [hasColor, hasLabel, hasId, hasShape].every(Boolean);
 }
