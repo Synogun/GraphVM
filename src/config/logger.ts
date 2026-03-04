@@ -47,6 +47,10 @@ export const Logger = {
      * @param args - additional arguments to include in the log
      */
     _store: (level: string, context: string, message: string, args: unknown[]) => {
+        if (import.meta.env.PROD) {
+            return;
+        }
+
         const timestamp = new Date().toISOString();
         const argsStr = args
             .map((arg) => {
