@@ -21,6 +21,7 @@ import type {
 } from '@/types/algorithms';
 import type cytoscape from 'cytoscape';
 import { addEdge, addEdges } from '../edgesService';
+import { resetGraph } from '../graphService';
 import { arrangeGraph } from '../layoutService';
 import { addNode } from '../nodesService';
 
@@ -38,7 +39,7 @@ export function generateCompleteGraph(
         );
     }
 
-    clearGraph(graph);
+    resetGraph(graph);
 
     // Add nodes
     for (let i = 0; i < nodeCount; i++) {
@@ -76,7 +77,7 @@ export function generateGridGraph(
         );
     }
 
-    clearGraph(graph);
+    resetGraph(graph);
 
     const totalNodes = rows * cols;
 
@@ -137,7 +138,7 @@ export function generateCircleGraph(
         );
     }
 
-    clearGraph(graph);
+    resetGraph(graph);
 
     // Add nodes
     for (let i = 0; i < nodeCount; i++) {
@@ -178,7 +179,7 @@ export function generateStarGraph(
     }
 
     // Clear existing graph
-    clearGraph(graph);
+    resetGraph(graph);
 
     // Add central node
     const centerNode = addNode(graph);
@@ -215,7 +216,7 @@ export function generateWheelGraph(
         );
     }
 
-    clearGraph(graph);
+    resetGraph(graph);
 
     // Connect outer nodes to center
     const centerNode = addNode(graph);
@@ -268,7 +269,7 @@ export function generateBipartiteGraph(
         );
     }
 
-    clearGraph(graph);
+    resetGraph(graph);
 
     // Add nodes for set A
     const setANodes: cytoscape.NodeSingular[] = [];
@@ -319,7 +320,7 @@ export function generateCompleteBipartiteGraph(
         );
     }
 
-    clearGraph(graph);
+    resetGraph(graph);
 
     // Add nodes for set A
     const setANodes: cytoscape.NodeSingular[] = [];
@@ -369,7 +370,7 @@ export function generateSimpleGraph(
         );
     }
 
-    clearGraph(graph);
+    resetGraph(graph);
 
     // Add nodes
     for (let i = 0; i < nodeCount; i++) {
@@ -405,11 +406,4 @@ export function generateSimpleGraph(
     } else if (layout) {
         arrangeGraph(graph, layout);
     }
-}
-
-function clearGraph(graph: cytoscape.Core) {
-    graph.elements().remove();
-    graph.data('directed', false);
-    graph.data('nodeSelectionOrder', []);
-    graph.data('edgeSelectionOrder', []);
 }

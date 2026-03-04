@@ -47,8 +47,6 @@ export function addEdge(
     if (isDirected) {
         core.$id(newId).addClass('directed');
     }
-
-    core.data('numEdges', core.edges().length);
 }
 
 export function addEdges(

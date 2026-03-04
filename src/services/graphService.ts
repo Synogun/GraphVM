@@ -3,7 +3,18 @@ import {
     DefaultGraphOptions,
     DefaultNodesData,
 } from '@/constants/graphDefaults';
+import { Logger } from '@Logger';
 import cytoscape from 'cytoscape';
+
+const logger = Logger.createContextLogger('GraphService');
+
+type ResetGraphState = {
+    setNodeCount?: (count: number) => void;
+    setEdgeCount?: (count: number) => void;
+    setSelectedNodes?: (nodes: string[]) => void;
+    setSelectedEdges?: (edges: string[]) => void;
+    setDirected?: (directed: boolean) => void;
+};
 
 export function setGraphDirected(
     core: cytoscape.Core,
@@ -21,6 +32,27 @@ export function setGraphDirected(
     } else {
         edges.removeClass('directed');
     }
+}
+
+export function resetGraph(
+    core: cytoscape.Core,
+    reactState?: ResetGraphState
+): void {
+    logger.info('Resetting graph');
+
+    core.elements().remove();
+    core.data('directed', false);
+    core.data('nodeSelectionOrder', []);
+    core.data('edgeSelectionOrder', []);
+
+    const nodeCount = core.nodes().length;
+    const edgeCount = core.edges().length;
+
+    reactState?.setNodeCount?.(nodeCount);
+    reactState?.setEdgeCount?.(edgeCount);
+    reactState?.setSelectedNodes?.([]);
+    reactState?.setSelectedEdges?.([]);
+    reactState?.setDirected?.(false);
 }
 
 export function newGraph(
