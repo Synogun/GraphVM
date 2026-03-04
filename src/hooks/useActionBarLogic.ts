@@ -3,6 +3,7 @@ import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { addEdges, removeEdges } from '@/services/edgesService';
 import { arrangeGraph, centerGraph } from '@/services/layoutService';
 import { addNode, removeNodes } from '@/services/nodesService';
+import { resetGraph } from '@/services/graphService';
 import { isArrayOfStrings } from '@/types/typeGuards';
 import {
     useGraphProperties,
@@ -58,15 +59,13 @@ export function useActionBarLogic() {
             return;
         }
 
-        graph.elements().remove();
-        graph.data('directed', false);
-        setNodeCount(0);
-        setEdgeCount(0);
-        setSelectedNodes([]);
-        setSelectedEdges([]);
-        graph.data('nodeSelectionOrder', []);
-        graph.data('edgeSelectionOrder', []);
-        setDirected(false);
+        resetGraph(graph, {
+            setNodeCount,
+            setEdgeCount,
+            setSelectedNodes,
+            setSelectedEdges,
+            setDirected,
+        });
     }, [
         graphRef,
         setDirected,

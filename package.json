@@ -1,7 +1,7 @@
 {
     "name": "graphvm",
     "private": true,
-    "version": "2.3.0",
+    "version": "2.4.0",
     "type": "module",
     "author": "Synogun",
     "license": "MIT",
@@ -11,7 +11,7 @@
         "update-u": "npx ncu --format group -u",
         "dev": "vite",
         "dev:host": "vite --host",
-        "pre:build": "npm run lint",
+        "prebuild": "npm run lint",
         "build": "tsc -b && vite build",
         "lint": "eslint ./src --fix",
         "format": "prettier --write \"src/**/*\"",
