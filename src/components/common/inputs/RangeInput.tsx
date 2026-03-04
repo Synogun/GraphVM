@@ -1,8 +1,8 @@
 import { type ChangeEvent, type ReactNode } from 'react';
 import { FieldWrapper } from './FieldWrapper';
-import NumberInput from './NumberInput';
+import { NumberInput } from './NumberInput';
 
-function RangeInput({
+export function RangeInput({
     label,
     numberInput = true,
     value,
@@ -84,5 +84,3 @@ type RangeInputProps = {
     defaultValue?: number;
     allowClear?: boolean;
 };
-
-export default RangeInput;

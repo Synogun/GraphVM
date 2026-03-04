@@ -1,7 +1,7 @@
 import { type ChangeEvent, type ReactNode } from 'react';
 import { FieldWrapper } from './FieldWrapper';
 
-function TextInput({
+export function TextInput({
     label,
     value,
     onChange,
@@ -60,5 +60,3 @@ type TextInputProps = {
     defaultValue?: string;
     allowClear?: boolean;
 };
-
-export default TextInput;

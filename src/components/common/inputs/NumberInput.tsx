@@ -1,7 +1,7 @@
 import { type ChangeEvent, type ReactNode } from 'react';
 import { FieldWrapper } from './FieldWrapper';
 
-function NumberInput({
+export function NumberInput({
     label,
     value,
     onChange,
@@ -68,5 +68,3 @@ type NumberInputProps = {
     defaultValue?: number;
     allowClear?: boolean;
 };
-
-export default NumberInput;

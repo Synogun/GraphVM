@@ -1,7 +1,7 @@
 import { type ChangeEvent, type ReactNode } from 'react';
 import { FieldWrapper } from './FieldWrapper';
 
-function SelectInput({
+export function SelectInput({
     value,
     options,
     label,
@@ -75,5 +75,3 @@ type SelectInputProps = {
     defaultValue?: string;
     allowClear?: boolean;
 };
-
-export default SelectInput;

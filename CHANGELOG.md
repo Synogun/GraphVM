@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - `Project` - Changed endOfLine in .prettierrc to 'lf'.
+- `Inputs` - Changed default import for named imports to be more consistent with the rest of the project.
 
 ### Fixed
 
