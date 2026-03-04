@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `Project` - Changed endOfLine in .prettierrc to 'lf'.
+
 ### Fixed
 
 ## [v2.4.0](https://github.com/Synogun/GraphVM/compare/v2.3.0...v2.4.0)
