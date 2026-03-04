@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `ActionBar` - Added a display for the current application version.
+
 ### Changed
 
 - `Project` - Changed endOfLine in .prettierrc to 'lf'.
