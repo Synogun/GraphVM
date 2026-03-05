@@ -1,8 +1,8 @@
 import { App } from '@/App';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { PopupsProvider } from '@/providers/PopupsProvider';
 import '@/styles/animations.css';
 import '@/styles/main.css';
-import { isDev } from '@/utils/general';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { importCytoscapeExtensions } from './config/extensions';
@@ -16,16 +16,14 @@ if (!rootElement) {
     throw new ParsedError('Root element with id "root" not found');
 }
 
-const appComponent = isDev() ? (
+const appTree = (
     <StrictMode>
-        <PopupsProvider>
-            <App />
-        </PopupsProvider>
+        <ErrorBoundary>
+            <PopupsProvider>
+                <App />
+            </PopupsProvider>
+        </ErrorBoundary>
     </StrictMode>
-) : (
-    <PopupsProvider>
-        <App />
-    </PopupsProvider>
 );
 
-createRoot(rootElement).render(appComponent);
+createRoot(rootElement).render(appTree);
