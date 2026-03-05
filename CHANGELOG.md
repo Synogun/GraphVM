@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `Hooks` - Implemented `usePropertyEditor` hook to manage property editing state and logic for nodes and edges.
 - `ActionBar` - Added a display for the current application version.
 - `ErrorHandling` - Added a global error boundary component to catch and display errors gracefully to the user.
 - `GenerationAlgorithms` - Added minor helper function and a user feedback for when exceeding max edges for simple graphs.
