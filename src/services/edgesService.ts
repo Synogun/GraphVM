@@ -40,9 +40,7 @@ export function addEdge(
         classes: [...(classes ?? [])],
     });
 
-    const isDirected = Boolean(options.data.directed)
-        ? Boolean(options.data.directed)
-        : Boolean(core.data('directed'));
+    const isDirected = Boolean(options.data.directed ?? core.data('directed'));
 
     if (isDirected) {
         core.$id(newId).addClass('directed');

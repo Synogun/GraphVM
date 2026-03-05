@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `Project` - Changed endOfLine in .prettierrc to 'lf'.
 - `Inputs` - Changed default import for named imports to be more consistent with the rest of the project.
+- `Error` - Renamed `ParsedErrorToast` to `ParsedErrorToasts` to better reflect a collection of toast configurations.
 
 ### Fixed
 

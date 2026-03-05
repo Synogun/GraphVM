@@ -1,4 +1,4 @@
-import { ParsedErrorToast, parseError } from '@/config/parsedError';
+import { ParsedErrorToasts, parseError } from '@/config/parsedError';
 import type { GraphInstance } from '@/types/graph';
 import { findPropertyValueMode } from '@/utils/elements';
 import { useToasts } from '@Contexts';
@@ -34,7 +34,7 @@ export function usePropertyEditor<TDefaults extends Record<string, unknown>>({
         const core = graphRef.current;
 
         if (!core) {
-            addToast(ParsedErrorToast.GraphNotFound);
+            addToast(ParsedErrorToasts.GraphNotFound);
             return null;
         }
 
