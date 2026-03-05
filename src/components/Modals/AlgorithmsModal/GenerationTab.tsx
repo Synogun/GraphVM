@@ -12,6 +12,7 @@ import {
 } from '@/constants/algorithmDefaults';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import {
+    calcMaxEdgesForSimpleGraph,
     generateBipartiteGraph,
     generateCircleGraph,
     generateCompleteBipartiteGraph,
@@ -26,7 +27,7 @@ import {
     ValidGenerationFamilies,
 } from '@/types/algorithmTypeGuards';
 import type { GenerationFamily, GenerationParams } from '@/types/algorithms';
-import { useLayoutProperties, useToasts } from '@Contexts';
+import { useGraphProperties, useLayoutProperties, useToasts } from '@Contexts';
 import { SelectInput } from '@Inputs';
 import { forwardRef, useImperativeHandle, useMemo, useState } from 'react';
 import {
@@ -135,6 +136,11 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
         grid,
         setType,
     } = useLayoutProperties();
+    const {
+        setDirected,
+        nodes: { setCount: setNodeCount, setSelected: setSelectedNodes },
+        edges: { setCount: setEdgeCount, setSelected: setSelectedEdges },
+    } = useGraphProperties();
 
     const { addToast } = useToasts();
 
@@ -202,6 +208,19 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
                     generateCompleteBipartiteGraph(graph.current, params, layout);
                     break;
                 case 'simple':
+                    const maxSimpleEdges = calcMaxEdgesForSimpleGraph(
+                        params.nodeCount
+                    );
+
+                    if (params.edgeCount > maxSimpleEdges) {
+                        addToast({
+                            type: 'warning',
+                            message:
+                                `Edge count exceeds maximum for ${params.nodeCount.toString()} nodes. ` +
+                                `Using ${maxSimpleEdges.toString()} edges instead.`,
+                        });
+                    }
+
                     if (params.applyFcoseLayout) {
                         layout = { ...layout, name: 'circle' };
                         setType('circle');
@@ -225,6 +244,12 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
             });
             return;
         }
+
+        setNodeCount(graph.current.nodes().length);
+        setEdgeCount(graph.current.edges().length);
+        setSelectedNodes([]);
+        setSelectedEdges([]);
+        setDirected(Boolean(graph.current.data('directed')));
 
         setParams({ ...DefaultGenerationParams });
         addToast({

@@ -378,7 +378,10 @@ export function generateSimpleGraph(
     }
 
     const nodes = graph.nodes();
-    const totalEdgeCount = Math.min(edgeCount, (nodeCount * (nodeCount - 1)) / 2);
+    const totalEdgeCount = Math.min(
+        edgeCount,
+        calcMaxEdgesForSimpleGraph(nodeCount)
+    );
 
     // Randomly add edges between nodes until we reach the desired edge count
     const existingEdges = new Set<string>();
@@ -406,4 +409,8 @@ export function generateSimpleGraph(
     } else if (layout) {
         arrangeGraph(graph, layout);
     }
+}
+
+export function calcMaxEdgesForSimpleGraph(nodeCount: number): number {
+    return (nodeCount * (nodeCount - 1)) / 2;
 }
