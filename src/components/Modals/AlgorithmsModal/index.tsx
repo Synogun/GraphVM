@@ -41,42 +41,42 @@ export function AlgorithmsModal() {
         handleClose();
     };
 
+    const modalActions = (
+        <>
+            <button className="btn btn-ghost" onClick={handleClose}>
+                Cancel
+            </button>
+            <button className="btn btn-primary" onClick={handleRun}>
+                Run
+            </button>
+        </>
+    );
     return (
         <Modal
             id="algorithms-modal"
             title="Algorithms"
+            subtitle="Generate common graph families or run algorithms on your graph."
             show={isAlgorithmsModalOpen}
             onClose={handleClose}
-            actions={
-                <>
-                    <button className="btn btn-ghost" onClick={handleClose}>
-                        Cancel
-                    </button>
-                    <button className="btn btn-primary" onClick={handleRun}>
-                        Run
-                    </button>
-                </>
-            }
+            actions={modalActions}
         >
-            <p className="text-base-content/70">
-                Generate common graph families or run algorithms on your graph.
-            </p>
+            <main className="grow">
+                <Tabs
+                    tabs={tabConfig}
+                    activeTab={activeTab}
+                    onTabChange={setActiveTab}
+                    name="algorithms-modal-tabs"
+                />
 
-            <Tabs
-                tabs={tabConfig}
-                activeTab={activeTab}
-                onTabChange={setActiveTab}
-                name="algorithms-modal-tabs"
-            />
-
-            <div className="mt-4">
-                {activeTab === 'generative' && (
-                    <GenerationTab ref={generationTabRef} />
-                )}
-                {/* {activeTab === 'traversal' && ( 
-                    <TraversalTab ref={traversalTabRef} />
-                )} */}
-            </div>
+                <div className="mt-4">
+                    {activeTab === 'generative' && (
+                        <GenerationTab ref={generationTabRef} />
+                    )}
+                    {/* {activeTab === 'traversal' && ( 
+                        <TraversalTab ref={traversalTabRef} />
+                    )} */}
+                </div>
+            </main>
         </Modal>
     );
 }

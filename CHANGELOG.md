@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `Modals` - Adjusted modals subtitle into a prop.
 - `App` - Adjusted modals to rendered at top level of the app to avoid z-index and overflow issues.
 - `Contexts` - Splited concerns of `PopupsContext` into `ModalsContext` for managing modal states and `ToastsContext` for managing toast notifications.
 - `Contexts` - Splitted concerns of `GraphProvider` into `GraphRegistryProvider` for managing graph instances, `GraphMetaProvider` for managing graph metadata (defaults, version, etc.) and `GraphSelectionProvider` for managing graph selection.
