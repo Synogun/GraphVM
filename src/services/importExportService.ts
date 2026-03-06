@@ -27,10 +27,14 @@ export function parseTextData(
 ): CytoscapeOptions {
     const separator = ' ';
 
+    const parseLine = (line: string) =>
+        line.replaceAll(/\s+/g, ' ').trim().split(separator);
+
     const lines = data
         .replaceAll('\r', '')
         .split('\n')
-        .map((line) => line.replaceAll(/\s+/g, ' ').trim().split(separator));
+        .filter(Boolean)
+        .map(parseLine);
 
     if (!isDataValid(lines)) {
         throw new ParsedError(

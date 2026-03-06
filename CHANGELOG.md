@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `ImportExportService` - Fixed parsing of blank lines in text import.
 - `TypeGuards` - Fixed loose type guards for elements (`NodeData` and `EdgesData`) data.
 
 ## [v2.4.0](https://github.com/Synogun/GraphVM/compare/v2.3.0...v2.4.0)
