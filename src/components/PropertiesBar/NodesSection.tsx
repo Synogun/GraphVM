@@ -1,11 +1,11 @@
-import { ParsedErrorToast, parseError } from '@/config/parsedError';
 import { DefaultNodesData } from '@/constants/graphDefaults';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
+import { usePropertyEditor } from '@/hooks/usePropertyEditor';
 import { updateNodes } from '@/services/nodesService';
 import { isNodeShape, ValidNodeShapes } from '@/types/nodesTypeGuards';
-import { findPropertyValueMode, parseKebabCase } from '@/utils/elements';
+import { parseKebabCase } from '@/utils/elements';
 import { getDefaultNodesData, setDefaultNodesData } from '@/utils/styleHelpers';
-import { useGraphProperties, useNodeProperties, useToasts } from '@Contexts';
+import { useGraphProperties, useNodeProperties } from '@Contexts';
 import { ColorInput, SelectInput } from '@Inputs';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
@@ -17,16 +17,24 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
         nodes: { selected: selectedNodes },
     } = useGraphProperties();
 
-    const { addToast } = useToasts();
+    const propertyEditor = usePropertyEditor({
+        graphRef,
+        selectedIds: selectedNodes,
+        getDefaults: getDefaultNodesData,
+        setDefaults: setDefaultNodesData,
+        getElements: (core) => core.nodes(),
+        updateElements: (core, ids, property, value) => {
+            updateNodes(core, ids, property, value);
+        },
+    });
 
     useEffect(() => {
-        if (!graphRef.current) {
-            addToast(ParsedErrorToast.GraphNotFound);
+        const currentDefaults = propertyEditor.resolveDefaults();
+        if (!currentDefaults) {
             return;
         }
 
-        const { color: defaultNodeColor, shape: defaultNodeShape } =
-            getDefaultNodesData(graphRef.current);
+        const { color: defaultNodeColor, shape: defaultNodeShape } = currentDefaults;
 
         if (selectedNodes.length === 0) {
             setColor(defaultNodeColor);
@@ -34,18 +42,12 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
             return;
         }
 
-        const nodeCollection = graphRef.current
-            .nodes()
-            .filter((n) => selectedNodes.includes(n.id()));
-
-        const modeColor =
-            findPropertyValueMode(nodeCollection, 'color') ?? defaultNodeColor;
-        const modeShape =
-            findPropertyValueMode(nodeCollection, 'shape') ?? defaultNodeShape;
+        const modeColor = propertyEditor.getModeValue('color') ?? defaultNodeColor;
+        const modeShape = propertyEditor.getModeValue('shape') ?? defaultNodeShape;
 
         setColor(modeColor);
         setShape(isNodeShape(modeShape) ? modeShape : defaultNodeShape);
-    }, [graphRef, selectedNodes, setColor, setShape, addToast]);
+    }, [propertyEditor, selectedNodes, setColor, setShape]);
 
     // const handleChangeLabel = (e: ChangeEvent<HTMLInputElement>) => {
     //     if (!graphRef.current) { return; }
@@ -58,54 +60,29 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
     // };
 
     const handleChangeColor = (e: ChangeEvent<HTMLInputElement>) => {
-        if (!graphRef.current) {
-            addToast(ParsedErrorToast.GraphNotFound);
+        const didApply = propertyEditor.applyValue('color', e.target.value);
+        if (!didApply) {
             return;
-        }
-
-        if (selectedNodes.length === 0) {
-            setDefaultNodesData(graphRef.current, { color: e.target.value });
-        } else {
-            try {
-                updateNodes(
-                    graphRef.current,
-                    selectedNodes,
-                    'color',
-                    e.target.value
-                );
-            } catch (error) {
-                const parsedError = parseError(error);
-                addToast({ type: 'error', message: parsedError.message });
-                return;
-            }
         }
 
         setColor(e.target.value);
     };
 
     const handleChangeShape = (e: ChangeEvent<HTMLSelectElement>) => {
-        if (!graphRef.current) {
-            addToast(ParsedErrorToast.GraphNotFound);
+        const currentDefaults = propertyEditor.resolveDefaults();
+        if (!currentDefaults) {
             return;
         }
 
         const { value } = e.target;
-        const currentDefaults = getDefaultNodesData(graphRef.current);
 
         const parsedValue: cytoscape.Css.NodeShape = isNodeShape(value)
             ? value
             : currentDefaults.shape;
 
-        if (selectedNodes.length === 0) {
-            setDefaultNodesData(graphRef.current, { shape: parsedValue });
-        } else {
-            try {
-                updateNodes(graphRef.current, selectedNodes, 'shape', parsedValue);
-            } catch (error) {
-                const parsedError = parseError(error);
-                addToast({ type: 'error', message: parsedError.message });
-                return;
-            }
+        const didApply = propertyEditor.applyValue('shape', parsedValue);
+        if (!didApply) {
+            return;
         }
 
         setShape(parsedValue);

@@ -67,35 +67,31 @@ export function ImportExportModal() {
         setIsActionReady(isReady);
     }, []);
 
+    const modalActions = (
+        <>
+            <button className="btn btn-ghost" onClick={handleClose} type="button">
+                Cancel
+            </button>
+            <button
+                className="btn btn-accent"
+                disabled={!isActionReady}
+                onClick={handleAction}
+                type="button"
+            >
+                {activeTab === 'import' ? 'Import' : 'Export'}
+            </button>
+        </>
+    );
+
     return (
         <Modal
             id="import-export-modal"
             onClose={handleClose}
             show={modals.isImportExportModalOpen}
             title="Import / Export Graph"
-            actions={
-                <>
-                    <button
-                        className="btn btn-ghost"
-                        onClick={handleClose}
-                        type="button"
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        className="btn btn-accent"
-                        disabled={!isActionReady}
-                        onClick={handleAction}
-                        type="button"
-                    >
-                        {activeTab === 'import' ? 'Import' : 'Export'}
-                    </button>
-                </>
-            }
+            subtitle="Manage your graph data by importing or exporting in various formats."
+            actions={modalActions}
         >
-            <p className="text-base-content/70">
-                Manage your graph data by importing or exporting in various formats.
-            </p>
             <main className="grow pt-3">
                 <Tabs
                     tabs={tabConfig}

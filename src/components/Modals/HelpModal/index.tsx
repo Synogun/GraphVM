@@ -30,11 +30,8 @@ export function HelpModal() {
             onClose={handleClose}
             show={modals.isHelpModalOpen}
             title="Help"
+            subtitle="Need assistance? Here's how to get started with using the application."
         >
-            <p className="text-base-content/70">
-                Need assistance? Here's how to get started with using the
-                application.
-            </p>
             <main className="grow pt-3">
                 <Tabs
                     tabs={tabConfig}

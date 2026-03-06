@@ -2,6 +2,7 @@ import { useActionBarLogic } from '@/hooks/useActionBarLogic';
 import { isDev } from '@/utils/general';
 import { Logger } from '@Logger';
 import { type ReactNode } from 'react';
+import pkg from '../../../package.json';
 import { AppIcons } from '../common/AppIcons';
 import { SideBar } from '../common/SideBar';
 import { ActionBarButton } from './ActionBarButton';
@@ -151,6 +152,7 @@ export function ActionBar({ children }: ActionBarProps) {
                 <span className="text-xs text-gray-500" id="credits">
                     @Synogun
                 </span>
+                <span>{`v${pkg.version}`}</span>
 
                 {isDev() && (
                     <span className="text-xs text-red-600" id="is-dev">

@@ -1,17 +1,12 @@
 import { DefaultSettingsData } from '@/constants/settingsDefaults';
 import type { ToastData } from '@/types/popups';
-import { PopupsContext } from '@Contexts';
+import { ToastsContext } from '@Contexts';
 import { Logger } from '@Logger';
 import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
 
-const logger = Logger.createContextLogger('PopupsProvider');
+const logger = Logger.createContextLogger('ToastsProvider');
 
-export function PopupsProvider({ children }: PopupsProviderProps) {
-    const [isAlgorithmsModalOpen, setIsAlgorithmsModalOpen] = useState(false);
-    const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
-    const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-    const [isImportExportModalOpen, setIsImportExportModalOpen] = useState(false);
-
+export function ToastsProvider({ children }: ToastsProviderProps) {
     const [toastsPool, setToastsPool] = useState<ToastData[]>([]);
     const toastsTimeouts = useRef(new Map<string, NodeJS.Timeout>());
 
@@ -50,26 +45,7 @@ export function PopupsProvider({ children }: PopupsProviderProps) {
         }
     }, []);
 
-    const modals = useMemo(
-        () => ({
-            isAlgorithmsModalOpen,
-            setIsAlgorithmsModalOpen,
-            isHelpModalOpen,
-            setIsHelpModalOpen,
-            isSettingsModalOpen,
-            setIsSettingsModalOpen,
-            isImportExportModalOpen,
-            setIsImportExportModalOpen,
-        }),
-        [
-            isAlgorithmsModalOpen,
-            isHelpModalOpen,
-            isSettingsModalOpen,
-            isImportExportModalOpen,
-        ]
-    );
-
-    const toasts = useMemo(
+    const value = useMemo(
         () => ({
             pool: toastsPool,
             addToast,
@@ -78,11 +54,9 @@ export function PopupsProvider({ children }: PopupsProviderProps) {
         [toastsPool, addToast, removeToast]
     );
 
-    const value = useMemo(() => ({ modals, toasts }), [modals, toasts]);
-
-    return <PopupsContext.Provider value={value}>{children}</PopupsContext.Provider>;
+    return <ToastsContext.Provider value={value}>{children}</ToastsContext.Provider>;
 }
 
-type PopupsProviderProps = {
+type ToastsProviderProps = {
     children: ReactNode;
 };

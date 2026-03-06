@@ -1,6 +1,6 @@
-import type { SettingsContextProperties } from '@/types/settings';
+import type { SettingsData } from '@/types/settings';
 
-export const DefaultSettingsData: SettingsContextProperties = {
+export const DefaultSettingsData: SettingsData = {
     ui: {
         toast: {
             duration: 3000,
@@ -14,6 +14,10 @@ export const DefaultSettingsData: SettingsContextProperties = {
             editNode: false,
             editEdge: false,
             import: true,
+        },
+        limits: {
+            maxNodes: 2000,
+            maxEdges: 4000,
         },
     },
 };

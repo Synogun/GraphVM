@@ -1,8 +1,6 @@
-import { default as ColorInput } from './ColorInput';
-import { default as NumberInput } from './NumberInput';
-import { default as RangeInput } from './RangeInput';
-import { default as SelectInput } from './SelectInput';
-import { default as TextInput } from './TextInput';
-import { ToggleInput } from './ToggleInput';
-
-export { ColorInput, NumberInput, RangeInput, SelectInput, TextInput, ToggleInput };
+export { ColorInput } from './ColorInput';
+export { NumberInput } from './NumberInput';
+export { RangeInput } from './RangeInput';
+export { SelectInput } from './SelectInput';
+export { TextInput } from './TextInput';
+export { ToggleInput } from './ToggleInput';

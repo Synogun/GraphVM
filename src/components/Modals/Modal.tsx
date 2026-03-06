@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react';
 export function Modal({
     id,
     title,
+    subtitle,
     children,
     show,
     onClose,
@@ -45,7 +46,12 @@ export function Modal({
     return (
         <dialog ref={modalRef} className={`modal ${className ?? ''}`} id={id}>
             <div className="modal-box max-h-[90vh] max-w-[70vw] overflow-y-auto overflow-x-hidden">
-                <h3 className="font-bold text-lg">{title ?? ' '}</h3>
+                <h3 className="font-bold text-lg text-center">{title ?? ' '}</h3>
+                {subtitle && (
+                    <p className="text-sm text-center text-base-content/70 mt-1">
+                        {subtitle}
+                    </p>
+                )}
                 <div className="pt-2 pb-2">{children ?? ' '}</div>
                 <div className="modal-action mt-2">
                     {actions ?? (
@@ -67,6 +73,7 @@ export function Modal({
 type ModalProps = {
     id: string;
     title?: string;
+    subtitle?: string;
     children?: React.ReactNode;
     show?: boolean;
     onClose?: () => void;

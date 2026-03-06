@@ -1,5 +1,5 @@
-import { useToasts } from '@/contexts/PopupsContext';
 import { useSettings } from '@/contexts/SettingsContext';
+import { useToasts } from '@Contexts';
 import { AppIcons } from './common/AppIcons';
 
 const PositionsMap = {

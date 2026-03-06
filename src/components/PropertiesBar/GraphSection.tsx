@@ -3,7 +3,7 @@ import { setGraphDirected } from '@/services/graphService';
 import { useGraphProperties } from '@Contexts';
 import { useEffect } from 'react';
 import { ToggleInput } from '../common/inputs/ToggleInput';
-import ElementCounter from './ElementCounter';
+import { ElementCounter } from './ElementCounter';
 
 export function GraphSection() {
     const graphRef = useGetGraph('main-graph');

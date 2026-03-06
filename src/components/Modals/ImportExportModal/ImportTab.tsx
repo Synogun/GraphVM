@@ -1,4 +1,4 @@
-import { ParsedError, ParsedErrorToast, parseError } from '@/config/parsedError';
+import { ParsedError, ParsedErrorToasts, parseError } from '@/config/parsedError';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { newGraph, setGraphDirected } from '@/services/graphService';
 import { parseTextData, type FileType } from '@/services/importExportService';
@@ -88,7 +88,7 @@ export function ImportTab({
 
     const handleDataPreview = (data: string, fileType: FileType) => {
         if (!graphRef.current) {
-            addToast(ParsedErrorToast.GraphNotFound);
+            addToast(ParsedErrorToasts.GraphNotFound);
             return;
         }
 
@@ -148,7 +148,7 @@ export function ImportTab({
 
     const handleImport = () => {
         if (!graphRef.current) {
-            addToast(ParsedErrorToast.GraphNotFound);
+            addToast(ParsedErrorToasts.GraphNotFound);
             return;
         }
 

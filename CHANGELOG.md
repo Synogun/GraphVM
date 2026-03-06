@@ -5,13 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/Synogun/GraphVM/compare/v2.4.0...develop)
+## [Unreleased](https://github.com/Synogun/GraphVM/compare/v2.5.0...develop)
 
 ### Added
 
 ### Changed
 
 ### Fixed
+
+## [v2.5.0](https://github.com/Synogun/GraphVM/compare/v2.4.0...v2.5.0)
+
+### Added
+
+- `Settings` - Added persistence to localStorage;
+- `Settings` - Added graph element limits to `SettingsProvider`.
+- `Hooks` - Implemented `usePropertyEditor` hook to manage property editing state and logic for nodes and edges.
+- `ActionBar` - Added a display for the current application version.
+- `ErrorHandling` - Added a global error boundary component to catch and display errors gracefully to the user.
+- `GenerationAlgorithms` - Added minor helper function and a user feedback for when exceeding max edges for simple graphs.
+
+### Changed
+
+- `Modals` - Adjusted modals subtitle into a prop.
+- `App` - Adjusted modals to rendered at top level of the app to avoid z-index and overflow issues.
+- `Contexts` - Splited concerns of `PopupsContext` into `ModalsContext` for managing modal states and `ToastsContext` for managing toast notifications.
+- `Contexts` - Splitted concerns of `GraphProvider` into `GraphRegistryProvider` for managing graph instances, `GraphMetaProvider` for managing graph metadata (defaults, version, etc.) and `GraphSelectionProvider` for managing graph selection.
+- `Project` - Changed endOfLine in .prettierrc to 'lf'.
+- `Inputs` - Changed default import for named imports to be more consistent with the rest of the project.
+- `Error` - Renamed `ParsedErrorToast` to `ParsedErrorToasts` to better reflect a collection of toast configurations.
+
+### Fixed
+
+- `ImportExportService` - Fixed parsing of blank lines in text import.
+- `TypeGuards` - Fixed loose type guards for elements (`NodeData` and `EdgesData`) data.
 
 ## [v2.4.0](https://github.com/Synogun/GraphVM/compare/v2.3.0...v2.4.0)
 

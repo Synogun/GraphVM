@@ -2,7 +2,7 @@ import { type ChangeEvent, type ReactNode } from 'react';
 import { AppIcons } from '../AppIcons';
 import { FieldWrapper } from './FieldWrapper';
 
-function ColorInput({
+export function ColorInput({
     label,
     value,
     onChange,
@@ -67,5 +67,3 @@ type ColorInputProps = {
     defaultValue?: string;
     allowClear?: boolean;
 };
-
-export default ColorInput;
