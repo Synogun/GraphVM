@@ -45,7 +45,7 @@ export function Modal({
     return (
         <dialog ref={modalRef} className={`modal ${className ?? ''}`} id={id}>
             <div className="modal-box max-h-[90vh] max-w-[70vw] overflow-y-auto overflow-x-hidden">
-                <h3 className="font-bold text-lg">{title ?? ' '}</h3>
+                <h3 className="font-bold text-lg text-center">{title ?? ' '}</h3>
                 <div className="pt-2 pb-2">{children ?? ' '}</div>
                 <div className="modal-action mt-2">
                     {actions ?? (

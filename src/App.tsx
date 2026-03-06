@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react';
 
 export function App() {
     const [loadingApp, setLoadingApp] = useState(true);
+    const modals = useModals();
 
     useEffect(() => {
         // Simulated loading time - Users thinks its more natural
@@ -28,8 +29,6 @@ export function App() {
         };
     }, []);
 
-    const modals = useModals();
-
     return loadingApp ? (
         <LoadingHero />
     ) : (
@@ -37,26 +36,28 @@ export function App() {
             <PropertiesProvider>
                 <PropertiesBar>
                     <ActionBar>
-                        <AlgorithmsModal />
-                        <ImportExportModal />
-                        <Modal
-                            id="settings-modal"
-                            onClose={() => {
-                                modals.setIsSettingsModalOpen(false);
-                            }}
-                            show={modals.isSettingsModalOpen}
-                            title="Settings"
-                        >
-                            <div className="flex flex-col gap-4">
-                                <p className="text-sm text-base-content/80">
-                                    Settings will be added in a future update.
-                                </p>
-                            </div>
-                        </Modal>
-                        <HelpModal />
                         <GraphCanvas containerId="main-graph" />
                     </ActionBar>
                 </PropertiesBar>
+
+                <AlgorithmsModal />
+                <ImportExportModal />
+                <Modal
+                    id="settings-modal"
+                    onClose={() => {
+                        modals.setIsSettingsModalOpen(false);
+                    }}
+                    show={modals.isSettingsModalOpen}
+                    title="Settings"
+                >
+                    <div className="flex flex-col gap-4">
+                        <p className="text-sm text-base-content/80">
+                            Settings will be added in a future update.
+                        </p>
+                    </div>
+                </Modal>
+                <HelpModal />
+
                 <ToastArea />
             </PropertiesProvider>
         </>
