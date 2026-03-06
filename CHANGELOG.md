@@ -16,7 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- `Graph` - Splitted concerns of `GraphProvider` into `GraphRegistryProvider` for managing graph instances, `GraphMetaProvider` for managing graph metadata (defaults, version, etc.) and `GraphSelectionProvider` for managing graph selection.
+- `Contexts` - Splited concerns of `PopupsContext` into `ModalsContext` for managing modal states and `ToastsContext` for managing toast notifications.
+- `Contexts` - Splitted concerns of `GraphProvider` into `GraphRegistryProvider` for managing graph instances, `GraphMetaProvider` for managing graph metadata (defaults, version, etc.) and `GraphSelectionProvider` for managing graph selection.
 - `Project` - Changed endOfLine in .prettierrc to 'lf'.
 - `Inputs` - Changed default import for named imports to be more consistent with the rest of the project.
 - `Error` - Renamed `ParsedErrorToast` to `ParsedErrorToasts` to better reflect a collection of toast configurations.
