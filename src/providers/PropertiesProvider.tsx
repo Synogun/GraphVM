@@ -1,6 +1,8 @@
 import { type ReactNode } from 'react';
 import { EdgesProvider } from './EdgesProvider';
-import { GraphProvider } from './GraphProvider';
+import { GraphMetaProvider } from './GraphMetaProvider';
+import { GraphRegistryProvider } from './GraphRegistryProvider';
+import { GraphSelectionProvider } from './GraphSelectionProvider';
 import { LayoutProvider } from './LayoutProvider';
 import { NodesProvider } from './NodesProvider';
 import { SettingsProvider } from './SettingsProvider';
@@ -8,13 +10,17 @@ import { SettingsProvider } from './SettingsProvider';
 export function PropertiesProvider({ children }: PropertiesProviderProps) {
     return (
         <SettingsProvider>
-            <GraphProvider>
-                <LayoutProvider>
-                    <NodesProvider>
-                        <EdgesProvider>{children}</EdgesProvider>
-                    </NodesProvider>
-                </LayoutProvider>
-            </GraphProvider>
+            <GraphRegistryProvider>
+                <GraphMetaProvider>
+                    <GraphSelectionProvider>
+                        <LayoutProvider>
+                            <NodesProvider>
+                                <EdgesProvider>{children}</EdgesProvider>
+                            </NodesProvider>
+                        </LayoutProvider>
+                    </GraphSelectionProvider>
+                </GraphMetaProvider>
+            </GraphRegistryProvider>
         </SettingsProvider>
     );
 }

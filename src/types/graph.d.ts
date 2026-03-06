@@ -9,6 +9,42 @@ export type AutopanOptions = {
     margin: number;
 };
 
+export type GraphRegistryContextProperties = {
+    register: (id: string, instance: GraphInstance) => void;
+    unregister: (id: string) => void;
+    get: (id: string) => GraphInstance;
+    subscribe: (
+        id: string,
+        callback: (instance: GraphInstance) => void
+    ) => () => void;
+};
+
+export type GraphSelectionContextProperties = {
+    nodes: {
+        selected: string[];
+        setSelected: (nodes: string[]) => void;
+    };
+    edges: {
+        selected: string[];
+        setSelected: (edges: string[]) => void;
+    };
+};
+
+export type GraphMetaContextProperties = {
+    directed: boolean;
+    setDirected: (directed: boolean) => void;
+    nodes: {
+        count: number;
+        setCount: (count: number) => void;
+    };
+    edges: {
+        count: number;
+        setCount: (count: number) => void;
+        edgeMode: 'path' | 'complete';
+        setEdgeMode: (edgeMode: 'path' | 'complete') => void;
+    };
+};
+
 export type GraphContextProperties = {
     directed: boolean;
     setDirected: (directed: boolean) => void;
@@ -27,13 +63,5 @@ export type GraphContextProperties = {
         edgeMode: 'path' | 'complete';
         setEdgeMode: (edgeMode: 'path' | 'complete') => void;
     };
-    registry: {
-        register: (id: string, instance: GraphInstance) => void;
-        unregister: (id: string) => void;
-        get: (id: string) => GraphInstance;
-        subscribe: (
-            id: string,
-            callback: (instance: GraphInstance) => void
-        ) => () => void;
-    };
+    registry: GraphRegistryContextProperties;
 };
