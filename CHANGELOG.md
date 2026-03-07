@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `Project` - Adopted React Compiler for better rendering performance.
 - `Packages` - Upgraded dependencies to their latest versions.
 - `Env` - Added empty `.env` file to enforce standard project practices.
 - `Actions` - Added an action for pull requests.
