@@ -1,18 +1,58 @@
-# <center>GraphVM</center>
+# GraphVM
 
-<!-- TODO: Add badges related to the used libs instead of dev stack -->
+GraphVM is a React + TypeScript application for graph modeling, visualization,
+and manipulation using Cytoscape.
 
-[![Licence](https://img.shields.io/github/license/Ileriayo/markdown-badges?style=for-the-badge)](./LICENSE)
+## Requirements
 
----
+- Node.js 20.x (recommended)
+- npm
 
-GraphVM its designed to be a quick and easy viewer and manipulator of graphs from [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory). It was developed to be easy and simple for quick problem solving but still offer a range of powerfull features for robust and complex modeling.
+## Setup
 
----
+```bash
+npm ci
+cp .env.example .env
+```
 
-<!-- TODO: Rewrite README.md -->
+## Run
 
----
+```bash
+npm run dev
+```
 
-<center>Keep Calm & Keep Going</center>
-<center>⚜ Synogun ⚜</center>
+## Build
+
+```bash
+npm run build
+```
+
+## Lint
+
+```bash
+npm run lint
+```
+
+## Scripts
+
+- `npm run dev`: start Vite development server.
+- `npm run dev:host`: start Vite server exposed on the local network.
+- `npm run build`: type-check and build production assets.
+- `npm run lint`: run ESLint against `src`.
+- `npm run lint:fix`: run ESLint with automatic fixes.
+- `npm run format`: run Prettier on `src/**/*`.
+- `npm run preview`: preview the production build.
+
+## Architecture Overview
+
+- Graph state source of truth: Cytoscape instance.
+- UI state: React contexts and providers for settings, graph metadata, graph
+  selection, modals, and toasts.
+- Service layer: stateless operations in `src/services` for graph mutations,
+  import/export, layout, and algorithms.
+- Split-state synchronization: after graph mutations, relevant UI metadata
+  (counts and selections) is explicitly synchronized.
+
+## License
+
+MIT. See `LICENSE`.
