@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `Settings` - Added settings for keyboard shortcuts configuration.
+- `Settings` - Applied `ArrangeOn` settings to graph operations (add node/edge, import, edit node/edge) to trigger automatic layout when enabled.
+- `Settings` - Implemented the settings modal with a tabbed interface for graph, layout, and style settings.
 - `Project` - Adopted React Compiler for better rendering performance.
 - `Packages` - Upgraded dependencies to their latest versions.
 - `Env` - Added empty `.env` file to enforce standard project practices.
@@ -18,6 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Actions` - Added a new action for pre-deploy to automate changelog and version bumping.
 
 ### Changed
+
+- `Inputs` - Adjusted `ToggleInput` to accept custom labels for on/off states.
 
 ### Fixed
 

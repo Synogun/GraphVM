@@ -60,6 +60,7 @@ export function GraphSection() {
                         content:
                             'When enabled, new and existing edges show direction arrows.',
                     }}
+                    stateLabels={{ on: 'Directed', off: 'Undirected' }}
                 />
             </div>
         </>

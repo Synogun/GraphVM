@@ -2,7 +2,7 @@ import { AppIcons } from '@/components/common/AppIcons';
 import { Tabs, type TabItem } from '@/components/common/tabs';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { arrangeGraph } from '@/services/layoutService';
-import { useLayoutProperties, useModals } from '@Contexts';
+import { useLayoutProperties, useModals, useSettings } from '@Contexts';
 import { Modal } from '@Modals';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { ExportTab } from './ExportTab';
@@ -24,9 +24,15 @@ export function ImportExportModal() {
     const modals = useModals();
     const graphRef = useGetGraph('main-graph');
     const { current: currentLayout } = useLayoutProperties();
+    const {
+        graph: {
+            arrangeOn: { import: arrangeOnImport },
+        },
+    } = useSettings();
 
     const [activeTab, setActiveTab] = useState<ImportExportTabId>('import');
     const [isActionReady, setIsActionReady] = useState(false);
+    const [shouldArrangeOnClose, setShouldArrangeOnClose] = useState(false);
 
     const exportTabRef = useRef<ExportTabRef>(null);
     const importTabRef = useRef<ImportTabRef>(null);
@@ -39,7 +45,7 @@ export function ImportExportModal() {
         []
     );
 
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
         if (activeTab === 'import') {
             importTabRef.current?.cleanup();
         } else {
@@ -48,12 +54,26 @@ export function ImportExportModal() {
         setActiveTab('import');
         modals.setIsImportExportModalOpen(false);
 
-        if (!graphRef.current) {
+        if (!graphRef.current || !shouldArrangeOnClose || !arrangeOnImport) {
+            setShouldArrangeOnClose(false);
             return;
         }
 
         arrangeGraph(graphRef.current, currentLayout);
-    };
+        setShouldArrangeOnClose(false);
+    }, [
+        activeTab,
+        modals,
+        graphRef,
+        shouldArrangeOnClose,
+        arrangeOnImport,
+        currentLayout,
+    ]);
+
+    const handleImportSuccess = useCallback(() => {
+        setShouldArrangeOnClose(true);
+        handleClose();
+    }, [handleClose]);
 
     const handleAction = () => {
         if (activeTab === 'import') {
@@ -103,7 +123,7 @@ export function ImportExportModal() {
                     {activeTab === 'import' && (
                         <ImportTab
                             ref={importTabRef}
-                            onImportSuccess={handleClose}
+                            onImportSuccess={handleImportSuccess}
                             onReadyStateChange={handleReadyStateChange}
                         />
                     )}

@@ -23,6 +23,8 @@ type ParamsInputProps = {
     setParams: (params: GenerationParams) => void;
 };
 
+const applyLayoutStateLabels = { on: 'Apply Layout', off: 'Keep Current' };
+
 // Helper: Extract integer from input event
 const getInt = (e: ChangeEvent<HTMLInputElement>) => parseInt(e.target.value) || 1;
 
@@ -92,6 +94,7 @@ export function GridParamsInput({ params, setParams }: ParamsInputProps) {
                 label="Apply Grid Layout"
                 checked={params.applyGridLayout}
                 defaultValue={DefaultGridGenerationParams.applyGridLayout}
+                stateLabels={applyLayoutStateLabels}
                 tooltip={{
                     content:
                         'If enabled, automatically arranges the nodes in a structured grid pattern matching the specified rows and columns.',
@@ -129,6 +132,7 @@ export function CircleParamsInput({ params, setParams }: ParamsInputProps) {
             <ToggleInput
                 label="Apply Circle Layout"
                 checked={params.applyCircleLayout}
+                stateLabels={applyLayoutStateLabels}
                 tooltip={{
                     content:
                         'If enabled, automatically arranges all nodes in a perfect circle for better visualization.',
@@ -170,6 +174,7 @@ export function StarParamsInput({ params, setParams }: ParamsInputProps) {
             <ToggleInput
                 label="Apply Concentric Layout"
                 checked={params.applyConcentricLayout}
+                stateLabels={applyLayoutStateLabels}
                 tooltip={{
                     content:
                         'If enabled, places the center node in the middle and arranges all other nodes in a circle around it.',
@@ -210,6 +215,7 @@ export function WheelParamsInput({ params, setParams }: ParamsInputProps) {
             <ToggleInput
                 label="Apply Concentric Layout"
                 checked={params.applyConcentricLayout}
+                stateLabels={applyLayoutStateLabels}
                 tooltip={{
                     content:
                         'If enabled, places the hub node in the center and arranges the rim nodes in a circle around it.',
@@ -318,6 +324,7 @@ export function SimpleParamsInput({ params, setParams }: ParamsInputProps) {
             <ToggleInput
                 label="Apply Fcose Layout"
                 checked={params.applyFcoseLayout}
+                stateLabels={applyLayoutStateLabels}
                 tooltip={{
                     content:
                         'If enabled, tries to arrange the nodes using the Fcose layout algorithm to visualize the simple structure.',

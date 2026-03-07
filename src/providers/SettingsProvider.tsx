@@ -39,6 +39,7 @@ export function SettingsProvider({ children }: SettingsProviderProps) {
         initialSettings.graph.arrangeOn
     );
     const [graphLimits, setGraphLimits] = useState(initialSettings.graph.limits);
+    const [shortcuts, setShortcuts] = useState(initialSettings.shortcuts);
 
     useEffect(() => {
         if (typeof window === 'undefined') {
@@ -48,10 +49,11 @@ export function SettingsProvider({ children }: SettingsProviderProps) {
         const payload = {
             ui: { toast: uiToast },
             graph: { arrangeOn: graphArrangeOn, limits: graphLimits },
+            shortcuts,
         };
 
         window.localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(payload));
-    }, [uiToast, graphArrangeOn, graphLimits]);
+    }, [uiToast, graphArrangeOn, graphLimits, shortcuts]);
 
     const value = {
         ui: {
@@ -64,6 +66,8 @@ export function SettingsProvider({ children }: SettingsProviderProps) {
             limits: graphLimits,
             setLimits: setGraphLimits,
         },
+        shortcuts,
+        setShortcuts,
     };
 
     return (

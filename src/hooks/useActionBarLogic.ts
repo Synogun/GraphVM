@@ -43,7 +43,7 @@ export function useActionBarLogic() {
 
     const { current: currentLayout } = useLayoutProperties();
     const {
-        graph: { limits },
+        graph: { limits, arrangeOn },
     } = useSettings();
     const graphRef = useGetGraph('main-graph');
 
@@ -135,8 +135,17 @@ export function useActionBarLogic() {
         }
 
         setNodeCount(graph.nodes().length);
-        handleArrangeGraph();
-    }, [graphRef, limits, setNodeCount, handleArrangeGraph, addToast]);
+        if (arrangeOn.addNode) {
+            handleArrangeGraph();
+        }
+    }, [
+        graphRef,
+        limits,
+        arrangeOn.addNode,
+        setNodeCount,
+        handleArrangeGraph,
+        addToast,
+    ]);
 
     const handleAddEdges = useCallback(() => {
         const graph = graphRef.current;
@@ -166,8 +175,18 @@ export function useActionBarLogic() {
         }
 
         setEdgeCount(graph.edges().length);
-        handleArrangeGraph();
-    }, [graphRef, edgeMode, limits, setEdgeCount, handleArrangeGraph, addToast]);
+        if (arrangeOn.addEdge) {
+            handleArrangeGraph();
+        }
+    }, [
+        graphRef,
+        edgeMode,
+        limits,
+        arrangeOn.addEdge,
+        setEdgeCount,
+        handleArrangeGraph,
+        addToast,
+    ]);
 
     const handleToggleEdgeMode = useCallback(
         (e: ChangeEvent<HTMLInputElement>) => {

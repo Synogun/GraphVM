@@ -20,4 +20,12 @@ export const DefaultSettingsData: SettingsData = {
             maxEdges: 4000,
         },
     },
+    shortcuts: {
+        deleteSelected: 'Delete',
+        deselectAll: 'Escape',
+        selectAll: 'Ctrl+A',
+        newGraph: 'Ctrl+N',
+        addNode: 'Ctrl+Shift+N',
+        addEdges: 'Ctrl+Shift+E',
+    },
 };

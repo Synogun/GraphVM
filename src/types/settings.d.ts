@@ -9,6 +9,16 @@ export type ToastPosition =
     | 'bottom-center'
     | 'bottom-right';
 
+export type ShortcutAction =
+    | 'deleteSelected'
+    | 'deselectAll'
+    | 'selectAll'
+    | 'newGraph'
+    | 'addNode'
+    | 'addEdges';
+
+export type ShortcutMap = Record<ShortcutAction, string>;
+
 export type SettingsData = {
     ui: {
         toast: {
@@ -29,6 +39,7 @@ export type SettingsData = {
             maxEdges: number;
         };
     };
+    shortcuts: ShortcutMap;
 };
 
 export type GraphLimits = SettingsData['graph']['limits'];
@@ -44,4 +55,6 @@ export type SettingsContextProperties = {
         limits: SettingsData['graph']['limits'];
         setLimits: (limits: SettingsData['graph']['limits']) => void;
     };
+    shortcuts: SettingsData['shortcuts'];
+    setShortcuts: (shortcuts: SettingsData['shortcuts']) => void;
 };

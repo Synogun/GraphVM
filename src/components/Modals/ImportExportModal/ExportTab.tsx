@@ -259,7 +259,7 @@ export function ExportTab({
                 // .421-64
             )}
             {!nodeCount && (
-                <p>
+                <p className="text-center">
                     The graph has no elemens to export. <br />
                     Try adding some!
                 </p>

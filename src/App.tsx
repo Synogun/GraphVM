@@ -5,13 +5,16 @@ import { PropertiesBar } from '@/components/PropertiesBar';
 import { ToastArea } from '@/components/ToastArea';
 import { PropertiesProvider } from '@/providers/PropertiesProvider';
 import { isDev } from '@/utils/general';
-import { useModals } from '@Contexts';
-import { AlgorithmsModal, HelpModal, ImportExportModal, Modal } from '@Modals';
+import {
+    AlgorithmsModal,
+    HelpModal,
+    ImportExportModal,
+    SettingsModal,
+} from '@Modals';
 import { useEffect, useState } from 'react';
 
 export function App() {
     const [loadingApp, setLoadingApp] = useState(true);
-    const modals = useModals();
 
     useEffect(() => {
         // Simulated loading time - Users thinks its more natural
@@ -42,20 +45,7 @@ export function App() {
 
                 <AlgorithmsModal />
                 <ImportExportModal />
-                <Modal
-                    id="settings-modal"
-                    onClose={() => {
-                        modals.setIsSettingsModalOpen(false);
-                    }}
-                    show={modals.isSettingsModalOpen}
-                    title="Settings"
-                >
-                    <div className="flex flex-col gap-4">
-                        <p className="text-sm text-base-content/80">
-                            Settings will be added in a future update.
-                        </p>
-                    </div>
-                </Modal>
+                <SettingsModal />
                 <HelpModal />
 
                 <ToastArea />

@@ -1,6 +1,7 @@
 import { App } from '@/App';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { ModalsProvider } from '@/providers/ModalsProvider';
+import { SettingsProvider } from '@/providers/SettingsProvider';
 import { ToastsProvider } from '@/providers/ToastsProvider';
 import '@/styles/animations.css';
 import '@/styles/main.css';
@@ -20,11 +21,13 @@ if (!rootElement) {
 const appTree = (
     <StrictMode>
         <ErrorBoundary>
-            <ToastsProvider>
-                <ModalsProvider>
-                    <App />
-                </ModalsProvider>
-            </ToastsProvider>
+            <SettingsProvider>
+                <ToastsProvider>
+                    <ModalsProvider>
+                        <App />
+                    </ModalsProvider>
+                </ToastsProvider>
+            </SettingsProvider>
         </ErrorBoundary>
     </StrictMode>
 );

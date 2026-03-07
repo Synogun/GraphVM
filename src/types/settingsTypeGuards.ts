@@ -1,4 +1,4 @@
-import type { SettingsData, ToastPosition } from './settings';
+import type { SettingsData, ShortcutAction, ToastPosition } from './settings';
 import { isBoolean, isPositiveInteger, isRecord } from './typeGuards';
 
 const ValidToastPositions: ToastPosition[] = [
@@ -11,6 +11,15 @@ const ValidToastPositions: ToastPosition[] = [
     'bottom-left',
     'bottom-center',
     'bottom-right',
+];
+
+const ValidShortcutActions: ShortcutAction[] = [
+    'deleteSelected',
+    'deselectAll',
+    'selectAll',
+    'newGraph',
+    'addNode',
+    'addEdges',
 ];
 
 export function isValidToastPosition(position: unknown): position is ToastPosition {
@@ -35,8 +44,14 @@ export function isSettingsData(value: unknown): value is SettingsData {
     const toast = ui.toast;
     const arrangeOn = graph.arrangeOn;
     const limits = graph.limits;
+    const shortcuts = value.shortcuts;
 
-    if (!isRecord(toast) || !isRecord(arrangeOn) || !isRecord(limits)) {
+    if (
+        !isRecord(toast) ||
+        !isRecord(arrangeOn) ||
+        !isRecord(limits) ||
+        !isRecord(shortcuts)
+    ) {
         return false;
     }
 
@@ -53,5 +68,10 @@ export function isSettingsData(value: unknown): value is SettingsData {
     const isLimitsValid =
         isPositiveInteger(limits.maxNodes) && isPositiveInteger(limits.maxEdges);
 
-    return isToastValid && isArrangeOnValid && isLimitsValid;
+    const isShortcutsValid = ValidShortcutActions.every((action) => {
+        const shortcut = shortcuts[action];
+        return typeof shortcut === 'string' && shortcut.trim().length > 0;
+    });
+
+    return isToastValid && isArrangeOnValid && isLimitsValid && isShortcutsValid;
 }

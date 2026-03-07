@@ -9,6 +9,7 @@ export function Modal({
     onClose,
     actions,
     className,
+    boxClassName,
 }: ModalProps) {
     const modalRef = useRef<HTMLDialogElement>(null);
 
@@ -45,7 +46,9 @@ export function Modal({
 
     return (
         <dialog ref={modalRef} className={`modal ${className ?? ''}`} id={id}>
-            <div className="modal-box max-h-[90vh] max-w-[70vw] overflow-y-auto overflow-x-hidden">
+            <div
+                className={`modal-box max-h-[90vh] max-w-[70vw] overflow-y-auto overflow-x-hidden ${boxClassName ?? ''}`}
+            >
                 <h3 className="font-bold text-lg text-center">{title ?? ' '}</h3>
                 {subtitle && (
                     <p className="text-sm text-center text-base-content/70 mt-1">
@@ -79,4 +82,5 @@ type ModalProps = {
     onClose?: () => void;
     actions?: React.ReactNode;
     className?: string;
+    boxClassName?: string;
 };
