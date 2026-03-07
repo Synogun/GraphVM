@@ -10,6 +10,7 @@ import {
     DefaultStarGenerationParams,
     DefaultWheelGenerationParams,
 } from '@/constants/algorithmDefaults';
+import { useGraphMutation } from '@/hooks/useGraphMutation';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import {
     calcMaxEdgesForSimpleGraph,
@@ -27,12 +28,7 @@ import {
     ValidGenerationFamilies,
 } from '@/types/algorithmTypeGuards';
 import type { GenerationFamily, GenerationParams } from '@/types/algorithms';
-import {
-    useGraphProperties,
-    useLayoutProperties,
-    useSettings,
-    useToasts,
-} from '@Contexts';
+import { useLayoutProperties, useSettings, useToasts } from '@Contexts';
 import { SelectInput } from '@Inputs';
 import { forwardRef, useImperativeHandle, useMemo, useState } from 'react';
 import {
@@ -141,11 +137,7 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
         grid,
         setType,
     } = useLayoutProperties();
-    const {
-        setDirected,
-        nodes: { setCount: setNodeCount, setSelected: setSelectedNodes },
-        edges: { setCount: setEdgeCount, setSelected: setSelectedEdges },
-    } = useGraphProperties();
+    const { syncAll } = useGraphMutation('main-graph');
     const {
         graph: { limits },
     } = useSettings();
@@ -258,11 +250,7 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
             return;
         }
 
-        setNodeCount(graph.current.nodes().length);
-        setEdgeCount(graph.current.edges().length);
-        setSelectedNodes([]);
-        setSelectedEdges([]);
-        setDirected(Boolean(graph.current.data('directed')));
+        syncAll(graph.current);
 
         setParams({ ...DefaultGenerationParams });
         addToast({

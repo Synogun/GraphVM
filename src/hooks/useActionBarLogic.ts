@@ -1,4 +1,5 @@
 import { ParsedErrorToasts, parseError } from '@/config/parsedError';
+import { useGraphMutation } from '@/hooks/useGraphMutation';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { addEdges, removeEdges } from '@/services/edgesService';
 import { resetGraph } from '@/services/graphService';
@@ -19,19 +20,8 @@ const DEFAULT_LAYOUT = { name: 'circle' };
 export function useActionBarLogic() {
     const {
         directed,
-        setDirected,
-        nodes: {
-            setCount: setNodeCount,
-            selected: selectedNodes,
-            setSelected: setSelectedNodes,
-        },
-        edges: {
-            edgeMode,
-            setEdgeMode,
-            selected: selectedEdges,
-            setSelected: setSelectedEdges,
-            setCount: setEdgeCount,
-        },
+        nodes: { selected: selectedNodes },
+        edges: { edgeMode, setEdgeMode, selected: selectedEdges },
     } = useGraphProperties();
 
     const {
@@ -46,6 +36,7 @@ export function useActionBarLogic() {
         graph: { limits, arrangeOn },
     } = useSettings();
     const graphRef = useGetGraph('main-graph');
+    const { syncMeta, syncAll } = useGraphMutation('main-graph');
 
     const { addToast } = useToasts();
 
@@ -63,22 +54,9 @@ export function useActionBarLogic() {
             return;
         }
 
-        resetGraph(graph, {
-            setNodeCount,
-            setEdgeCount,
-            setSelectedNodes,
-            setSelectedEdges,
-            setDirected,
-        });
-    }, [
-        graphRef,
-        setDirected,
-        setEdgeCount,
-        setNodeCount,
-        setSelectedEdges,
-        setSelectedNodes,
-        addToast,
-    ]);
+        resetGraph(graph);
+        syncAll(graph);
+    }, [graphRef, syncAll, addToast]);
 
     const handleAlgorithms = useCallback(() => {
         setIsAlgorithmsModalOpen(true);
@@ -134,7 +112,7 @@ export function useActionBarLogic() {
             return;
         }
 
-        setNodeCount(graph.nodes().length);
+        syncMeta(graph);
         if (arrangeOn.addNode) {
             handleArrangeGraph();
         }
@@ -142,7 +120,7 @@ export function useActionBarLogic() {
         graphRef,
         limits,
         arrangeOn.addNode,
-        setNodeCount,
+        syncMeta,
         handleArrangeGraph,
         addToast,
     ]);
@@ -174,7 +152,7 @@ export function useActionBarLogic() {
             return;
         }
 
-        setEdgeCount(graph.edges().length);
+        syncMeta(graph);
         if (arrangeOn.addEdge) {
             handleArrangeGraph();
         }
@@ -183,7 +161,7 @@ export function useActionBarLogic() {
         edgeMode,
         limits,
         arrangeOn.addEdge,
-        setEdgeCount,
+        syncMeta,
         handleArrangeGraph,
         addToast,
     ]);
@@ -218,8 +196,6 @@ export function useActionBarLogic() {
         if (nodesToRemove.length > 0) {
             removeNodes(graphRef.current, nodesToRemove);
 
-            setSelectedNodes([]);
-            setNodeCount(graphRef.current.nodes().length);
             graphRef.current.data('nodeSelectionOrder', []);
         }
 
@@ -234,18 +210,10 @@ export function useActionBarLogic() {
                 return;
             }
 
-            setSelectedEdges([]);
-            setEdgeCount(graphRef.current.edges().length);
             graphRef.current.data('edgeSelectionOrder', []);
         }
-    }, [
-        graphRef,
-        setSelectedNodes,
-        setNodeCount,
-        setSelectedEdges,
-        setEdgeCount,
-        addToast,
-    ]);
+        syncAll(graphRef.current);
+    }, [graphRef, syncAll, addToast]);
 
     return {
         edgeMode,

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `Hooks` - Implemented `useGraphMutation` hook to provide better syncronization between the core graph state and the React state, with methods for syncing metadata and selection.
 - `Settings` - Added settings for keyboard shortcuts configuration.
 - `Settings` - Applied `ArrangeOn` settings to graph operations (add node/edge, import, edit node/edge) to trigger automatic layout when enabled.
 - `Settings` - Implemented the settings modal with a tabbed interface for graph, layout, and style settings.

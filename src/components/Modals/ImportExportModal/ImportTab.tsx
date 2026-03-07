@@ -1,4 +1,5 @@
 import { ParsedError, ParsedErrorToasts, parseError } from '@/config/parsedError';
+import { useGraphMutation } from '@/hooks/useGraphMutation';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { newGraph, setGraphDirected } from '@/services/graphService';
 import {
@@ -31,6 +32,7 @@ export function ImportTab({
     onReadyStateChange,
 }: ImportTabProps) {
     const graphRef = useGetGraph('main-graph');
+    const { syncAll } = useGraphMutation('main-graph');
 
     const { current: currentLayout } = useLayoutProperties();
     const {
@@ -189,6 +191,7 @@ export function ImportTab({
 
         const directed = Boolean(importData.data?.directed);
         setGraphDirected(graphRef.current, directed);
+        syncAll(graphRef.current);
 
         cleanup();
         onImportSuccess();
