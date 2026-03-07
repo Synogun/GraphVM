@@ -27,7 +27,12 @@ import {
     ValidGenerationFamilies,
 } from '@/types/algorithmTypeGuards';
 import type { GenerationFamily, GenerationParams } from '@/types/algorithms';
-import { useGraphProperties, useLayoutProperties, useToasts } from '@Contexts';
+import {
+    useGraphProperties,
+    useLayoutProperties,
+    useSettings,
+    useToasts,
+} from '@Contexts';
 import { SelectInput } from '@Inputs';
 import { forwardRef, useImperativeHandle, useMemo, useState } from 'react';
 import {
@@ -141,6 +146,9 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
         nodes: { setCount: setNodeCount, setSelected: setSelectedNodes },
         edges: { setCount: setEdgeCount, setSelected: setSelectedEdges },
     } = useGraphProperties();
+    const {
+        graph: { limits },
+    } = useSettings();
 
     const { addToast } = useToasts();
 
@@ -154,7 +162,7 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
         try {
             switch (params.family) {
                 case 'complete':
-                    generateCompleteGraph(graph.current, params, layout);
+                    generateCompleteGraph(graph.current, params, layout, limits);
                     break;
                 case 'grid':
                     if (params.applyGridLayout) {
@@ -169,7 +177,7 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
                         grid.setCols(params.cols);
                         grid.setRows(params.rows);
                     }
-                    generateGridGraph(graph.current, params, layout);
+                    generateGridGraph(graph.current, params, layout, limits);
                     break;
                 case 'circle':
                     if (params.applyCircleLayout) {
@@ -177,7 +185,7 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
                         setType('circle');
                         setLayout({ ...layout });
                     }
-                    generateCircleGraph(graph.current, params, layout);
+                    generateCircleGraph(graph.current, params, layout, limits);
                     break;
                 case 'star':
                     if (params.applyConcentricLayout) {
@@ -188,7 +196,7 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
                             name: 'concentric',
                         });
                     }
-                    generateStarGraph(graph.current, params, layout);
+                    generateStarGraph(graph.current, params, layout, limits);
                     break;
                 case 'wheel':
                     if (params.applyConcentricLayout) {
@@ -196,16 +204,21 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
                         setType('concentric');
                         setLayout({ ...layout });
                     }
-                    generateWheelGraph(graph.current, params, layout);
+                    generateWheelGraph(graph.current, params, layout, limits);
                     break;
                 // case 'cayley':
                 //     generateCayleyGraph(graph.current, params, layout);
                 //     break;
                 case 'bipartite':
-                    generateBipartiteGraph(graph.current, params, layout);
+                    generateBipartiteGraph(graph.current, params, layout, limits);
                     break;
                 case 'complete-bipartite':
-                    generateCompleteBipartiteGraph(graph.current, params, layout);
+                    generateCompleteBipartiteGraph(
+                        graph.current,
+                        params,
+                        layout,
+                        limits
+                    );
                     break;
                 case 'simple':
                     const maxSimpleEdges = calcMaxEdgesForSimpleGraph(
@@ -226,7 +239,7 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
                         setType('circle');
                         setLayout({ ...layout });
                     }
-                    generateSimpleGraph(graph.current, params, layout);
+                    generateSimpleGraph(graph.current, params, layout, limits);
                     break;
 
                 default:

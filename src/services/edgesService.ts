@@ -5,16 +5,52 @@ import {
     isEdgeCurve,
     isEdgeLineStyle,
 } from '@/types/edgesTypeGuards';
+import type { GraphLimits } from '@/types/settings';
 import { getDefaultEdgesData } from '@/utils/styleHelpers';
 
 export function makeEdgeId() {
     return crypto.randomUUID();
 }
 
+export function assertEdgeLimit(
+    currentCount: number,
+    edgesToAdd: number,
+    limits?: GraphLimits
+): void {
+    if (!limits) {
+        return;
+    }
+
+    const attempted = currentCount + edgesToAdd;
+
+    if (attempted > limits.maxEdges) {
+        throw new ParsedError(
+            `Edge limit exceeded. Maximum allowed is ${limits.maxEdges.toString()}. You can change this in Settings > Graph Limits.`,
+            {
+                context: {
+                    limit: limits.maxEdges,
+                    attempted,
+                    current: currentCount,
+                    adding: edgesToAdd,
+                },
+            }
+        );
+    }
+}
+
+function countEdgesToAdd(nodeIds: string[], edgeMode: 'path' | 'complete'): number {
+    if (edgeMode === 'path') {
+        return Math.max(0, nodeIds.length - 1);
+    }
+
+    return (nodeIds.length * (nodeIds.length - 1)) / 2;
+}
+
 export function addEdge(
     core: cytoscape.Core,
     options: cytoscape.EdgeDefinition,
-    classes?: string[]
+    classes?: string[],
+    limits?: GraphLimits
 ) {
     if (!options.data.source) {
         throw new ParsedError('Source node is required');
@@ -22,6 +58,8 @@ export function addEdge(
     if (!options.data.target) {
         throw new ParsedError('Target node is required');
     }
+
+    assertEdgeLimit(core.edges().length, 1, limits);
 
     const defaultEdgesData = getDefaultEdgesData(core);
     const newIdIndex = core.edges().length + 1;
@@ -51,34 +89,47 @@ export function addEdges(
     core: cytoscape.Core,
     edges: string[],
     edgeMode: 'path' | 'complete' = 'path',
-    data?: Partial<EdgesData>
+    data?: Partial<EdgesData>,
+    limits?: GraphLimits
 ) {
     if (edges.length < 2) {
         throw new ParsedError('At least two nodes are required to create edges');
     }
 
+    assertEdgeLimit(core.edges().length, countEdgesToAdd(edges, edgeMode), limits);
+
     if (edgeMode === 'path') {
         for (let i = 0; i < edges.length - 1; i++) {
-            addEdge(core, {
-                data: {
-                    ...(data ?? {}),
-                    source: edges[i],
-                    target: edges[i + 1],
+            addEdge(
+                core,
+                {
+                    data: {
+                        ...(data ?? {}),
+                        source: edges[i],
+                        target: edges[i + 1],
+                    },
                 },
-            });
+                undefined,
+                limits
+            );
         }
     }
 
     if (edgeMode === 'complete') {
         for (let i = 0; i < edges.length; i++) {
             for (let j = 0; j < i; j++) {
-                addEdge(core, {
-                    data: {
-                        ...(data ?? {}),
-                        source: edges[i],
-                        target: edges[j],
+                addEdge(
+                    core,
+                    {
+                        data: {
+                            ...(data ?? {}),
+                            source: edges[i],
+                            target: edges[j],
+                        },
                     },
-                });
+                    undefined,
+                    limits
+                );
             }
         }
     }

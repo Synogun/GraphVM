@@ -31,6 +31,8 @@ export type SettingsData = {
     };
 };
 
+export type GraphLimits = SettingsData['graph']['limits'];
+
 export type SettingsContextProperties = {
     ui: {
         toast: SettingsData['ui']['toast'];

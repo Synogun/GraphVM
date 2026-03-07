@@ -36,3 +36,13 @@ export function isCytoscapeOptions(
         'style' in value
     );
 }
+
+export function isElementsDefinitionObject(
+    value: unknown
+): value is { nodes?: unknown[]; edges?: unknown[] } {
+    return (
+        typeof value === 'object' &&
+        value !== null &&
+        ('nodes' in value || 'edges' in value)
+    );
+}

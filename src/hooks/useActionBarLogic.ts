@@ -9,6 +9,7 @@ import {
     useGraphProperties,
     useLayoutProperties,
     useModals,
+    useSettings,
     useToasts,
 } from '@Contexts';
 import { useCallback, useEffect, type ChangeEvent } from 'react';
@@ -41,6 +42,9 @@ export function useActionBarLogic() {
     } = useModals();
 
     const { current: currentLayout } = useLayoutProperties();
+    const {
+        graph: { limits },
+    } = useSettings();
     const graphRef = useGetGraph('main-graph');
 
     const { addToast } = useToasts();
@@ -122,10 +126,17 @@ export function useActionBarLogic() {
             return;
         }
 
-        addNode(graph);
+        try {
+            addNode(graph, undefined, undefined, limits);
+        } catch (error: unknown) {
+            const parsedError = parseError(error);
+            addToast({ type: 'error', message: parsedError.message });
+            return;
+        }
+
         setNodeCount(graph.nodes().length);
         handleArrangeGraph();
-    }, [graphRef, setNodeCount, handleArrangeGraph, addToast]);
+    }, [graphRef, limits, setNodeCount, handleArrangeGraph, addToast]);
 
     const handleAddEdges = useCallback(() => {
         const graph = graphRef.current;
@@ -147,7 +158,7 @@ export function useActionBarLogic() {
         }
 
         try {
-            addEdges(graph, currentSelectedNodes, edgeMode);
+            addEdges(graph, currentSelectedNodes, edgeMode, undefined, limits);
         } catch (error: unknown) {
             const parsedError = parseError(error);
             addToast({ type: 'error', message: parsedError.message });
@@ -156,7 +167,7 @@ export function useActionBarLogic() {
 
         setEdgeCount(graph.edges().length);
         handleArrangeGraph();
-    }, [graphRef, edgeMode, setEdgeCount, handleArrangeGraph, addToast]);
+    }, [graphRef, edgeMode, limits, setEdgeCount, handleArrangeGraph, addToast]);
 
     const handleToggleEdgeMode = useCallback(
         (e: ChangeEvent<HTMLInputElement>) => {

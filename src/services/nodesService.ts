@@ -1,5 +1,6 @@
 import { ParsedError } from '@/config/parsedError';
 import { isNodeShape } from '@/types/nodesTypeGuards';
+import type { GraphLimits } from '@/types/settings';
 import { getDefaultNodesData } from '@/utils/styleHelpers';
 import type cytoscape from 'cytoscape';
 import { removeEdges } from './edgesService';
@@ -8,11 +9,41 @@ export function makeNodeId() {
     return crypto.randomUUID();
 }
 
+export function assertNodeLimit(
+    currentCount: number,
+    nodesToAdd: number,
+    limits?: GraphLimits
+): void {
+    if (!limits) {
+        return;
+    }
+
+    const attempted = currentCount + nodesToAdd;
+
+    if (attempted > limits.maxNodes) {
+        throw new ParsedError(
+            `Node limit exceeded. Maximum allowed is ${limits.maxNodes.toString()}.\n` +
+                'You can change this in Settings > Graph Limits.',
+            {
+                context: {
+                    limit: limits.maxNodes,
+                    attempted,
+                    current: currentCount,
+                    adding: nodesToAdd,
+                },
+            }
+        );
+    }
+}
+
 export function addNode(
     core: cytoscape.Core,
     options?: cytoscape.NodeDefinition,
-    classes?: string[]
+    classes?: string[],
+    limits?: GraphLimits
 ): cytoscape.NodeSingular {
+    assertNodeLimit(core.nodes().length, 1, limits);
+
     const defaultNodesData = getDefaultNodesData(core);
     const newIdIndex = core.nodes().length + 1;
     const newId = makeNodeId();
@@ -37,8 +68,11 @@ export function addNode(
 export function addNodes(
     core: cytoscape.Core,
     nodesData: cytoscape.NodeDefinition[],
-    classes?: string[]
+    classes?: string[],
+    limits?: GraphLimits
 ): void {
+    assertNodeLimit(core.nodes().length, nodesData.length, limits);
+
     const defaultNodesData = getDefaultNodesData(core);
     const numNodes = core.nodes().length;
 

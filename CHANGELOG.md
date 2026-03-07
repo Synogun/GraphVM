@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `Graph` - Implements validation for graph limits on action bar, generation algorithms and importing modal.
 - `Actions` - Added a new action for pre-deploy to automate changelog and version bumping.
 
 ### Changed

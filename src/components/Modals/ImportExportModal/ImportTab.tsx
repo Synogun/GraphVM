@@ -1,7 +1,11 @@
 import { ParsedError, ParsedErrorToasts, parseError } from '@/config/parsedError';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { newGraph, setGraphDirected } from '@/services/graphService';
-import { parseTextData, type FileType } from '@/services/importExportService';
+import {
+    assertImportDataLimits,
+    parseTextData,
+    type FileType,
+} from '@/services/importExportService';
 import { arrangeGraph } from '@/services/layoutService';
 import { isCytoscapeOptions, isStylesheetStyleArray } from '@/types/graphTypeGuards';
 import {
@@ -9,7 +13,7 @@ import {
     getDefaultNodesData,
     transformStylesheet,
 } from '@/utils/styleHelpers';
-import { useLayoutProperties, useToasts } from '@Contexts';
+import { useLayoutProperties, useSettings, useToasts } from '@Contexts';
 import cytoscape, { type CytoscapeOptions } from 'cytoscape';
 import {
     useCallback,
@@ -29,6 +33,9 @@ export function ImportTab({
     const graphRef = useGetGraph('main-graph');
 
     const { current: currentLayout } = useLayoutProperties();
+    const {
+        graph: { limits },
+    } = useSettings();
 
     const [importData, setImportData] = useState<CytoscapeOptions | null>(null);
     const [previewCy, setPreviewCy] = useState<cytoscape.Core | null>(null);
@@ -127,6 +134,8 @@ export function ImportTab({
         }
 
         try {
+            assertImportDataLimits(dataToImport, limits);
+
             const newPreviewCy = newGraph('data-preview-cy', {
                 ...dataToImport,
                 userPanningEnabled: false,
@@ -141,6 +150,11 @@ export function ImportTab({
             setImportData(dataToImport);
         } catch (error) {
             const parsedError = parseError(error);
+
+            previewCy?.destroy();
+            setPreviewCy(null);
+            setImportData(null);
+
             addToast({ type: 'error', message: parsedError.message });
             return;
         }
@@ -157,6 +171,14 @@ export function ImportTab({
                 type: 'error',
                 message: 'No data to import. Please select a valid file first.',
             });
+            return;
+        }
+
+        try {
+            assertImportDataLimits(importData, limits);
+        } catch (error: unknown) {
+            const parsedError = parseError(error);
+            addToast({ type: 'error', message: parsedError.message });
             return;
         }
 

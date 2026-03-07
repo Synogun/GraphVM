@@ -1,7 +1,11 @@
 import { ParsedError, parseError } from '@/config/parsedError';
 import { DefaultEdgesData, DefaultNodesData } from '@/constants/graphDefaults';
+import { assertEdgeLimit } from '@/services/edgesService';
+import { assertNodeLimit } from '@/services/nodesService';
 import type { EdgesData } from '@/types/edges';
+import { isElementsDefinitionObject } from '@/types/graphTypeGuards';
 import type { NodesData } from '@/types/nodes';
+import type { GraphLimits } from '@/types/settings';
 import type cytoscape from 'cytoscape';
 import type { CytoscapeOptions } from 'cytoscape';
 import { makeEdgeId } from './edgesService';
@@ -155,6 +159,45 @@ export function mapElementsToText(graph: cytoscape.Core): string {
         .join('\n');
 
     return dataStr;
+}
+
+export function countElementsFromCytoscapeOptions(data: CytoscapeOptions): {
+    nodeCount: number;
+    edgeCount: number;
+} {
+    const elements = data.elements;
+
+    if (!elements) {
+        return { nodeCount: 0, edgeCount: 0 };
+    }
+
+    if (Array.isArray(elements)) {
+        const nodeCount = elements.filter(
+            (element) => element.group === 'nodes'
+        ).length;
+        const edgeCount = elements.filter(
+            (element) => element.group === 'edges'
+        ).length;
+        return { nodeCount, edgeCount };
+    }
+
+    if (!isElementsDefinitionObject(elements)) {
+        return { nodeCount: 0, edgeCount: 0 };
+    }
+
+    const nodeCount = Array.isArray(elements.nodes) ? elements.nodes.length : 0;
+    const edgeCount = Array.isArray(elements.edges) ? elements.edges.length : 0;
+    return { nodeCount, edgeCount };
+}
+
+export function assertImportDataLimits(
+    data: CytoscapeOptions,
+    limits?: GraphLimits
+): void {
+    const { nodeCount, edgeCount } = countElementsFromCytoscapeOptions(data);
+
+    assertNodeLimit(0, nodeCount, limits);
+    assertEdgeLimit(0, edgeCount, limits);
 }
 
 export type FileType = 'application/json' | 'text/plain';

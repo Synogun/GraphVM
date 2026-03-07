@@ -19,6 +19,7 @@ import type {
     StarGraphParams,
     WheelGraphParams,
 } from '@/types/algorithms';
+import type { GraphLimits } from '@/types/settings';
 import type cytoscape from 'cytoscape';
 import { addEdge, addEdges } from '../edgesService';
 import { resetGraph } from '../graphService';
@@ -28,7 +29,8 @@ import { addNode } from '../nodesService';
 export function generateCompleteGraph(
     graph: cytoscape.Core,
     params: CompleteGraphParams,
-    layout?: cytoscape.LayoutOptions
+    layout?: cytoscape.LayoutOptions,
+    limits?: GraphLimits
 ) {
     const { nodeCount } = params;
 
@@ -43,7 +45,7 @@ export function generateCompleteGraph(
 
     // Add nodes
     for (let i = 0; i < nodeCount; i++) {
-        addNode(graph);
+        addNode(graph, undefined, undefined, limits);
     }
 
     const nodes = graph.nodes();
@@ -52,7 +54,9 @@ export function generateCompleteGraph(
     addEdges(
         graph,
         nodes.map((node) => node.id()),
-        'complete'
+        'complete',
+        undefined,
+        limits
     );
 
     // Apply layout if provided
@@ -64,7 +68,8 @@ export function generateCompleteGraph(
 export function generateGridGraph(
     graph: cytoscape.Core,
     params: GridGraphParams,
-    layout?: cytoscape.LayoutOptions
+    layout?: cytoscape.LayoutOptions,
+    limits?: GraphLimits
 ) {
     const { rows, cols } = params;
 
@@ -83,7 +88,7 @@ export function generateGridGraph(
 
     // Add nodes
     for (let i = 0; i < totalNodes; i++) {
-        addNode(graph);
+        addNode(graph, undefined, undefined, limits);
     }
 
     const nodes = graph.nodes();
@@ -101,7 +106,7 @@ export function generateGridGraph(
                     data: { source: nodeId, target: rightNeighborId },
                 };
 
-                addEdge(graph, edge);
+                addEdge(graph, edge, undefined, limits);
             }
 
             // Connect to bottom neighbor
@@ -111,7 +116,7 @@ export function generateGridGraph(
                     data: { source: nodeId, target: bottomNeighborId },
                 };
 
-                addEdge(graph, edge);
+                addEdge(graph, edge, undefined, limits);
             }
         }
     }
@@ -127,7 +132,8 @@ export function generateGridGraph(
 export function generateCircleGraph(
     graph: cytoscape.Core,
     params: CircleGraphParams,
-    layout?: cytoscape.LayoutOptions
+    layout?: cytoscape.LayoutOptions,
+    limits?: GraphLimits
 ) {
     const { nodeCount } = params;
 
@@ -142,7 +148,7 @@ export function generateCircleGraph(
 
     // Add nodes
     for (let i = 0; i < nodeCount; i++) {
-        addNode(graph);
+        addNode(graph, undefined, undefined, limits);
     }
 
     const nodes = graph.nodes();
@@ -153,7 +159,7 @@ export function generateCircleGraph(
         const edge = {
             data: { source: nodes[i].id(), target: nodes[nextIndex].id() },
         };
-        addEdge(graph, edge);
+        addEdge(graph, edge, undefined, limits);
     }
 
     // Apply layout if provided
@@ -167,7 +173,8 @@ export function generateCircleGraph(
 export function generateStarGraph(
     graph: cytoscape.Core,
     params: StarGraphParams,
-    layout?: cytoscape.LayoutOptions
+    layout?: cytoscape.LayoutOptions,
+    limits?: GraphLimits
 ) {
     const { nodeCount } = params;
 
@@ -182,16 +189,16 @@ export function generateStarGraph(
     resetGraph(graph);
 
     // Add central node
-    const centerNode = addNode(graph);
+    const centerNode = addNode(graph, undefined, undefined, limits);
     const centerNodeId = centerNode.id();
 
     // Add outer nodes and connect to center
     for (let i = 0; i < nodeCount; i++) {
-        const outerNode = addNode(graph);
+        const outerNode = addNode(graph, undefined, undefined, limits);
         const edge = {
             data: { source: centerNodeId, target: outerNode.id() },
         };
-        addEdge(graph, edge);
+        addEdge(graph, edge, undefined, limits);
     }
 
     // Apply layout if provided
@@ -205,7 +212,8 @@ export function generateStarGraph(
 export function generateWheelGraph(
     graph: cytoscape.Core,
     params: WheelGraphParams,
-    layout?: cytoscape.LayoutOptions
+    layout?: cytoscape.LayoutOptions,
+    limits?: GraphLimits
 ) {
     const { nodeCount } = params;
 
@@ -219,12 +227,12 @@ export function generateWheelGraph(
     resetGraph(graph);
 
     // Connect outer nodes to center
-    const centerNode = addNode(graph);
+    const centerNode = addNode(graph, undefined, undefined, limits);
     const centerNodeId = centerNode.id();
 
     // Add outer nodes
     for (let i = 0; i < nodeCount; i++) {
-        addNode(graph);
+        addNode(graph, undefined, undefined, limits);
     }
 
     const nodes = graph.nodes().filter((node) => node.id() !== centerNodeId);
@@ -236,14 +244,14 @@ export function generateWheelGraph(
             data: { source: nodes[i].id(), target: nodes[nextIndex].id() },
         };
 
-        addEdge(graph, edge);
+        addEdge(graph, edge, undefined, limits);
     }
 
     for (let i = 0; i < nodeCount; i++) {
         const edge = {
             data: { source: centerNodeId, target: nodes[i].id() },
         };
-        addEdge(graph, edge);
+        addEdge(graph, edge, undefined, limits);
     }
 
     // Apply layout if provided
@@ -257,7 +265,8 @@ export function generateWheelGraph(
 export function generateBipartiteGraph(
     graph: cytoscape.Core,
     params: BipartiteGraphParams,
-    layout?: cytoscape.LayoutOptions
+    layout?: cytoscape.LayoutOptions,
+    limits?: GraphLimits
 ) {
     const { setASize, setBSize } = params;
 
@@ -275,7 +284,7 @@ export function generateBipartiteGraph(
     const setANodes: cytoscape.NodeSingular[] = [];
 
     for (let i = 0; i < setASize; i++) {
-        const node = addNode(graph);
+        const node = addNode(graph, undefined, undefined, limits);
         setANodes.push(node);
     }
 
@@ -283,7 +292,7 @@ export function generateBipartiteGraph(
     const setBNodes: cytoscape.NodeSingular[] = [];
 
     for (let i = 0; i < setBSize; i++) {
-        const node = addNode(graph);
+        const node = addNode(graph, undefined, undefined, limits);
         setBNodes.push(node);
     }
 
@@ -294,7 +303,7 @@ export function generateBipartiteGraph(
                 const edge = {
                     data: { source: nodeA.id(), target: nodeB.id() },
                 };
-                addEdge(graph, edge);
+                addEdge(graph, edge, undefined, limits);
             }
         });
     });
@@ -308,7 +317,8 @@ export function generateBipartiteGraph(
 export function generateCompleteBipartiteGraph(
     graph: cytoscape.Core,
     params: CompleteBipartiteGraphParams,
-    layout?: cytoscape.LayoutOptions
+    layout?: cytoscape.LayoutOptions,
+    limits?: GraphLimits
 ) {
     const { setASize, setBSize } = params;
 
@@ -326,7 +336,7 @@ export function generateCompleteBipartiteGraph(
     const setANodes: cytoscape.NodeSingular[] = [];
 
     for (let i = 0; i < setASize; i++) {
-        const node = addNode(graph);
+        const node = addNode(graph, undefined, undefined, limits);
         setANodes.push(node);
     }
 
@@ -334,7 +344,7 @@ export function generateCompleteBipartiteGraph(
     const setBNodes: cytoscape.NodeSingular[] = [];
 
     for (let i = 0; i < setBSize; i++) {
-        const node = addNode(graph);
+        const node = addNode(graph, undefined, undefined, limits);
         setBNodes.push(node);
     }
 
@@ -344,7 +354,7 @@ export function generateCompleteBipartiteGraph(
             const edge = {
                 data: { source: nodeA.id(), target: nodeB.id() },
             };
-            addEdge(graph, edge);
+            addEdge(graph, edge, undefined, limits);
         });
     });
 
@@ -357,7 +367,8 @@ export function generateCompleteBipartiteGraph(
 export function generateSimpleGraph(
     graph: cytoscape.Core,
     params: SimpleGraphParams,
-    layout?: cytoscape.LayoutOptions
+    layout?: cytoscape.LayoutOptions,
+    limits?: GraphLimits
 ) {
     const { nodeCount, edgeCount } = params;
 
@@ -374,7 +385,7 @@ export function generateSimpleGraph(
 
     // Add nodes
     for (let i = 0; i < nodeCount; i++) {
-        addNode(graph);
+        addNode(graph, undefined, undefined, limits);
     }
 
     const nodes = graph.nodes();
@@ -400,7 +411,7 @@ export function generateSimpleGraph(
                 target: nodes[targetIndex].id(),
             },
         };
-        addEdge(graph, edge);
+        addEdge(graph, edge, undefined, limits);
     }
 
     // Apply layout if provided
