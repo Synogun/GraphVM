@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `Toasts` - Fixed an issue where toast were always rendered beneath modals.
+
 ## [v2.5.0](https://github.com/Synogun/GraphVM/compare/v2.4.0...v2.5.0)
 
 ### Added

@@ -1,5 +1,6 @@
 import { useSettings } from '@/contexts/SettingsContext';
-import { useToasts } from '@Contexts';
+import { useModals, useToasts } from '@Contexts';
+import { createPortal } from 'react-dom';
 import { AppIcons } from './common/AppIcons';
 
 const PositionsMap = {
@@ -33,10 +34,17 @@ export function ToastArea() {
         ui: { toast },
     } = useSettings();
 
+    const {
+        isAlgorithmsModalOpen,
+        isHelpModalOpen,
+        isImportExportModalOpen,
+        isSettingsModalOpen,
+    } = useModals();
+
     const { pool: toastPool, removeToast } = useToasts();
 
-    return (
-        <div className={`toast ${PositionsMap[toast.position]} z-100`}>
+    const toastContent = (
+        <div className={`toast ${PositionsMap[toast.position]} z-200`}>
             {toastPool.map((toast) => {
                 const toastType = toast.type ?? 'info';
                 const toastIcon = toast.icon ?? IconMap[toastType];
@@ -56,7 +64,9 @@ export function ToastArea() {
                         {toastIcon}
                         <div>
                             <h3 className="font-bold">{toastTitle}</h3>
-                            <div className="text-xs">{toast.message}</div>
+                            <div className="text-xs whitespace-pre-line">
+                                {toast.message}
+                            </div>
                         </div>
                         {/* TODO: Possible actions prop support later on  */}
                         {/* <button className="btn btn-sm">See</button> */}
@@ -65,4 +75,21 @@ export function ToastArea() {
             })}
         </div>
     );
+
+    const isAnyModalOpen =
+        isAlgorithmsModalOpen ||
+        isHelpModalOpen ||
+        isImportExportModalOpen ||
+        isSettingsModalOpen;
+
+    if (isAnyModalOpen) {
+        const openModal =
+            document.querySelector<HTMLDialogElement>('dialog.modal[open]');
+
+        if (openModal) {
+            return createPortal(toastContent, openModal);
+        }
+    }
+
+    return toastContent;
 }
