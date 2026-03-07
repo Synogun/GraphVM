@@ -1,0 +1,164 @@
+name: Prepare Release PR
+
+on:
+    workflow_dispatch:
+        inputs:
+            release_type:
+                description: 'Version bump type (ignored when exact_version is provided)'
+                required: true
+                default: patch
+                type: choice
+                options:
+                    - patch
+                    - minor
+                    - major
+            exact_version:
+                description: 'Exact version to set (example: 2.6.0)'
+                required: false
+                type: string
+
+permissions:
+    contents: read
+
+concurrency:
+    group: prepare-release-${{ github.ref }}
+    cancel-in-progress: false
+
+jobs:
+    prepare-release-pr:
+        if: github.ref == 'refs/heads/develop'
+        runs-on: ubuntu-latest
+        outputs:
+            old_version: ${{ steps.version.outputs.old }}
+            new_version: ${{ steps.version.outputs.new }}
+            pr_number: ${{ steps.create_pr.outputs.pull-request-number }}
+            pr_url: ${{ steps.create_pr.outputs.pull-request-url }}
+        permissions:
+            contents: write
+            pull-requests: write
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: Set up Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: lts/*
+                  cache: npm
+
+            - name: Bump package version
+              id: version
+              run: |
+                  OLD_VERSION=$(node -p "require('./package.json').version")
+
+                  if [ -n "${{ inputs.exact_version }}" ]; then
+                      npm version "${{ inputs.exact_version }}" --no-git-tag-version
+                  else
+                      npm version "${{ inputs.release_type }}" --no-git-tag-version
+                  fi
+
+                  NEW_VERSION=$(node -p "require('./package.json').version")
+
+                  echo "old=$OLD_VERSION" >> "$GITHUB_OUTPUT"
+                  echo "new=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+
+            - name: Update changelog
+              env:
+                  OLD_VERSION: ${{ steps.version.outputs.old }}
+                  NEW_VERSION: ${{ steps.version.outputs.new }}
+                  REPO: ${{ github.repository }}
+              run: |
+                  node <<'NODE'
+                  const fs = require('node:fs');
+
+                  const changelogPath = 'CHANGELOG.md';
+                  const oldVersion = process.env.OLD_VERSION;
+                  const newVersion = process.env.NEW_VERSION;
+                  const repository = process.env.REPO;
+
+                  if (!oldVersion || !newVersion || !repository) {
+                    throw new Error('Missing OLD_VERSION, NEW_VERSION, or REPO environment variable.');
+                  }
+
+                  const compareBase = `https://github.com/${repository}/compare`;
+                  const unreleasedHeadingRegex = /^## \[Unreleased\]\([^)]+\)$/m;
+                  const resetUnreleasedBody = ['### Added', '', '### Changed', '', '### Fixed', ''].join('\n');
+
+                  const changelog = fs.readFileSync(changelogPath, 'utf8');
+
+                  if (changelog.includes(`## [v${newVersion}](`)) {
+                    throw new Error(`CHANGELOG already contains v${newVersion}.`);
+                  }
+
+                  const unreleasedSectionRegex = /## \[Unreleased\]\([^)]+\)\n([\s\S]*?)\n## \[v/m;
+                  const unreleasedMatch = changelog.match(unreleasedSectionRegex);
+
+                  if (!unreleasedMatch) {
+                    throw new Error('Could not parse Unreleased section in CHANGELOG.md.');
+                  }
+
+                  const releasedNotes = unreleasedMatch[1].trim();
+                  const normalizedReleaseNotes = releasedNotes.length > 0
+                    ? releasedNotes
+                    : resetUnreleasedBody.trim();
+
+                  const withUpdatedUnreleasedHeading = changelog.replace(
+                    unreleasedHeadingRegex,
+                    `## [Unreleased](${compareBase}/v${newVersion}...develop)`
+                  );
+
+                  const withResetUnreleasedAndNewRelease = withUpdatedUnreleasedHeading.replace(
+                    unreleasedSectionRegex,
+                    `## [Unreleased](${compareBase}/v${newVersion}...develop)\n\n` +`${resetUnreleasedBody}\n## [v${newVersion}](${compareBase}/v${oldVersion}...v${newVersion})\n\n${normalizedReleaseNotes}\n\n## [v`
+                  );
+
+                  fs.writeFileSync(changelogPath, withResetUnreleasedAndNewRelease, 'utf8');
+                  NODE
+
+            - name: Create pull request
+              id: create_pr
+              uses: peter-evans/create-pull-request@v7
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  commit-message: 'chore(release): prepare v${{ steps.version.outputs.new }}'
+                  branch: release/v${{ steps.version.outputs.new }}
+                  base: main
+                  title: v${{ steps.version.outputs.new }}
+                  body: |
+                      Automated release preparation from `develop`.
+
+                      Changes included:
+                      - Bump `package.json` version to `v${{ steps.version.outputs.new }}`
+                      - Move `CHANGELOG.md` Unreleased notes into `v${{ steps.version.outputs.new }}`
+                      - Reset Unreleased section and update compare link
+                  labels: prd
+                  add-paths: |
+                      package.json
+                      package-lock.json
+                      CHANGELOG.md
+
+    outputs:
+        needs: prepare-release-pr
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+        steps:
+            - name: Print release outputs
+              run: |
+                  echo "old_version=${{ needs['prepare-release-pr'].outputs.old_version }}"
+                  echo "new_version=${{ needs['prepare-release-pr'].outputs.new_version }}"
+                  echo "pr_number=${{ needs['prepare-release-pr'].outputs.pr_number }}"
+                  echo "pr_url=${{ needs['prepare-release-pr'].outputs.pr_url }}"
+
+            - name: Write job summary
+              run: |
+                  {
+                      echo "## Release Preparation Outputs"
+                      echo ""
+                      echo "- old_version: \`${{ needs['prepare-release-pr'].outputs.old_version }}\`"
+                      echo "- new_version: \`${{ needs['prepare-release-pr'].outputs.new_version }}\`"
+                      echo "- pr_number: \`${{ needs['prepare-release-pr'].outputs.pr_number }}\`"
+                      echo "- pr_url: ${{ needs['prepare-release-pr'].outputs.pr_url }}"
+                  } >> "$GITHUB_STEP_SUMMARY"
