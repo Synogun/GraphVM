@@ -15,7 +15,10 @@ export type ShortcutAction =
     | 'selectAll'
     | 'newGraph'
     | 'addNode'
-    | 'addEdges';
+    | 'addEdges'
+    | 'arrangeGraph'
+    | 'centerGraph'
+    | 'toggleEdgeMode';
 
 export type ShortcutMap = Record<ShortcutAction, string>;
 

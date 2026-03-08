@@ -1,5 +1,6 @@
 import { DefaultSettingsData } from '@/constants/settingsDefaults';
 import type { SettingsData, ShortcutAction } from '@/types/settings';
+import { formatShortcutInput, normalizeShortcut } from '@/utils/shortcuts';
 import { useState, type KeyboardEvent } from 'react';
 
 const SHORTCUT_FIELDS: {
@@ -37,6 +38,21 @@ const SHORTCUT_FIELDS: {
         label: 'Add edges',
         hint: 'Connect currently selected nodes.',
     },
+    {
+        action: 'arrangeGraph',
+        label: 'Arrange graph',
+        hint: 'Run the current layout to reorganize the graph.',
+    },
+    {
+        action: 'centerGraph',
+        label: 'Center graph',
+        hint: 'Fit the selected elements or graph back into view.',
+    },
+    {
+        action: 'toggleEdgeMode',
+        label: 'Toggle edge mode',
+        hint: 'Switch edge creation between path and complete modes.',
+    },
 ];
 
 export function SettingsShortcutsTab({
@@ -46,15 +62,31 @@ export function SettingsShortcutsTab({
     const [capturingAction, setCapturingAction] = useState<ShortcutAction | null>(
         null
     );
+    const [validationMessage, setValidationMessage] = useState<string | null>(null);
+
+    const duplicateActions = getDuplicateShortcutActions(shortcuts);
 
     const handleKeyCapture =
         (action: ShortcutAction) => (event: KeyboardEvent<HTMLButtonElement>) => {
             event.preventDefault();
             event.stopPropagation();
 
-            const normalized = formatShortcut(event);
+            const normalized = formatShortcutInput(event);
 
             if (normalized.length === 0) {
+                return;
+            }
+
+            const conflictingAction = SHORTCUT_FIELDS.find(
+                ({ action: otherAction }) =>
+                    otherAction !== action &&
+                    normalizeShortcut(shortcuts[otherAction]) === normalized
+            );
+
+            if (conflictingAction) {
+                setValidationMessage(
+                    `Shortcut ${normalized} is already assigned to ${conflictingAction.label}.`
+                );
                 return;
             }
 
@@ -63,6 +95,7 @@ export function SettingsShortcutsTab({
                 [action]: normalized,
             });
 
+            setValidationMessage(null);
             setCapturingAction(null);
             event.currentTarget.blur();
         };
@@ -76,6 +109,14 @@ export function SettingsShortcutsTab({
         if (capturingAction === action) {
             setCapturingAction(null);
         }
+
+        setValidationMessage(null);
+    };
+
+    const handleRestoreDefaults = () => {
+        setShortcuts(DefaultSettingsData.shortcuts);
+        setCapturingAction(null);
+        setValidationMessage(null);
     };
 
     const handleCaptureStart = (action: ShortcutAction) => {
@@ -113,6 +154,12 @@ export function SettingsShortcutsTab({
                 The pressed combination is captured and formatted automatically.
             </p>
 
+            {validationMessage && (
+                <div className="alert alert-warning py-2 text-sm">
+                    {validationMessage}
+                </div>
+            )}
+
             <h4 className="text-xs font-semibold uppercase tracking-wide text-base-content/70">
                 Current Bindings
             </h4>
@@ -121,7 +168,11 @@ export function SettingsShortcutsTab({
                     {SHORTCUT_FIELDS.map(({ action, label }) => (
                         <div
                             key={`preview-${action}`}
-                            className="inline-flex items-center gap-2 rounded-full border border-base-300 bg-base-100 px-2.5 py-1.5"
+                            className={`inline-flex items-center gap-2 rounded-full border px-2.5 py-1.5 ${
+                                duplicateActions.includes(action)
+                                    ? 'border-warning bg-warning/10'
+                                    : 'border-base-300 bg-base-100'
+                            }`}
                         >
                             <span className="text-xs font-medium text-base-content/80">
                                 {label}
@@ -132,9 +183,19 @@ export function SettingsShortcutsTab({
                 </div>
             </section>
 
-            <h4 className="text-xs font-semibold uppercase tracking-wide text-base-content/70">
-                Edit Bindings
-            </h4>
+            <div className="flex items-center justify-between gap-3">
+                <h4 className="text-xs font-semibold uppercase tracking-wide text-base-content/70">
+                    Edit Bindings
+                </h4>
+
+                <button
+                    type="button"
+                    className="btn btn-ghost btn-xs"
+                    onClick={handleRestoreDefaults}
+                >
+                    Restore Defaults
+                </button>
+            </div>
 
             <div className="grid gap-4 md:grid-cols-2">
                 {SHORTCUT_FIELDS.map(({ action, label, hint }) => {
@@ -203,65 +264,19 @@ export function SettingsShortcutsTab({
     );
 }
 
-function formatShortcut(event: KeyboardEvent<HTMLButtonElement>): string {
-    const key = normalizeKey(event.key);
+function getDuplicateShortcutActions(shortcuts: SettingsData['shortcuts']) {
+    const shortcutGroups = new Map<string, ShortcutAction[]>();
 
-    // Keep listening while only modifier keys are pressed.
-    if (isModifierOnlyKey(key)) {
-        return '';
+    for (const { action } of SHORTCUT_FIELDS) {
+        const key = normalizeShortcut(shortcuts[action]);
+        const actions = shortcutGroups.get(key) ?? [];
+        actions.push(action);
+        shortcutGroups.set(key, actions);
     }
 
-    const parts: string[] = [];
-
-    if (event.ctrlKey) {
-        parts.push('Ctrl');
-    }
-
-    if (event.metaKey) {
-        parts.push('Meta');
-    }
-
-    if (event.altKey) {
-        parts.push('Alt');
-    }
-
-    if (event.shiftKey) {
-        parts.push('Shift');
-    }
-
-    parts.push(key);
-
-    return parts.join('+');
-}
-
-function normalizeKey(key: string): string {
-    const keyMap: Record<string, string> = {
-        ' ': 'Space',
-        Escape: 'Escape',
-        Esc: 'Escape',
-        Enter: 'Enter',
-        Tab: 'Tab',
-        Backspace: 'Backspace',
-        Delete: 'Delete',
-        ArrowUp: 'ArrowUp',
-        ArrowDown: 'ArrowDown',
-        ArrowLeft: 'ArrowLeft',
-        ArrowRight: 'ArrowRight',
-    };
-
-    if (key in keyMap) {
-        return keyMap[key];
-    }
-
-    if (key.length === 1) {
-        return key.toUpperCase();
-    }
-
-    return key.charAt(0).toUpperCase() + key.slice(1);
-}
-
-function isModifierOnlyKey(key: string): boolean {
-    return key === 'Control' || key === 'Meta' || key === 'Alt' || key === 'Shift';
+    return Array.from(shortcutGroups.values())
+        .filter((actions) => actions.length > 1)
+        .flat();
 }
 
 type SettingsShortcutsTabProps = {

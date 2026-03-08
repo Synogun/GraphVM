@@ -40,7 +40,7 @@ export function useActionBarLogic() {
         graph: { limits, arrangeOn },
     } = useSettings();
     const graphRef = useGetGraph('main-graph');
-    const { syncMeta, syncAll } = useGraphMutation('main-graph');
+    const { syncMeta, syncSelection, syncAll } = useGraphMutation('main-graph');
 
     const { addToast } = useToasts();
 
@@ -170,6 +170,18 @@ export function useActionBarLogic() {
         addToast,
     ]);
 
+    const handleToggleEdgeModeShortcut = useCallback(() => {
+        if (directed) {
+            addToast({
+                type: 'warning',
+                message: 'Edge mode is locked to path while graph is directed.',
+            });
+            return;
+        }
+
+        setEdgeMode(edgeMode === 'complete' ? 'path' : 'complete');
+    }, [directed, edgeMode, setEdgeMode, addToast]);
+
     const handleToggleEdgeMode = useCallback(
         (e: ChangeEvent<HTMLInputElement>) => {
             if (directed) {
@@ -183,6 +195,38 @@ export function useActionBarLogic() {
         },
         [directed, setEdgeMode, addToast]
     );
+
+    const handleDeselectAll = useCallback(() => {
+        const graph = graphRef.current;
+        if (!graph) {
+            addToast(ParsedErrorToasts.GraphNotFound);
+            return;
+        }
+
+        graph.elements(':selected').unselect();
+        graph.data('nodeSelectionOrder', []);
+        graph.data('edgeSelectionOrder', []);
+        syncSelection(graph);
+    }, [graphRef, syncSelection, addToast]);
+
+    const handleSelectAll = useCallback(() => {
+        const graph = graphRef.current;
+        if (!graph) {
+            addToast(ParsedErrorToasts.GraphNotFound);
+            return;
+        }
+
+        graph.elements().select();
+        graph.data(
+            'nodeSelectionOrder',
+            graph.nodes().map((node) => node.id())
+        );
+        graph.data(
+            'edgeSelectionOrder',
+            graph.edges().map((edge) => edge.id())
+        );
+        syncSelection(graph);
+    }, [graphRef, syncSelection, addToast]);
 
     const handleDeleteSelected = useCallback(() => {
         if (!graphRef.current) {
@@ -232,7 +276,10 @@ export function useActionBarLogic() {
         handleCenterGraph,
         handleAddNode,
         handleAddEdges,
+        handleToggleEdgeModeShortcut,
         handleToggleEdgeMode,
+        handleDeselectAll,
+        handleSelectAll,
         handleDeleteSelected,
         isDeleteBtnDisabled:
             selectedNodes.length === 0 && selectedEdges.length === 0,

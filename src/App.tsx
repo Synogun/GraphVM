@@ -3,6 +3,7 @@ import { GraphCanvas } from '@/components/GraphCanvas';
 import { LoadingHero } from '@/components/LoadingHero';
 import { PropertiesBar } from '@/components/PropertiesBar';
 import { ToastArea } from '@/components/ToastArea';
+import { useGraphShortcuts } from '@/hooks/useGraphShortcuts';
 import { PropertiesProvider } from '@/providers/PropertiesProvider';
 import { isDev } from '@/utils/general';
 import {
@@ -32,11 +33,15 @@ export function App() {
         };
     }, []);
 
-    return loadingApp ? (
-        <LoadingHero />
-    ) : (
+    if (loadingApp) {
+        return <LoadingHero />;
+    }
+
+    return (
         <>
             <PropertiesProvider>
+                <GraphShortcutsBinding />
+
                 <PropertiesBar>
                     <ActionBar>
                         <GraphCanvas containerId="main-graph" />
@@ -52,4 +57,9 @@ export function App() {
             </PropertiesProvider>
         </>
     );
+}
+
+function GraphShortcutsBinding() {
+    useGraphShortcuts();
+    return null;
 }

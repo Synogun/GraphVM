@@ -20,6 +20,9 @@ const ValidShortcutActions: ShortcutAction[] = [
     'newGraph',
     'addNode',
     'addEdges',
+    'arrangeGraph',
+    'centerGraph',
+    'toggleEdgeMode',
 ];
 
 export function isValidToastPosition(position: unknown): position is ToastPosition {
