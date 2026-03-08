@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `Graph` - Added support for multiple graph instances with a workspace system.
 - `Shortcuts` - Added a `GraphShortcutsBinding` component to bind keyboard shortcuts to graph actions using the `useGraphShortcuts` hook.
 - `Hooks` - Implemented `useGraphMutation` hook to provide better syncronization between the core graph state and the React state, with methods for syncing metadata and selection.
 - `Settings` - Added settings for keyboard shortcuts configuration.
