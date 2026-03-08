@@ -96,7 +96,9 @@ export function ImportTab({
     };
 
     const handleDataPreview = (data: string, fileType: FileType) => {
-        if (!graphRef.current) {
+        const activeGraph = graphRef.current;
+
+        if (!activeGraph) {
             addToast(ParsedErrorToasts.GraphNotFound);
             return;
         }
@@ -122,8 +124,8 @@ export function ImportTab({
             }
         } else {
             const defaults = {
-                nodes: getDefaultNodesData(graphRef.current),
-                edges: getDefaultEdgesData(graphRef.current),
+                nodes: getDefaultNodesData(activeGraph),
+                edges: getDefaultEdgesData(activeGraph),
             };
 
             try {
@@ -163,7 +165,9 @@ export function ImportTab({
     };
 
     const handleImport = () => {
-        if (!graphRef.current) {
+        const activeGraph = graphRef.current;
+
+        if (!activeGraph) {
             addToast(ParsedErrorToasts.GraphNotFound);
             return;
         }
@@ -184,14 +188,14 @@ export function ImportTab({
             return;
         }
 
-        graphRef.current.elements().remove();
+        activeGraph.elements().remove();
 
         // @ts-expect-error - CytoscapeOptions is not fully compatible with the expected type for json(), but it contains all necessary data for import
-        graphRef.current.json(importData);
+        activeGraph.json(importData);
 
         const directed = Boolean(importData.data?.directed);
-        setGraphDirected(graphRef.current, directed);
-        syncAll(graphRef.current);
+        setGraphDirected(activeGraph, directed);
+        syncAll(activeGraph);
 
         cleanup();
         onImportSuccess();

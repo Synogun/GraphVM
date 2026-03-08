@@ -229,12 +229,14 @@ export function useActionBarLogic() {
     }, [graphRef, syncSelection, addToast]);
 
     const handleDeleteSelected = useCallback(() => {
-        if (!graphRef.current) {
+        const graph = graphRef.current;
+
+        if (!graph) {
             addToast(ParsedErrorToasts.GraphNotFound);
             return;
         }
 
-        let selectedElements = graphRef.current.elements(':selected');
+        let selectedElements = graph.elements(':selected');
         if (selectedElements.length === 0) {
             addToast({ message: 'Select nodes or edges to delete.' });
             return;
@@ -242,25 +244,26 @@ export function useActionBarLogic() {
 
         const nodesToRemove = selectedElements.filter('node');
         if (nodesToRemove.length > 0) {
-            removeNodes(graphRef.current, nodesToRemove);
+            removeNodes(graph, nodesToRemove);
 
-            graphRef.current.data('nodeSelectionOrder', []);
+            graph.data('nodeSelectionOrder', []);
         }
 
-        selectedElements = graphRef.current.elements(':selected');
+        selectedElements = graph.elements(':selected');
         const edgesToRemove = selectedElements.filter('edge');
         if (edgesToRemove.length > 0) {
             try {
-                removeEdges(graphRef.current, edgesToRemove);
+                removeEdges(graph, edgesToRemove);
             } catch (error: unknown) {
                 const parsedError = parseError(error);
                 addToast({ type: 'error', message: parsedError.message });
                 return;
             }
 
-            graphRef.current.data('edgeSelectionOrder', []);
+            graph.data('edgeSelectionOrder', []);
         }
-        syncAll(graphRef.current);
+
+        syncAll(graph);
     }, [graphRef, syncAll, addToast]);
 
     return {

@@ -46,6 +46,8 @@ export function ImportExportModal() {
     );
 
     const handleClose = useCallback(() => {
+        const activeGraph = graphRef.current;
+
         if (activeTab === 'import') {
             importTabRef.current?.cleanup();
         } else {
@@ -54,12 +56,12 @@ export function ImportExportModal() {
         setActiveTab('import');
         modals.setIsImportExportModalOpen(false);
 
-        if (!graphRef.current || !shouldArrangeOnClose || !arrangeOnImport) {
+        if (!activeGraph || !shouldArrangeOnClose || !arrangeOnImport) {
             setShouldArrangeOnClose(false);
             return;
         }
 
-        arrangeGraph(graphRef.current, currentLayout);
+        arrangeGraph(activeGraph, currentLayout);
         setShouldArrangeOnClose(false);
     }, [
         activeTab,

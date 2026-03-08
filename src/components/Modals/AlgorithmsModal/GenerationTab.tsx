@@ -145,7 +145,9 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
     const { addToast } = useToasts();
 
     const handleRun = () => {
-        if (!graph.current) {
+        const activeGraph = graph.current;
+
+        if (!activeGraph) {
             addToast(ParsedErrorToasts.GraphNotFound);
             return;
         }
@@ -154,7 +156,7 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
         try {
             switch (params.family) {
                 case 'complete':
-                    generateCompleteGraph(graph.current, params, layout, limits);
+                    generateCompleteGraph(activeGraph, params, layout, limits);
                     break;
                 case 'grid':
                     if (params.applyGridLayout) {
@@ -169,7 +171,7 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
                         grid.setCols(params.cols);
                         grid.setRows(params.rows);
                     }
-                    generateGridGraph(graph.current, params, layout, limits);
+                    generateGridGraph(activeGraph, params, layout, limits);
                     break;
                 case 'circle':
                     if (params.applyCircleLayout) {
@@ -177,7 +179,7 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
                         setType('circle');
                         setLayout({ ...layout });
                     }
-                    generateCircleGraph(graph.current, params, layout, limits);
+                    generateCircleGraph(activeGraph, params, layout, limits);
                     break;
                 case 'star':
                     if (params.applyConcentricLayout) {
@@ -188,7 +190,7 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
                             name: 'concentric',
                         });
                     }
-                    generateStarGraph(graph.current, params, layout, limits);
+                    generateStarGraph(activeGraph, params, layout, limits);
                     break;
                 case 'wheel':
                     if (params.applyConcentricLayout) {
@@ -196,17 +198,17 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
                         setType('concentric');
                         setLayout({ ...layout });
                     }
-                    generateWheelGraph(graph.current, params, layout, limits);
+                    generateWheelGraph(activeGraph, params, layout, limits);
                     break;
                 // case 'cayley':
                 //     generateCayleyGraph(graph.current, params, layout);
                 //     break;
                 case 'bipartite':
-                    generateBipartiteGraph(graph.current, params, layout, limits);
+                    generateBipartiteGraph(activeGraph, params, layout, limits);
                     break;
                 case 'complete-bipartite':
                     generateCompleteBipartiteGraph(
-                        graph.current,
+                        activeGraph,
                         params,
                         layout,
                         limits
@@ -231,7 +233,7 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
                         setType('circle');
                         setLayout({ ...layout });
                     }
-                    generateSimpleGraph(graph.current, params, layout, limits);
+                    generateSimpleGraph(activeGraph, params, layout, limits);
                     break;
 
                 default:
@@ -250,7 +252,7 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
             return;
         }
 
-        syncAll(graph.current);
+        syncAll(activeGraph);
 
         setParams({ ...DefaultGenerationParams });
         addToast({

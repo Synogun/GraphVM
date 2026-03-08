@@ -60,7 +60,9 @@ export function ExportTab({
     }, []);
 
     const handleExport = () => {
-        if (!graphRef.current) {
+        const activeGraph = graphRef.current;
+
+        if (!activeGraph) {
             addToast(ParsedErrorToasts.GraphNotFound);
             return;
         }
@@ -88,7 +90,7 @@ export function ExportTab({
             fileName = exportFilenameInputRef.current.value
                 .replace('{TIMESTAMP}', Date.now().toString())
                 .replace('{NODE_COUNT}', nodeCount.toString())
-                .replace('{EDGE_COUNT}', graphRef.current.edges().length.toString())
+                .replace('{EDGE_COUNT}', activeGraph.edges().length.toString())
                 .replace(/[^a-zA-Z0-9-_]/g, '-');
         }
 
@@ -97,9 +99,9 @@ export function ExportTab({
         let fileType = '';
 
         if (exportFormat === 'json') {
-            graphRef.current.elements().unselect();
+            activeGraph.elements().unselect();
 
-            const json = graphRef.current.json();
+            const json = activeGraph.json();
 
             if (!isCytoscapeOptions(json)) {
                 addToast({
@@ -136,12 +138,12 @@ export function ExportTab({
 
             dataStr =
                 exportFormat === 'png'
-                    ? graphRef.current.png(options)
-                    : graphRef.current.jpg(options);
+                    ? activeGraph.png(options)
+                    : activeGraph.jpg(options);
             fileNameWithExt = `${fileName}.${exportFormat}`;
             fileType = `image/${exportFormat}`;
         } else {
-            dataStr = mapElementsToText(graphRef.current);
+            dataStr = mapElementsToText(activeGraph);
             fileNameWithExt = `${fileName}.txt`;
             fileType = 'text/plain';
         }

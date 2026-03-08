@@ -2,8 +2,10 @@ import { AppIcons } from '@/components/common/AppIcons';
 import { WorkspaceTabs } from '@/components/common/tabs';
 import { useGraphMutation } from '@/hooks/useGraphMutation';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
-import { useGraphWorkspace } from '@Contexts';
-import { useEffect } from 'react';
+import { makeScopedGraphRegistryId } from '@/utils/graphRegistry';
+import { useGraphRegistry, useGraphWorkspace } from '@Contexts';
+import { ConfirmModal } from '@Modals';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { GraphCanvas } from './GraphCanvas';
 
 const MAIN_GRAPH_ID = 'main-graph';
@@ -11,8 +13,53 @@ const MAIN_GRAPH_ID = 'main-graph';
 export function GraphWorkspace() {
     const { tabs, activeTabId, setActiveTab, createTab, closeTab, renameTab } =
         useGraphWorkspace();
+    const registry = useGraphRegistry();
     const graphRef = useGetGraph(MAIN_GRAPH_ID);
     const { syncAll } = useGraphMutation(MAIN_GRAPH_ID);
+    const [tabIdToClose, setTabIdToClose] = useState<string | null>(null);
+
+    const pendingCloseTabName = useMemo(() => {
+        if (!tabIdToClose) {
+            return 'This tab';
+        }
+
+        return tabs.find((tab) => tab.id === tabIdToClose)?.name ?? 'This tab';
+    }, [tabIdToClose, tabs]);
+
+    const handleCloseTab = useCallback(
+        (tabId: string) => {
+            const scopedGraphId = makeScopedGraphRegistryId(MAIN_GRAPH_ID, tabId);
+            const activeGraph = graphRef.current;
+            const tabGraph =
+                registry.get(scopedGraphId) ??
+                (tabId === activeTabId ? activeGraph : null);
+
+            if (tabGraph) {
+                const hasUnsavedElements =
+                    tabGraph.nodes().length > 0 || tabGraph.edges().length > 0;
+
+                if (hasUnsavedElements) {
+                    setTabIdToClose(tabId);
+                    return;
+                }
+            }
+
+            closeTab(tabId);
+        },
+        [registry, graphRef, activeTabId, closeTab]
+    );
+
+    const handleCancelCloseTab = useCallback(() => {
+        setTabIdToClose(null);
+    }, []);
+
+    const handleConfirmCloseTab = useCallback(() => {
+        if (tabIdToClose) {
+            closeTab(tabIdToClose);
+        }
+
+        setTabIdToClose(null);
+    }, [tabIdToClose, closeTab]);
 
     useEffect(() => {
         const core = graphRef.current;
@@ -26,13 +73,27 @@ export function GraphWorkspace() {
 
     return (
         <div className="flex h-full flex-col">
+            <ConfirmModal
+                id="confirm-close-tab-modal"
+                title="Close tab"
+                message={
+                    `\"${pendingCloseTabName}\" contains graph data.\n` +
+                    'This action cannot be undone.'
+                }
+                show={Boolean(tabIdToClose)}
+                onCancel={handleCancelCloseTab}
+                onConfirm={handleConfirmCloseTab}
+                confirmLabel="Close Tab"
+                confirmButtonClassName="btn-error"
+            />
+
             <div className="border-base-300 bg-base-200 border-b px-4 pt-2">
                 <div className="flex items-start gap-3">
                     <WorkspaceTabs
                         tabs={tabs.map((tab) => ({ id: tab.id, label: tab.name }))}
                         activeTab={activeTabId}
                         onTabChange={setActiveTab}
-                        onTabClose={closeTab}
+                        onTabClose={handleCloseTab}
                         onTabRename={renameTab}
                     />
 
