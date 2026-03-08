@@ -1,9 +1,9 @@
-import { useGraphProperties } from '@Contexts';
+import { useGraphRegistry as useGraphRegistryContext } from '@Contexts';
 import { useEffect, useRef, type RefObject } from 'react';
 import type { GraphInstance } from '../types/graph';
 
 export function useRegisterGraph(id: string, api: RefObject<GraphInstance>) {
-    const { registry } = useGraphProperties();
+    const registry = useGraphRegistryContext();
 
     useEffect(() => {
         if (api.current) {
@@ -19,7 +19,7 @@ export function useRegisterGraph(id: string, api: RefObject<GraphInstance>) {
 }
 
 export function useGetGraph(id: string): RefObject<GraphInstance> {
-    const { registry } = useGraphProperties();
+    const registry = useGraphRegistryContext();
     const core = useRef<GraphInstance>(null);
 
     useEffect(() => {

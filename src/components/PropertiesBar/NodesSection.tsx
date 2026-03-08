@@ -5,7 +5,7 @@ import { updateNodes } from '@/services/nodesService';
 import { isNodeShape, ValidNodeShapes } from '@/types/nodesTypeGuards';
 import { parseKebabCase } from '@/utils/elements';
 import { getDefaultNodesData, setDefaultNodesData } from '@/utils/styleHelpers';
-import { useGraphProperties, useNodeProperties } from '@Contexts';
+import { useGraphSelection, useNodeProperties } from '@Contexts';
 import { ColorInput, SelectInput } from '@Inputs';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
@@ -15,7 +15,7 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
 
     const {
         nodes: { selected: selectedNodes },
-    } = useGraphProperties();
+    } = useGraphSelection();
 
     const propertyEditor = usePropertyEditor({
         graphRef,

@@ -1,5 +1,4 @@
 export { EdgesContext, useEdgesProperties } from './EdgesContext';
-export { GraphContext, useGraphProperties } from './GraphContext';
 export { GraphMetaContext, useGraphMeta } from './GraphMetaContext';
 export { GraphRegistryContext, useGraphRegistry } from './GraphRegistryContext';
 export { GraphSelectionContext, useGraphSelection } from './GraphSelectionContext';

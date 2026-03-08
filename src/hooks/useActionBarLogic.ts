@@ -7,7 +7,8 @@ import { arrangeGraph, centerGraph } from '@/services/layoutService';
 import { addNode, removeNodes } from '@/services/nodesService';
 import { isArrayOfStrings } from '@/types/typeGuards';
 import {
-    useGraphProperties,
+    useGraphMeta,
+    useGraphSelection,
     useLayoutProperties,
     useModals,
     useSettings,
@@ -20,9 +21,12 @@ const DEFAULT_LAYOUT = { name: 'circle' };
 export function useActionBarLogic() {
     const {
         directed,
+        edges: { edgeMode, setEdgeMode },
+    } = useGraphMeta();
+    const {
         nodes: { selected: selectedNodes },
-        edges: { edgeMode, setEdgeMode, selected: selectedEdges },
-    } = useGraphProperties();
+        edges: { selected: selectedEdges },
+    } = useGraphSelection();
 
     const {
         setIsAlgorithmsModalOpen,

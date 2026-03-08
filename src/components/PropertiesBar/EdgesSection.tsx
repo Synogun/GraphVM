@@ -14,7 +14,7 @@ import {
 } from '@/types/edgesTypeGuards';
 import { parseKebabCase } from '@/utils/elements';
 import { getDefaultEdgesData, setDefaultEdgesData } from '@/utils/styleHelpers';
-import { useEdgesProperties, useGraphProperties } from '@Contexts';
+import { useEdgesProperties, useGraphMeta, useGraphSelection } from '@Contexts';
 import { ColorInput, NumberInput, SelectInput } from '@Inputs';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
@@ -35,10 +35,10 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         setArrowShape,
     } = useEdgesProperties();
 
+    const { directed } = useGraphMeta();
     const {
-        directed,
         edges: { selected: selectedEdges },
-    } = useGraphProperties();
+    } = useGraphSelection();
 
     const propertyEditor = usePropertyEditor({
         graphRef,

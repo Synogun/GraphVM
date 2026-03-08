@@ -1,7 +1,7 @@
 import { bindAutopan } from '@/services/autopanService';
 import { destroyGraph, newGraph } from '@/services/graphService';
 import type { GraphInstance } from '@/types/graph';
-import { useGraphProperties, useToasts } from '@Contexts';
+import { useGraphSelection, useToasts } from '@Contexts';
 import type cytoscape from 'cytoscape';
 import { useEffect, useRef } from 'react';
 import { useRegisterGraph } from '../hooks/useGraphRegistry';
@@ -14,7 +14,7 @@ export function GraphCanvas({ containerId }: GraphCanvasProps) {
     const {
         nodes: { setSelected: setSelectedNodes },
         edges: { setSelected: setSelectedEdges },
-    } = useGraphProperties();
+    } = useGraphSelection();
 
     const { addToast } = useToasts();
     const addToastRef = useRef(addToast);

@@ -1,6 +1,6 @@
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { setGraphDirected } from '@/services/graphService';
-import { useGraphProperties } from '@Contexts';
+import { useGraphMeta } from '@Contexts';
 import { useEffect } from 'react';
 import { ToggleInput } from '../common/inputs/ToggleInput';
 import { ElementCounter } from './ElementCounter';
@@ -12,7 +12,7 @@ export function GraphSection() {
         setDirected,
         nodes: { count: nodeCount, setCount: setNodeCount },
         edges: { count: edgeCount, setCount: setEdgeCount },
-    } = useGraphProperties();
+    } = useGraphMeta();
 
     useEffect(() => {
         if (!graphRef.current) {

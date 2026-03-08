@@ -44,24 +44,3 @@ export type GraphMetaContextProperties = {
         setEdgeMode: (edgeMode: 'path' | 'complete') => void;
     };
 };
-
-export type GraphContextProperties = {
-    directed: boolean;
-    setDirected: (directed: boolean) => void;
-
-    nodes: {
-        count: number;
-        setCount: (count: number) => void;
-        selected: string[];
-        setSelected: (nodes: string[]) => void;
-    };
-    edges: {
-        count: number;
-        setCount: (count: number) => void;
-        selected: string[];
-        setSelected: (edges: string[]) => void;
-        edgeMode: 'path' | 'complete';
-        setEdgeMode: (edgeMode: 'path' | 'complete') => void;
-    };
-    registry: GraphRegistryContextProperties;
-};

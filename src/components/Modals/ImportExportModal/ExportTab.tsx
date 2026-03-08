@@ -4,7 +4,7 @@ import { mapElementsToText } from '@/services/importExportService';
 import { isCytoscapeOptions, isStylesheetStyleArray } from '@/types/graphTypeGuards';
 import { makeBlobAndDownload } from '@/utils/general';
 import { transformStylesheet } from '@/utils/styleHelpers';
-import { useGraphProperties, useToasts } from '@Contexts';
+import { useGraphMeta, useToasts } from '@Contexts';
 import type cytoscape from 'cytoscape';
 import {
     useCallback,
@@ -32,7 +32,7 @@ export function ExportTab({
 
     const {
         nodes: { count: nodeCount },
-    } = useGraphProperties();
+    } = useGraphMeta();
 
     const { addToast } = useToasts();
 
