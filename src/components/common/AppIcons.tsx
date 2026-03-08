@@ -5,6 +5,7 @@ import { FaCheck, FaGithub } from 'react-icons/fa';
 import { FaCircleInfo, FaCode } from 'react-icons/fa6';
 import { FiHelpCircle } from 'react-icons/fi';
 import { GoTrash } from 'react-icons/go';
+import { IoIosAdd } from 'react-icons/io';
 import {
     IoAddCircleOutline,
     IoClose,
@@ -57,4 +58,5 @@ export const AppIcons = {
     Export: (props: IconBaseProps) => <BiExport {...props} />,
     Info: (props: IconBaseProps) => <FaCircleInfo {...props} />,
     Warning: (props: IconBaseProps) => <IoWarningOutline {...props} />,
+    Add: (props: IconBaseProps) => <IoIosAdd {...props} />,
 };

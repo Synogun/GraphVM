@@ -18,6 +18,16 @@ type WorkspaceAction =
     | { type: 'set-active-tab'; tabId: string }
     | { type: 'reorder-tabs'; fromIndex: number; toIndex: number };
 
+function makeDefaultTabName(tabId: string): string {
+    const match = /^graph-tab-(\d+)$/.exec(tabId);
+
+    if (!match) {
+        return 'Graph';
+    }
+
+    return `Graph ${match[1]}`;
+}
+
 function moveTab(
     tabs: GraphWorkspaceTab[],
     fromIndex: number,
@@ -38,7 +48,7 @@ function workspaceReducer(
         case 'create-tab': {
             const tabNumber = state.nextTabNumber;
             const tabId = `graph-tab-${String(tabNumber)}`;
-            const tabName = action.name?.trim() ?? `Graph ${String(tabNumber)}`;
+            const tabName = action.name?.trim() ?? makeDefaultTabName(tabId);
             const tab: GraphWorkspaceTab = {
                 id: tabId,
                 name: tabName,
@@ -59,10 +69,17 @@ function workspaceReducer(
             }
 
             if (nextTabs.length === 0) {
+                const replacementTabId = `graph-tab-${String(state.nextTabNumber)}`;
+                const replacementTab: GraphWorkspaceTab = {
+                    id: replacementTabId,
+                    name: makeDefaultTabName(replacementTabId),
+                };
+
                 return {
                     ...state,
-                    tabs: [],
-                    activeTabId: '',
+                    tabs: [replacementTab],
+                    activeTabId: replacementTab.id,
+                    nextTabNumber: state.nextTabNumber + 1,
                 };
             }
 
@@ -87,11 +104,7 @@ function workspaceReducer(
         }
 
         case 'rename-tab': {
-            const name = action.name.trim();
-
-            if (!name) {
-                return state;
-            }
+            const name = action.name.trim() || makeDefaultTabName(action.tabId);
 
             const nextTabs = state.tabs.map((tab) =>
                 tab.id === action.tabId
@@ -149,7 +162,7 @@ function workspaceReducer(
 
 export function GraphWorkspaceProvider({ children }: GraphWorkspaceProviderProps) {
     const [workspace, dispatch] = useReducer(workspaceReducer, {
-        tabs: [{ id: 'graph-tab-1', name: `Graph 1` }],
+        tabs: [{ id: 'graph-tab-1', name: 'Graph 1' }],
         activeTabId: 'graph-tab-1',
         nextTabNumber: 2,
     });

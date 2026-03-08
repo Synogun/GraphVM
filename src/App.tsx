@@ -1,5 +1,5 @@
 import { ActionBar } from '@/components/ActionBar';
-import { GraphCanvas } from '@/components/GraphCanvas';
+import { GraphWorkspace } from '@/components/GraphWorkspace';
 import { LoadingHero } from '@/components/LoadingHero';
 import { PropertiesBar } from '@/components/PropertiesBar';
 import { ToastArea } from '@/components/ToastArea';
@@ -44,7 +44,7 @@ export function App() {
 
                 <PropertiesBar>
                     <ActionBar>
-                        <GraphCanvas containerId="main-graph" />
+                        <GraphWorkspace />
                     </ActionBar>
                 </PropertiesBar>
 

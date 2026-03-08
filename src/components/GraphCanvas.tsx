@@ -4,10 +4,10 @@ import type { GraphInstance } from '@/types/graph';
 import { useGraphSelection, useToasts } from '@Contexts';
 import type cytoscape from 'cytoscape';
 import { useEffect, useRef } from 'react';
-import { useRegisterGraph } from '../hooks/useGraphRegistry';
+import { useRegisterGraphByTab } from '../hooks/useGraphRegistry';
 import { isArrayOfStrings } from '../types/typeGuards';
 
-export function GraphCanvas({ containerId }: GraphCanvasProps) {
+export function GraphCanvas({ graphId, containerId, tabId }: GraphCanvasProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const graphRef = useRef<GraphInstance>(null);
 
@@ -90,7 +90,7 @@ export function GraphCanvas({ containerId }: GraphCanvasProps) {
         };
     }, [containerId, setSelectedNodes, setSelectedEdges]);
 
-    useRegisterGraph(containerId, graphRef);
+    useRegisterGraphByTab(graphId, graphRef, tabId);
 
     return (
         <div
@@ -102,5 +102,7 @@ export function GraphCanvas({ containerId }: GraphCanvasProps) {
 }
 
 type GraphCanvasProps = {
+    graphId: string;
     containerId: string;
+    tabId?: string;
 };
