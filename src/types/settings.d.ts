@@ -13,6 +13,7 @@ export type ShortcutAction =
     | 'deleteSelected'
     | 'deselectAll'
     | 'selectAll'
+    | 'saveWorkspace'
     | 'newGraph'
     | 'addNode'
     | 'addEdges'

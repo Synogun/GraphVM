@@ -9,6 +9,7 @@ import { isArrayOfStrings } from '@/types/typeGuards';
 import {
     useGraphMeta,
     useGraphSelection,
+    useGraphWorkspace,
     useLayoutProperties,
     useModals,
     useSettings,
@@ -27,6 +28,7 @@ export function useActionBarLogic() {
         nodes: { selected: selectedNodes },
         edges: { selected: selectedEdges },
     } = useGraphSelection();
+    const { hasPendingSave, requestSaveWorkspace } = useGraphWorkspace();
 
     const {
         setIsAlgorithmsModalOpen,
@@ -65,6 +67,18 @@ export function useActionBarLogic() {
     const handleAlgorithms = useCallback(() => {
         setIsAlgorithmsModalOpen(true);
     }, [setIsAlgorithmsModalOpen]);
+
+    const handleSaveWorkspace = useCallback(() => {
+        if (!hasPendingSave) {
+            addToast({
+                type: 'info',
+                message: 'No pending graph changes to save.',
+            });
+            return;
+        }
+
+        requestSaveWorkspace();
+    }, [hasPendingSave, requestSaveWorkspace, addToast]);
 
     const handleImportExport = useCallback(() => {
         setIsImportExportModalOpen(true);
@@ -272,6 +286,7 @@ export function useActionBarLogic() {
         selectedEdges,
         handleNewGraph,
         handleAlgorithms,
+        handleSaveWorkspace,
         handleImportExport,
         handleArrangeGraph,
         handleSettings,
@@ -286,6 +301,7 @@ export function useActionBarLogic() {
         handleDeleteSelected,
         isDeleteBtnDisabled:
             selectedNodes.length === 0 && selectedEdges.length === 0,
+        isSaveWorkspaceDisabled: !hasPendingSave,
         isCompleteEdgeMode: edgeMode === 'complete',
         isEdgeModeLocked: directed,
     };

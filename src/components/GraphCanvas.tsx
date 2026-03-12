@@ -1,7 +1,7 @@
 import { bindAutopan } from '@/services/autopanService';
 import { destroyGraph, newGraph } from '@/services/graphService';
 import type { GraphInstance } from '@/types/graph';
-import { useGraphSelection, useToasts } from '@Contexts';
+import { useGraphSelection, useGraphWorkspace, useToasts } from '@Contexts';
 import type cytoscape from 'cytoscape';
 import { useEffect, useRef } from 'react';
 import { useRegisterGraphByTab } from '../hooks/useGraphRegistry';
@@ -15,6 +15,7 @@ export function GraphCanvas({ graphId, containerId, tabId }: GraphCanvasProps) {
         nodes: { setSelected: setSelectedNodes },
         edges: { setSelected: setSelectedEdges },
     } = useGraphSelection();
+    const { markTabPendingSave } = useGraphWorkspace();
 
     const { addToast } = useToasts();
     const addToastRef = useRef(addToast);
@@ -38,6 +39,14 @@ export function GraphCanvas({ graphId, containerId, tabId }: GraphCanvasProps) {
                 edgeSelectionOrder: [],
             },
         });
+
+        const handleGraphMutation = () => {
+            if (!tabId) {
+                return;
+            }
+
+            markTabPendingSave(tabId);
+        };
 
         const handleElementSelection = (e: cytoscape.EventObject) => {
             const target = e.target as cytoscape.Collection;
@@ -78,6 +87,8 @@ export function GraphCanvas({ graphId, containerId, tabId }: GraphCanvasProps) {
 
         newCore.on('select', 'node, edge', handleElementSelection);
         newCore.on('unselect', 'node, edge', handleElementSelection);
+        newCore.on('add remove', 'node, edge', handleGraphMutation);
+        newCore.on('data position', 'node, edge', handleGraphMutation);
 
         const cleanupAutopan = bindAutopan(newCore);
 
@@ -85,10 +96,12 @@ export function GraphCanvas({ graphId, containerId, tabId }: GraphCanvasProps) {
 
         return () => {
             cleanupAutopan();
+            newCore.off('add remove', 'node, edge', handleGraphMutation);
+            newCore.off('data position', 'node, edge', handleGraphMutation);
             destroyGraph(newCore);
             graphRef.current = null;
         };
-    }, [containerId, setSelectedNodes, setSelectedEdges]);
+    }, [containerId, tabId, markTabPendingSave, setSelectedNodes, setSelectedEdges]);
 
     useRegisterGraphByTab(graphId, graphRef, tabId);
 

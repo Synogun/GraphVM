@@ -1,9 +1,10 @@
 import { ParsedErrorToasts, parseError } from '@/config/parsedError';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
-import { mapElementsToText } from '@/services/importExportService';
-import { isCytoscapeOptions, isStylesheetStyleArray } from '@/types/graphTypeGuards';
+import {
+    mapElementsToText,
+    normalizeCytoscapeOptionsForExport,
+} from '@/services/importExportService';
 import { makeBlobAndDownload } from '@/utils/general';
-import { transformStylesheet } from '@/utils/styleHelpers';
 import { useGraphMeta, useToasts } from '@Contexts';
 import type cytoscape from 'cytoscape';
 import {
@@ -101,18 +102,14 @@ export function ExportTab({
         if (exportFormat === 'json') {
             activeGraph.elements().unselect();
 
-            const json = activeGraph.json();
+            const json = normalizeCytoscapeOptionsForExport(activeGraph.json());
 
-            if (!isCytoscapeOptions(json)) {
+            if (!json) {
                 addToast({
                     type: 'error',
                     message: 'Failed to export graph. Invalid graph data.',
                 });
                 return;
-            }
-
-            if (isStylesheetStyleArray(json.style)) {
-                json.style = transformStylesheet(json.style, 'json');
             }
 
             try {

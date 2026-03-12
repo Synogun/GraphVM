@@ -1,4 +1,8 @@
 import { DefaultSettingsData } from '@/constants/settingsDefaults';
+import {
+    loadPersistedState,
+    savePersistedState,
+} from '@/services/persistenceService';
 import { isSettingsData } from '@/types/settingsTypeGuards';
 import { SettingsContext } from '@Contexts';
 import { useEffect, useState, type ReactNode } from 'react';
@@ -6,28 +10,11 @@ import { useEffect, useState, type ReactNode } from 'react';
 const SETTINGS_STORAGE_KEY = 'graphvm.settings.v1';
 
 function loadInitialSettings() {
-    const fallback = DefaultSettingsData;
-
-    if (typeof window === 'undefined') {
-        return fallback;
-    }
-
-    try {
-        const raw = window.localStorage.getItem(SETTINGS_STORAGE_KEY);
-
-        if (!raw) {
-            return fallback;
-        }
-
-        const parsed: unknown = JSON.parse(raw);
-        if (!isSettingsData(parsed)) {
-            return fallback;
-        }
-
-        return parsed;
-    } catch {
-        return fallback;
-    }
+    return loadPersistedState({
+        storageKey: SETTINGS_STORAGE_KEY,
+        fallbackState: DefaultSettingsData,
+        isValidState: isSettingsData,
+    });
 }
 
 export function SettingsProvider({ children }: SettingsProviderProps) {
@@ -42,17 +29,16 @@ export function SettingsProvider({ children }: SettingsProviderProps) {
     const [shortcuts, setShortcuts] = useState(initialSettings.shortcuts);
 
     useEffect(() => {
-        if (typeof window === 'undefined') {
-            return;
-        }
-
         const payload = {
             ui: { toast: uiToast },
             graph: { arrangeOn: graphArrangeOn, limits: graphLimits },
             shortcuts,
         };
 
-        window.localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(payload));
+        savePersistedState({
+            storageKey: SETTINGS_STORAGE_KEY,
+            state: payload,
+        });
     }, [uiToast, graphArrangeOn, graphLimits, shortcuts]);
 
     const value = {

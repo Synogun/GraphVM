@@ -1,6 +1,6 @@
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { setGraphDirected } from '@/services/graphService';
-import { useGraphMeta } from '@Contexts';
+import { useGraphMeta, useGraphWorkspace } from '@Contexts';
 import { useEffect } from 'react';
 import { ToggleInput } from '../common/inputs/ToggleInput';
 import { ElementCounter } from './ElementCounter';
@@ -13,6 +13,7 @@ export function GraphSection() {
         nodes: { count: nodeCount, setCount: setNodeCount },
         edges: { count: edgeCount, setCount: setEdgeCount },
     } = useGraphMeta();
+    const { activeTabId, markTabPendingSave } = useGraphWorkspace();
 
     useEffect(() => {
         if (!graphRef.current) {
@@ -31,10 +32,15 @@ export function GraphSection() {
     }, [graphRef, nodeCount, edgeCount, setNodeCount, setEdgeCount]);
 
     const handleToggleDirected = (value: boolean) => {
-        if (!graphRef.current) return;
+        const graph = graphRef.current;
 
-        setGraphDirected(graphRef.current, value);
+        if (!graph) {
+            return;
+        }
+
+        setGraphDirected(graph, value);
         setDirected(value);
+        markTabPendingSave(activeTabId);
     };
 
     return (

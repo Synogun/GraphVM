@@ -109,7 +109,8 @@ export function WorkspaceTabs<T extends string>({
                                     type="text"
                                     value={draftLabel}
                                     title={
-                                        "Rename tab\n(Press 'Enter' to confirm, 'Escape' to cancel)"
+                                        'Rename tab\n' +
+                                        "(Press 'Enter' to confirm, 'Escape' to cancel)"
                                     }
                                     className="input input-ghost input-sm h-7 w-full px-2 focus:outline-none"
                                     onClick={(event) => {
@@ -134,8 +135,15 @@ export function WorkspaceTabs<T extends string>({
                             ) : (
                                 <>
                                     <span
-                                        title={`${tab.label}\n(Double-click to rename)`}
-                                        className="block min-w-0 flex-1 px-2 overflow-hidden whitespace-nowrap text-left text-ellipsis"
+                                        title={
+                                            `${tab.label}${tab.pendingSave ? ' (Unsaved changes)' : ''}\n` +
+                                            '(Double-click to rename)'
+                                        }
+                                        className={
+                                            'block min-w-0 flex-1 px-2 ' +
+                                            'overflow-hidden whitespace-nowrap ' +
+                                            'text-left text-ellipsis'
+                                        }
                                         onDoubleClick={(event) => {
                                             event.stopPropagation();
                                             setEditingTabId(tab.id);
@@ -154,12 +162,12 @@ export function WorkspaceTabs<T extends string>({
                                         type="button"
                                         aria-label={`Close tab`}
                                         title="Close tab"
-                                        className={[
-                                            'btn btn-ghost btn-xs absolute top-1/2 right-4 -translate-y-1/2 border-none transition-opacity',
-                                            isActive
-                                                ? 'opacity-100 hover:btn-accent'
-                                                : 'opacity-0 group-hover:opacity-100 group-focus-within:opacity-100',
-                                        ].join(' ')}
+                                        className={
+                                            'btn btn-ghost btn-xs hover:btn-accent ' +
+                                            'absolute top-1/2 right-4 -translate-y-1/2 ' +
+                                            'border-none transition-opacity opacity-0 ' +
+                                            'group-hover:opacity-100 group-focus-within:opacity-100'
+                                        }
                                         onClick={(event) => {
                                             event.stopPropagation();
                                             onTabClose(tab.id);
@@ -167,6 +175,22 @@ export function WorkspaceTabs<T extends string>({
                                     >
                                         {AppIcons.Close({ size: 12 })}
                                     </button>
+
+                                    <div
+                                        className={
+                                            'pointer-events-none ' +
+                                            'absolute top-1/2 right-6.5 -translate-y-1/2 ' +
+                                            'inline-grid *:[grid-area:1/1] transition-opacity ' +
+                                            (tab.pendingSave
+                                                ? 'opacity-100 group-hover:opacity-0 group-focus-within:opacity-0'
+                                                : 'opacity-0')
+                                        }
+                                        title="Unsaved graph changes"
+                                        aria-label="Unsaved graph changes"
+                                    >
+                                        <div className="status status-accent animate-ping" />
+                                        <div className="status status-accent" />
+                                    </div>
                                 </>
                             )}
                         </div>
@@ -180,6 +204,7 @@ export function WorkspaceTabs<T extends string>({
 export type WorkspaceTabItem<T extends string> = {
     id: T;
     label: string;
+    pendingSave?: boolean;
     disabled?: boolean;
 };
 

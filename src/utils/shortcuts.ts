@@ -45,7 +45,7 @@ export function isShortcutMatch(binding: string, eventShortcut: string): boolean
 export function formatShortcutInput(input: ShortcutInput): string {
     const key = normalizeShortcutKey(input.key);
 
-    if (isModifierOnlyKey(key)) {
+    if (MODIFIER_KEYS.has(key)) {
         return '';
     }
 
@@ -89,7 +89,7 @@ export function normalizeShortcut(shortcut: string): string {
     return [...orderedModifiers, key].filter(Boolean).join('+');
 }
 
-export function normalizeShortcutKey(key: string): string {
+function normalizeShortcutKey(key: string): string {
     const map: Record<string, string> = {
         ' ': 'Space',
         Esc: 'Escape',
@@ -107,10 +107,6 @@ export function normalizeShortcutKey(key: string): string {
     }
 
     return key.charAt(0).toUpperCase() + key.slice(1);
-}
-
-export function isModifierOnlyKey(key: string): boolean {
-    return MODIFIER_KEYS.has(key);
 }
 
 function toPrimaryModifierAlternate(binding: string): string {

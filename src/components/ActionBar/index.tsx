@@ -13,6 +13,7 @@ const ICON_SIZE = '1.5em';
 export function ActionBar({ children }: ActionBarProps) {
     const {
         handleNewGraph,
+        handleSaveWorkspace,
         handleAlgorithms,
         handleImportExport,
         handleArrangeGraph,
@@ -24,6 +25,7 @@ export function ActionBar({ children }: ActionBarProps) {
         handleSettings,
         handleHelp,
         isDeleteBtnDisabled,
+        isSaveWorkspaceDisabled,
         isCompleteEdgeMode,
         isEdgeModeLocked,
     } = useActionBarLogic();
@@ -39,6 +41,14 @@ export function ActionBar({ children }: ActionBarProps) {
                 label="New Graph"
                 margin="my-1"
                 onClick={handleNewGraph}
+            />
+
+            <ActionBarButton
+                disabled={isSaveWorkspaceDisabled}
+                icon={AppIcons.Save({ size: ICON_SIZE })}
+                label="Save Workspace"
+                margin="my-1"
+                onClick={handleSaveWorkspace}
             />
 
             <ActionBarButton

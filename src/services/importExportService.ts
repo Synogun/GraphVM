@@ -3,13 +3,54 @@ import { DefaultEdgesData, DefaultNodesData } from '@/constants/graphDefaults';
 import { assertEdgeLimit } from '@/services/edgesService';
 import { assertNodeLimit } from '@/services/nodesService';
 import type { EdgesData } from '@/types/edges';
-import { isElementsDefinitionObject } from '@/types/graphTypeGuards';
+import {
+    isCytoscapeOptions,
+    isElementsDefinitionObject,
+    isStylesheetStyleArray,
+} from '@/types/graphTypeGuards';
 import type { NodesData } from '@/types/nodes';
 import type { GraphLimits } from '@/types/settings';
+import { transformStylesheet } from '@/utils/styleHelpers';
 import type cytoscape from 'cytoscape';
 import type { CytoscapeOptions } from 'cytoscape';
 import { makeEdgeId } from './edgesService';
 import { makeNodeId } from './nodesService';
+
+export function normalizeCytoscapeOptionsForImport(
+    value: unknown
+): CytoscapeOptions | null {
+    if (!isCytoscapeOptions(value)) {
+        return null;
+    }
+
+    const normalized: CytoscapeOptions = {
+        ...value,
+    };
+
+    if (isStylesheetStyleArray(normalized.style)) {
+        normalized.style = transformStylesheet([...normalized.style], 'sheet');
+    }
+
+    return normalized;
+}
+
+export function normalizeCytoscapeOptionsForExport(
+    value: unknown
+): CytoscapeOptions | null {
+    if (!isCytoscapeOptions(value)) {
+        return null;
+    }
+
+    const normalized: CytoscapeOptions = {
+        ...value,
+    };
+
+    if (isStylesheetStyleArray(normalized.style)) {
+        normalized.style = transformStylesheet([...normalized.style], 'json');
+    }
+
+    return normalized;
+}
 
 function isDataValid(data: string[][]) {
     if (data.length < 1) {

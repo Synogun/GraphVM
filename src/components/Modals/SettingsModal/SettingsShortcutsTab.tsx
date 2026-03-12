@@ -1,4 +1,5 @@
 import { DefaultSettingsData } from '@/constants/settingsDefaults';
+import { useToasts } from '@/contexts';
 import type { SettingsData, ShortcutAction } from '@/types/settings';
 import { formatShortcutInput, normalizeShortcut } from '@/utils/shortcuts';
 import { useState, type KeyboardEvent } from 'react';
@@ -22,6 +23,11 @@ const SHORTCUT_FIELDS: {
         action: 'selectAll',
         label: 'Select all',
         hint: 'Select all nodes and edges in the current graph.',
+    },
+    {
+        action: 'saveWorkspace',
+        label: 'Save workspace',
+        hint: 'Persist all tab graphs and workspace metadata to local storage.',
     },
     {
         action: 'newGraph',
@@ -62,7 +68,8 @@ export function SettingsShortcutsTab({
     const [capturingAction, setCapturingAction] = useState<ShortcutAction | null>(
         null
     );
-    const [validationMessage, setValidationMessage] = useState<string | null>(null);
+
+    const { addToast } = useToasts();
 
     const duplicateActions = getDuplicateShortcutActions(shortcuts);
 
@@ -84,9 +91,12 @@ export function SettingsShortcutsTab({
             );
 
             if (conflictingAction) {
-                setValidationMessage(
-                    `Shortcut ${normalized} is already assigned to ${conflictingAction.label}.`
-                );
+                addToast({
+                    type: 'warning',
+                    message:
+                        `Shortcut conflict with "${conflictingAction.label}".\n` +
+                        'Please choose a different combination.',
+                });
                 return;
             }
 
@@ -95,7 +105,6 @@ export function SettingsShortcutsTab({
                 [action]: normalized,
             });
 
-            setValidationMessage(null);
             setCapturingAction(null);
             event.currentTarget.blur();
         };
@@ -109,14 +118,11 @@ export function SettingsShortcutsTab({
         if (capturingAction === action) {
             setCapturingAction(null);
         }
-
-        setValidationMessage(null);
     };
 
     const handleRestoreDefaults = () => {
         setShortcuts(DefaultSettingsData.shortcuts);
         setCapturingAction(null);
-        setValidationMessage(null);
     };
 
     const handleCaptureStart = (action: ShortcutAction) => {
@@ -153,12 +159,6 @@ export function SettingsShortcutsTab({
                 <br />
                 The pressed combination is captured and formatted automatically.
             </p>
-
-            {validationMessage && (
-                <div className="alert alert-warning py-2 text-sm">
-                    {validationMessage}
-                </div>
-            )}
 
             <h4 className="text-xs font-semibold uppercase tracking-wide text-base-content/70">
                 Current Bindings
@@ -204,7 +204,7 @@ export function SettingsShortcutsTab({
                     return (
                         <article
                             key={action}
-                            className="rounded-box  border-base-300 bg-base-100 p-3"
+                            className="rounded-box bg-base-100 p-3"
                         >
                             <div className="mb-2 flex items-start justify-between gap-3">
                                 <div>
@@ -218,7 +218,7 @@ export function SettingsShortcutsTab({
 
                                 <button
                                     type="button"
-                                    className="btn btn-ghost btn-xs"
+                                    className="btn btn-ghost btn-xs hover:btn-accent"
                                     onClick={() => {
                                         handleResetShortcut(action);
                                     }}

@@ -4,16 +4,12 @@ import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { newGraph, setGraphDirected } from '@/services/graphService';
 import {
     assertImportDataLimits,
+    normalizeCytoscapeOptionsForImport,
     parseTextData,
     type FileType,
 } from '@/services/importExportService';
 import { arrangeGraph } from '@/services/layoutService';
-import { isCytoscapeOptions, isStylesheetStyleArray } from '@/types/graphTypeGuards';
-import {
-    getDefaultEdgesData,
-    getDefaultNodesData,
-    transformStylesheet,
-} from '@/utils/styleHelpers';
+import { getDefaultEdgesData, getDefaultNodesData } from '@/utils/styleHelpers';
 import { useLayoutProperties, useSettings, useToasts } from '@Contexts';
 import cytoscape, { type CytoscapeOptions } from 'cytoscape';
 import {
@@ -107,16 +103,13 @@ export function ImportTab({
         if (fileType === 'application/json') {
             try {
                 const jsonData: unknown = JSON.parse(data);
+                const normalized = normalizeCytoscapeOptionsForImport(jsonData);
 
-                if (!isCytoscapeOptions(jsonData)) {
+                if (!normalized) {
                     throw new ParsedError('Invalid Cytoscape JSON format');
                 }
 
-                if (isStylesheetStyleArray(jsonData.style)) {
-                    jsonData.style = transformStylesheet(jsonData.style, 'sheet');
-                }
-
-                dataToImport = { ...jsonData };
+                dataToImport = normalized;
             } catch (error) {
                 const parsedError = parseError(error);
                 addToast({ type: 'error', message: parsedError.message });
