@@ -1,7 +1,6 @@
 import { ParsedError, parseError } from '@/config/parsedError';
 import { DefaultEdgesData, DefaultNodesData } from '@/constants/graphDefaults';
-import { assertEdgeLimit } from '@/services/edgesService';
-import { assertNodeLimit } from '@/services/nodesService';
+import { assertEdgeLimit, assertNodeLimit } from '@/services/graph';
 import type { EdgesData } from '@/types/edges';
 import {
     isCytoscapeOptions,
@@ -13,8 +12,8 @@ import type { GraphLimits } from '@/types/settings';
 import { transformStylesheet } from '@/utils/styleHelpers';
 import type cytoscape from 'cytoscape';
 import type { CytoscapeOptions } from 'cytoscape';
-import { makeEdgeId } from './edgesService';
-import { makeNodeId } from './nodesService';
+import { makeEdgeId } from '../graph/edgesService';
+import { makeNodeId } from '../graph/nodesService';
 
 export function normalizeCytoscapeOptionsForImport(
     value: unknown

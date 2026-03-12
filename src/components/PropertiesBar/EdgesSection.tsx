@@ -1,7 +1,7 @@
 import { DefaultEdgesData } from '@/constants/graphDefaults';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { usePropertyEditor } from '@/hooks/usePropertyEditor';
-import { updateEdges } from '@/services/edgesService';
+import { updateEdges } from '@/services/graph';
 import {
     isEdgeArrowShape,
     isEdgeCurve,

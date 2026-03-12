@@ -1,8 +1,5 @@
 import { DefaultSettingsData } from '@/constants/settingsDefaults';
-import {
-    loadPersistedState,
-    savePersistedState,
-} from '@/services/persistenceService';
+import { loadPersistedState, savePersistedState } from '@/services/persistence';
 import { isSettingsData } from '@/types/settingsTypeGuards';
 import { SettingsContext } from '@Contexts';
 import { useEffect, useState, type ReactNode } from 'react';

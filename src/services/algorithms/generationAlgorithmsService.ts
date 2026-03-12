@@ -21,10 +21,10 @@ import type {
 } from '@/types/algorithms';
 import type { GraphLimits } from '@/types/settings';
 import type cytoscape from 'cytoscape';
-import { addEdge, addEdges } from '../edgesService';
-import { resetGraph } from '../graphService';
-import { arrangeGraph } from '../layoutService';
-import { addNode } from '../nodesService';
+import { addEdge, addEdges } from '../graph/edgesService';
+import { resetGraph } from '../graph/graphService';
+import { arrangeGraph } from '../graph/layoutService';
+import { addNode } from '../graph/nodesService';
 
 export function generateCompleteGraph(
     graph: cytoscape.Core,

@@ -4,7 +4,7 @@ import {
     DefaultLayoutOptions,
 } from '@/constants/layoutDefaults';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
-import { arrangeGraph } from '@/services/layoutService';
+import { arrangeGraph } from '@/services/graph';
 import { isLayoutType, ValidGraphLayouts } from '@/types/layoutTypeGuards';
 import { parseKebabCase } from '@/utils/elements';
 import { useLayoutProperties, useToasts } from '@Contexts';

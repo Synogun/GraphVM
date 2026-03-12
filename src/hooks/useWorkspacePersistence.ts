@@ -1,11 +1,11 @@
-import { hasPersistedState } from '@/services/persistenceService';
 import {
+    hasPersistedState,
     loadWorkspaceState,
     restoreGraph,
     saveWorkspaceState,
     serializeGraph,
     WORKSPACE_STORAGE_KEY,
-} from '@/services/workspacePersistenceService';
+} from '@/services/persistence';
 import type {
     PersistedWorkspaceState,
     PersistedWorkspaceTab,

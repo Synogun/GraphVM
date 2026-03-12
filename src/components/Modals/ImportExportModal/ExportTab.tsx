@@ -3,7 +3,7 @@ import { useGetGraph } from '@/hooks/useGraphRegistry';
 import {
     mapElementsToText,
     normalizeCytoscapeOptionsForExport,
-} from '@/services/importExportService';
+} from '@/services/persistence';
 import { makeBlobAndDownload } from '@/utils/general';
 import { useGraphMeta, useToasts } from '@Contexts';
 import type cytoscape from 'cytoscape';

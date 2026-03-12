@@ -1,12 +1,10 @@
-import { resetGraph, setGraphDirected } from '@/services/graphService';
-import {
-    normalizeCytoscapeOptionsForExport,
-    normalizeCytoscapeOptionsForImport,
-} from '@/services/importExportService';
+import { resetGraph, setGraphDirected } from '@/services/graph';
 import {
     loadPersistedState,
+    normalizeCytoscapeOptionsForExport,
+    normalizeCytoscapeOptionsForImport,
     savePersistedState,
-} from '@/services/persistenceService';
+} from '@/services/persistence';
 import { isCytoscapeOptions } from '@/types/graphTypeGuards';
 import { isPositiveInteger, isRecord, isString } from '@/types/typeGuards';
 import type {

@@ -1,14 +1,13 @@
 import { ParsedError, ParsedErrorToasts, parseError } from '@/config/parsedError';
 import { useGraphMutation } from '@/hooks/useGraphMutation';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
-import { newGraph, setGraphDirected } from '@/services/graphService';
+import { arrangeGraph, newGraph, setGraphDirected } from '@/services/graph';
 import {
     assertImportDataLimits,
     normalizeCytoscapeOptionsForImport,
     parseTextData,
     type FileType,
-} from '@/services/importExportService';
-import { arrangeGraph } from '@/services/layoutService';
+} from '@/services/persistence';
 import { getDefaultEdgesData, getDefaultNodesData } from '@/utils/styleHelpers';
 import { useLayoutProperties, useSettings, useToasts } from '@Contexts';
 import cytoscape, { type CytoscapeOptions } from 'cytoscape';

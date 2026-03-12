@@ -1,5 +1,5 @@
 import { useGetGraph } from '@/hooks/useGraphRegistry';
-import { setGraphDirected } from '@/services/graphService';
+import { setGraphDirected } from '@/services/graph';
 import { useGraphMeta, useGraphWorkspace } from '@Contexts';
 import { useEffect } from 'react';
 import { ToggleInput } from '../common/inputs/ToggleInput';

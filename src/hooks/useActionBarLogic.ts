@@ -1,10 +1,15 @@
 import { ParsedErrorToasts, parseError } from '@/config/parsedError';
 import { useGraphMutation } from '@/hooks/useGraphMutation';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
-import { addEdges, removeEdges } from '@/services/edgesService';
-import { resetGraph } from '@/services/graphService';
-import { arrangeGraph, centerGraph } from '@/services/layoutService';
-import { addNode, removeNodes } from '@/services/nodesService';
+import {
+    addEdges,
+    addNode,
+    arrangeGraph,
+    centerGraph,
+    removeEdges,
+    removeNodes,
+    resetGraph,
+} from '@/services/graph';
 import { isArrayOfStrings } from '@/types/typeGuards';
 import {
     useGraphMeta,

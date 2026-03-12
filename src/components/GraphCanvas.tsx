@@ -1,5 +1,4 @@
-import { bindAutopan } from '@/services/autopanService';
-import { destroyGraph, newGraph } from '@/services/graphService';
+import { bindAutopan, destroyGraph, newGraph } from '@/services/graph';
 import type { GraphInstance } from '@/types/graph';
 import { useGraphSelection, useGraphWorkspace, useToasts } from '@Contexts';
 import type cytoscape from 'cytoscape';

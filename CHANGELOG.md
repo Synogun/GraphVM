@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `Project` - Adjusted files into subfolders for better organization;
 - `Inputs` - Adjusted `ToggleInput` to accept custom labels for on/off states.
 
 ### Fixed

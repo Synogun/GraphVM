@@ -1,7 +1,7 @@
 import { AppIcons } from '@/components/common/AppIcons';
 import { Tabs, type TabItem } from '@/components/common/tabs';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
-import { arrangeGraph } from '@/services/layoutService';
+import { arrangeGraph } from '@/services/graph';
 import { useLayoutProperties, useModals, useSettings } from '@Contexts';
 import { Modal } from '@Modals';
 import { useCallback, useMemo, useRef, useState } from 'react';
