@@ -19,7 +19,14 @@
         "noUnusedParameters": true,
         "erasableSyntaxOnly": true,
         "noFallthroughCasesInSwitch": true,
-        "noUncheckedSideEffectImports": true
+        "noUncheckedSideEffectImports": true,
+        "jsx": "react-jsx"
     },
-    "include": ["vite.config.ts", "eslint.config.ts"]
+    "include": [
+        "vite.config.ts",
+        "eslint.config.ts",
+        "playwright.config.ts",
+        "tests/**/*.ts",
+        "tests/**/*.tsx"
+    ]
 }

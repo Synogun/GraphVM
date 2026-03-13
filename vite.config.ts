@@ -1,6 +1,6 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -36,6 +36,12 @@ export default defineConfig({
     },
     css: {
         devSourcemap: true,
+    },
+    test: {
+        include: ['tests/unit/**/*.test.ts', 'tests/integration/**/*.test.ts?(x)'],
+        environment: 'jsdom',
+        globals: true,
+        setupFiles: ['./tests/setup/vitest.setup.ts'],
     },
 });
 

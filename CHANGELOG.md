@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `Tests` - Added structure for unit, integration and end-to-end tests.
 - `Graph` - Implemented a tabbed interface for multiple graph instances, allowing users to create and manage different contexts
   and easily switch between them.
 - `Modals` - Implemented `ConfirmModal` for reusable confirmation dialogs across the app.
