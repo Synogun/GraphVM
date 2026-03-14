@@ -4,7 +4,7 @@ export type GenerationFamily =
     | 'circle'
     | 'star'
     | 'wheel'
-    // | 'cayley'
+    | 'hlp'
     | 'bipartite'
     | 'complete-bipartite'
     | 'simple';
@@ -43,11 +43,12 @@ export type WheelGraphParams = {
     applyConcentricLayout?: boolean;
 } & BaseGenerationParams;
 
-// export type CayleyGraphParams = {
-//     family: 'cayley';
-//     group: string; // e.g., "symmetric group S3"
-//     generators: string[]; // e.g., ["(1 2)", "(1 2 3)"]
-// } & BaseGenerationParams;
+export type HlpGraphParams = {
+    family: 'hlp';
+    L: number; // Dimension of the node coordinates
+    P: number; // Modulo for the coordinates
+    applyGridLayout?: boolean;
+} & BaseGenerationParams;
 
 export type BipartiteGraphParams = {
     family: 'bipartite';
@@ -74,7 +75,7 @@ export type GenerationParams =
     | CircleGraphParams
     | StarGraphParams
     | WheelGraphParams
-    // | CayleyGraphParams
+    | HlpGraphParams
     | BipartiteGraphParams
     | CompleteBipartiteGraphParams
     | SimpleGraphParams;

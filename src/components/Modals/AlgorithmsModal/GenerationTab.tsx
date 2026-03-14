@@ -6,6 +6,7 @@ import {
     DefaultCompleteGenerationParams,
     DefaultGenerationParams,
     DefaultGridGenerationParams,
+    DefaultHlpGenerationParams,
     DefaultSimpleGenerationParams,
     DefaultStarGenerationParams,
     DefaultWheelGenerationParams,
@@ -19,10 +20,11 @@ import {
     generateCompleteBipartiteGraph,
     generateCompleteGraph,
     generateGridGraph,
+    generateHlpGraph,
     generateSimpleGraph,
     generateStarGraph,
     generateWheelGraph,
-} from '@/services/algorithms/generationAlgorithmsService';
+} from '@/services/algorithms';
 import {
     isGenerationFamily,
     ValidGenerationFamilies,
@@ -36,6 +38,7 @@ import {
     CircleParamsInput,
     CompleteParamsInput,
     GridParamsInput,
+    HlpParamsInput,
     SimpleParamsInput,
     StarParamsInput,
     WheelParamsInput,
@@ -88,6 +91,18 @@ const FAMILY_MAP: Record<
         },
         description:
             'A cycle graph with an additional central hub connected to all other nodes.',
+    },
+    hlp: {
+        params: {
+            family: 'hlp',
+            L: DefaultHlpGenerationParams.L,
+            P: DefaultHlpGenerationParams.P,
+            applyGridLayout: true,
+        },
+        description:
+            'A special subfamily of Cayley graphs, ' +
+            'where nodes represent vectors of length L, ' +
+            'and edges are defined based on a specific generating set. ',
     },
     bipartite: {
         params: {
@@ -200,9 +215,19 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
                     }
                     generateWheelGraph(activeGraph, params, layout, limits);
                     break;
-                // case 'cayley':
-                //     generateCayleyGraph(graph.current, params, layout);
-                //     break;
+                case 'hlp':
+                    if (params.applyGridLayout) {
+                        layout = {
+                            ...layout,
+                            name: 'grid',
+                        };
+                        setType('grid');
+                        setLayout({ ...layout });
+                        grid.setCols(params.L);
+                    }
+
+                    generateHlpGraph(activeGraph, params, layout);
+                    break;
                 case 'bipartite':
                     generateBipartiteGraph(activeGraph, params, layout, limits);
                     break;
@@ -289,6 +314,8 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
                 return <StarParamsInput params={params} setParams={setParams} />;
             case 'wheel':
                 return <WheelParamsInput params={params} setParams={setParams} />;
+            case 'hlp':
+                return <HlpParamsInput params={params} setParams={setParams} />;
             case 'bipartite':
                 return (
                     <BipartiteParamsInput params={params} setParams={setParams} />

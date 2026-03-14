@@ -3,13 +3,17 @@ import {
     DefaultCircleGenerationParams,
     DefaultCompleteGenerationParams,
     DefaultGridGenerationParams,
+    DefaultHlpGenerationParams,
     DefaultSimpleGenerationParams,
     DefaultStarGenerationParams,
     DefaultWheelGenerationParams,
+    MaximumHlpGenerationParams,
+    MaximumHlpGenerationParamsForL3,
     MinimumBipartiteGenerationParams,
     MinimumCircleGenerationParams,
     MinimumCompleteGenerationParams,
     MinimumGridGenerationParams,
+    MinimumHlpGenerationParams,
     MinimumSimpleGenerationParams,
     MinimumStarGenerationParams,
     MinimumWheelGenerationParams,
@@ -18,10 +22,10 @@ import type { GenerationParams } from '@/types/algorithms';
 import { NumberInput, ToggleInput } from '@Inputs';
 import { type ChangeEvent } from 'react';
 
-type ParamsInputProps = {
+type ParamsInputProps = Readonly<{
     params: GenerationParams;
     setParams: (params: GenerationParams) => void;
-};
+}>;
 
 const applyLayoutStateLabels = { on: 'Apply Layout', off: 'Keep Current' };
 
@@ -97,7 +101,8 @@ export function GridParamsInput({ params, setParams }: ParamsInputProps) {
                 stateLabels={applyLayoutStateLabels}
                 tooltip={{
                     content:
-                        'If enabled, automatically arranges the nodes in a structured grid pattern matching the specified rows and columns.',
+                        'If enabled, automatically arranges the nodes in a structured ' +
+                        'grid pattern matching the specified rows and columns.',
                 }}
                 onChange={(e) => {
                     setParams({ ...params, applyGridLayout: e.target.checked });
@@ -165,7 +170,8 @@ export function StarParamsInput({ params, setParams }: ParamsInputProps) {
                 defaultValue={DefaultStarGenerationParams.nodeCount}
                 tooltip={{
                     content:
-                        'Sets the number of outer nodes surrounding the center. The total node count will be this value plus one (the center node).',
+                        'Sets the number of outer nodes surrounding the center. ' +
+                        'The total node count will be this value plus one (the center node).',
                 }}
                 onChange={(e) => {
                     setParams({ ...params, nodeCount: getInt(e) });
@@ -177,7 +183,8 @@ export function StarParamsInput({ params, setParams }: ParamsInputProps) {
                 stateLabels={applyLayoutStateLabels}
                 tooltip={{
                     content:
-                        'If enabled, places the center node in the middle and arranges all other nodes in a circle around it.',
+                        'If enabled, places the center node in the middle and ' +
+                        'arranges all other nodes in a circle around it.',
                 }}
                 onChange={(e) => {
                     setParams({
@@ -206,7 +213,8 @@ export function WheelParamsInput({ params, setParams }: ParamsInputProps) {
                 defaultValue={DefaultWheelGenerationParams.nodeCount}
                 tooltip={{
                     content:
-                        'Sets the number of outer rim nodes. The total node count will be this value plus one (the hub node).',
+                        'Sets the number of outer rim nodes. ' +
+                        'The total node count will be this value plus one (the hub node).',
                 }}
                 onChange={(e) => {
                     setParams({ ...params, nodeCount: getInt(e) });
@@ -218,7 +226,8 @@ export function WheelParamsInput({ params, setParams }: ParamsInputProps) {
                 stateLabels={applyLayoutStateLabels}
                 tooltip={{
                     content:
-                        'If enabled, places the hub node in the center and arranges the rim nodes in a circle around it.',
+                        'If enabled, places the hub node in the center and ' +
+                        'arranges the rim nodes in a circle around it.',
                 }}
                 onChange={(e) => {
                     setParams({
@@ -226,7 +235,78 @@ export function WheelParamsInput({ params, setParams }: ParamsInputProps) {
                         applyConcentricLayout: e.target.checked,
                     });
                 }}
-                defaultValue={DefaultStarGenerationParams.applyConcentricLayout}
+                defaultValue={DefaultWheelGenerationParams.applyConcentricLayout}
+            />
+        </div>
+    );
+}
+
+export function HlpParamsInput({ params, setParams }: ParamsInputProps) {
+    if (params.family !== 'hlp') {
+        return null;
+    }
+
+    return (
+        <div className="grid grid-cols-3 items-center gap-4">
+            <NumberInput
+                label="L (Coordinate Dimension)"
+                value={params.L}
+                min={MinimumHlpGenerationParams.L}
+                max={MaximumHlpGenerationParams.L}
+                step={1}
+                defaultValue={DefaultHlpGenerationParams.L}
+                tooltip={{
+                    content:
+                        `Sets the number of dimensions in the node coordinates for the HLP graph. ` +
+                        `Must be at least ${MinimumHlpGenerationParams.L.toString()} and ` +
+                        `at most ${MaximumHlpGenerationParams.L.toString()} for valid generation.`,
+                }}
+                onChange={(e) => {
+                    const newP =
+                        getInt(e) === 3
+                            ? Math.min(params.P, MaximumHlpGenerationParamsForL3.P)
+                            : Math.min(params.P, MaximumHlpGenerationParams.P);
+                    setParams({ ...params, L: getInt(e), P: newP });
+                }}
+            />
+            <NumberInput
+                label="P (Coordinate Modulo)"
+                value={params.P}
+                min={MinimumHlpGenerationParams.P}
+                max={
+                    params.L === 3
+                        ? MaximumHlpGenerationParamsForL3.P
+                        : MaximumHlpGenerationParams.P
+                }
+                step={1}
+                defaultValue={DefaultHlpGenerationParams.P}
+                tooltip={{
+                    content:
+                        'Sets the coordinate modulo for the HLP graph generation. ' +
+                        `Must be at least ${MinimumHlpGenerationParams.P.toString()} ` +
+                        `and at most ${MaximumHlpGenerationParamsForL3.P.toString()} (if L=3) ` +
+                        `or ${MaximumHlpGenerationParams.P.toString()} (if L>3) for valid generation.`,
+                }}
+                onChange={(e) => {
+                    setParams({ ...params, P: getInt(e) });
+                }}
+            />
+            <ToggleInput
+                label="Apply Grid Layout"
+                checked={params.applyGridLayout}
+                stateLabels={applyLayoutStateLabels}
+                tooltip={{
+                    content:
+                        'If enabled, automatically arranges the nodes in a grid pattern ' +
+                        'based on their coordinates in the HLP structure.',
+                }}
+                onChange={(e) => {
+                    setParams({
+                        ...params,
+                        applyGridLayout: e.target.checked,
+                    });
+                }}
+                defaultValue={DefaultHlpGenerationParams.applyGridLayout}
             />
         </div>
     );
@@ -248,7 +328,8 @@ export function BipartiteParamsInput({ params, setParams }: ParamsInputProps) {
                 defaultValue={DefaultBipartiteGenerationParams.setASize}
                 tooltip={{
                     content:
-                        'Sets the number of nodes in the first independent set (Set A). Nodes in this set only connect to nodes in Set B.',
+                        'Sets the number of nodes in the first independent set (Set A). ' +
+                        'Nodes in this set only connect to nodes in Set B.',
                 }}
                 onChange={(e) => {
                     setParams({
@@ -266,7 +347,8 @@ export function BipartiteParamsInput({ params, setParams }: ParamsInputProps) {
                 defaultValue={DefaultBipartiteGenerationParams.setBSize}
                 tooltip={{
                     content:
-                        'Sets the number of nodes in the second independent set (Set B). Nodes in this set only connect to nodes in Set A.',
+                        'Sets the number of nodes in the second independent set (Set B). ' +
+                        'Nodes in this set only connect to nodes in Set A.',
                 }}
                 onChange={(e) => {
                     setParams({

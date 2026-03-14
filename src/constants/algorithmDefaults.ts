@@ -5,6 +5,7 @@ import type {
     CompleteGraphParams,
     GenerationParams,
     GridGraphParams,
+    HlpGraphParams,
     SimpleGraphParams,
     StarGraphParams,
     WheelGraphParams,
@@ -73,6 +74,34 @@ export const MinimumWheelGenerationParams: WheelGraphParams = {
     family: 'wheel',
     nodeCount: 3, // Minimum to form a wheel - W3
     applyConcentricLayout: true,
+};
+
+export const DefaultHlpGenerationParams: HlpGraphParams = {
+    family: 'hlp',
+    L: 3,
+    P: 3,
+    applyGridLayout: true,
+};
+
+export const MinimumHlpGenerationParams: HlpGraphParams = {
+    family: 'hlp',
+    L: 3, // Minimum dimension to have a non-trivial HLP graph
+    P: 3, // Minimum prime to have a non-trivial HLP graph
+    applyGridLayout: true,
+};
+
+export const MaximumHlpGenerationParams: HlpGraphParams = {
+    family: 'hlp',
+    L: 5, // Maximum dimension for which we have validation data
+    P: 5, // Maximum prime for which we have validation data
+    applyGridLayout: true,
+};
+
+export const MaximumHlpGenerationParamsForL3: HlpGraphParams = {
+    family: 'hlp',
+    L: 3,
+    P: 20, // We have validation data for up to P=20 when L=3
+    applyGridLayout: true,
 };
 
 export const DefaultBipartiteGenerationParams: BipartiteGraphParams = {

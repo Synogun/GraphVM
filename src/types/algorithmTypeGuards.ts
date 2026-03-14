@@ -17,7 +17,7 @@ export const ValidGenerationFamilies: GenerationFamily[] = [
     'circle',
     'star',
     'wheel',
-    // 'cayley',
+    'hlp',
     'bipartite',
     'complete-bipartite',
     'simple',

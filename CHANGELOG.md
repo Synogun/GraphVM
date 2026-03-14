@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `GenerationAlgorithms` - Added a new graph generation algorithm for HLP graphs and unit tests. (Sorry about the diff pollution on MR 😇)
 - `Tests` - Added structure for unit, integration and end-to-end tests.
-- `Graph` - Implemented a tabbed interface for multiple graph instances, allowing users to create and manage different contexts
-  and easily switch between them.
+- `Graph` - Implemented a tabbed interface for multiple graph instances, allowing users to create and manage different contexts and easily switch between them.
 - `Modals` - Implemented `ConfirmModal` for reusable confirmation dialogs across the app.
 - `Graph` - Added support for multiple graph instances with a workspace system.
 - `Shortcuts` - Added a `GraphShortcutsBinding` component to bind keyboard shortcuts to graph actions using the `useGraphShortcuts` hook.
