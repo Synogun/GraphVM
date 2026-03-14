@@ -22,7 +22,7 @@ export function ExportTab({
     ref,
     onExportSuccess,
     onReadyStateChange,
-}: ExportTabProps) {
+}: Readonly<ExportTabProps>) {
     const graphRef = useGetGraph('main-graph');
     const [exportFormat, setExportFormat] = useState<
         'text' | 'json' | 'png' | 'jpg'
@@ -89,10 +89,10 @@ export function ExportTab({
 
         if (exportFilenameInputRef.current.value) {
             fileName = exportFilenameInputRef.current.value
-                .replace('{TIMESTAMP}', Date.now().toString())
-                .replace('{NODE_COUNT}', nodeCount.toString())
-                .replace('{EDGE_COUNT}', activeGraph.edges().length.toString())
-                .replace(/[^a-zA-Z0-9-_]/g, '-');
+                .replaceAll('{TIMESTAMP}', Date.now().toString())
+                .replaceAll('{NODE_COUNT}', nodeCount.toString())
+                .replaceAll('{EDGE_COUNT}', activeGraph.edges().length.toString())
+                .replaceAll(/[^a-zA-Z0-9-_]/g, '-');
         }
 
         let dataStr = '';
@@ -204,56 +204,58 @@ export function ExportTab({
                     >
                         Export Options
                     </label>
-                    <>
-                        <div
-                            className="grid sm:grid-cols-2 grid-cols-1 gap-4 mt-2"
-                            id="export-options"
+                    <div
+                        className="grid sm:grid-cols-2 grid-cols-1 gap-4 mt-2"
+                        id="export-options"
+                    >
+                        <label
+                            aria-label="Fit graph before exporting"
+                            className="label cursor-pointer justify-start gap-3 rounded-lg border border-base-300 p-3 hover:border-accent"
                         >
-                            <label className="label cursor-pointer justify-start gap-3 rounded-lg border border-base-300 p-3 hover:border-accent">
-                                <input
-                                    className="toggle toggle-accent"
-                                    defaultChecked={!exportOptions.full}
-                                    id="option-fit-graph"
-                                    onChange={(e) => {
-                                        setExportOptions((prev) => ({
-                                            ...prev,
-                                            full: e.target.checked,
-                                        }));
-                                    }}
-                                    type="checkbox"
-                                />
-                                <div className="flex flex-col items-start">
-                                    <span className="label-text">Fit Graph</span>
-                                    <span className="font-thin">
-                                        Center before exporting
-                                    </span>
-                                </div>
-                            </label>
-                            <label className="label cursor-pointer justify-start gap-3 rounded-lg border border-base-300 p-3 hover:border-accent">
-                                <input
-                                    className="p-2 border-0 rounded bg-transparent"
-                                    defaultValue={undefined}
-                                    id="option-bg-color"
-                                    onChange={(e) => {
-                                        console.log(e.target.value);
-                                        setExportOptions((prev) => ({
-                                            ...prev,
-                                            bg: e.target.value,
-                                        }));
-                                    }}
-                                    type="color"
-                                />
-                                <div className="flex flex-col items-start">
-                                    <span className="label-text">
-                                        Background Color
-                                    </span>
-                                    <span className="font-thin">
-                                        Defaults to transparent
-                                    </span>
-                                </div>
-                            </label>
-                        </div>
-                    </>
+                            <input
+                                className="toggle toggle-accent"
+                                defaultChecked={!exportOptions.full}
+                                id="option-fit-graph"
+                                onChange={(e) => {
+                                    setExportOptions((prev) => ({
+                                        ...prev,
+                                        full: e.target.checked,
+                                    }));
+                                }}
+                                type="checkbox"
+                            />
+                            <div className="flex flex-col items-start">
+                                <span className="label-text">Fit Graph</span>
+                                <span className="font-thin">
+                                    Center before exporting
+                                </span>
+                            </div>
+                        </label>
+                        <label
+                            aria-label="Select background color for export"
+                            className="label cursor-pointer justify-start gap-3 rounded-lg border border-base-300 p-3 hover:border-accent"
+                        >
+                            <input
+                                className="p-2 border-0 rounded bg-transparent"
+                                defaultValue={undefined}
+                                id="option-bg-color"
+                                onChange={(e) => {
+                                    console.log(e.target.value);
+                                    setExportOptions((prev) => ({
+                                        ...prev,
+                                        bg: e.target.value,
+                                    }));
+                                }}
+                                type="color"
+                            />
+                            <div className="flex flex-col items-start">
+                                <span className="label-text">Background Color</span>
+                                <span className="font-thin">
+                                    Defaults to transparent
+                                </span>
+                            </div>
+                        </label>
+                    </div>
                 </fieldset>
                 // .421-64
             )}

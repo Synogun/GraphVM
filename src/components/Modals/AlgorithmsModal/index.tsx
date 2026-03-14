@@ -46,7 +46,7 @@ export function AlgorithmsModal() {
             <button className="btn btn-ghost" onClick={handleClose}>
                 Cancel
             </button>
-            <button className="btn btn-primary" onClick={handleRun}>
+            <button className="btn btn-accent" onClick={handleRun}>
                 Run
             </button>
         </>

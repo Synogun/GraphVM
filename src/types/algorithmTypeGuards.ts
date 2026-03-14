@@ -6,6 +6,7 @@ import type {
     GenerationFamily,
     GenerationParams,
     GridGraphParams,
+    HlpGraphParams,
     SimpleGraphParams,
     StarGraphParams,
     WheelGraphParams,
@@ -81,6 +82,18 @@ export function isWheelGraphParams(
     );
 }
 
+export function isHlpGraphParams(
+    params: GenerationParams
+): params is HlpGraphParams {
+    return (
+        params.family === 'hlp' &&
+        typeof params.L === 'number' &&
+        typeof params.P === 'number' &&
+        (params.applyGridLayout === undefined ||
+            typeof params.applyGridLayout === 'boolean')
+    );
+}
+
 export function isBipartiteGraphParams(
     params: GenerationParams
 ): params is BipartiteGraphParams {
@@ -113,17 +126,6 @@ export function isSimpleGraphParams(
     );
 }
 
-// export function isCayleyGraphParams(
-//     params: GenerationParams
-// ): params is CayleyGraphParams {
-//     return (
-//         params.family === 'cayley' &&
-//         typeof params.group === 'string' &&
-//         Array.isArray(params.generators) &&
-//         params.generators.every((gen) => typeof gen === 'string')
-//     );
-// }
-
 export function isValidGenerationParams(params: GenerationParams): boolean {
     switch (params.family) {
         case 'complete':
@@ -136,8 +138,8 @@ export function isValidGenerationParams(params: GenerationParams): boolean {
             return isStarGraphParams(params);
         case 'wheel':
             return isWheelGraphParams(params);
-        // case 'cayley':
-        //     return isCayleyGraphParams(params);
+        case 'hlp':
+            return isHlpGraphParams(params);
         case 'bipartite':
             return isBipartiteGraphParams(params);
         case 'complete-bipartite':

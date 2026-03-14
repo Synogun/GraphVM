@@ -64,7 +64,7 @@ const SHORTCUT_FIELDS: {
 export function SettingsShortcutsTab({
     shortcuts,
     setShortcuts,
-}: SettingsShortcutsTabProps) {
+}: Readonly<SettingsShortcutsTabProps>) {
     const [capturingAction, setCapturingAction] = useState<ShortcutAction | null>(
         null
     );

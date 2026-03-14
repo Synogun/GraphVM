@@ -1,7 +1,7 @@
 import { ModalsContext } from '@Contexts';
 import { useMemo, useState, type ReactNode } from 'react';
 
-export function ModalsProvider({ children }: ModalsProviderProps) {
+export function ModalsProvider({ children }: Readonly<ModalsProviderProps>) {
     const [isAlgorithmsModalOpen, setIsAlgorithmsModalOpen] = useState(false);
     const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
     const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);

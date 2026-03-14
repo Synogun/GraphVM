@@ -1,7 +1,9 @@
 import { GraphSelectionContext } from '@Contexts';
 import { useMemo, useState, type ReactNode } from 'react';
 
-export function GraphSelectionProvider({ children }: GraphSelectionProviderProps) {
+export function GraphSelectionProvider({
+    children,
+}: Readonly<GraphSelectionProviderProps>) {
     const [selectedNodes, setSelectedNodes] = useState<string[]>([]);
     const [selectedEdges, setSelectedEdges] = useState<string[]>([]);
 

@@ -18,7 +18,7 @@ const TOAST_POSITION_OPTIONS: { label: string; value: ToastPosition }[] = [
 export function SettingsInterfaceTab({
     toast,
     setToast,
-}: SettingsInterfaceTabProps) {
+}: Readonly<SettingsInterfaceTabProps>) {
     const handleToastDurationChange = (event: ChangeEvent<HTMLInputElement>) => {
         const parsed = Number.parseInt(event.target.value, 10);
         const duration = Number.isFinite(parsed)

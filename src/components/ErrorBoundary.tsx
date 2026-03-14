@@ -19,7 +19,7 @@ type ErrorBoundaryFallbackProps = {
     onReset: () => void;
 };
 
-function DefaultFallback({ onReset }: ErrorBoundaryFallbackProps) {
+function DefaultFallback({ onReset }: Readonly<ErrorBoundaryFallbackProps>) {
     return (
         <div className="flex min-h-screen items-center justify-center bg-base-100 p-4 text-base-content">
             <div className="card w-full max-w-2xl bg-base-200 shadow-xl">
@@ -68,7 +68,7 @@ class ErrorBoundaryImpl extends Component<ErrorBoundaryProps, ErrorBoundaryState
         logger.error('Unhandled error in component tree', error, info);
     }
 
-    private handleReset = () => {
+    private readonly handleReset = () => {
         this.setState({ hasError: false });
         if (this.props.onReset) {
             this.props.onReset();
@@ -91,6 +91,6 @@ class ErrorBoundaryImpl extends Component<ErrorBoundaryProps, ErrorBoundaryState
     }
 }
 
-export function ErrorBoundary(props: ErrorBoundaryProps) {
+export function ErrorBoundary(props: Readonly<ErrorBoundaryProps>) {
     return <ErrorBoundaryImpl {...props} />;
 }

@@ -9,7 +9,7 @@ import { useGraphSelection, useNodeProperties } from '@Contexts';
 import { ColorInput, SelectInput } from '@Inputs';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
-export function NodesSection({ visible = true }: NodeSectionProps) {
+export function NodesSection({ visible = true }: Readonly<NodeSectionProps>) {
     const graphRef = useGetGraph('main-graph');
     const { color, setColor, shape, setShape } = useNodeProperties();
 

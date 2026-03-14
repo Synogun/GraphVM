@@ -14,7 +14,7 @@ export function RangeInput({
     tooltip,
     defaultValue,
     allowClear = true,
-}: RangeInputProps) {
+}: Readonly<RangeInputProps>) {
     const isModified =
         allowClear &&
         defaultValue !== undefined &&

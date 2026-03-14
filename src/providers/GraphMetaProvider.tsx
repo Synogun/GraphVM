@@ -1,7 +1,7 @@
 import { GraphMetaContext } from '@Contexts';
 import { useMemo, useState, type ReactNode } from 'react';
 
-export function GraphMetaProvider({ children }: GraphMetaProviderProps) {
+export function GraphMetaProvider({ children }: Readonly<GraphMetaProviderProps>) {
     const [directed, setDirected] = useState(false);
     const [nodeCount, setNodeCount] = useState(0);
     const [edgeMode, setEdgeMode] = useState<'path' | 'complete'>('path');

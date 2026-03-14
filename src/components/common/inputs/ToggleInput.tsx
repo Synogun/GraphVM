@@ -17,7 +17,7 @@ export function ToggleInput({
     stateLabels,
     allowClear = true,
     defaultValue,
-}: ToggleInputProps) {
+}: Readonly<ToggleInputProps>) {
     const isModified =
         allowClear &&
         defaultValue !== undefined &&

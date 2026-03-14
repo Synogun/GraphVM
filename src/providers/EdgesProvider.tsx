@@ -1,9 +1,9 @@
 import { DefaultEdgesData } from '@/constants/graphDefaults';
 import type { EdgeCurveStyle, EdgeLabelStyle } from '@/types/edges';
 import { EdgesContext } from '@Contexts';
-import { useState, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 
-export function EdgesProvider({ children }: EdgesProviderProps) {
+export function EdgesProvider({ children }: Readonly<EdgesProviderProps>) {
     const {
         label: defaultLabelStyle,
         weight: defaultWeight,
@@ -22,20 +22,23 @@ export function EdgesProvider({ children }: EdgesProviderProps) {
     const [arrowShape, setArrowShape] =
         useState<cytoscape.Css.ArrowShape>(defaultArrowShape);
 
-    const value = {
-        labelStyle,
-        setLabelStyle,
-        weight,
-        setWeight,
-        color,
-        setColor,
-        lineStyle,
-        setLineStyle,
-        curveStyle,
-        setCurveStyle,
-        arrowShape,
-        setArrowShape,
-    };
+    const value = useMemo(
+        () => ({
+            labelStyle,
+            setLabelStyle,
+            weight,
+            setWeight,
+            color,
+            setColor,
+            lineStyle,
+            setLineStyle,
+            curveStyle,
+            setCurveStyle,
+            arrowShape,
+            setArrowShape,
+        }),
+        [labelStyle, weight, color, lineStyle, curveStyle, arrowShape]
+    );
 
     return <EdgesContext.Provider value={value}>{children}</EdgesContext.Provider>;
 }

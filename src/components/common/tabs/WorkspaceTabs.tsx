@@ -8,7 +8,7 @@ export function WorkspaceTabs<T extends string>({
     onTabClose,
     onTabRename,
     className,
-}: WorkspaceTabsProps<T>) {
+}: Readonly<WorkspaceTabsProps<T>>) {
     const [editingTabId, setEditingTabId] = useState<T | null>(null);
     const [draftLabel, setDraftLabel] = useState('');
     const inputRef = useRef<HTMLInputElement>(null);
@@ -134,7 +134,7 @@ export function WorkspaceTabs<T extends string>({
                                 />
                             ) : (
                                 <>
-                                    <span
+                                    <button
                                         title={
                                             `${tab.label}${tab.pendingSave ? ' (Unsaved changes)' : ''}\n` +
                                             '(Double-click to rename)'
@@ -156,7 +156,7 @@ export function WorkspaceTabs<T extends string>({
                                         }
                                     >
                                         {tab.label}
-                                    </span>
+                                    </button>
 
                                     <button
                                         type="button"

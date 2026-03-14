@@ -10,7 +10,7 @@ export function ConfirmModal({
     onConfirm,
     onCancel,
     confirmButtonClassName = 'btn-primary',
-}: ConfirmModalProps) {
+}: Readonly<ConfirmModalProps>) {
     return (
         <Modal
             id={id}
@@ -18,11 +18,6 @@ export function ConfirmModal({
             show={show}
             onClose={onCancel}
             boxClassName="w-[min(92vw,24rem)] max-w-[24rem]"
-            children={
-                <p className="text-sm text-center text-base-content/70 whitespace-pre-line">
-                    {message}
-                </p>
-            }
             actions={
                 <>
                     <button
@@ -41,7 +36,11 @@ export function ConfirmModal({
                     </button>
                 </>
             }
-        />
+        >
+            <p className="text-sm text-center text-base-content/70 whitespace-pre-line">
+                {message}
+            </p>
+        </Modal>
     );
 }
 

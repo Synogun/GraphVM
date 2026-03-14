@@ -38,24 +38,22 @@ export function App() {
     }
 
     return (
-        <>
-            <PropertiesProvider>
-                <GraphShortcutsBinding />
+        <PropertiesProvider>
+            <GraphShortcutsBinding />
 
-                <PropertiesBar>
-                    <ActionBar>
-                        <GraphWorkspace />
-                    </ActionBar>
-                </PropertiesBar>
+            <PropertiesBar>
+                <ActionBar>
+                    <GraphWorkspace />
+                </ActionBar>
+            </PropertiesBar>
 
-                <AlgorithmsModal />
-                <ImportExportModal />
-                <SettingsModal />
-                <HelpModal />
+            <AlgorithmsModal />
+            <ImportExportModal />
+            <SettingsModal />
+            <HelpModal />
 
-                <ToastArea />
-            </PropertiesProvider>
-        </>
+            <ToastArea />
+        </PropertiesProvider>
     );
 }
 

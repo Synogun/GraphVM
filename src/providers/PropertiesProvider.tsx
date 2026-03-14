@@ -7,7 +7,7 @@ import { GraphWorkspaceProvider } from './GraphWorkspaceProvider';
 import { LayoutProvider } from './LayoutProvider';
 import { NodesProvider } from './NodesProvider';
 
-export function PropertiesProvider({ children }: PropertiesProviderProps) {
+export function PropertiesProvider({ children }: Readonly<PropertiesProviderProps>) {
     return (
         <GraphWorkspaceProvider>
             <GraphRegistryProvider>

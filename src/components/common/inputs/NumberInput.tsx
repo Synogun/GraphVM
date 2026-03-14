@@ -12,7 +12,7 @@ export function NumberInput({
     tooltip,
     defaultValue,
     allowClear = true,
-}: NumberInputProps) {
+}: Readonly<NumberInputProps>) {
     const isModified =
         allowClear &&
         defaultValue !== undefined &&

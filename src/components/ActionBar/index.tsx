@@ -10,7 +10,7 @@ import { ActionBarEdgeModeButton } from './ActionBarEdgeModeButton';
 
 const ICON_SIZE = '1.5em';
 
-export function ActionBar({ children }: ActionBarProps) {
+export function ActionBar({ children }: Readonly<ActionBarProps>) {
     const {
         handleNewGraph,
         handleSaveWorkspace,
@@ -52,17 +52,17 @@ export function ActionBar({ children }: ActionBarProps) {
             />
 
             <ActionBarButton
+                icon={AppIcons.Import({ size: ICON_SIZE })}
+                label="Import / Export"
+                margin="my-1"
+                onClick={handleImportExport}
+            />
+
+            <ActionBarButton
                 icon={AppIcons.Algorithms({ size: ICON_SIZE })}
                 label="Algorithms"
                 margin="my-1"
                 onClick={handleAlgorithms}
-            />
-
-            <ActionBarButton
-                icon={AppIcons.ImportExport({ size: ICON_SIZE })}
-                label="Import / Export"
-                margin="my-1"
-                onClick={handleImportExport}
             />
 
             <div className="divider my-3">

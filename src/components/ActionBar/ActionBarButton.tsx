@@ -11,7 +11,7 @@ export function ActionBarButton({
     disabled = false,
     isDelete = false,
     className = '',
-}: ActionBarButtonProps) {
+}: Readonly<ActionBarButtonProps>) {
     const classStyle = isDelete ? 'btn-error' : ActionBarButtonStyle;
 
     return (
@@ -21,7 +21,7 @@ export function ActionBarButton({
             onClick={onClick}
         >
             {icon ? <span>{icon}</span> : null}
-            {!condensed ? label : null}
+            {condensed ? null : <span>{label}</span>}
         </button>
     );
 }

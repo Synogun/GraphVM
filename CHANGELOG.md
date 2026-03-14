@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `Project` - Adopted SonarQube for code quality analysis.
 - `GenerationAlgorithms` - Added a new graph generation algorithm for HLP graphs and unit tests. (Sorry about the diff pollution on MR 😇)
 - `Tests` - Added structure for unit, integration and end-to-end tests.
 - `Graph` - Implemented a tabbed interface for multiple graph instances, allowing users to create and manage different contexts and easily switch between them.
@@ -35,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `SonarQube` - Fixed SonarQube issues reported after adoption.
 - `Toasts` - Fixed an issue where toast were always rendered beneath modals.
 
 ## [v2.5.0](https://github.com/Synogun/GraphVM/compare/v2.4.0...v2.5.0)

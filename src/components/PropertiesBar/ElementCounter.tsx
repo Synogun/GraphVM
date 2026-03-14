@@ -1,6 +1,6 @@
 import { type CSSProperties } from 'react';
 
-export function ElementCounter({ label, value }: ElementCounterProps) {
+export function ElementCounter({ label, value }: Readonly<ElementCounterProps>) {
     return (
         <div className="flex flex-col px-4 py-2 border-2 rounded-box text-base-content">
             <span className="font-bold">{label}</span>

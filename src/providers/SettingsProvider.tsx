@@ -2,7 +2,7 @@ import { DefaultSettingsData } from '@/constants/settingsDefaults';
 import { loadPersistedState, savePersistedState } from '@/services/persistence';
 import { isSettingsData } from '@/types/settingsTypeGuards';
 import { SettingsContext } from '@Contexts';
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 
 const SETTINGS_STORAGE_KEY = 'graphvm.settings.v1';
 
@@ -14,7 +14,7 @@ function loadInitialSettings() {
     });
 }
 
-export function SettingsProvider({ children }: SettingsProviderProps) {
+export function SettingsProvider({ children }: Readonly<SettingsProviderProps>) {
     const initialSettings = loadInitialSettings();
 
     const [uiToast, setUiToast] = useState(initialSettings.ui.toast);
@@ -38,20 +38,23 @@ export function SettingsProvider({ children }: SettingsProviderProps) {
         });
     }, [uiToast, graphArrangeOn, graphLimits, shortcuts]);
 
-    const value = {
-        ui: {
-            toast: uiToast,
-            setToast: setUiToast,
-        },
-        graph: {
-            arrangeOn: graphArrangeOn,
-            setArrangeOn: setGraphArrangeOn,
-            limits: graphLimits,
-            setLimits: setGraphLimits,
-        },
-        shortcuts,
-        setShortcuts,
-    };
+    const value = useMemo(
+        () => ({
+            ui: {
+                toast: uiToast,
+                setToast: setUiToast,
+            },
+            graph: {
+                arrangeOn: graphArrangeOn,
+                setArrangeOn: setGraphArrangeOn,
+                limits: graphLimits,
+                setLimits: setGraphLimits,
+            },
+            shortcuts,
+            setShortcuts,
+        }),
+        [uiToast, graphArrangeOn, graphLimits, shortcuts]
+    );
 
     return (
         <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>

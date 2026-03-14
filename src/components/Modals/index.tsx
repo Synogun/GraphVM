@@ -1,15 +1,6 @@
-import { AlgorithmsModal } from './AlgorithmsModal';
-import { ConfirmModal } from './ConfirmModal';
-import { HelpModal } from './HelpModal';
-import { ImportExportModal } from './ImportExportModal';
-import { Modal } from './Modal';
-import { SettingsModal } from './SettingsModal';
-
-export {
-    AlgorithmsModal,
-    ConfirmModal,
-    HelpModal,
-    ImportExportModal,
-    Modal,
-    SettingsModal,
-};
+export { AlgorithmsModal } from './AlgorithmsModal';
+export { ConfirmModal } from './ConfirmModal';
+export { HelpModal } from './HelpModal';
+export { ImportExportModal } from './ImportExportModal';
+export { Modal } from './Modal';
+export { SettingsModal } from './SettingsModal';

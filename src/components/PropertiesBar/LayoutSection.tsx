@@ -11,7 +11,7 @@ import { useLayoutProperties, useToasts } from '@Contexts';
 import { RangeInput, SelectInput } from '@Inputs';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
-export function LayoutSection({ visible = true }: LayoutSectionProps) {
+export function LayoutSection({ visible = true }: Readonly<LayoutSectionProps>) {
     const graphRef = useGetGraph('main-graph');
     const {
         type: layoutType,
@@ -108,24 +108,23 @@ export function LayoutSection({ visible = true }: LayoutSectionProps) {
     }, []);
 
     return (
-        <>
-            <div className={visible ? '' : 'hidden'}>
-                <div className="divider mb-1">
-                    <h1 className="text-lg font-bold text-center">Layout</h1>
-                </div>
+        <div className={visible ? '' : 'hidden'}>
+            <div className="divider mb-1">
+                <h1 className="text-lg font-bold text-center">Layout</h1>
+            </div>
 
-                <SelectInput
-                    label="Layout Type"
-                    onChange={handleChangeLayoutType}
-                    options={selectTypeOptions}
-                    value={layoutType}
-                    defaultValue={DefaultLayoutOptions.name}
-                    tooltip={{
-                        content: 'Select the layout algorithm for arranging nodes.',
-                    }}
-                />
+            <SelectInput
+                label="Layout Type"
+                onChange={handleChangeLayoutType}
+                options={selectTypeOptions}
+                value={layoutType}
+                defaultValue={DefaultLayoutOptions.name}
+                tooltip={{
+                    content: 'Select the layout algorithm for arranging nodes.',
+                }}
+            />
 
-                {/* {layoutType === 'circle' && (
+            {/* {layoutType === 'circle' && (
                     // Better visualized when multi-layout is implemented
                     // TODO: implement multi-layout
                     <>
@@ -141,11 +140,11 @@ export function LayoutSection({ visible = true }: LayoutSectionProps) {
                     </>
                 )} */}
 
-                {layoutType === 'grid' && (
-                    <>
-                        {/* In analysis for better use cases 
+            {layoutType === 'grid' && (
+                <>
+                    {/* In analysis for better use cases 
                             TODO: Find use cases for grid rows adjustment or deprecation */}
-                        {/* <RangeInput
+                    {/* <RangeInput
                             label="Rows"
                             max={10}
                             min={1}
@@ -155,34 +154,31 @@ export function LayoutSection({ visible = true }: LayoutSectionProps) {
                             defaultValue={DefaultGridLayoutOptions.rows}
                         /> */}
 
-                        <RangeInput
-                            label="Columns"
-                            max={10}
-                            min={1}
-                            onChange={handleChangeGridCols}
-                            step={1}
-                            value={gridLayout.cols}
-                            defaultValue={DefaultGridLayoutOptions.cols}
-                            tooltip={{
-                                content:
-                                    'Determine the number of columns in the grid layout.',
-                            }}
-                        />
-                    </>
-                )}
+                    <RangeInput
+                        label="Columns"
+                        max={10}
+                        min={1}
+                        onChange={handleChangeGridCols}
+                        step={1}
+                        value={gridLayout.cols}
+                        defaultValue={DefaultGridLayoutOptions.cols}
+                        tooltip={{
+                            content:
+                                'Determine the number of columns in the grid layout.',
+                        }}
+                    />
+                </>
+            )}
 
-                {layoutType === 'random' && (
-                    <>
-                        <button
-                            className="btn btn-outline hover:btn-accent focus:btn-accent w-full mt-2 mb-1"
-                            onClick={handleRandomLayout}
-                        >
-                            Randomize node positions
-                        </button>
-                    </>
-                )}
-            </div>
-        </>
+            {layoutType === 'random' && (
+                <button
+                    className="btn btn-outline hover:btn-accent focus:btn-accent w-full mt-2 mb-1"
+                    onClick={handleRandomLayout}
+                >
+                    Randomize node positions
+                </button>
+            )}
+        </div>
     );
 }
 
@@ -195,7 +191,7 @@ const setNumberProperty = (
 ) => {
     let value = Number(e.target.value);
 
-    if (isNaN(value)) {
+    if (Number.isNaN(value)) {
         return;
     }
 

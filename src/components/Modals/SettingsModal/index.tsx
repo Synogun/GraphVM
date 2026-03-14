@@ -59,7 +59,7 @@ export function SettingsModal() {
             <button className="btn btn-ghost" type="button" onClick={handleResetAll}>
                 Reset all
             </button>
-            <button className="btn btn-primary" type="button" onClick={handleClose}>
+            <button className="btn btn-accent" type="button" onClick={handleClose}>
                 Close
             </button>
         </>

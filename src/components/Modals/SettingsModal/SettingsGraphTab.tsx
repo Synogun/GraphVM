@@ -8,7 +8,7 @@ export function SettingsGraphTab({
     setArrangeOn,
     limits,
     setLimits,
-}: SettingsGraphTabProps) {
+}: Readonly<SettingsGraphTabProps>) {
     const handleArrangeOnChange =
         (key: keyof SettingsData['graph']['arrangeOn']) =>
         (event: ChangeEvent<HTMLInputElement>) => {

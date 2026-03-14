@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { AppIcons } from '../AppIcons';
 
-export function HelpTooltip({ icon, content }: HelpTooltipProps) {
+export function HelpTooltip({ icon, content }: Readonly<HelpTooltipProps>) {
     if (!content) {
         return null;
     }

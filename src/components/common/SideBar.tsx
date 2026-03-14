@@ -12,7 +12,7 @@ export function SideBar({
     width = 'w-60',
     className,
     sideClassName,
-}: SideBarProps) {
+}: Readonly<SideBarProps>) {
     const sidebarWidth = width;
 
     const openButton = {
@@ -78,38 +78,30 @@ export function SideBar({
 const iconHandlers = {
     left: {
         open: (
-            <>
-                <AppIcons.SidebarLeftExpand
-                    className="swap-off h-10 w-10"
-                    size={ICON_SIZE}
-                />
-            </>
+            <AppIcons.SidebarLeftExpand
+                className="swap-off h-10 w-10"
+                size={ICON_SIZE}
+            />
         ),
         close: (
-            <>
-                <AppIcons.SidebarLeftCollapse
-                    className="swap-on h-10 w-10"
-                    size={ICON_SIZE}
-                />
-            </>
+            <AppIcons.SidebarLeftCollapse
+                className="swap-on h-10 w-10"
+                size={ICON_SIZE}
+            />
         ),
     },
     right: {
         open: (
-            <>
-                <AppIcons.SidebarRightExpand
-                    className="swap-off h-10 w-10 fill-current"
-                    size={ICON_SIZE}
-                />
-            </>
+            <AppIcons.SidebarRightExpand
+                className="swap-off h-10 w-10 fill-current"
+                size={ICON_SIZE}
+            />
         ),
         close: (
-            <>
-                <AppIcons.SidebarRightCollapse
-                    className="swap-on h-10 w-10 fill-current"
-                    size={ICON_SIZE}
-                />
-            </>
+            <AppIcons.SidebarRightCollapse
+                className="swap-on h-10 w-10 fill-current"
+                size={ICON_SIZE}
+            />
         ),
     },
 };

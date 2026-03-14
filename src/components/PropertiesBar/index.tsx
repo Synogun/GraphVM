@@ -5,13 +5,7 @@ import { GraphSection } from './GraphSection';
 import { LayoutSection } from './LayoutSection';
 import { NodesSection } from './NodesSection';
 
-export function PropertiesBar({ children }: PropertiesBarProps) {
-    // const [panelsDisplay, setPanelsDisplay] = useState({
-    //     layout: true,
-    //     nodes: false,
-    //     edges: false,
-    // });
-
+export function PropertiesBar({ children }: Readonly<PropertiesBarProps>) {
     return (
         <SideBar
             id="properties-bar"
@@ -22,18 +16,9 @@ export function PropertiesBar({ children }: PropertiesBarProps) {
             sidebarChildren={
                 <>
                     <GraphSection />
-
-                    <LayoutSection
-                    // visible={ panelsDisplay.layout }
-                    />
-
-                    <NodesSection
-                    // visible={ panelsDisplay.nodes }
-                    />
-
-                    <EdgesSection
-                    // visible={ panelsDisplay.edges }
-                    />
+                    <LayoutSection />
+                    <NodesSection />
+                    <EdgesSection />
                 </>
             }
         >

@@ -5,7 +5,7 @@ export function Tabs<T extends string>({
     activeTab,
     onTabChange,
     className,
-}: TabsProps<T>) {
+}: Readonly<TabsProps<T>>) {
     return (
         <div
             role="tablist"

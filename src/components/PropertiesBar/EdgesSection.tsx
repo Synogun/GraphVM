@@ -18,7 +18,7 @@ import { useEdgesProperties, useGraphMeta, useGraphSelection } from '@Contexts';
 import { ColorInput, NumberInput, SelectInput } from '@Inputs';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
-export function EdgesSection({ visible = true }: EdgesSectionProps) {
+export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
     const graphRef = useGetGraph('main-graph');
     const {
         labelStyle,
@@ -136,7 +136,9 @@ export function EdgesSection({ visible = true }: EdgesSectionProps) {
         const { value } = e.target;
 
         const parsedValue =
-            value && !isNaN(Number(value)) ? Number(value) : currentDefaults.weight;
+            value && !Number.isNaN(Number(value))
+                ? Number(value)
+                : currentDefaults.weight;
 
         const didApply = propertyEditor.applyValue('weight', parsedValue);
         if (!didApply) {

@@ -401,7 +401,7 @@ export function generateSimpleGraph(
         const targetIndex = Math.floor(Math.random() * nodeCount);
         if (sourceIndex === targetIndex) continue; // No self-loops
 
-        const edgeKey = [sourceIndex, targetIndex].sort().join('-');
+        const edgeKey = [sourceIndex, targetIndex].sort((a, b) => a - b).join('-');
         if (existingEdges.has(edgeKey)) continue; // No duplicate edges
         existingEdges.add(edgeKey);
 

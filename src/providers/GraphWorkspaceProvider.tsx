@@ -288,7 +288,9 @@ function workspaceReducer(
     }
 }
 
-export function GraphWorkspaceProvider({ children }: GraphWorkspaceProviderProps) {
+export function GraphWorkspaceProvider({
+    children,
+}: Readonly<GraphWorkspaceProviderProps>) {
     const [workspace, dispatch] = useReducer(workspaceReducer, undefined, () =>
         makeInitialWorkspaceState()
     );

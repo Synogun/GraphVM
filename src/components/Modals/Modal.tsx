@@ -10,7 +10,7 @@ export function Modal({
     actions,
     className,
     boxClassName,
-}: ModalProps) {
+}: Readonly<ModalProps>) {
     const modalRef = useRef<HTMLDialogElement>(null);
 
     useEffect(() => {
@@ -59,7 +59,7 @@ export function Modal({
                 <div className="modal-action mt-2">
                     {actions ?? (
                         <form method="dialog">
-                            <button className="btn" onClick={onClose}>
+                            <button className="btn btn-accent" onClick={onClose}>
                                 Close
                             </button>
                         </form>

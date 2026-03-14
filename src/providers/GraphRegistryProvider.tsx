@@ -3,7 +3,9 @@ import type { GraphInstance } from '@/types/graph';
 import { GraphRegistryContext } from '@Contexts';
 import { useMemo, type ReactNode } from 'react';
 
-export function GraphRegistryProvider({ children }: GraphRegistryProviderProps) {
+export function GraphRegistryProvider({
+    children,
+}: Readonly<GraphRegistryProviderProps>) {
     const registry = useMemo(() => {
         const instances = new Map<string, GraphInstance>();
         const listeners = new Map<string, Set<(instance: GraphInstance) => void>>();

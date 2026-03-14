@@ -2,9 +2,9 @@ import { DefaultLayoutOptions } from '@/constants/layoutDefaults';
 import type { LayoutType } from '@/types/layout';
 import { isLayoutType } from '@/types/layoutTypeGuards';
 import { LayoutContext } from '@Contexts';
-import { useState, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 
-export function LayoutProvider({ children }: LayoutProviderProps) {
+export function LayoutProvider({ children }: Readonly<LayoutProviderProps>) {
     const {
         name: defaultLayoutType,
         radius: defaultRadius,
@@ -25,12 +25,15 @@ export function LayoutProvider({ children }: LayoutProviderProps) {
     const [rows, setRows] = useState(defaultRows);
     const [cols, setCols] = useState(defaultCols);
 
-    const circleLayout = { radius, setRadius };
-    const gridLayout = { rows, setRows, cols, setCols };
+    const value = useMemo(() => {
+        const generalLayout = { current, setCurrent, type, setType };
 
-    const generalLayout = { current, setCurrent, type, setType };
-
-    const value = { ...generalLayout, circle: circleLayout, grid: gridLayout };
+        return {
+            ...generalLayout,
+            circle: { radius, setRadius },
+            grid: { rows, setRows, cols, setCols },
+        };
+    }, [current, type, radius, rows, cols]);
 
     return <LayoutContext.Provider value={value}>{children}</LayoutContext.Provider>;
 }

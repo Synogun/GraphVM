@@ -53,9 +53,8 @@ export function ToastArea() {
                     toastType.charAt(0).toUpperCase() + toastType.slice(1);
 
                 return (
-                    <div
+                    <button
                         key={toast.id}
-                        role="alert"
                         className={`alert ${StyleMap[toastType]} alert-vertical sm:alert-horizontal`}
                         onClick={() => {
                             removeToast(toast.id);
@@ -70,7 +69,7 @@ export function ToastArea() {
                         </div>
                         {/* TODO: Possible actions prop support later on  */}
                         {/* <button className="btn btn-sm">See</button> */}
-                    </div>
+                    </button>
                 );
             })}
         </div>

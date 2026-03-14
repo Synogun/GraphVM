@@ -159,6 +159,11 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
 
     const { addToast } = useToasts();
 
+    const maxSimpleEdges =
+        params.family === 'simple'
+            ? calcMaxEdgesForSimpleGraph(params.nodeCount)
+            : 0;
+
     const handleRun = () => {
         const activeGraph = graph.current;
 
@@ -240,10 +245,6 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
                     );
                     break;
                 case 'simple':
-                    const maxSimpleEdges = calcMaxEdgesForSimpleGraph(
-                        params.nodeCount
-                    );
-
                     if (params.edgeCount > maxSimpleEdges) {
                         addToast({
                             type: 'warning',
@@ -317,9 +318,6 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
             case 'hlp':
                 return <HlpParamsInput params={params} setParams={setParams} />;
             case 'bipartite':
-                return (
-                    <BipartiteParamsInput params={params} setParams={setParams} />
-                );
             case 'complete-bipartite':
                 return (
                     <BipartiteParamsInput params={params} setParams={setParams} />

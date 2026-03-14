@@ -10,7 +10,7 @@ export function ColorInput({
     tooltip,
     defaultValue,
     allowClear = true,
-}: ColorInputProps) {
+}: Readonly<ColorInputProps>) {
     const isModified =
         allowClear &&
         defaultValue !== undefined &&

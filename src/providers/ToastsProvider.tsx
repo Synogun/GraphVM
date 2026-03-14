@@ -5,7 +5,7 @@ import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
 
 const logger = Logger.createContextLogger('ToastsProvider');
 
-export function ToastsProvider({ children }: ToastsProviderProps) {
+export function ToastsProvider({ children }: Readonly<ToastsProviderProps>) {
     const {
         ui: {
             toast: { duration: defaultToastDuration },
@@ -20,10 +20,17 @@ export function ToastsProvider({ children }: ToastsProviderProps) {
             const id = (Date.now() * Math.random()).toString();
             setToastsPool((prev) => [...prev, { id, ...toast }]);
 
-            const timeout = setTimeout(() => {
-                setToastsPool((prev) => prev.filter((t) => t.id !== id));
+            const timeoutCallback = () => {
+                const check = (t: ToastData) => t.id === id;
+
+                setToastsPool((prev) => prev.filter(check));
                 toastsTimeouts.current.delete(id);
-            }, toast.duration ?? defaultToastDuration);
+            };
+
+            const timeout = setTimeout(
+                timeoutCallback,
+                toast.duration ?? defaultToastDuration
+            );
 
             switch (toast.type) {
                 case 'error':

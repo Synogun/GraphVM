@@ -1,6 +1,6 @@
 import { AppIcons } from '../AppIcons';
 
-export function ResetHandle({ onClick }: ResetHandleProps) {
+export function ResetHandle({ onClick }: Readonly<ResetHandleProps>) {
     return (
         <button
             className={`text-normal ${highlightStyle} opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer flex items-center gap-1`}

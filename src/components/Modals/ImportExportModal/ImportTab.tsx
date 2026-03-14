@@ -25,7 +25,7 @@ export function ImportTab({
     ref,
     onImportSuccess,
     onReadyStateChange,
-}: ImportTabProps) {
+}: Readonly<ImportTabProps>) {
     const graphRef = useGetGraph('main-graph');
     const { syncAll } = useGraphMutation('main-graph');
 
@@ -209,14 +209,16 @@ export function ImportTab({
                     ref={fileInputRef}
                     className={
                         'file-input w-full' +
-                        (!importData ? '' : ' file-input-accent')
+                        (importData ? ' file-input-accent' : '')
                     }
                     onChange={(e) => {
                         void handleFileSelect(e);
                     }}
                     type="file"
                 />
-                <label className="label">Max size 2MB</label>
+                <span aria-label="Maximum file size" className="label">
+                    Max size 2MB
+                </span>
             </fieldset>
             <h3 className="text-sm font-medium text-base-content">Data Preview</h3>
             <div className="relative p-2 text-center">

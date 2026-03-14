@@ -6,7 +6,11 @@ import { useEffect, useRef } from 'react';
 import { useRegisterGraphByTab } from '../hooks/useGraphRegistry';
 import { isArrayOfStrings } from '../types/typeGuards';
 
-export function GraphCanvas({ graphId, containerId, tabId }: GraphCanvasProps) {
+export function GraphCanvas({
+    graphId,
+    containerId,
+    tabId,
+}: Readonly<GraphCanvasProps>) {
     const containerRef = useRef<HTMLDivElement>(null);
     const graphRef = useRef<GraphInstance>(null);
 

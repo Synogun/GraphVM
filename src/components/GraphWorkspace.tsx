@@ -80,7 +80,7 @@ export function GraphWorkspace() {
                 id="confirm-close-tab-modal"
                 title="Close tab"
                 message={
-                    `\"${pendingCloseTabName}\" contains graph data.\n\n` +
+                    `"${pendingCloseTabName}" contains graph data.\n\n` +
                     'Are you sure you want to close it?\n' +
                     'This action cannot be undone.'
                 }

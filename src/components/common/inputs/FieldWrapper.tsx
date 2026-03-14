@@ -21,7 +21,7 @@ export function FieldWrapper({
     onReset,
     showReset,
     className = '',
-}: FieldWrapperProps) {
+}: Readonly<FieldWrapperProps>) {
     return (
         <fieldset className={`fieldset group ${className}`}>
             <legend className="fieldset-legend w-full flex items-center justify-between">

@@ -104,7 +104,7 @@ export function addEdges(
                 core,
                 {
                     data: {
-                        ...(data ?? {}),
+                        ...data,
                         source: edges[i],
                         target: edges[i + 1],
                     },
@@ -122,7 +122,7 @@ export function addEdges(
                     core,
                     {
                         data: {
-                            ...(data ?? {}),
+                            ...data,
                             source: edges[i],
                             target: edges[j],
                         },
@@ -145,7 +145,6 @@ export function removeEdges(core: cytoscape.Core, edges: cytoscape.EdgeCollectio
             throw new ParsedError(`Edge with id ${edge.id()} not found in graph`);
         }
 
-        // this.removedEdges.push(edge);
         core.remove(edge);
     });
 }
@@ -166,7 +165,7 @@ export function updateEdges(
     const customValidation = [
         {
             property: 'weight',
-            validate: (val: string | number) => !isNaN(Number(val)),
+            validate: (val: string | number) => !Number.isNaN(Number(val)),
             default: defaultEdgesData.weight,
         },
         {

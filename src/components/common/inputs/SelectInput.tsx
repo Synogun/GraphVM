@@ -10,7 +10,7 @@ export function SelectInput({
     tooltip,
     defaultValue,
     allowClear = true,
-}: SelectInputProps) {
+}: Readonly<SelectInputProps>) {
     const isModified =
         allowClear &&
         defaultValue !== undefined &&

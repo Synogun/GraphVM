@@ -30,7 +30,8 @@ type ParamsInputProps = Readonly<{
 const applyLayoutStateLabels = { on: 'Apply Layout', off: 'Keep Current' };
 
 // Helper: Extract integer from input event
-const getInt = (e: ChangeEvent<HTMLInputElement>) => parseInt(e.target.value) || 1;
+const getInt = (e: ChangeEvent<HTMLInputElement>) =>
+    Number.parseInt(e.target.value) || 1;
 
 export function CompleteParamsInput({ params, setParams }: ParamsInputProps) {
     if (params.family !== 'complete') {

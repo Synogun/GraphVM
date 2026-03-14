@@ -9,12 +9,10 @@ export function ActionBarEdgeModeButton({
     iconSize = '1.5em',
     className = '',
     disabled = false,
-}: ActionBarEdgeModeButtonProps) {
-    const activeColor = disabled
-        ? 'btn-disabled'
-        : isCompleteEdgeMode
-          ? 'btn-accent'
-          : 'btn-outline';
+}: Readonly<ActionBarEdgeModeButtonProps>) {
+    const colorIfComplete = isCompleteEdgeMode ? 'btn-accent' : 'btn-outline';
+    const activeColor = disabled ? 'btn-disabled' : colorIfComplete;
+
     const swapStyle = 'flex mx-auto text-center gap-2';
 
     return (

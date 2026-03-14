@@ -26,7 +26,6 @@ import {
 export const AppIcons = {
     NewGraph: (props: IconBaseProps) => <PiGraph {...props} />,
     Algorithms: (props: IconBaseProps) => <FaCode {...props} />,
-    ImportExport: (props: IconBaseProps) => <RiSave3Fill {...props} />,
     Save: (props: IconBaseProps) => <RiSave3Fill {...props} />,
     Arrange: (props: IconBaseProps) => <PiShuffle {...props} />,
     Center: (props: IconBaseProps) => <MdFilterCenterFocus {...props} />,
