@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `Project` - Adjustes ts.config files to share common properties and extend when needed;
 - `Project` - Adjusted files into subfolders for better organization;
 - `Inputs` - Adjusted `ToggleInput` to accept custom labels for on/off states.
 

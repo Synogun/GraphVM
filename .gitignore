@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 
 notes.md
+
+# Papers and other non-public validation files 
+# # Was allowed to use but can't confirm if i can publish it
+python/*
