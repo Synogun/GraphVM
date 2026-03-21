@@ -44,7 +44,7 @@ export function SideBar({
             <div className="drawer-content flex flex-col h-screen">
                 {children}
 
-                <div className={`fixed top-4 ${openButton.side}`}>
+                <div className={`fixed top-16 ${openButton.side}`}>
                     <label
                         aria-label="toggle sidebar"
                         className="swap swap-rotate"
