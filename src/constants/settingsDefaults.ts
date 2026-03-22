@@ -24,7 +24,6 @@ export const DefaultSettingsData: SettingsData = {
         deleteSelected: 'Delete',
         deselectAll: 'Escape',
         selectAll: 'Ctrl+A',
-        saveWorkspace: 'Ctrl+S',
         newGraph: 'Ctrl+Shift+N',
         addNode: 'N',
         addEdges: 'E',

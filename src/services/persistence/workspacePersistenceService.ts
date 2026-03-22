@@ -6,59 +6,19 @@ import {
     savePersistedState,
 } from '@/services/persistence';
 import { isCytoscapeOptions } from '@/types/graphTypeGuards';
-import { isPositiveInteger, isRecord, isString } from '@/types/typeGuards';
-import type {
-    PersistedWorkspaceSchemaVersion,
-    PersistedWorkspaceState,
-    PersistedWorkspaceTab,
-} from '@/types/workspace';
+import type { PersistedWorkspaceState } from '@/types/workspace';
+import {
+    isPersistedWorkspaceState,
+    WORKSPACE_SCHEMA_VERSION,
+} from '@/types/workspaceTypeGuard';
 import type cytoscape from 'cytoscape';
 
 export const WORKSPACE_STORAGE_KEY = 'graphvm.workspace.v1';
-const WORKSPACE_SCHEMA_VERSION: PersistedWorkspaceSchemaVersion = 1;
 
 const EMPTY_WORKSPACE_STATE: PersistedWorkspaceState = {
     version: WORKSPACE_SCHEMA_VERSION,
-    activeTabId: '',
     tabs: [],
 };
-
-function isPersistedWorkspaceTab(value: unknown): value is PersistedWorkspaceTab {
-    if (!isRecord(value)) {
-        return false;
-    }
-
-    return (
-        isString(value.id) &&
-        isString(value.name) &&
-        (isPositiveInteger(value.order) || value.order === 0) &&
-        (value.graph === null || isCytoscapeOptions(value.graph))
-    );
-}
-
-function isPersistedWorkspaceState(
-    value: unknown
-): value is PersistedWorkspaceState {
-    if (!isRecord(value) || value.version !== WORKSPACE_SCHEMA_VERSION) {
-        return false;
-    }
-
-    if (!isString(value.activeTabId) || !Array.isArray(value.tabs)) {
-        return false;
-    }
-
-    if (value.tabs.length === 0 || !value.tabs.every(isPersistedWorkspaceTab)) {
-        return false;
-    }
-
-    const tabIds = value.tabs.map((tab) => tab.id);
-    const uniqueTabIds = new Set(tabIds);
-
-    return (
-        uniqueTabIds.size === tabIds.length &&
-        value.tabs.some((tab) => tab.id === value.activeTabId)
-    );
-}
 
 function normalizeWorkspaceState(
     state: PersistedWorkspaceState
@@ -70,13 +30,8 @@ function normalizeWorkspaceState(
             order: index,
         }));
 
-    const activeTabId = tabs.some((tab) => tab.id === state.activeTabId)
-        ? state.activeTabId
-        : (tabs[0]?.id ?? '');
-
     return {
         version: WORKSPACE_SCHEMA_VERSION,
-        activeTabId,
         tabs,
     };
 }
@@ -92,7 +47,7 @@ export function loadWorkspaceState(): PersistedWorkspaceState | null {
         },
     });
 
-    if (state.tabs.length === 0 || !state.activeTabId) {
+    if (state.tabs.length === 0) {
         return null;
     }
 
@@ -124,7 +79,7 @@ export function restoreGraph(
 ): boolean {
     if (snapshot === null) {
         resetGraph(core);
-        return true;
+        return false;
     }
 
     if (!isCytoscapeOptions(snapshot)) {
@@ -139,9 +94,13 @@ export function restoreGraph(
 
     resetGraph(core);
 
+    console.log('Restoring graph with snapshot:', normalizedSnapshot);
     // @ts-expect-error - CytoscapeOptions is not fully compatible with the expected type for json(), but it contains the required graph snapshot data.
     core.json(normalizedSnapshot);
+    core.resize();
+    core.fit();
     setGraphDirected(core, Boolean(normalizedSnapshot.data?.directed));
+    console.log('Graph restoration complete. Current graph state:', core.json());
 
     return true;
 }

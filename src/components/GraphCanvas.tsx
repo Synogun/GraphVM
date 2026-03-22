@@ -18,7 +18,7 @@ export function GraphCanvas({
         nodes: { setSelected: setSelectedNodes },
         edges: { setSelected: setSelectedEdges },
     } = useGraphSelection();
-    const { markTabPendingSave } = useGraphWorkspace();
+    const { activeTabId, markTabPendingSave } = useGraphWorkspace();
 
     const { addToast } = useToasts();
     const addToastRef = useRef(addToast);
@@ -91,7 +91,7 @@ export function GraphCanvas({
         newCore.on('select', 'node, edge', handleElementSelection);
         newCore.on('unselect', 'node, edge', handleElementSelection);
         newCore.on('add remove', 'node, edge', handleGraphMutation);
-        newCore.on('data position', 'node, edge', handleGraphMutation);
+        newCore.on('data', 'node, edge', handleGraphMutation);
 
         const cleanupAutopan = bindAutopan(newCore);
 
@@ -105,6 +105,27 @@ export function GraphCanvas({
             graphRef.current = null;
         };
     }, [containerId, tabId, markTabPendingSave, setSelectedNodes, setSelectedEdges]);
+
+    useEffect(() => {
+        if (!tabId || activeTabId !== tabId) {
+            return;
+        }
+
+        const frameId = requestAnimationFrame(() => {
+            const core = graphRef.current;
+
+            if (!core) {
+                return;
+            }
+
+            core.resize();
+            core.fit(core.elements(), 30);
+        });
+
+        return () => {
+            cancelAnimationFrame(frameId);
+        };
+    }, [activeTabId, tabId]);
 
     useRegisterGraphByTab(graphId, graphRef, tabId);
 

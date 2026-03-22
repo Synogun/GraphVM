@@ -17,7 +17,6 @@ const ValidShortcutActions: ShortcutAction[] = [
     'deleteSelected',
     'deselectAll',
     'selectAll',
-    'saveWorkspace',
     'newGraph',
     'addNode',
     'addEdges',

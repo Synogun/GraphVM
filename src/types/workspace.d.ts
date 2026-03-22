@@ -15,7 +15,6 @@ export type PersistedWorkspaceTab = {
 
 export type PersistedWorkspaceState = {
     version: PersistedWorkspaceSchemaVersion;
-    activeTabId: string;
     tabs: PersistedWorkspaceTab[];
 };
 
@@ -23,7 +22,6 @@ export type GraphWorkspaceContextProperties = {
     tabs: GraphWorkspaceTab[];
     activeTabId: string;
     activeTab: GraphWorkspaceTab | null;
-    hasPendingSave: boolean;
     isInitialized: boolean;
     saveRequestVersion: number;
     initializeWorkspace: (state: PersistedWorkspaceState | null) => boolean;

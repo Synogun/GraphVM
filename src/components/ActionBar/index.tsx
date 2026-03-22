@@ -13,7 +13,6 @@ const ICON_SIZE = '1.5em';
 export function ActionBar({ children }: Readonly<ActionBarProps>) {
     const {
         handleNewGraph,
-        handleSaveWorkspace,
         handleAlgorithms,
         handleImportExport,
         handleArrangeGraph,
@@ -25,7 +24,6 @@ export function ActionBar({ children }: Readonly<ActionBarProps>) {
         handleSettings,
         handleHelp,
         isDeleteBtnDisabled,
-        isSaveWorkspaceDisabled,
         isCompleteEdgeMode,
         isEdgeModeLocked,
     } = useActionBarLogic();
@@ -41,14 +39,6 @@ export function ActionBar({ children }: Readonly<ActionBarProps>) {
                 label="New Graph"
                 margin="my-1"
                 onClick={handleNewGraph}
-            />
-
-            <ActionBarButton
-                disabled={isSaveWorkspaceDisabled}
-                icon={AppIcons.Save({ size: ICON_SIZE })}
-                label="Save Workspace"
-                margin="my-1"
-                onClick={handleSaveWorkspace}
             />
 
             <ActionBarButton
@@ -136,14 +126,14 @@ export function ActionBar({ children }: Readonly<ActionBarProps>) {
             />
 
             {/* <a
-                        className='btn btn-outline hover:btn-accent'
-                        href='https://github.com/Synogun/GraphVM'
-                        rel='noopener noreferrer'
-                        role='button'
-                        target='_blank'
-                    >
-                        <span>{actionIcons.github}</span> GH Repository
-                    </a> */}
+                className='btn btn-outline hover:btn-accent'
+                href='https://github.com/Synogun/GraphVM'
+                rel='noopener noreferrer'
+                role='button'
+                target='_blank'
+            >
+                <span>{actionIcons.github}</span> GH Repository
+            </a> */}
 
             {isDev() && (
                 <ActionBarButton

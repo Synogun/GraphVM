@@ -79,9 +79,7 @@ function hydrateWorkspaceState(
         .sort((left, right) => left.order - right.order)
         .map((tab) => makeTab(tab.id, tab.name));
 
-    const activeTabId = tabs.some((tab) => tab.id === persistedState.activeTabId)
-        ? persistedState.activeTabId
-        : (tabs[0]?.id ?? DEFAULT_TAB_ID);
+    const activeTabId = tabs[0]?.id ?? DEFAULT_TAB_ID;
 
     return {
         tabs,
@@ -137,11 +135,11 @@ function workspaceReducer(
                 return state;
             }
 
-            const nextTabs = state.tabs.map((tab) =>
-                tab.id === action.tabId ? { ...tab, pendingSave: true } : tab
-            );
-
-            return { ...state, tabs: nextTabs };
+            return {
+                ...state,
+                tabs: state.tabs.map((tab) => ({ ...tab })),
+                saveRequestVersion: state.saveRequestVersion + 1,
+            };
         }
 
         case 'clear-tab-pending-save': {
@@ -353,14 +351,11 @@ export function GraphWorkspaceProvider({
         [workspace.activeTabId, workspace.tabs]
     );
 
-    const hasPendingSave = workspace.tabs.some((tab) => tab.pendingSave);
-
     const value = useMemo<GraphWorkspaceContextProperties>(
         () => ({
             tabs: workspace.tabs,
             activeTabId: workspace.activeTabId,
             activeTab,
-            hasPendingSave,
             isInitialized: workspace.isInitialized,
             saveRequestVersion: workspace.saveRequestVersion,
             initializeWorkspace,
@@ -378,7 +373,6 @@ export function GraphWorkspaceProvider({
             workspace.tabs,
             workspace.activeTabId,
             activeTab,
-            hasPendingSave,
             workspace.isInitialized,
             workspace.saveRequestVersion,
             initializeWorkspace,

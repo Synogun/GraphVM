@@ -25,11 +25,6 @@ const SHORTCUT_FIELDS: {
         hint: 'Select all nodes and edges in the current graph.',
     },
     {
-        action: 'saveWorkspace',
-        label: 'Save workspace',
-        hint: 'Persist all tab graphs and workspace metadata to local storage.',
-    },
-    {
         action: 'newGraph',
         label: 'New graph',
         hint: 'Reset and start with an empty graph.',
