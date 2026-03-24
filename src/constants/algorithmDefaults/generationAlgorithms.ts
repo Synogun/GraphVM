@@ -9,7 +9,7 @@ import type {
     SimpleGraphParams,
     StarGraphParams,
     WheelGraphParams,
-} from '@/types/algorithms';
+} from '@/types/algorithms/generationAlgorithms';
 
 export const DefaultGenerationParams: GenerationParams = {
     family: 'complete',

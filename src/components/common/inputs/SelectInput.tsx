@@ -10,6 +10,7 @@ export function SelectInput({
     tooltip,
     defaultValue,
     allowClear = true,
+    disabled = false,
 }: Readonly<SelectInputProps>) {
     const isModified =
         allowClear &&
@@ -30,9 +31,9 @@ export function SelectInput({
         } as ChangeEvent<HTMLSelectElement>);
     };
 
-    const makeOptionValue = ({ value, label, title }: SelectOptionType) => {
+    const makeOptionValue = ({ value, label, title: isTitle }: SelectOptionType) => {
         return (
-            <option key={`${value}-option`} value={value} disabled={title}>
+            <option key={`${value}-option`} value={value} disabled={isTitle}>
                 {label}
             </option>
         );
@@ -49,6 +50,7 @@ export function SelectInput({
                 className={`select hover:select-accent focus:select-accent cursor-pointer w-full ${className}`}
                 onChange={onChange}
                 value={value}
+                disabled={disabled}
             >
                 {options.map(makeOptionValue)}
             </select>
@@ -74,4 +76,5 @@ type SelectInputProps = {
     };
     defaultValue?: string;
     allowClear?: boolean;
+    disabled?: boolean;
 };

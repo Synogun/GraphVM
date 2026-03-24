@@ -10,7 +10,7 @@ import type { PersistedWorkspaceState } from '@/types/workspace';
 import {
     isPersistedWorkspaceState,
     WORKSPACE_SCHEMA_VERSION,
-} from '@/types/workspaceTypeGuard';
+} from '@/types/workspaceTypeGuards';
 import type cytoscape from 'cytoscape';
 
 export const WORKSPACE_STORAGE_KEY = 'graphvm.workspace.v1';

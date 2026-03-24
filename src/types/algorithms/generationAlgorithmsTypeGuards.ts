@@ -10,7 +10,7 @@ import type {
     SimpleGraphParams,
     StarGraphParams,
     WheelGraphParams,
-} from './algorithms';
+} from './generationAlgorithms';
 
 export const ValidGenerationFamilies: GenerationFamily[] = [
     'complete',

@@ -26,10 +26,12 @@ import {
     generateWheelGraph,
 } from '@/services/algorithms';
 import {
+    type GenerationFamily,
+    type GenerationParams,
     isGenerationFamily,
     ValidGenerationFamilies,
-} from '@/types/algorithmTypeGuards';
-import type { GenerationFamily, GenerationParams } from '@/types/algorithms';
+} from '@/types/algorithms';
+import { parseKebabCase } from '@/utils/elements';
 import { useLayoutProperties, useSettings, useToasts } from '@Contexts';
 import { SelectInput } from '@Inputs';
 import { forwardRef, useImperativeHandle, useMemo, useState } from 'react';
@@ -42,7 +44,7 @@ import {
     SimpleParamsInput,
     StarParamsInput,
     WheelParamsInput,
-} from './AlgorithmsParamsSection';
+} from './GenerationAlgorithmsParams';
 
 const FAMILY_MAP: Record<
     GenerationFamily,
@@ -335,7 +337,7 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
 
     const graphFamilySelectOptions = useMemo(() => {
         return ValidGenerationFamilies.map((family) => ({
-            label: family.charAt(0).toUpperCase() + family.slice(1),
+            label: parseKebabCase(family),
             value: family,
         }));
     }, []);

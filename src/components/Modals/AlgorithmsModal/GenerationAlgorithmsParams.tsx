@@ -18,7 +18,7 @@ import {
     MinimumStarGenerationParams,
     MinimumWheelGenerationParams,
 } from '@/constants/algorithmDefaults';
-import type { GenerationParams } from '@/types/algorithms';
+import { type GenerationParams } from '@/types/algorithms';
 import { NumberInput, ToggleInput } from '@Inputs';
 import { type ChangeEvent } from 'react';
 

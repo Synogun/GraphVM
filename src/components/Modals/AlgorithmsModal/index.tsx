@@ -4,13 +4,16 @@ import { useModals } from '@Contexts';
 import { Modal } from '@Modals';
 import { useMemo, useRef, useState } from 'react';
 import { GenerationTab, type GenerationTabRef } from './GenerationTab';
+import { TraversalTab, type TraversalTabRef } from './TraversalTab';
 
-type AlgorithmTabId = 'generative' | 'traversal'; // TODO: Add more tabs like pathfinding, optimization, etc. in the future
+type AlgorithmTabId = 'generative' | 'traversal';
+// TODO: Add more tabs like pathfinding, optimization, etc. in the future
 
 export function AlgorithmsModal() {
     const { isAlgorithmsModalOpen, setIsAlgorithmsModalOpen } = useModals();
     const [activeTab, setActiveTab] = useState<AlgorithmTabId>('generative');
     const generationTabRef = useRef<GenerationTabRef>(null);
+    const traversalTabRef = useRef<TraversalTabRef>(null);
 
     const tabConfig = useMemo<TabItem<AlgorithmTabId>[]>(
         () => [
@@ -21,9 +24,8 @@ export function AlgorithmsModal() {
             },
             {
                 id: 'traversal',
-                label: 'Traversal (Soon)',
+                label: 'Traversal',
                 icon: <AppIcons.PathEdgeMode size={16} />,
-                disabled: true,
             },
         ],
         []
@@ -34,8 +36,15 @@ export function AlgorithmsModal() {
     };
 
     const handleRun = () => {
-        if (activeTab === 'generative') {
-            generationTabRef.current?.handleRun();
+        switch (activeTab) {
+            case 'generative':
+                generationTabRef.current?.handleRun();
+                break;
+            case 'traversal':
+                traversalTabRef.current?.handleRun();
+                break;
+            default:
+                console.warn('Unknown active tab:', activeTab);
         }
 
         handleClose();
@@ -72,9 +81,9 @@ export function AlgorithmsModal() {
                     {activeTab === 'generative' && (
                         <GenerationTab ref={generationTabRef} />
                     )}
-                    {/* {activeTab === 'traversal' && ( 
+                    {activeTab === 'traversal' && (
                         <TraversalTab ref={traversalTabRef} />
-                    )} */}
+                    )}
                 </div>
             </main>
         </Modal>

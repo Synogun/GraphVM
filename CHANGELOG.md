@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `Algorithms` - Added traversal algorithms tab in the Algorithms modal.
 - `Project` - Adopted SonarQube for code quality analysis.
 - `GenerationAlgorithms` - Added a new graph generation algorithm for HLP graphs and unit tests. (Sorry about the diff pollution on MR 😇)
 - `Tests` - Added structure for unit, integration and end-to-end tests.
