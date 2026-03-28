@@ -1,5 +1,4 @@
-import { useSettings } from '@/contexts/SettingsContext';
-import { useModals, useToasts } from '@Contexts';
+import { useModals, useSettings, useToasts } from '@Contexts';
 import { createPortal } from 'react-dom';
 import { AppIcons } from './common/AppIcons';
 

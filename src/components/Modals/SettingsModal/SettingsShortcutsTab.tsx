@@ -1,7 +1,7 @@
 import { DefaultSettingsData } from '@/constants/settingsDefaults';
-import { useToasts } from '@/contexts';
 import type { SettingsData, ShortcutAction } from '@/types/settings';
 import { formatShortcutInput, normalizeShortcut } from '@/utils/shortcuts';
+import { useToasts } from '@Contexts';
 import { useState, type KeyboardEvent } from 'react';
 
 const SHORTCUT_FIELDS: {
