@@ -18,6 +18,9 @@ export function SettingsProvider({ children }: Readonly<SettingsProviderProps>) 
     const initialSettings = loadInitialSettings();
 
     const [uiToast, setUiToast] = useState(initialSettings.ui.toast);
+    const [disableElementsInfoPanel, setDisableElementsInfoPanel] = useState(
+        initialSettings.ui.disableElementsInfoPanel
+    );
 
     const [graphArrangeOn, setGraphArrangeOn] = useState(
         initialSettings.graph.arrangeOn
@@ -27,7 +30,7 @@ export function SettingsProvider({ children }: Readonly<SettingsProviderProps>) 
 
     useEffect(() => {
         const payload = {
-            ui: { toast: uiToast },
+            ui: { toast: uiToast, disableElementsInfoPanel },
             graph: { arrangeOn: graphArrangeOn, limits: graphLimits },
             shortcuts,
         };
@@ -36,13 +39,15 @@ export function SettingsProvider({ children }: Readonly<SettingsProviderProps>) 
             storageKey: SETTINGS_STORAGE_KEY,
             state: payload,
         });
-    }, [uiToast, graphArrangeOn, graphLimits, shortcuts]);
+    }, [uiToast, disableElementsInfoPanel, graphArrangeOn, graphLimits, shortcuts]);
 
     const value = useMemo(
         () => ({
             ui: {
                 toast: uiToast,
                 setToast: setUiToast,
+                disableElementsInfoPanel,
+                setDisableElementsInfoPanel,
             },
             graph: {
                 arrangeOn: graphArrangeOn,
@@ -53,7 +58,7 @@ export function SettingsProvider({ children }: Readonly<SettingsProviderProps>) 
             shortcuts,
             setShortcuts,
         }),
-        [uiToast, graphArrangeOn, graphLimits, shortcuts]
+        [uiToast, disableElementsInfoPanel, graphArrangeOn, graphLimits, shortcuts]
     );
 
     return (

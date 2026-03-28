@@ -28,6 +28,7 @@ export type SettingsData = {
             duration: number;
             position: ToastPosition;
         };
+        disableElementsInfoPanel: boolean;
     };
     graph: {
         arrangeOn: {
@@ -51,6 +52,8 @@ export type SettingsContextProperties = {
     ui: {
         toast: SettingsData['ui']['toast'];
         setToast: (toast: SettingsData['ui']['toast']) => void;
+        disableElementsInfoPanel: SettingsData['ui']['disableElementsInfoPanel'];
+        setDisableElementsInfoPanel: (value: boolean) => void;
     };
     graph: {
         arrangeOn: SettingsData['graph']['arrangeOn'];

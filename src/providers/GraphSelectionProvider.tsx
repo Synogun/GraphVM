@@ -1,3 +1,4 @@
+import { type ElementsInfo } from '@/types';
 import { GraphSelectionContext } from '@Contexts';
 import { useMemo, useState, type ReactNode } from 'react';
 
@@ -6,6 +7,10 @@ export function GraphSelectionProvider({
 }: Readonly<GraphSelectionProviderProps>) {
     const [selectedNodes, setSelectedNodes] = useState<string[]>([]);
     const [selectedEdges, setSelectedEdges] = useState<string[]>([]);
+
+    const [selectionInfo, setSelectionInfo] = useState<ElementsInfo>({
+        group: 'none',
+    });
 
     const value = useMemo(
         () => ({
@@ -17,8 +22,12 @@ export function GraphSelectionProvider({
                 selected: selectedEdges,
                 setSelected: setSelectedEdges,
             },
+            selectionInfo: {
+                info: selectionInfo,
+                setInfo: setSelectionInfo,
+            },
         }),
-        [selectedNodes, selectedEdges]
+        [selectedNodes, selectedEdges, selectionInfo]
     );
 
     return (

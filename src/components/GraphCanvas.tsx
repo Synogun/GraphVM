@@ -1,4 +1,9 @@
-import { bindAutopan, destroyGraph, newGraph } from '@/services/graph';
+import {
+    bindAutopan,
+    destroyGraph,
+    extractElementsInfo,
+    newGraph,
+} from '@/services/graph';
 import type { GraphInstance } from '@/types/graph';
 import { useGraphSelection, useGraphWorkspace, useToasts } from '@Contexts';
 import type cytoscape from 'cytoscape';
@@ -17,6 +22,7 @@ export function GraphCanvas({
     const {
         nodes: { setSelected: setSelectedNodes },
         edges: { setSelected: setSelectedEdges },
+        selectionInfo: { setInfo: setSelectionInfo },
     } = useGraphSelection();
     const { activeTabId, markTabPendingSave } = useGraphWorkspace();
 
@@ -84,8 +90,11 @@ export function GraphCanvas({
             core.data('nodeSelectionOrder', nodeSelectionOrder);
             core.data('edgeSelectionOrder', edgeSelectionOrder);
 
+            const selectedElementsInfo = extractElementsInfo(core.$(':selected'));
+
             setSelectedNodes(core.nodes(':selected').map((n) => n.id()));
             setSelectedEdges(core.edges(':selected').map((e) => e.id()));
+            setSelectionInfo(selectedElementsInfo);
         };
 
         newCore.on('select', 'node, edge', handleElementSelection);
@@ -99,12 +108,21 @@ export function GraphCanvas({
 
         return () => {
             cleanupAutopan();
+            newCore.off('select', 'node, edge', handleElementSelection);
+            newCore.off('unselect', 'node, edge', handleElementSelection);
             newCore.off('add remove', 'node, edge', handleGraphMutation);
-            newCore.off('data position', 'node, edge', handleGraphMutation);
+            newCore.off('data', 'node, edge', handleGraphMutation);
             destroyGraph(newCore);
             graphRef.current = null;
         };
-    }, [containerId, tabId, markTabPendingSave, setSelectedNodes, setSelectedEdges]);
+    }, [
+        containerId,
+        tabId,
+        markTabPendingSave,
+        setSelectedNodes,
+        setSelectedEdges,
+        setSelectionInfo,
+    ]);
 
     useEffect(() => {
         if (!tabId || activeTabId !== tabId) {

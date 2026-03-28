@@ -1,5 +1,6 @@
 export * from './ActionBar';
 export * from './common';
+export * from './ElementInfoPanel';
 export * from './ErrorBoundary';
 export * from './GraphCanvas';
 export * from './GraphWorkspace';

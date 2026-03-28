@@ -13,9 +13,15 @@ import {
     SettingsModal,
 } from '@Modals';
 import { useEffect, useState } from 'react';
+import { ElementInfoPanel } from './components';
+import { useSettings } from './contexts';
 
 export function App() {
     const [loadingApp, setLoadingApp] = useState(true);
+
+    const {
+        ui: { disableElementsInfoPanel },
+    } = useSettings();
 
     useEffect(() => {
         // Simulated loading time - Users thinks its more natural
@@ -44,6 +50,7 @@ export function App() {
             <PropertiesBar>
                 <ActionBar>
                     <GraphWorkspace />
+                    {!disableElementsInfoPanel && <ElementInfoPanel />}
                 </ActionBar>
             </PropertiesBar>
 

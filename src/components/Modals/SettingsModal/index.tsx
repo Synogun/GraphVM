@@ -15,7 +15,12 @@ export function SettingsModal() {
     const [activeTab, setActiveTab] = useState<SettingsTabId>('interface');
 
     const {
-        ui: { toast, setToast },
+        ui: {
+            toast,
+            setToast,
+            disableElementsInfoPanel,
+            setDisableElementsInfoPanel,
+        },
         graph: { arrangeOn, setArrangeOn, limits, setLimits },
         shortcuts,
         setShortcuts,
@@ -84,7 +89,12 @@ export function SettingsModal() {
                 />
 
                 {activeTab === 'interface' && (
-                    <SettingsInterfaceTab toast={toast} setToast={setToast} />
+                    <SettingsInterfaceTab
+                        toast={toast}
+                        setToast={setToast}
+                        disableElementsInfoPanel={disableElementsInfoPanel}
+                        setDisableElementsInfoPanel={setDisableElementsInfoPanel}
+                    />
                 )}
 
                 {activeTab === 'graph' && (

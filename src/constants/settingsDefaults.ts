@@ -6,6 +6,7 @@ export const DefaultSettingsData: SettingsData = {
             duration: 3000,
             position: 'bottom-center',
         },
+        disableElementsInfoPanel: false,
     },
     graph: {
         arrangeOn: {

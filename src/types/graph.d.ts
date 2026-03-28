@@ -28,7 +28,62 @@ export type GraphSelectionContextProperties = {
         selected: string[];
         setSelected: (edges: string[]) => void;
     };
+    selectionInfo: {
+        info: ElementsInfo;
+        setInfo: (info: ElementsInfo) => void;
+    };
 };
+
+export type ElementsInfo =
+    | NodeSelectionInfo
+    | EdgeSelectionInfo
+    | NodesSelectionInfo
+    | EdgesSelectionInfo
+    | MixedSelectionInfo
+    | { group: 'none' };
+
+export type BaseSelectionInfo = {
+    group: 'node' | 'nodes' | 'edge' | 'edges' | 'mixed' | 'none';
+};
+
+export type NodeSelectionInfo = {
+    group: 'node';
+    label: string;
+    degree: number;
+    [key: string]: string | number | boolean | undefined;
+} & BaseSelectionInfo;
+
+export type NodesSelectionInfo = {
+    group: 'nodes';
+    count: number;
+    areNeighbors: boolean;
+    [key: string]: string | number | boolean | undefined;
+} & BaseSelectionInfo;
+
+export type EdgeSelectionInfo = {
+    group: 'edge';
+    label?: string;
+    source: string;
+    target: string;
+    sourceDegree: number;
+    targetDegree: number;
+    isSimple: boolean;
+    [key: string]: string | number | boolean | undefined;
+} & BaseSelectionInfo;
+
+export type EdgesSelectionInfo = {
+    group: 'edges';
+    count: number;
+    [key: string]: string | number | boolean | undefined;
+} & BaseSelectionInfo;
+
+export type MixedSelectionInfo = {
+    group: 'mixed';
+    nodeCount: number;
+    edgeCount: number;
+    components: number;
+    [key: string]: string | number | boolean | undefined;
+} & BaseSelectionInfo;
 
 export type GraphMetaContextProperties = {
     directed: boolean;

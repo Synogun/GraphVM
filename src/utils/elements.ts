@@ -4,12 +4,29 @@
  * This function splits the input string by hyphens, capitalizes the first letter
  * of each segment, and joins them back together with spaces.
  *
- * @param property - The property name string to parse (e.g., "my-property-name").
+ * @param str - The property name string to parse (e.g., "my-property-name").
  * @returns A formatted string where each word is capitalized and separated by spaces (e.g., "My Property Name").
  */
-export function parseKebabCase(property: string): string {
-    return property
+export function parseKebabCase(str: string): string {
+    return str
         .split('-')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+}
+
+/**
+ * Transforms a camelCase string into a human-readable title-cased string.
+ *
+ * This function uses a regular expression to insert spaces before uppercase letters,
+ * then capitalizes the first letter of each resulting word.
+ *
+ * @param str - The camelCase string to parse (e.g., "myPropertyName").
+ * @returns A formatted string where each word is capitalized and separated by spaces (e.g., "My Property Name").
+ */
+export function parseCamelCase(str: string): string {
+    return str
+        .replaceAll(/([A-Z])/g, ' $1')
+        .split(' ')
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
 }
