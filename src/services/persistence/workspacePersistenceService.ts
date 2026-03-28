@@ -94,7 +94,6 @@ export function restoreGraph(
 
     resetGraph(core);
 
-    console.log('Restoring graph with snapshot:', normalizedSnapshot);
     // @ts-expect-error - CytoscapeOptions is not fully compatible with the expected type for json(), but it contains the required graph snapshot data.
     core.json(normalizedSnapshot);
     core.resize();

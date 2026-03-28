@@ -72,17 +72,9 @@ export function useWorkspacePersistence(graphId = 'main-graph') {
     });
 
     useEffect(() => {
-        logger.debug('Initializing workspace persistence...');
-
         const runtime = runtimeStateRef.current;
 
         if (runtime.didLoad) {
-            logger.debug(
-                'Workspace persistence already initialized, skipping load.',
-                {
-                    didLoad: runtime.didLoad,
-                }
-            );
             return;
         }
 
@@ -106,9 +98,6 @@ export function useWorkspacePersistence(graphId = 'main-graph') {
                 );
             }
 
-            logger.debug(
-                'No persisted workspace state found, starting new workspace.'
-            );
             initializeWorkspace(null);
             return;
         }
@@ -125,32 +114,13 @@ export function useWorkspacePersistence(graphId = 'main-graph') {
         runtime.persistence.lastAutosavedSignature = makeWorkspaceSignature(
             persistedState.tabs
         );
-
-        logger.debug('Loaded persisted workspace state', {
-            tabCount: persistedState.tabs.length,
-            persistedSnapshots: Array.from(
-                runtime.persistence.persistedSnapshots.entries()
-            ),
-        });
         initializeWorkspace(persistedState);
     }, [initializeWorkspace, addToast]);
 
     useEffect(() => {
-        logger.debug(
-            'Workspace tabs or activeTabId changed, checking for pending hydrations...',
-            {
-                tabs,
-                activeTabId,
-                pendingHydrationTabIds: Array.from(
-                    runtimeStateRef.current.persistence.pendingHydrationTabIds
-                ),
-            }
-        );
-
         const runtime = runtimeStateRef.current;
 
         if (!isInitialized) {
-            logger.debug('Workspace not initialized, skipping pending hydrations.');
             return;
         }
 
@@ -158,9 +128,6 @@ export function useWorkspacePersistence(graphId = 'main-graph') {
 
         for (const pendingTabId of runtime.persistence.pendingHydrationTabIds) {
             if (!currentTabIds.has(pendingTabId)) {
-                logger.debug(
-                    `Pending hydration tab "${pendingTabId}" no longer exists, skipping hydration and cleaning up persisted data.`
-                );
                 runtime.persistence.pendingHydrationTabIds.delete(pendingTabId);
                 runtime.persistence.persistedSnapshots.delete(pendingTabId);
                 runtime.persistence.restoredTabIds.delete(pendingTabId);
@@ -168,21 +135,13 @@ export function useWorkspacePersistence(graphId = 'main-graph') {
         }
 
         tabs.forEach((tab) => {
-            logger.debug('Checking pending hydration for tab:', tab.id);
             const tabId = tab.id;
 
             if (runtime.persistence.restoredTabIds.has(tabId)) {
-                logger.debug(
-                    `Tab "${tab.name}" already restored, skipping hydration.`
-                );
                 return;
             }
 
             if (tabId !== activeTabId) {
-                logger.debug(
-                    `Tab "${tab.name}" is not active yet, deferring hydration.`,
-                    { activeTabId }
-                );
                 return;
             }
 
@@ -190,9 +149,6 @@ export function useWorkspacePersistence(graphId = 'main-graph') {
             const core = registry.get(scopedGraphId);
 
             if (!core) {
-                logger.debug(
-                    `Graph instance for tab "${tab.name}" not found, skipping hydration.`
-                );
                 return;
             }
 
@@ -200,9 +156,6 @@ export function useWorkspacePersistence(graphId = 'main-graph') {
                 runtime.persistence.persistedSnapshots.has(tabId);
 
             if (!hasPersistedSnapshot) {
-                logger.debug(
-                    `No persisted snapshot found for tab "${tab.name}", skipping hydration.`
-                );
                 runtime.persistence.restoredTabIds.add(tabId);
                 return;
             }
@@ -249,27 +202,9 @@ export function useWorkspacePersistence(graphId = 'main-graph') {
     ]);
 
     useEffect(() => {
-        logger.debug(
-            'Workspace tabs or activeTabId changed, checking for autosave...',
-            {
-                tabs,
-                activeTabId,
-                saveRequestVersion,
-                lastSavedSnapshots: Array.from(
-                    runtimeStateRef.current.persistence.lastSavedSnapshots.entries()
-                ),
-            }
-        );
-
         const runtime = runtimeStateRef.current;
 
         if (!isInitialized) {
-            logger.debug('Workspace not initialized, skipping autosave.', {
-                isInitialized,
-                pendingHydrationTabIds: Array.from(
-                    runtime.persistence.pendingHydrationTabIds
-                ),
-            });
             return;
         }
 
@@ -299,12 +234,6 @@ export function useWorkspacePersistence(graphId = 'main-graph') {
         const shellSignature = makeWorkspaceSignature(shellTabs);
 
         if (shellSignature === runtime.persistence.lastAutosavedSignature) {
-            logger.debug(
-                'Workspace state unchanged since last autosave, skipping persistence.',
-                {
-                    tabCount: tabs.length,
-                }
-            );
             return;
         }
 

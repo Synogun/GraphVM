@@ -240,7 +240,6 @@ export function ExportTab({
                                 defaultValue={undefined}
                                 id="option-bg-color"
                                 onChange={(e) => {
-                                    console.log(e.target.value);
                                     setExportOptions((prev) => ({
                                         ...prev,
                                         bg: e.target.value,
