@@ -77,7 +77,13 @@ export function generateHlpGraph(
         const sourceId = indexToIdMap.get(sourceIndex);
         const targetId = indexToIdMap.get(targetIndex);
 
-        if (sourceId && targetId) {
+        const oppositeEdgeExists = graph
+            .edges()
+            .some(
+                (e) => e.data('source') === targetId && e.data('target') === sourceId
+            );
+
+        if (sourceId && targetId && !oppositeEdgeExists) {
             addEdge(
                 graph,
                 { data: { source: sourceId, target: targetId } },

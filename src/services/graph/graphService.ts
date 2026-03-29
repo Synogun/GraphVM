@@ -3,7 +3,7 @@ import {
     DefaultGraphOptions,
     DefaultNodesData,
 } from '@/constants/graphDefaults';
-import type { ElementsInfo } from '@/types';
+import type { EdgeSelectionInfo, ElementsInfo } from '@/types';
 import { Logger } from '@Logger';
 import cytoscape from 'cytoscape';
 
@@ -94,15 +94,29 @@ export function extractElementsInfo(
         }
 
         if (element.isEdge()) {
-            return {
+            const isGraphDirected = Boolean(element.cy().data('directed'));
+
+            const source = String(element.source().data('label'));
+            const target = String(element.target().data('label'));
+            const sourceDegree = element.source().degree();
+            const targetDegree = element.target().degree();
+
+            const info: EdgeSelectionInfo = {
                 group: 'edge',
                 label: String(element.data('label')),
-                source: `Node ${String(element.source().data('label'))}`,
-                target: `Node ${String(element.target().data('label'))}`,
-                sourceDegree: element.source().degree(),
-                targetDegree: element.target().degree(),
+                source: `Node ${source}`,
+                target: `Node ${target}`,
+                [`Node ${source} degree`]: sourceDegree,
+                [`Node ${target} degree`]: targetDegree,
                 isSimple: element.isSimple(),
             };
+
+            if (!isGraphDirected) {
+                delete info.source;
+                delete info.target;
+            }
+
+            return info;
         }
     } else {
         const nodes: cytoscape.NodeCollection = elements.filter((el) => el.isNode());

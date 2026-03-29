@@ -63,10 +63,8 @@ export type NodesSelectionInfo = {
 export type EdgeSelectionInfo = {
     group: 'edge';
     label?: string;
-    source: string;
-    target: string;
-    sourceDegree: number;
-    targetDegree: number;
+    source?: string;
+    target?: string;
     isSimple: boolean;
     [key: string]: string | number | boolean | undefined;
 } & BaseSelectionInfo;

@@ -227,10 +227,11 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
                         layout = {
                             ...layout,
                             name: 'grid',
+                            cols: params.P,
                         };
                         setType('grid');
                         setLayout({ ...layout });
-                        grid.setCols(params.L);
+                        grid.setCols(params.P);
                     }
 
                     generateHlpGraph(activeGraph, params, layout);
