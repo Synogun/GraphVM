@@ -110,7 +110,7 @@ export type TraversalTabRef = {
 };
 
 export const TraversalTab = forwardRef<TraversalTabRef>((_, ref) => {
-    const [params, setParams] = useState<TraversalParams>({
+    const [params, setParams] = useState({
         ...DefaultTraversalParams,
     });
 

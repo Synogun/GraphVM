@@ -143,7 +143,7 @@ export type GenerationTabRef = {
 };
 
 export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
-    const [params, setParams] = useState<GenerationParams>({
+    const [params, setParams] = useState({
         ...DefaultGenerationParams,
     });
 
