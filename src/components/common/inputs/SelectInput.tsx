@@ -2,6 +2,7 @@ import { type ChangeEvent, type ReactNode } from 'react';
 import { FieldWrapper } from './FieldWrapper';
 
 export function SelectInput({
+    ref,
     value,
     options,
     label,
@@ -47,6 +48,7 @@ export function SelectInput({
             tooltip={tooltip}
         >
             <select
+                ref={ref}
                 className={`select hover:select-accent focus:select-accent cursor-pointer w-full ${className}`}
                 onChange={onChange}
                 value={value}
@@ -65,6 +67,7 @@ type SelectOptionType = {
 };
 
 type SelectInputProps = {
+    ref?: React.Ref<HTMLSelectElement>;
     label: string;
     value?: string;
     onChange?: (e: ChangeEvent<HTMLSelectElement>) => void;

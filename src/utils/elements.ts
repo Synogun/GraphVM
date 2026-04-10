@@ -39,34 +39,37 @@ export function parseCamelCase(str: string): string {
  *
  * @param property - The property name to find the mode for.
  * @param eles - A collection of Cytoscape edges or nodes.
+ * @param includesGhosts - A boolean indicating whether to include elements marked as "ghosts" in the calculation. Defaults to false.
  * @returns {string | null} - The mode of the property as a string, or null if the collection is empty or the property does not exist.
  */
 export function findPropertyValueMode(
     eles: cytoscape.EdgeCollection | cytoscape.NodeCollection,
-    property: string
+    property: string,
+    includesGhosts = false
 ): string | null {
     if (!eles.length) {
         return null;
-    } // return null if the collection is empty
-    if (!eles[0].data(property)) {
-        return null;
-    } // return null if the property does not exist
+    }
 
     const count: Record<string, number> = {};
-    const mode = { propValue: '', frequency: 0 };
+    const mode: { propValue: string | null; frequency: number } = {
+        propValue: null,
+        frequency: 0,
+    };
 
-    // count the occurrences of each property value
     for (const ele of eles) {
+        if (!includesGhosts && ele.data('isGhost')) {
+            continue;
+        }
+
         const value = String(ele.data(property));
 
-        // initialize the count for the current value if it does not exist
         if (!Object.keys(count).includes(value)) {
             count[value] = 0;
         }
 
         count[value]++;
 
-        // update the mode if the current value has a higher frequency
         if (count[value] > mode.frequency) {
             mode.propValue = value;
             mode.frequency = count[value];

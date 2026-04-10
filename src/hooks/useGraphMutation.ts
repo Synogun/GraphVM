@@ -39,8 +39,8 @@ export function useGraphMutation(graphId = 'main-graph') {
                 return false;
             }
 
-            setNodeCount(target.nodes().length);
-            setEdgeCount(target.edges().length);
+            setNodeCount(target.nodes('[!isGhost]').length);
+            setEdgeCount(target.edges('[!isGhost]').length);
             setDirected(Boolean(target.data('directed')));
             return true;
         },

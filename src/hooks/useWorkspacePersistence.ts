@@ -1,3 +1,4 @@
+import { extractElementsInfo } from '@/services/graph';
 import {
     hasPersistedState,
     loadWorkspaceState,
@@ -11,7 +12,12 @@ import type {
     PersistedWorkspaceTab,
 } from '@/types/workspace';
 import { makeScopedGraphRegistryId } from '@/utils/graphRegistry';
-import { useGraphRegistry, useGraphWorkspace, useToasts } from '@Contexts';
+import {
+    useGraphRegistry,
+    useGraphSelection,
+    useGraphWorkspace,
+    useToasts,
+} from '@Contexts';
 import { Logger } from '@Logger';
 import { useEffect, useRef } from 'react';
 import { useGraphMutation } from './useGraphMutation';
@@ -53,6 +59,9 @@ export function useWorkspacePersistence(graphId = 'main-graph') {
     } = useGraphWorkspace();
     const registry = useGraphRegistry();
     const { syncAll } = useGraphMutation(graphId);
+    const {
+        selectionInfo: { setInfo },
+    } = useGraphSelection();
     const { addToast } = useToasts();
     const runtimeStateRef = useRef<WorkspacePersistenceRuntimeState>({
         didLoad: false,
@@ -177,6 +186,8 @@ export function useWorkspacePersistence(graphId = 'main-graph') {
 
             if (tabId === activeTabId) {
                 syncAll(core);
+                const graphInfo = extractElementsInfo(core.$(':selected'));
+                setInfo(graphInfo);
             }
 
             clearTabPendingSave(tabId);
@@ -199,6 +210,7 @@ export function useWorkspacePersistence(graphId = 'main-graph') {
         syncAll,
         addToast,
         clearTabPendingSave,
+        setInfo,
     ]);
 
     useEffect(() => {

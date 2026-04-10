@@ -22,6 +22,7 @@ export type EdgesData = {
     style: cytoscape.Css.LineStyle;
     curve: EdgeCurveStyle;
     arrowShape: cytoscape.Css.ArrowShape;
+    isGhost: boolean;
 };
 
 export type EdgesContextProperties = {

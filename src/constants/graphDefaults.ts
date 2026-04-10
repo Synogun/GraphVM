@@ -16,6 +16,11 @@ export const DefaultNodesData: NodesData = {
     label: '',
     color: '#999999',
     shape: 'ellipse',
+    isGhost: false,
+};
+
+export const DefaultGhostNodeData: Partial<NodesData> = {
+    isGhost: true,
 };
 
 export const DefaultEdgesData: EdgesData = {
@@ -28,6 +33,12 @@ export const DefaultEdgesData: EdgesData = {
     style: 'solid',
     curve: 'bezier',
     arrowShape: 'triangle',
+    isGhost: false,
+};
+
+export const DefaultGhostEdgeData: Partial<EdgesData> = {
+    isGhost: true,
+    style: 'dashed',
 };
 
 export const DefaultStylesheet: StylesheetCSS[] = [
@@ -115,6 +126,24 @@ export const DefaultStylesheet: StylesheetCSS[] = [
 
             'line-outline-width': 2.5,
             'line-outline-color': '#0169d9',
+        },
+    },
+    {
+        selector: '.ghost-element',
+        css: {
+            opacity: 0.5,
+        },
+    },
+    {
+        selector: 'edge.ghost-element',
+        css: {
+            'line-style': 'dashed',
+        },
+    },
+    {
+        selector: '.hidden',
+        css: {
+            display: 'none',
         },
     },
 ];

@@ -1,4 +1,5 @@
 import { ParsedError } from '@/config/parsedError';
+import { DefaultGhostEdgeData } from '@/constants/graphDefaults';
 import type { EdgesData } from '@/types/edges';
 import {
     isEdgeArrowShape,
@@ -9,14 +10,14 @@ import type { GraphLimits } from '@/types/settings';
 import { getDefaultEdgesData } from '@/utils/styleHelpers';
 
 export function makeEdgeId() {
-    return crypto.randomUUID();
+    return `e-` + crypto.randomUUID().split('-')[0]; // Shorten UUID for better readability
 }
 
 export function assertEdgeLimit(
     currentCount: number,
     edgesToAdd: number,
     limits?: GraphLimits
-): void {
+) {
     if (!limits) {
         return;
     }
@@ -65,17 +66,30 @@ export function addEdge(
     const newIdIndex = core.edges().length + 1;
     const newId = makeEdgeId();
 
-    const newEdgeData = {
+    let newEdgeData = {
         ...defaultEdgesData,
         id: newId,
-        index: newIdIndex,
         ...options.data,
+        index: newIdIndex,
     };
+    const newEdgeClasses = [...(classes ?? [])];
+
+    if (
+        options.data.isGhost ||
+        core.$id(options.data.source).data('isGhost') ||
+        core.$id(options.data.target).data('isGhost')
+    ) {
+        newEdgeData = {
+            ...newEdgeData,
+            ...DefaultGhostEdgeData,
+        };
+        newEdgeClasses.push('ghost-element');
+    }
 
     core.add({
         group: 'edges',
         data: newEdgeData,
-        classes: [...(classes ?? [])],
+        classes: newEdgeClasses,
     });
 
     const isDirected = Boolean(options.data.directed ?? core.data('directed'));
@@ -153,19 +167,20 @@ export function updateEdges(
     core: cytoscape.Core,
     edges: string[],
     property: string,
-    value: string | number
-): void {
+    value: string | number | boolean
+) {
     if (edges.length === 0) {
         throw new ParsedError('Select at least one edge to update');
     }
 
     const defaultEdgesData = getDefaultEdgesData(core);
-    const edgesCollection = core.edges().filter((e) => edges.includes(e.id()));
+    let edgesCollection = core.edges().filter((e) => edges.includes(e.id()));
 
     const customValidation = [
         {
             property: 'weight',
-            validate: (val: string | number) => !Number.isNaN(Number(val)),
+            validate: (val: string | number | boolean) =>
+                !Number.isNaN(Number(val)) && Number(val) >= 0,
             default: defaultEdgesData.weight,
         },
         {
@@ -194,6 +209,11 @@ export function updateEdges(
         }
 
         parsedValue = validator.validate(value) ? value : validator.default;
+    }
+
+    if (property === 'style') {
+        // Ghost Nodes can't change line style, in order to keep visual distinction
+        edgesCollection = edgesCollection.filter((e) => !e.data('isGhost'));
     }
 
     edgesCollection.data(property, parsedValue);

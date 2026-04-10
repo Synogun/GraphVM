@@ -16,10 +16,11 @@ import { parseKebabCase } from '@/utils/elements';
 import { getDefaultEdgesData, setDefaultEdgesData } from '@/utils/styleHelpers';
 import { useEdgesProperties, useGraphMeta, useGraphSelection } from '@Contexts';
 import { ColorInput, NumberInput, SelectInput } from '@Inputs';
-import { type ChangeEvent, useEffect, useMemo } from 'react';
+import { type ChangeEvent, useEffect, useMemo, useRef } from 'react';
 
 export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
     const graphRef = useGetGraph('main-graph');
+    const changeLineStyleRef = useRef<HTMLSelectElement>(null);
     const {
         labelStyle,
         setLabelStyle,
@@ -108,6 +109,26 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
         setArrowShape,
     ]);
 
+    useEffect(() => {
+        if (!changeLineStyleRef.current || !graphRef.current) {
+            return;
+        }
+
+        if (selectedEdges.length !== 1) {
+            changeLineStyleRef.current.disabled = false;
+            return;
+        }
+
+        const graph = graphRef.current;
+        const edge = graph.getElementById(selectedEdges[0]);
+        if (edge.empty() || !edge.data('isGhost')) {
+            changeLineStyleRef.current.disabled = false;
+            return;
+        }
+
+        changeLineStyleRef.current.disabled = true;
+    }, [graphRef, selectedEdges]);
+
     const handleChangeLabel = (e: ChangeEvent<HTMLSelectElement>) => {
         const currentDefaults = propertyEditor.resolveDefaults();
         if (!currentDefaults) {
@@ -136,7 +157,7 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
         const { value } = e.target;
 
         const parsedValue =
-            value && !Number.isNaN(Number(value))
+            value && !Number.isNaN(Number(value)) && Number(value) > 0
                 ? Number(value)
                 : currentDefaults.weight;
 
@@ -265,6 +286,7 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
                 onChange={handleChangeWeight}
                 value={weight}
                 defaultValue={DefaultEdgesData.weight}
+                min={1}
                 tooltip={{ content: 'Determine the weight of the edges.' }}
             />
 
@@ -288,6 +310,7 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
             />
 
             <SelectInput
+                ref={changeLineStyleRef}
                 label="Line Style"
                 onChange={handleChangeLineStyle}
                 options={selectLineStyleOptions}

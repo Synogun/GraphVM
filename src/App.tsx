@@ -12,7 +12,8 @@ import {
     ImportExportModal,
     SettingsModal,
 } from '@Modals';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { IconContext } from 'react-icons';
 import { ElementInfoPanel } from './components';
 import { useSettings } from './contexts';
 
@@ -22,6 +23,8 @@ export function App() {
     const {
         ui: { disableElementsInfoPanel },
     } = useSettings();
+
+    const iconStyle = useMemo(() => ({ style: { verticalAlign: 'middle' } }), []);
 
     useEffect(() => {
         // Simulated loading time - Users thinks its more natural
@@ -44,23 +47,25 @@ export function App() {
     }
 
     return (
-        <PropertiesProvider>
-            <GraphShortcutsBinding />
+        <IconContext.Provider value={iconStyle}>
+            <PropertiesProvider>
+                <GraphShortcutsBinding />
 
-            <PropertiesBar>
-                <ActionBar>
-                    <GraphWorkspace />
-                    {!disableElementsInfoPanel && <ElementInfoPanel />}
-                </ActionBar>
-            </PropertiesBar>
+                <PropertiesBar>
+                    <ActionBar>
+                        <GraphWorkspace />
+                        {!disableElementsInfoPanel && <ElementInfoPanel />}
+                    </ActionBar>
+                </PropertiesBar>
 
-            <AlgorithmsModal />
-            <ImportExportModal />
-            <SettingsModal />
-            <HelpModal />
+                <AlgorithmsModal />
+                <ImportExportModal />
+                <SettingsModal />
+                <HelpModal />
 
-            <ToastArea />
-        </PropertiesProvider>
+                <ToastArea />
+            </PropertiesProvider>
+        </IconContext.Provider>
     );
 }
 

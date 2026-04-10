@@ -40,16 +40,20 @@ export type ElementsInfo =
     | NodesSelectionInfo
     | EdgesSelectionInfo
     | MixedSelectionInfo
+    | CoreInfo
     | { group: 'none' };
 
 export type BaseSelectionInfo = {
-    group: 'node' | 'nodes' | 'edge' | 'edges' | 'mixed' | 'none';
+    group: 'node' | 'nodes' | 'edge' | 'edges' | 'mixed' | 'core' | 'none';
 };
 
 export type NodeSelectionInfo = {
     group: 'node';
     label: string;
-    degree: number;
+    degree?: number;
+    inDegree?: number;
+    outDegree?: number;
+    isGhost: boolean;
     [key: string]: string | number | boolean | undefined;
 } & BaseSelectionInfo;
 
@@ -66,6 +70,7 @@ export type EdgeSelectionInfo = {
     source?: string;
     target?: string;
     isSimple: boolean;
+    isGhost: boolean;
     [key: string]: string | number | boolean | undefined;
 } & BaseSelectionInfo;
 
@@ -80,6 +85,14 @@ export type MixedSelectionInfo = {
     nodeCount: number;
     edgeCount: number;
     components: number;
+    [key: string]: string | number | boolean | undefined;
+} & BaseSelectionInfo;
+
+export type CoreInfo = {
+    group: 'core';
+    nodeCount: number;
+    edgeCount: number;
+    directed: boolean;
     [key: string]: string | number | boolean | undefined;
 } & BaseSelectionInfo;
 

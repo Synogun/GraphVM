@@ -273,8 +273,6 @@ export function useActionBarLogic() {
 
     return {
         edgeMode,
-        selectedNodes,
-        selectedEdges,
         handleNewGraph,
         handleAlgorithms,
         handleImportExport,

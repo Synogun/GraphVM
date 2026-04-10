@@ -1,13 +1,20 @@
+import { useGraphMutation } from '@/hooks/useGraphMutation';
 import {
     bindAutopan,
     destroyGraph,
     extractElementsInfo,
     newGraph,
 } from '@/services/graph';
+import { bindContextMenu } from '@/services/graph/contextMenusService';
 import type { GraphInstance } from '@/types/graph';
-import { useGraphSelection, useGraphWorkspace, useToasts } from '@Contexts';
+import {
+    useGraphSelection,
+    useGraphWorkspace,
+    useSettings,
+    useToasts,
+} from '@Contexts';
 import type cytoscape from 'cytoscape';
-import { useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import { useRegisterGraphByTab } from '../hooks/useGraphRegistry';
 import { isArrayOfStrings } from '../types/typeGuards';
 
@@ -20,14 +27,19 @@ export function GraphCanvas({
     const graphRef = useRef<GraphInstance>(null);
 
     const {
-        nodes: { setSelected: setSelectedNodes },
-        edges: { setSelected: setSelectedEdges },
         selectionInfo: { setInfo: setSelectionInfo },
     } = useGraphSelection();
+
     const { activeTabId, markTabPendingSave } = useGraphWorkspace();
 
     const { addToast } = useToasts();
     const addToastRef = useRef(addToast);
+
+    const { syncAll, syncSelection, syncMeta } = useGraphMutation(graphId);
+
+    const {
+        graph: { limits: graphLimits },
+    } = useSettings();
 
     useEffect(() => {
         addToastRef.current = addToast;
@@ -49,11 +61,17 @@ export function GraphCanvas({
             },
         });
 
-        const handleGraphMutation = () => {
+        const handleGraphMutation = (e: cytoscape.EventObject) => {
             if (!tabId) {
                 return;
             }
 
+            const core = e.cy;
+            const selectedElementsInfo = extractElementsInfo(core.$(':selected'));
+
+            syncMeta(core);
+
+            setSelectionInfo(selectedElementsInfo);
             markTabPendingSave(tabId);
         };
 
@@ -92,39 +110,40 @@ export function GraphCanvas({
 
             const selectedElementsInfo = extractElementsInfo(core.$(':selected'));
 
-            setSelectedNodes(core.nodes(':selected').map((n) => n.id()));
-            setSelectedEdges(core.edges(':selected').map((e) => e.id()));
             setSelectionInfo(selectedElementsInfo);
+            syncSelection(core);
         };
 
-        newCore.on('select', 'node, edge', handleElementSelection);
-        newCore.on('unselect', 'node, edge', handleElementSelection);
+        newCore.on('select unselect', 'node, edge', handleElementSelection);
         newCore.on('add remove', 'node, edge', handleGraphMutation);
         newCore.on('data', 'node, edge', handleGraphMutation);
 
         const cleanupAutopan = bindAutopan(newCore);
+        const cleanupContextMenu = bindContextMenu(newCore, syncAll, graphLimits);
 
         graphRef.current = newCore;
 
         return () => {
             cleanupAutopan();
-            newCore.off('select', 'node, edge', handleElementSelection);
-            newCore.off('unselect', 'node, edge', handleElementSelection);
+            cleanupContextMenu();
+            newCore.off('select unselect', 'node, edge', handleElementSelection);
             newCore.off('add remove', 'node, edge', handleGraphMutation);
             newCore.off('data', 'node, edge', handleGraphMutation);
             destroyGraph(newCore);
             graphRef.current = null;
         };
     }, [
-        containerId,
         tabId,
+        containerId,
+        graphLimits,
         markTabPendingSave,
-        setSelectedNodes,
-        setSelectedEdges,
         setSelectionInfo,
+        syncAll,
+        syncMeta,
+        syncSelection,
     ]);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (!tabId || activeTabId !== tabId) {
             return;
         }

@@ -9,7 +9,7 @@ export function runBFSAlgorithm({
     directed: boolean;
     onlySelected: boolean;
 }): { path: cytoscape.Collection; found: cytoscape.NodeSingular | null } {
-    let elements = graph.elements();
+    let elements = graph.elements('[!isGhost]');
     const rawRoot = graph.getElementById(startNodeId);
     const root: cytoscape.NodeSingular | null =
         rawRoot.nonempty() && rawRoot.isNode() ? rawRoot : null;

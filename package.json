@@ -26,6 +26,7 @@
     "dependencies": {
         "@tailwindcss/vite": "4.2.2",
         "cytoscape": "3.33.1",
+        "cytoscape-context-menus": "4.2.1",
         "cytoscape-fcose": "2.2.0",
         "daisyui": "5.5.19",
         "react": "19.2.4",
@@ -35,6 +36,7 @@
     },
     "devDependencies": {
         "@playwright/test": "1.58.2",
+        "@types/cytoscape-context-menus": "4.1.5",
         "@types/cytoscape-fcose": "2.2.5",
         "@types/node": "25.5.0",
         "@types/react": "19.2.14",
@@ -47,11 +49,11 @@
         "globals": "17.4.0",
         "jiti": "2.6.1",
         "jsdom": "28.1.0",
-        "npm-check-updates": "19.6.5",
+        "npm-check-updates": "19.6.6",
         "prettier": "3.8.1",
         "typescript": "5.9.3",
-        "typescript-eslint": "8.57.1",
+        "typescript-eslint": "8.57.2",
         "vite": "7.3.1",
-        "vitest": "4.1.0"
+        "vitest": "4.1.2"
     }
 }
