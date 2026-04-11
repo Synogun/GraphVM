@@ -4,14 +4,14 @@ import { LoadingHero } from '@/components/LoadingHero';
 import { PropertiesBar } from '@/components/PropertiesBar';
 import { ToastArea } from '@/components/ToastArea';
 import { useGraphShortcuts } from '@/hooks/useGraphShortcuts';
-import { PropertiesProvider } from '@/providers/PropertiesProvider';
-import { isDev } from '@/utils/general';
 import {
     AlgorithmsModal,
     HelpModal,
     ImportExportModal,
     SettingsModal,
-} from '@Config';
+} from '@/lazy';
+import { PropertiesProvider } from '@/providers/PropertiesProvider';
+import { isDev } from '@/utils/general';
 import { Suspense, useEffect, useMemo, useState } from 'react';
 import { IconContext } from 'react-icons';
 import { DefaultFallback, ElementInfoPanel } from './components';

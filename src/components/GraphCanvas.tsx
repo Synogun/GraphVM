@@ -5,7 +5,7 @@ import {
     extractElementsInfo,
     newGraph,
 } from '@/services/graph';
-import { bindContextMenu } from '@/services/graph/contextMenusService';
+import { mountContextMenu } from '@/services/graph/contextMenusService';
 import type { GraphInstance } from '@/types/graph';
 import {
     useGraphSelection,
@@ -119,7 +119,21 @@ export function GraphCanvas({
         newCore.on('data', 'node, edge', handleGraphMutation);
 
         const cleanupAutopan = bindAutopan(newCore);
-        const cleanupContextMenu = bindContextMenu(newCore, syncAll, graphLimits);
+        const cleanupContextMenu = mountContextMenu(newCore, {
+            syncAll,
+            graphLimits,
+            onError: (message) => {
+                addToastRef.current({ type: 'error', message });
+            },
+            onBindError: (parsedError) => {
+                addToastRef.current({
+                    type: 'warning',
+                    message:
+                        'Context menu is unavailable right now. ' +
+                        parsedError.message,
+                });
+            },
+        });
 
         graphRef.current = newCore;
 

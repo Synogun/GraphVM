@@ -4,7 +4,7 @@ import {
     MaximumHlpGenerationParamsForL3,
     MinimumHlpGenerationParams,
 } from '@/constants/algorithmDefaults';
-import { addEdge, addNode, resetGraph } from '@/services';
+import { addEdge, addNode, arrangeGraph, resetGraph } from '@/services';
 import type { GraphLimits, HlpGraphParams } from '@/types';
 import { makeHlpEdgeSet } from './makeEdgeSet';
 import { makeHlpGeneratingSet } from './makeGeneratingSet';
@@ -93,8 +93,9 @@ export function generateHlpGraph(
         }
     });
 
-    if (layout) {
-        graph.layout(layout).run();
-    }
     graph.endBatch();
+
+    if (layout) {
+        arrangeGraph(graph, layout);
+    }
 }

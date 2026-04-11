@@ -1,6 +1,7 @@
 export * from './algorithms';
 export * from './edges.d';
 export * from './edgesTypeGuards';
+export * from './extensions';
 export * from './graph.d';
 export * from './graphTypeGuards';
 export * from './layout.d';
