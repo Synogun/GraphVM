@@ -22,6 +22,7 @@ export default defineConfig({
             '@Inputs': '/src/components/common/inputs',
             '@Contexts': '/src/contexts',
             '@Logger': '/src/config/logger',
+            '@Config': '/src/config',
         },
     },
     build: {

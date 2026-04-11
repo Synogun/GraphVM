@@ -11,10 +11,10 @@ import {
     HelpModal,
     ImportExportModal,
     SettingsModal,
-} from '@Modals';
-import { useEffect, useMemo, useState } from 'react';
+} from '@Config';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import { IconContext } from 'react-icons';
-import { ElementInfoPanel } from './components';
+import { DefaultFallback, ElementInfoPanel } from './components';
 import { useSettings } from './contexts';
 
 export function App() {
@@ -58,10 +58,12 @@ export function App() {
                     </ActionBar>
                 </PropertiesBar>
 
-                <AlgorithmsModal />
-                <ImportExportModal />
-                <SettingsModal />
-                <HelpModal />
+                <Suspense fallback={<DefaultFallback />}>
+                    <AlgorithmsModal />
+                    <ImportExportModal />
+                    <SettingsModal />
+                    <HelpModal />
+                </Suspense>
 
                 <ToastArea />
             </PropertiesProvider>
