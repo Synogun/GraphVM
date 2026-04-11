@@ -1,5 +1,5 @@
 import { addEdge } from '@/services/graph/edgesService';
-import { addGhostFromNode } from '@/services/graph/nodesService';
+import { addGhostFromNode, addNode, cloneNode } from '@/services/graph/nodesService';
 import cytoscape from 'cytoscape';
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
 
@@ -92,5 +92,24 @@ describe('nodesService', () => {
         });
 
         expect(ghostOutgoingEdges).toHaveLength(2);
+    });
+
+    it('should clone a node with the same data and classes', () => {
+        if (!core) {
+            throw new Error('Cytoscape core is not initialized');
+        }
+
+        addNode(core, { data: { id: 'node1', label: 'Node 1' } }, [
+            'class1',
+            'class2',
+        ]);
+
+        const originalNode = core.$id('node1');
+        const clonedNode = cloneNode(core, originalNode);
+
+        expect(clonedNode).not.toBeNull();
+        expect(clonedNode.data('label')).toBe('Node 1');
+        expect(clonedNode.hasClass('class1')).toBe(true);
+        expect(clonedNode.hasClass('class2')).toBe(true);
     });
 });

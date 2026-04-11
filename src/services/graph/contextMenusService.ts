@@ -1,7 +1,7 @@
 import type { GraphLimits } from '@/types/settings';
 import type contextMenus from 'cytoscape-context-menus';
 import { removeEdges } from './edgesService';
-import { addGhostFromNode, removeNodes } from './nodesService';
+import { addGhostFromNode, cloneNode, removeNodes } from './nodesService';
 
 export function bindContextMenu(
     cy: cytoscape.Core,
@@ -87,11 +87,29 @@ export function bindContextMenu(
                 hasTrailingDivider: false,
                 coreAsWell: false,
             },
+            {
+                id: 'cloneNode',
+                content: 'Clone Node',
+                tooltipText:
+                    'Clones the selected node, ' +
+                    'check for more details in Help modal',
+                selector: 'node',
+                onClickFunction: function (evt: cytoscape.EventObject) {
+                    const target = evt.target as cytoscape.NodeSingular;
+                    const graph = evt.cy;
+
+                    cloneNode(graph, target, graphLimits);
+                    syncAll(graph);
+                },
+                disabled: false,
+                show: true,
+                hasTrailingDivider: false,
+                coreAsWell: false,
+            },
 
             // TODO: Add options to context menu:
             // Hide elements
             // Restore hidden edge(s) (dynamic with submenu and hidden edges as options)
-            // Clone node (same position with offset, connected to same nodes and copied data except id)
         ],
         menuItemClasses: [
             'w-full',

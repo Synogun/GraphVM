@@ -180,9 +180,7 @@ export function addGhostFromNode(
     if (element.data('isGhost')) {
         throw new ParsedError(
             'Cannot create a ghost node from another ghost node.',
-            {
-                context: { elementId: element.id() },
-            }
+            { context: { elementId: element.id() } }
         );
     }
 
@@ -223,7 +221,7 @@ export function addGhostFromNode(
 
     // No edges to connect, return early
     if (element.neighborhood().length === 0) {
-        return;
+        return core.$id(newNode.id());
     }
 
     const newEdgeData = {
@@ -267,4 +265,79 @@ export function addGhostFromNode(
             context: { elementId: element.id() },
         });
     }
+
+    return core.$id(newNode.id());
+}
+
+export function cloneNode(
+    core: cytoscape.Core,
+    node: cytoscape.NodeSingular,
+    limits?: GraphLimits
+) {
+    if (node.isEdge()) {
+        throw new ParsedError('Only nodes can be cloned.', {
+            context: { elementId: node.id() },
+        });
+    }
+
+    const position = node.renderedPosition();
+    const zoom = core.zoom();
+    const pan = core.pan();
+
+    const rawNodeData: unknown = { ...node.data() };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id: _, ...nodeData } = isDefaultNodeData(rawNodeData) ? rawNodeData : {};
+
+    const newNodeOptions: cytoscape.NodeDefinition = {
+        position: {
+            x: (position.x - pan.x) / zoom + 25, // Offset to avoid exact overlap
+            y: (position.y - pan.y) / zoom + 25, // Offset to avoid exact overlap
+        },
+        data: { ...nodeData },
+        classes: [...node.classes()],
+    };
+
+    let newNode: cytoscape.NodeSingular;
+    try {
+        newNode = addNode(core, newNodeOptions, node.classes(), limits);
+    } catch (error: unknown) {
+        const parsedError = parseError(error);
+        throw new ParsedError('Failed to clone node.', {
+            cause: parsedError,
+            context: { elementId: node.id() },
+        });
+    }
+
+    // No edges to connect, return early
+    if (node.neighborhood().length === 0) {
+        return core.$id(newNode.id());
+    }
+
+    const incomers = node.incomers('edge');
+    const outgoers = node.outgoers('edge');
+
+    try {
+        for (const edge of incomers.union(outgoers)) {
+            const destiny = {
+                source: edge.source().id(),
+                target: newNode.id(),
+            };
+
+            if (outgoers.contains(edge)) {
+                destiny.source = newNode.id();
+                destiny.target = edge.target().id();
+            }
+
+            addEdge(core, { data: destiny }, edge.classes(), limits);
+        }
+    } catch (error: unknown) {
+        const parsedError = parseError(error);
+        newNode.remove();
+        throw new ParsedError('Failed to clone edges.', {
+            cause: parsedError,
+            context: { elementId: node.id() },
+        });
+    }
+
+    return core.$id(newNode.id());
 }
