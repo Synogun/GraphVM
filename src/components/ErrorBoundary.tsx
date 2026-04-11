@@ -6,6 +6,7 @@ import { Component } from 'react';
 const logger = Logger.createContextLogger('ErrorBoundary');
 
 type ErrorBoundaryProps = {
+    resetLabel?: string;
     children: ReactNode;
     onReset?: () => void;
     fallback?: (props: ErrorBoundaryFallbackProps) => ReactNode;
@@ -16,10 +17,22 @@ type ErrorBoundaryState = {
 };
 
 type ErrorBoundaryFallbackProps = {
-    onReset: () => void;
+    onReset?: () => void;
+    resetLabel?: string;
 };
 
-function DefaultFallback({ onReset }: Readonly<ErrorBoundaryFallbackProps>) {
+export function DefaultFallback({
+    onReset,
+    resetLabel,
+}: Readonly<ErrorBoundaryFallbackProps>) {
+    const handleReset = () => {
+        if (onReset) {
+            onReset();
+            return;
+        }
+        window.location.reload();
+    };
+
     return (
         <div className="flex min-h-screen items-center justify-center bg-base-100 p-4 text-base-content">
             <div className="card w-full max-w-2xl bg-base-200 shadow-xl">
@@ -42,10 +55,10 @@ function DefaultFallback({ onReset }: Readonly<ErrorBoundaryFallbackProps>) {
                     <div className="card-actions mt-2 justify-end">
                         <button
                             className="btn btn-primary"
-                            onClick={onReset}
+                            onClick={handleReset}
                             type="button"
                         >
-                            Reload App
+                            {resetLabel ?? 'Reload App'}
                         </button>
                     </div>
                 </div>
@@ -81,10 +94,20 @@ class ErrorBoundaryImpl extends Component<ErrorBoundaryProps, ErrorBoundaryState
         if (this.state.hasError) {
             const Fallback = this.props.fallback;
             if (Fallback) {
-                return <Fallback onReset={this.handleReset} />;
+                return (
+                    <Fallback
+                        onReset={this.handleReset}
+                        resetLabel={this.props.resetLabel}
+                    />
+                );
             }
 
-            return <DefaultFallback onReset={this.handleReset} />;
+            return (
+                <DefaultFallback
+                    onReset={this.handleReset}
+                    resetLabel={this.props.resetLabel}
+                />
+            );
         }
 
         return this.props.children;
