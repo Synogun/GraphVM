@@ -1,20 +1,18 @@
 import { ActionBar } from '@/components/ActionBar';
-import { GraphWorkspace } from '@/components/GraphWorkspace';
-import { LoadingHero } from '@/components/LoadingHero';
 import { PropertiesBar } from '@/components/PropertiesBar';
-import { ToastArea } from '@/components/ToastArea';
-import { useGraphShortcuts } from '@/hooks/useGraphShortcuts';
+import { DefaultFallback, LoadingHero, ToastArea } from '@/components/feedback';
+import { ElementInfoPanel, GraphWorkspace } from '@/components/graph';
+import { useGraphShortcuts } from '@/hooks';
 import {
     AlgorithmsModal,
     HelpModal,
     ImportExportModal,
     SettingsModal,
 } from '@/lazy';
-import { PropertiesProvider } from '@/providers/PropertiesProvider';
+import { ElementsProvider } from '@/providers';
 import { isDev } from '@/utils/general';
 import { Suspense, useEffect, useMemo, useState } from 'react';
 import { IconContext } from 'react-icons';
-import { DefaultFallback, ElementInfoPanel } from './components';
 import { useSettings } from './contexts';
 
 export function App() {
@@ -48,7 +46,7 @@ export function App() {
 
     return (
         <IconContext.Provider value={iconStyle}>
-            <PropertiesProvider>
+            <ElementsProvider>
                 <GraphShortcutsBinding />
 
                 <PropertiesBar>
@@ -66,7 +64,7 @@ export function App() {
                 </Suspense>
 
                 <ToastArea />
-            </PropertiesProvider>
+            </ElementsProvider>
         </IconContext.Provider>
     );
 }

@@ -1,12 +1,12 @@
 import { ParsedError } from '@/config/parsedError';
 import { DefaultGhostEdgeData } from '@/constants/graphDefaults';
-import type { EdgesData } from '@/types/edges';
+import type { EdgesData } from '@/types/elements/edges';
 import {
     isEdgeArrowShape,
     isEdgeCurve,
     isEdgeLineStyle,
-} from '@/types/edgesTypeGuards';
-import type { GraphLimits } from '@/types/settings';
+} from '@/types/elements/edges/typeGuards';
+import type { GraphLimits } from '@/types/ui/settings';
 import { getDefaultEdgesData } from '@/utils/styleHelpers';
 
 export function makeEdgeId() {

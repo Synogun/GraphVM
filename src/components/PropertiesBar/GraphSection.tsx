@@ -1,4 +1,4 @@
-import { useGetGraph } from '@/hooks/useGraphRegistry';
+import { useGetGraph } from '@/hooks';
 import { setGraphDirected } from '@/services/graph';
 import { useGraphMeta, useGraphWorkspace } from '@Contexts';
 import { ToggleInput } from '../common/inputs/ToggleInput';

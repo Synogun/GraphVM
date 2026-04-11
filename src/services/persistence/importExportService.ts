@@ -1,14 +1,14 @@
 import { ParsedError, parseError } from '@/config/parsedError';
 import { DefaultEdgesData, DefaultNodesData } from '@/constants/graphDefaults';
 import { assertEdgeLimit, assertNodeLimit } from '@/services/graph';
-import type { EdgesData } from '@/types/edges';
+import type { EdgesData } from '@/types/elements/edges';
+import type { NodesData } from '@/types/elements/nodes';
 import {
     isCytoscapeOptions,
     isElementsDefinitionObject,
     isStylesheetStyleArray,
-} from '@/types/graphTypeGuards';
-import type { NodesData } from '@/types/nodes';
-import type { GraphLimits } from '@/types/settings';
+} from '@/types/graph/typeGuards';
+import type { GraphLimits } from '@/types/ui/settings';
 import { transformStylesheet } from '@/utils/styleHelpers';
 import type cytoscape from 'cytoscape';
 import type { CytoscapeOptions } from 'cytoscape';

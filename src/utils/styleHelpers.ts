@@ -1,13 +1,13 @@
 import { DefaultEdgesData, DefaultNodesData } from '@/constants/graphDefaults';
-import type { EdgeCurveStyle, EdgesData } from '@/types/edges';
+import type { EdgeCurveStyle, EdgesData } from '@/types/elements/edges';
 import {
     isDefaultEdgeData,
     isEdgeArrowShape,
     isEdgeCurve,
     isEdgeLineStyle,
-} from '@/types/edgesTypeGuards';
-import type { NodesData } from '@/types/nodes';
-import { isDefaultNodeData, isNodeShape } from '@/types/nodesTypeGuards';
+} from '@/types/elements/edges/typeGuards';
+import type { NodesData } from '@/types/elements/nodes';
+import { isDefaultNodeData, isNodeShape } from '@/types/elements/nodes/typeGuards';
 import {
     type EdgeSingular,
     type NodeSingular,

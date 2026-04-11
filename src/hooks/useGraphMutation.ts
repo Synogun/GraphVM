@@ -1,5 +1,5 @@
 import { ParsedErrorToasts, parseError } from '@/config/parsedError';
-import { useGetGraph } from '@/hooks/useGraphRegistry';
+import { useGetGraph } from '@/hooks';
 import { useGraphMeta, useGraphSelection, useToasts } from '@Contexts';
 import { useCallback } from 'react';
 

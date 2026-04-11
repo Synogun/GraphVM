@@ -11,8 +11,7 @@ import {
     DefaultStarGenerationParams,
     DefaultWheelGenerationParams,
 } from '@/constants/algorithmDefaults';
-import { useGraphMutation } from '@/hooks/useGraphMutation';
-import { useGetGraph } from '@/hooks/useGraphRegistry';
+import { useGetGraph, useGraphMutation } from '@/hooks';
 import {
     calcMaxEdgesForSimpleGraph,
     generateBipartiteGraph,

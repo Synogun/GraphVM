@@ -1,4 +1,4 @@
-import { useActionBarLogic } from '@/hooks/useActionBarLogic';
+import { useActionBarLogic } from '@/hooks';
 import { isDev } from '@/utils/general';
 import { Logger } from '@Logger';
 import { type ReactNode } from 'react';

@@ -1,4 +1,4 @@
-import type { SettingsData } from '@/types/settings';
+import type { SettingsData } from '@/types/ui/settings';
 
 export const DefaultSettingsData: SettingsData = {
     ui: {

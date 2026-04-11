@@ -3,9 +3,9 @@ import {
     DefaultGridLayoutOptions,
     DefaultLayoutOptions,
 } from '@/constants/layoutDefaults';
-import { useGetGraph } from '@/hooks/useGraphRegistry';
+import { useGetGraph } from '@/hooks';
 import { arrangeGraph } from '@/services/graph';
-import { isLayoutType, ValidGraphLayouts } from '@/types/layoutTypeGuards';
+import { isLayoutType, ValidGraphLayouts } from '@/types/ui/layout/typeGuards';
 import { parseKebabCase } from '@/utils/elements';
 import { useLayoutProperties, useToasts } from '@Contexts';
 import { RangeInput, SelectInput } from '@Inputs';

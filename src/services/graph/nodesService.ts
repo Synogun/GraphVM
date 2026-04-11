@@ -1,6 +1,6 @@
 import { ParsedError, parseError } from '@/config/parsedError';
-import { isDefaultNodeData, isNodeShape } from '@/types/nodesTypeGuards';
-import type { GraphLimits } from '@/types/settings';
+import { isDefaultNodeData, isNodeShape } from '@/types/elements/nodes/typeGuards';
+import type { GraphLimits } from '@/types/ui/settings';
 import { getDefaultNodesData } from '@/utils/styleHelpers';
 import type cytoscape from 'cytoscape';
 import { addEdge, removeEdges } from './edgesService';

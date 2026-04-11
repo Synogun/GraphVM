@@ -1,6 +1,6 @@
-import type { EdgesData } from '@/types/edges';
+import type { EdgesData } from '@/types/elements/edges';
+import type { NodesData } from '@/types/elements/nodes';
 import type { AutopanOptions } from '@/types/graph';
-import type { NodesData } from '@/types/nodes';
 import {
     getEdgeArrowShape,
     getEdgeCurve,

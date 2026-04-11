@@ -1,5 +1,5 @@
 import { DefaultSettingsData } from '@/constants/settingsDefaults';
-import type { SettingsData, ShortcutAction } from '@/types/settings';
+import type { SettingsData, ShortcutAction } from '@/types/ui/settings';
 import { formatShortcutInput, normalizeShortcut } from '@/utils/shortcuts';
 import { useToasts } from '@Contexts';
 import { useState, type KeyboardEvent } from 'react';

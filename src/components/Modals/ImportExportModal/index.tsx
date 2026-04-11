@@ -1,6 +1,6 @@
 import { AppIcons } from '@/components/common/AppIcons';
 import { Tabs, type TabItem } from '@/components/common/tabs';
-import { useGetGraph } from '@/hooks/useGraphRegistry';
+import { useGetGraph } from '@/hooks';
 import { arrangeGraph } from '@/services/graph';
 import { useLayoutProperties, useModals, useSettings } from '@Contexts';
 import { Modal } from '@Modals';

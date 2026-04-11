@@ -1,4 +1,4 @@
-import type { GraphLimits } from '../settings';
+import type { GraphLimits } from '@/types/ui/settings';
 
 export type BindContextMenuOptions = {
     syncAll: (core: cytoscape.Core) => void;

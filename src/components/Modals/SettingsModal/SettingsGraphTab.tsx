@@ -1,5 +1,5 @@
 import { DefaultSettingsData } from '@/constants/settingsDefaults';
-import type { SettingsData } from '@/types/settings';
+import type { SettingsData } from '@/types/ui/settings';
 import { NumberInput, ToggleInput } from '@Inputs';
 import type { ChangeEvent } from 'react';
 

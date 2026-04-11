@@ -19,7 +19,7 @@ import type {
     StarGraphParams,
     WheelGraphParams,
 } from '@/types/algorithms/generationAlgorithms';
-import type { GraphLimits } from '@/types/settings';
+import type { GraphLimits } from '@/types/ui/settings';
 import type cytoscape from 'cytoscape';
 import { addEdge, addEdges } from '../graph/edgesService';
 import { resetGraph } from '../graph/graphService';

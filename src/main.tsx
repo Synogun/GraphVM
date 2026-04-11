@@ -1,8 +1,6 @@
 import { App } from '@/App';
-import { ErrorBoundary } from '@/components/ErrorBoundary';
-import { ModalsProvider } from '@/providers/ModalsProvider';
-import { SettingsProvider } from '@/providers/SettingsProvider';
-import { ToastsProvider } from '@/providers/ToastsProvider';
+import { ErrorBoundary } from '@/components/feedback';
+import { ModalsProvider, SettingsProvider, ToastsProvider } from '@/providers';
 import '@/styles';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';

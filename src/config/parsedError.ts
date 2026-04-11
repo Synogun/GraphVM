@@ -1,4 +1,4 @@
-import type { ToastData } from '@/types/popups';
+import type { ToastData } from '@/types/ui/popups';
 
 type Jsonable =
     | string

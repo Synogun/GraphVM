@@ -1,5 +1,5 @@
-import { useActionBarLogic } from '@/hooks/useActionBarLogic';
-import type { ShortcutAction } from '@/types/settings';
+import { useActionBarLogic } from '@/hooks';
+import type { ShortcutAction } from '@/types/ui/settings';
 import {
     formatShortcutInput,
     isEditableTarget,

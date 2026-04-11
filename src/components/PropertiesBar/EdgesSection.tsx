@@ -1,6 +1,5 @@
 import { DefaultEdgesData } from '@/constants/graphDefaults';
-import { useGetGraph } from '@/hooks/useGraphRegistry';
-import { usePropertyEditor } from '@/hooks/usePropertyEditor';
+import { useGetGraph, usePropertyEditor } from '@/hooks';
 import { updateEdges } from '@/services/graph';
 import {
     isEdgeArrowShape,
@@ -11,7 +10,7 @@ import {
     ValidEdgeCurves,
     ValidEdgeLabelStyle,
     ValidEdgeLineStyles,
-} from '@/types/edgesTypeGuards';
+} from '@/types/elements/edges/typeGuards';
 import { parseKebabCase } from '@/utils/elements';
 import { getDefaultEdgesData, setDefaultEdgesData } from '@/utils/styleHelpers';
 import { useEdgesProperties, useGraphMeta, useGraphSelection } from '@Contexts';

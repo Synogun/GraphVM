@@ -5,12 +5,12 @@ import {
     normalizeCytoscapeOptionsForImport,
     savePersistedState,
 } from '@/services/persistence';
-import { isCytoscapeOptions } from '@/types/graphTypeGuards';
+import { isCytoscapeOptions } from '@/types/graph/typeGuards';
 import type { PersistedWorkspaceState } from '@/types/workspace';
 import {
     isPersistedWorkspaceState,
     WORKSPACE_SCHEMA_VERSION,
-} from '@/types/workspaceTypeGuards';
+} from '@/types/workspace/typeGuards';
 import type cytoscape from 'cytoscape';
 
 export const WORKSPACE_STORAGE_KEY = 'graphvm.workspace.v1';

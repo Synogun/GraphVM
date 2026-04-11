@@ -1,8 +1,7 @@
 import { SelectInput } from '@/components/common';
 import { ParsedErrorToasts, parseError } from '@/config/parsedError';
 import { DefaultTraversalParams } from '@/constants/algorithmDefaults';
-import { useGraphMutation } from '@/hooks/useGraphMutation';
-import { useGetGraph } from '@/hooks/useGraphRegistry';
+import { useGetGraph, useGraphMutation } from '@/hooks';
 import { runBFSAlgorithm } from '@/services';
 import {
     isTraversalAlgorithm,

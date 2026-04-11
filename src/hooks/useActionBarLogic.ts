@@ -1,6 +1,5 @@
 import { ParsedErrorToasts, parseError } from '@/config/parsedError';
-import { useGraphMutation } from '@/hooks/useGraphMutation';
-import { useGetGraph } from '@/hooks/useGraphRegistry';
+import { useGetGraph, useGraphMutation } from '@/hooks';
 import {
     addEdges,
     addNode,

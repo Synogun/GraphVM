@@ -53,6 +53,17 @@ npm run lint
 - Split-state synchronization: after graph mutations, relevant UI metadata
   (counts and selections) is explicitly synchronized.
 
+## Source Layout
+
+- `src/components/graph`: graph canvas, workspace shell, selection info.
+- `src/components/feedback`: loading, toasts, error boundary fallback surfaces.
+- `src/contexts/graph`: graph-scoped context hooks and contracts.
+- `src/contexts/ui`: UI-scoped context hooks and contracts.
+- `src/providers/graph`, `src/providers/elements`, `src/providers/ui`: provider domains.
+- `src/types/elements`, `src/types/graph`, `src/types/ui`, `src/types/workspace`: canonical type domains.
+
+Canonical imports use grouped paths such as `@/components/graph`, `@/components/feedback`, `@/types/ui/settings`, and `@/types/elements/edges`.
+
 ## License
 
 MIT. See `LICENSE`.
