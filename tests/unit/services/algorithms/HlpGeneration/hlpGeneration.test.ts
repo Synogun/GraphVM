@@ -22,9 +22,6 @@ describe('HlpPrimeGeneration', () => {
                 expect(combinations.length).toBe(expectedCombinations.length);
                 expect(combinations).toEqual(expectedCombinations);
             }
-            console.log(
-                `Finished testing combinations for L=${L.toString()} with P up to ${pLimit.toString()}`
-            );
         }
     });
 
@@ -43,9 +40,6 @@ describe('HlpPrimeGeneration', () => {
                 expect(hlpGeneratingSet.length).toBe(expectedGeneratingSet.length);
                 expect(hlpGeneratingSet).toEqual(expectedGeneratingSet);
             }
-            console.log(
-                `Finished testing generating set for L=${L.toString()} with P up to ${pLimit.toString()}`
-            );
         }
     });
 
@@ -63,9 +57,6 @@ describe('HlpPrimeGeneration', () => {
                 expect(hlpNodeSet.length).toBe(expectedNodeSet.length);
                 expect(hlpNodeSet).toEqual(expectedNodeSet);
             }
-            console.log(
-                `Finished testing node set for L=${L.toString()} with P up to ${pLimit.toString()}`
-            );
         }
     });
 
@@ -91,9 +82,6 @@ describe('HlpPrimeGeneration', () => {
                 expect(hlpEdgeSet.length).toBe(expectedEdgeSet.length);
                 expect(hlpEdgeSet).toEqual(expectedEdgeSet);
             }
-            console.log(
-                `Finished testing edge set for L=${L.toString()} with P up to ${pLimit.toString()}`
-            );
         }
     });
 });
