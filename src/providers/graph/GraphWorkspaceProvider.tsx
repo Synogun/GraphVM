@@ -137,7 +137,9 @@ function workspaceReducer(
 
             return {
                 ...state,
-                tabs: state.tabs.map((tab) => ({ ...tab })),
+                tabs: state.tabs.map((tab) =>
+                    tab.id === action.tabId ? { ...tab, pendingSave: true } : tab
+                ),
                 saveRequestVersion: state.saveRequestVersion + 1,
             };
         }

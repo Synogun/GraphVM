@@ -8,9 +8,10 @@ import {
     WORKSPACE_STORAGE_KEY,
 } from '@/services/persistence';
 import type {
+    GraphInstance,
     PersistedWorkspaceState,
     PersistedWorkspaceTab,
-} from '@/types/workspace';
+} from '@/types';
 import { makeScopedGraphRegistryId } from '@/utils/graphRegistry';
 import {
     useGraphRegistry,
@@ -19,7 +20,7 @@ import {
     useToasts,
 } from '@Contexts';
 import { Logger } from '@Logger';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useGraphMutation } from './useGraphMutation';
 
 const logger = Logger.createContextLogger('useWorkspacePersistence');
@@ -67,18 +68,101 @@ export function useWorkspacePersistence(graphId = 'main-graph') {
         didLoad: false,
         toasts: {
             didNotifyLoadError: false,
-            // didNotifyManualSaveError: false,
             didNotifyAutoSaveError: false,
         },
         persistence: {
             lastHandledSaveRequestVersion: 0,
             lastAutosavedSignature: '',
             pendingHydrationTabIds: new Set(),
-            restoredTabIds: new Set(),
+            hydratedTabInstances: new Map(),
             persistedSnapshots: new Map(),
             lastSavedSnapshots: new Map(),
         },
     });
+
+    const hydrateTabIfReady = useCallback(
+        (
+            tabId: string,
+            core = registry.get(makeScopedGraphRegistryId(graphId, tabId))
+        ) => {
+            const runtime = runtimeStateRef.current;
+            const hydratedInstance =
+                runtime.persistence.hydratedTabInstances.get(tabId);
+
+            if (!isInitialized || hydratedInstance === core) {
+                return false;
+            }
+
+            if (tabId !== activeTabId || !core) {
+                return false;
+            }
+
+            const tab = tabs.find((candidateTab) => candidateTab.id === tabId);
+
+            if (!tab) {
+                runtime.persistence.pendingHydrationTabIds.delete(tabId);
+                runtime.persistence.persistedSnapshots.delete(tabId);
+                runtime.persistence.hydratedTabInstances.delete(tabId);
+                return false;
+            }
+
+            const scopedGraphId = makeScopedGraphRegistryId(graphId, tabId);
+            const hasPersistedSnapshot =
+                runtime.persistence.persistedSnapshots.has(tabId);
+            const hasLastSavedSnapshot =
+                runtime.persistence.lastSavedSnapshots.has(tabId);
+
+            if (!hasPersistedSnapshot && !hasLastSavedSnapshot) {
+                runtime.persistence.hydratedTabInstances.set(tabId, core);
+                runtime.persistence.pendingHydrationTabIds.delete(tabId);
+                return true;
+            }
+
+            const snapshot = hasPersistedSnapshot
+                ? (runtime.persistence.persistedSnapshots.get(tabId) ?? null)
+                : (runtime.persistence.lastSavedSnapshots.get(tabId) ?? null);
+            const restored = restoreGraph(core, snapshot);
+
+            if (!restored) {
+                addToast({
+                    type: 'error',
+                    message: `Failed to restore graph for tab "${tab.name}".`,
+                });
+                logger.error('Failed to restore tab graph snapshot', {
+                    tabId,
+                    scopedGraphId,
+                });
+            }
+
+            syncAll(core);
+            const graphInfo = extractElementsInfo(core.$(':selected'));
+            setInfo(graphInfo);
+
+            clearTabPendingSave(tabId);
+
+            runtime.persistence.hydratedTabInstances.set(tabId, core);
+            runtime.persistence.pendingHydrationTabIds.delete(tabId);
+            runtime.persistence.persistedSnapshots.delete(tabId);
+            logger.debug(`Completed hydration for tab "${tab.name}".`, {
+                tabId,
+                scopedGraphId,
+                restored,
+            });
+
+            return true;
+        },
+        [
+            activeTabId,
+            addToast,
+            clearTabPendingSave,
+            graphId,
+            isInitialized,
+            registry,
+            setInfo,
+            syncAll,
+            tabs,
+        ]
+    );
 
     useEffect(() => {
         const runtime = runtimeStateRef.current;
@@ -127,6 +211,25 @@ export function useWorkspacePersistence(graphId = 'main-graph') {
     }, [initializeWorkspace, addToast]);
 
     useEffect(() => {
+        if (!isInitialized || !activeTabId) {
+            return;
+        }
+
+        const scopedGraphId = makeScopedGraphRegistryId(graphId, activeTabId);
+
+        return registry.subscribe(scopedGraphId, (instance) => {
+            if (!instance) {
+                runtimeStateRef.current.persistence.hydratedTabInstances.delete(
+                    activeTabId
+                );
+                return;
+            }
+
+            hydrateTabIfReady(activeTabId, instance);
+        });
+    }, [activeTabId, graphId, hydrateTabIfReady, isInitialized, registry]);
+
+    useEffect(() => {
         const runtime = runtimeStateRef.current;
 
         if (!isInitialized) {
@@ -139,79 +242,14 @@ export function useWorkspacePersistence(graphId = 'main-graph') {
             if (!currentTabIds.has(pendingTabId)) {
                 runtime.persistence.pendingHydrationTabIds.delete(pendingTabId);
                 runtime.persistence.persistedSnapshots.delete(pendingTabId);
-                runtime.persistence.restoredTabIds.delete(pendingTabId);
+                runtime.persistence.hydratedTabInstances.delete(pendingTabId);
             }
         }
 
         tabs.forEach((tab) => {
-            const tabId = tab.id;
-
-            if (runtime.persistence.restoredTabIds.has(tabId)) {
-                return;
-            }
-
-            if (tabId !== activeTabId) {
-                return;
-            }
-
-            const scopedGraphId = makeScopedGraphRegistryId(graphId, tabId);
-            const core = registry.get(scopedGraphId);
-
-            if (!core) {
-                return;
-            }
-
-            const hasPersistedSnapshot =
-                runtime.persistence.persistedSnapshots.has(tabId);
-
-            if (!hasPersistedSnapshot) {
-                runtime.persistence.restoredTabIds.add(tabId);
-                return;
-            }
-
-            const snapshot =
-                runtime.persistence.persistedSnapshots.get(tabId) ?? null;
-            const restored = restoreGraph(core, snapshot);
-
-            if (!restored) {
-                addToast({
-                    type: 'error',
-                    message: `Failed to restore graph for tab "${tab.name}".`,
-                });
-                logger.error('Failed to restore tab graph snapshot', {
-                    tabId,
-                    scopedGraphId,
-                });
-            }
-
-            if (tabId === activeTabId) {
-                syncAll(core);
-                const graphInfo = extractElementsInfo(core.$(':selected'));
-                setInfo(graphInfo);
-            }
-
-            clearTabPendingSave(tabId);
-
-            runtime.persistence.restoredTabIds.add(tabId);
-            runtime.persistence.pendingHydrationTabIds.delete(tabId);
-            runtime.persistence.persistedSnapshots.delete(tabId);
-            logger.debug(`Completed hydration for tab "${tab.name}".`, {
-                tabId,
-                scopedGraphId,
-                restored,
-            });
+            hydrateTabIfReady(tab.id);
         });
-    }, [
-        tabs,
-        activeTabId,
-        graphId,
-        isInitialized,
-        registry,
-        syncAll,
-        addToast,
-        clearTabPendingSave,
-        setInfo,
-    ]);
+    }, [tabs, activeTabId, graphId, isInitialized, registry, hydrateTabIfReady]);
 
     useEffect(() => {
         const runtime = runtimeStateRef.current;
@@ -298,7 +336,7 @@ type WorkspacePersistenceRuntimeState = {
         lastHandledSaveRequestVersion: number;
         lastAutosavedSignature: string;
         pendingHydrationTabIds: Set<string>;
-        restoredTabIds: Set<string>;
+        hydratedTabInstances: Map<string, GraphInstance>;
         persistedSnapshots: Map<string, PersistedWorkspaceTab['graph']>;
         lastSavedSnapshots: Map<string, PersistedWorkspaceTab['graph']>;
     };
