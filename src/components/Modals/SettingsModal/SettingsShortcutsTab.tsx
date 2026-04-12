@@ -1,7 +1,7 @@
 import { DefaultSettingsData } from '@/constants/settingsDefaults';
 import type { SettingsData, ShortcutAction } from '@/types/ui/settings';
 import { formatShortcutInput, normalizeShortcut } from '@/utils/shortcuts';
-import { useToasts } from '@Contexts';
+import { useSettings, useToasts } from '@Contexts';
 import { useState, type KeyboardEvent } from 'react';
 
 const SHORTCUT_FIELDS: {
@@ -56,15 +56,13 @@ const SHORTCUT_FIELDS: {
     },
 ];
 
-export function SettingsShortcutsTab({
-    shortcuts,
-    setShortcuts,
-}: Readonly<SettingsShortcutsTabProps>) {
+export function SettingsShortcutsTab() {
     const [capturingAction, setCapturingAction] = useState<ShortcutAction | null>(
         null
     );
 
     const { addToast } = useToasts();
+    const { shortcuts, setShortcuts } = useSettings();
 
     const duplicateActions = getDuplicateShortcutActions(shortcuts);
 
@@ -273,8 +271,3 @@ function getDuplicateShortcutActions(shortcuts: SettingsData['shortcuts']) {
         .filter((actions) => actions.length > 1)
         .flat();
 }
-
-type SettingsShortcutsTabProps = {
-    shortcuts: SettingsData['shortcuts'];
-    setShortcuts: (shortcuts: SettingsData['shortcuts']) => void;
-};

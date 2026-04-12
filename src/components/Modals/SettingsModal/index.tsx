@@ -15,14 +15,8 @@ export function SettingsModal() {
     const [activeTab, setActiveTab] = useState<SettingsTabId>('interface');
 
     const {
-        ui: {
-            toast,
-            setToast,
-            disableElementsInfoPanel,
-            setDisableElementsInfoPanel,
-        },
-        graph: { arrangeOn, setArrangeOn, limits, setLimits },
-        shortcuts,
+        ui: { setToast, setDisableElementsInfoPanel },
+        graph: { setArrangeOn, setLimits },
         setShortcuts,
     } = useSettings();
 
@@ -53,6 +47,7 @@ export function SettingsModal() {
     };
 
     const handleResetAll = () => {
+        setDisableElementsInfoPanel(DefaultSettingsData.ui.disableElementsInfoPanel);
         setToast(DefaultSettingsData.ui.toast);
         setArrangeOn(DefaultSettingsData.graph.arrangeOn);
         setLimits(DefaultSettingsData.graph.limits);
@@ -88,30 +83,9 @@ export function SettingsModal() {
                     name="settings-modal-tabs"
                 />
 
-                {activeTab === 'interface' && (
-                    <SettingsInterfaceTab
-                        toast={toast}
-                        setToast={setToast}
-                        disableElementsInfoPanel={disableElementsInfoPanel}
-                        setDisableElementsInfoPanel={setDisableElementsInfoPanel}
-                    />
-                )}
-
-                {activeTab === 'graph' && (
-                    <SettingsGraphTab
-                        arrangeOn={arrangeOn}
-                        setArrangeOn={setArrangeOn}
-                        limits={limits}
-                        setLimits={setLimits}
-                    />
-                )}
-
-                {activeTab === 'shortcuts' && (
-                    <SettingsShortcutsTab
-                        shortcuts={shortcuts}
-                        setShortcuts={setShortcuts}
-                    />
-                )}
+                {activeTab === 'interface' && <SettingsInterfaceTab />}
+                {activeTab === 'graph' && <SettingsGraphTab />}
+                {activeTab === 'shortcuts' && <SettingsShortcutsTab />}
             </main>
         </Modal>
     );

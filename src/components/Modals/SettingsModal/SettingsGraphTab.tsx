@@ -1,14 +1,14 @@
 import { DefaultSettingsData } from '@/constants/settingsDefaults';
+import { useSettings } from '@/contexts';
 import type { SettingsData } from '@/types/ui/settings';
 import { NumberInput, ToggleInput } from '@Inputs';
 import type { ChangeEvent } from 'react';
 
-export function SettingsGraphTab({
-    arrangeOn,
-    setArrangeOn,
-    limits,
-    setLimits,
-}: Readonly<SettingsGraphTabProps>) {
+export function SettingsGraphTab() {
+    const {
+        graph: { arrangeOn, setArrangeOn, limits, setLimits },
+    } = useSettings();
+
     const handleArrangeOnChange =
         (key: keyof SettingsData['graph']['arrangeOn']) =>
         (event: ChangeEvent<HTMLInputElement>) => {
@@ -110,10 +110,3 @@ export function SettingsGraphTab({
         </section>
     );
 }
-
-type SettingsGraphTabProps = {
-    arrangeOn: SettingsData['graph']['arrangeOn'];
-    setArrangeOn: (arrangeOn: SettingsData['graph']['arrangeOn']) => void;
-    limits: SettingsData['graph']['limits'];
-    setLimits: (limits: SettingsData['graph']['limits']) => void;
-};

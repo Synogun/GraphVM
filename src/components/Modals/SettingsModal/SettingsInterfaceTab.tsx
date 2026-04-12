@@ -1,5 +1,6 @@
 import { DefaultSettingsData } from '@/constants/settingsDefaults';
-import type { SettingsData, ToastPosition } from '@/types/ui/settings';
+import { useSettings } from '@/contexts/ui';
+import type { ToastPosition } from '@/types/ui';
 import { NumberInput, SelectInput, ToggleInput } from '@Inputs';
 import type { ChangeEvent } from 'react';
 
@@ -15,12 +16,16 @@ const TOAST_POSITION_OPTIONS: { label: string; value: ToastPosition }[] = [
     { label: 'Bottom Right', value: 'bottom-right' },
 ];
 
-export function SettingsInterfaceTab({
-    toast,
-    setToast,
-    disableElementsInfoPanel,
-    setDisableElementsInfoPanel,
-}: Readonly<SettingsInterfaceTabProps>) {
+export function SettingsInterfaceTab() {
+    const {
+        ui: {
+            toast,
+            setToast,
+            disableElementsInfoPanel,
+            setDisableElementsInfoPanel,
+        },
+    } = useSettings();
+
     const handleToastDurationChange = (event: ChangeEvent<HTMLInputElement>) => {
         const parsed = Number.parseInt(event.target.value, 10);
         const duration = Number.isFinite(parsed)
@@ -93,10 +98,3 @@ export function SettingsInterfaceTab({
         </>
     );
 }
-
-type SettingsInterfaceTabProps = {
-    toast: SettingsData['ui']['toast'];
-    setToast: (toast: SettingsData['ui']['toast']) => void;
-    disableElementsInfoPanel: SettingsData['ui']['disableElementsInfoPanel'];
-    setDisableElementsInfoPanel: (value: boolean) => void;
-};
