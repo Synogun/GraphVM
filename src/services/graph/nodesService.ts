@@ -1,6 +1,7 @@
 import { ParsedError, parseError } from '@/config/parsedError';
-import { isDefaultNodeData, isNodeShape } from '@/types/elements/nodes/typeGuards';
+import { isNodeShape } from '@/types/elements/nodes/typeGuards';
 import type { GraphLimits } from '@/types/ui/settings';
+import { extractElementData } from '@/utils';
 import { getDefaultNodesData } from '@/utils/styleHelpers';
 import type cytoscape from 'cytoscape';
 import { addEdge, removeEdges } from './edgesService';
@@ -69,7 +70,7 @@ export function addNode(
 
     core.add(newNodeDefinition);
 
-    return core.$id(newId);
+    return core.$id(newNodeData.id);
 }
 
 export function addNodes(
@@ -168,101 +169,55 @@ export function updateNodes(
 
 export function addGhostFromNode(
     core: cytoscape.Core,
-    element: cytoscape.NodeSingular,
+    node: cytoscape.NodeSingular,
     limits?: GraphLimits
 ) {
-    if (element.isEdge()) {
+    if (node.isEdge()) {
         throw new ParsedError('Ghost nodes can only be created from nodes.', {
-            context: { elementId: element.id() },
+            context: { elementId: node.id() },
         });
     }
 
-    if (element.data('isGhost')) {
+    if (node.data('isGhost')) {
         throw new ParsedError(
             'Cannot create a ghost node from another ghost node.',
-            { context: { elementId: element.id() } }
+            { context: { elementId: node.id() } }
         );
     }
 
-    assertNodeLimit(core.nodes().length, 1, limits);
-
-    const position = element.renderedPosition();
-
-    const zoom = core.zoom();
-    const pan = core.pan();
-
-    const rawElementData: unknown = { ...element.data() };
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { id: _, ...elementData } = isDefaultNodeData(rawElementData)
-        ? rawElementData
-        : {};
-
-    const newNodeOptions: cytoscape.NodeDefinition = {
-        position: {
-            x: (position.x - pan.x) / zoom + 25, // Offset to avoid exact overlap
-            y: (position.y - pan.y) / zoom + 25, // Offset to avoid exact overlap
-        },
-        data: {
-            ...elementData,
-            isGhost: true,
-        },
-    };
+    const existingEdgeIds = new Set(core.edges().map((edge) => edge.id()));
 
     let newNode: cytoscape.NodeSingular;
     try {
-        newNode = addNode(core, newNodeOptions, ['ghost-element']);
+        newNode = cloneNode(core, node, limits);
     } catch (error: unknown) {
         const parsedError = parseError(error);
         throw new ParsedError('Failed to add ghost node.', {
             cause: parsedError,
-            context: { elementId: element.id() },
+            context: { elementId: node.id() },
         });
     }
 
-    // No edges to connect, return early
-    if (element.neighborhood().length === 0) {
-        return core.$id(newNode.id());
-    }
-
-    const newEdgeData = {
-        isGhost: true,
-        style: 'dashed',
-    };
-
-    const incomers = element.incomers('edge');
-    const outgoers = element.outgoers('edge');
-
     try {
-        for (const edge of incomers.union(outgoers)) {
-            if (edge.data('isGhost')) {
-                continue;
-                // TODO DECIDE: Allow with a setting?
-            }
+        newNode.data('isGhost', true);
+        newNode.addClass('ghost-element');
 
-            const destiny = {
-                source: edge.source().id(),
-                target: newNode.id(),
-            };
+        const clonedEdges = newNode.connectedEdges().filter((edge) => {
+            return !existingEdgeIds.has(edge.id());
+        });
 
-            if (outgoers.contains(edge)) {
-                destiny.source = newNode.id();
-                destiny.target = edge.target().id();
-            }
-
-            addEdge(
-                core,
-                { data: { ...newEdgeData, ...destiny } },
-                ['ghost-element'],
-                limits
-            );
-        }
+        clonedEdges.forEach((edge) => {
+            edge.data('isGhost', true);
+            edge.data('style', 'dashed');
+            edge.addClass('ghost-element');
+        });
     } catch (error: unknown) {
         const parsedError = parseError(error);
         newNode.remove();
 
         throw new ParsedError('Failed to add ghost edges.', {
             cause: parsedError,
-            context: { elementId: element.id() },
+            context: { elementId: node.id() },
         });
     }
 
@@ -283,18 +238,15 @@ export function cloneNode(
     const position = node.renderedPosition();
     const zoom = core.zoom();
     const pan = core.pan();
+    const newIndex = core.nodes().length + 1;
 
-    const rawNodeData: unknown = { ...node.data() };
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { id: _, ...nodeData } = isDefaultNodeData(rawNodeData) ? rawNodeData : {};
-
+    const parsedNodeData = extractElementData(node);
     const newNodeOptions: cytoscape.NodeDefinition = {
         position: {
             x: (position.x - pan.x) / zoom + 25, // Offset to avoid exact overlap
             y: (position.y - pan.y) / zoom + 25, // Offset to avoid exact overlap
         },
-        data: { ...nodeData },
-        classes: [...node.classes()],
+        data: { ...parsedNodeData, index: newIndex },
     };
 
     let newNode: cytoscape.NodeSingular;
@@ -318,6 +270,9 @@ export function cloneNode(
 
     try {
         for (const edge of incomers.union(outgoers)) {
+            const newIndex = core.edges().length + 1;
+            const parsedEdgeData = extractElementData(edge);
+
             const destiny = {
                 source: edge.source().id(),
                 target: newNode.id(),
@@ -328,7 +283,12 @@ export function cloneNode(
                 destiny.target = edge.target().id();
             }
 
-            addEdge(core, { data: destiny }, edge.classes(), limits);
+            addEdge(
+                core,
+                { data: { ...parsedEdgeData, ...destiny, index: newIndex } },
+                edge.classes(),
+                limits
+            );
         }
     } catch (error: unknown) {
         const parsedError = parseError(error);

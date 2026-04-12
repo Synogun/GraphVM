@@ -1,3 +1,7 @@
+import { DefaultEdgesData, DefaultNodesData } from '@/constants/graphDefaults';
+import { isDefaultEdgeData } from '@/types/elements/edges/typeGuards';
+import { isDefaultNodeData } from '@/types/elements/nodes/typeGuards';
+
 /**
  * Transforms a hyphen-separated string (kebab-case) into a human-readable title-cased string.
  *
@@ -77,4 +81,24 @@ export function findPropertyValueMode(
     }
 
     return mode.propValue;
+}
+
+export function extractElementData(
+    element: cytoscape.EdgeSingular | cytoscape.NodeSingular
+) {
+    const rawElementData: unknown = { ...element.data() };
+    if (element.isNode()) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { id: _, ...parsedNodeData } = isDefaultNodeData(rawElementData)
+            ? rawElementData
+            : { ...DefaultNodesData };
+        return parsedNodeData;
+    } else {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { id: _, ...parsedEdgeData } = isDefaultEdgeData(rawElementData)
+            ? rawElementData
+            : { ...DefaultEdgesData };
+
+        return parsedEdgeData;
+    }
 }

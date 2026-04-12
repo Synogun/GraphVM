@@ -11,7 +11,10 @@ import {
     isPersistedWorkspaceState,
     WORKSPACE_SCHEMA_VERSION,
 } from '@/types/workspace/typeGuards';
+import { Logger } from '@Logger';
 import type cytoscape from 'cytoscape';
+
+const logger = Logger.createContextLogger('WorkspacePersistenceService');
 
 export const WORKSPACE_STORAGE_KEY = 'graphvm.workspace.v1';
 
@@ -99,7 +102,7 @@ export function restoreGraph(
     core.resize();
     core.fit();
     setGraphDirected(core, Boolean(normalizedSnapshot.data?.directed));
-    console.log('Graph restoration complete. Current graph state:', core.json());
+    logger.info('Graph restoration complete. Current graph state:', core.json());
 
     return true;
 }
