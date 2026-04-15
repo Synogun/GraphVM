@@ -1,4 +1,5 @@
-import { ParsedErrorToasts, parseError } from '@/config/parsedError';
+import { parseError } from '@/config/parsedError';
+import { ParsedErrorToasts } from '@/constants';
 import {
     DefaultBipartiteGenerationParams,
     DefaultCircleGenerationParams,

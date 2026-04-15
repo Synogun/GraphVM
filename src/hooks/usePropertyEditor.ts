@@ -1,4 +1,5 @@
-import { ParsedErrorToasts, parseError } from '@/config/parsedError';
+import { parseError } from '@/config/parsedError';
+import { ParsedErrorToasts } from '@/constants';
 import type { GraphInstance } from '@/types/graph';
 import { findPropertyValueMode } from '@/utils/elements';
 import { useToasts } from '@Contexts';

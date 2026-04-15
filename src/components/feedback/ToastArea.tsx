@@ -1,6 +1,5 @@
 import { AppIcons } from '@/components/common/AppIcons';
-import { useModals, useSettings, useToasts } from '@Contexts';
-import { createPortal } from 'react-dom';
+import { useSettings, useToasts } from '@Contexts';
 
 const PositionsMap = {
     'top-left': 'toast-top toast-start',
@@ -33,16 +32,9 @@ export function ToastArea() {
         ui: { toast },
     } = useSettings();
 
-    const {
-        isAlgorithmsModalOpen,
-        isHelpModalOpen,
-        isImportExportModalOpen,
-        isSettingsModalOpen,
-    } = useModals();
-
     const { pool: toastPool, removeToast } = useToasts();
 
-    const toastContent = (
+    return (
         <div className={`toast ${PositionsMap[toast.position]} z-200`}>
             {toastPool.map((toast) => {
                 const toastType = toast.type ?? 'info';
@@ -73,21 +65,4 @@ export function ToastArea() {
             })}
         </div>
     );
-
-    const isAnyModalOpen =
-        isAlgorithmsModalOpen ||
-        isHelpModalOpen ||
-        isImportExportModalOpen ||
-        isSettingsModalOpen;
-
-    if (isAnyModalOpen) {
-        const openModal =
-            document.querySelector<HTMLDialogElement>('dialog.modal[open]');
-
-        if (openModal) {
-            return createPortal(toastContent, openModal);
-        }
-    }
-
-    return toastContent;
 }

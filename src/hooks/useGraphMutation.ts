@@ -1,7 +1,10 @@
-import { ParsedErrorToasts, parseError } from '@/config/parsedError';
+import { parseError } from '@/config/parsedError';
 import { useGetGraph } from '@/hooks';
-import { useGraphMeta, useGraphSelection, useToasts } from '@Contexts';
+import { useGraphMeta, useGraphSelection } from '@Contexts';
+import { Logger } from '@Logger';
 import { useCallback } from 'react';
+
+const logger = Logger.createContextLogger('useGraphMutation');
 
 type GraphMutationAction<TResult> = (core: cytoscape.Core) => TResult;
 
@@ -19,18 +22,15 @@ export function useGraphMutation(graphId = 'main-graph') {
         edges: { setSelected: setSelectedEdges },
     } = useGraphSelection();
 
-    const { addToast } = useToasts();
-
     const getGraph = useCallback(() => {
         const core = graphRef.current;
 
         if (!core) {
-            addToast(ParsedErrorToasts.GraphNotFound);
             return null;
         }
 
         return core;
-    }, [graphRef, addToast]);
+    }, [graphRef]);
 
     const syncMeta = useCallback(
         (core?: cytoscape.Core) => {
@@ -88,11 +88,11 @@ export function useGraphMutation(graphId = 'main-graph') {
                 return result;
             } catch (error: unknown) {
                 const parsedError = parseError(error);
-                addToast({ type: 'error', message: parsedError.message });
+                logger.error('Graph action failed', parsedError);
                 return null;
             }
         },
-        [getGraph, syncAll, addToast]
+        [getGraph, syncAll]
     );
 
     return {

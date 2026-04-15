@@ -1,4 +1,5 @@
-import { ParsedError, ParsedErrorToasts, parseError } from '@/config/parsedError';
+import { ParsedError, parseError } from '@/config/parsedError';
+import { ParsedErrorToasts } from '@/constants';
 import { useGetGraph, useGraphMutation } from '@/hooks';
 import { arrangeGraph, newGraph, setGraphDirected } from '@/services/graph';
 import {

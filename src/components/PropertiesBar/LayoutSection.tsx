@@ -1,4 +1,4 @@
-import { ParsedErrorToasts } from '@/config/parsedError';
+import { ParsedErrorToasts } from '@/constants';
 import {
     DefaultGridLayoutOptions,
     DefaultLayoutOptions,
@@ -25,7 +25,6 @@ export function LayoutSection({ visible = true }: Readonly<LayoutSectionProps>) 
 
     useEffect(() => {
         if (!graphRef.current) {
-            addToast(ParsedErrorToasts.GraphNotFound);
             return;
         }
 
@@ -64,7 +63,6 @@ export function LayoutSection({ visible = true }: Readonly<LayoutSectionProps>) 
         gridLayout.rows,
         gridLayout.cols,
         setCurrentLayout,
-        addToast,
     ]);
 
     const handleChangeLayoutType = (e: ChangeEvent<HTMLSelectElement>) => {

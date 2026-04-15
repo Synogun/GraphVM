@@ -25,8 +25,3 @@ export type ToastContextProperties = {
     addToast: (toast: Omit<ToastData, 'id'>) => void;
     removeToast: (id: string) => void;
 };
-
-export type PopupsContextProperties = {
-    modals: ModalsContextProperties;
-    toasts: ToastContextProperties;
-};

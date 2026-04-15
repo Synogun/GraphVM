@@ -1,5 +1,6 @@
 import { SelectInput } from '@/components/common';
-import { ParsedErrorToasts, parseError } from '@/config/parsedError';
+import { parseError } from '@/config/parsedError';
+import { ParsedErrorToasts } from '@/constants';
 import { DefaultTraversalParams } from '@/constants/algorithmDefaults';
 import { useGetGraph, useGraphMutation } from '@/hooks';
 import { runBFSAlgorithm } from '@/services';
