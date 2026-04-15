@@ -82,7 +82,7 @@ export function restoreGraph(
 ): boolean {
     if (snapshot === null) {
         resetGraph(core);
-        return false;
+        return true;
     }
 
     if (!isCytoscapeOptions(snapshot)) {
