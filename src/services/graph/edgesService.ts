@@ -93,7 +93,7 @@ export function addEdge(
     });
 
     const isDirected = Boolean(options.data.directed ?? core.data('directed'));
-    const insertedEdgeId = String(newEdgeData.id);
+    const insertedEdgeId = newEdgeData.id;
 
     if (isDirected) {
         core.$id(insertedEdgeId).addClass('directed');

@@ -11,12 +11,10 @@ type WorkspaceState = {
     activeTabId: string;
     nextTabNumber: number;
     isInitialized: boolean;
-    saveRequestVersion: number;
 };
 
 type WorkspaceAction =
     | { type: 'initialize-workspace'; state: PersistedWorkspaceState | null }
-    | { type: 'request-save-workspace' }
     | { type: 'mark-tab-pending-save'; tabId: string }
     | { type: 'clear-tab-pending-save'; tabId: string }
     | { type: 'clear-all-pending-save' }
@@ -68,7 +66,6 @@ function makeInitialWorkspaceState(): WorkspaceState {
         activeTabId: initialTab.id,
         nextTabNumber: getNextTabNumber([initialTab]),
         isInitialized: false,
-        saveRequestVersion: 0,
     };
 }
 
@@ -86,7 +83,6 @@ function hydrateWorkspaceState(
         activeTabId,
         nextTabNumber: getNextTabNumber(tabs),
         isInitialized: true,
-        saveRequestVersion: 0,
     };
 }
 
@@ -119,13 +115,6 @@ function workspaceReducer(
             return hydrateWorkspaceState(action.state);
         }
 
-        case 'request-save-workspace': {
-            return {
-                ...state,
-                saveRequestVersion: state.saveRequestVersion + 1,
-            };
-        }
-
         case 'mark-tab-pending-save': {
             const shouldMarkPending = state.tabs.some(
                 (tab) => tab.id === action.tabId && !tab.pendingSave
@@ -140,7 +129,6 @@ function workspaceReducer(
                 tabs: state.tabs.map((tab) =>
                     tab.id === action.tabId ? { ...tab, pendingSave: true } : tab
                 ),
-                saveRequestVersion: state.saveRequestVersion + 1,
             };
         }
 
@@ -187,7 +175,6 @@ function workspaceReducer(
                 tabs: [...state.tabs, tab],
                 activeTabId: tab.id,
                 nextTabNumber: state.nextTabNumber + 1,
-                isInitialized: true,
             };
         }
 
@@ -207,7 +194,6 @@ function workspaceReducer(
                     tabs: [replacementTab],
                     activeTabId: replacementTab.id,
                     nextTabNumber: state.nextTabNumber + 1,
-                    isInitialized: true,
                 };
             }
 
@@ -215,7 +201,6 @@ function workspaceReducer(
                 return {
                     ...state,
                     tabs: nextTabs,
-                    isInitialized: true,
                 };
             }
 
@@ -229,7 +214,6 @@ function workspaceReducer(
                 ...state,
                 tabs: nextTabs,
                 activeTabId: replacementTab.id,
-                isInitialized: true,
             };
         }
 
@@ -243,7 +227,6 @@ function workspaceReducer(
             return {
                 ...state,
                 tabs: nextTabs,
-                isInitialized: true,
             };
         }
 
@@ -257,7 +240,6 @@ function workspaceReducer(
             return {
                 ...state,
                 activeTabId: action.tabId,
-                isInitialized: true,
             };
         }
 
@@ -278,7 +260,6 @@ function workspaceReducer(
             return {
                 ...state,
                 tabs: moveTab(state.tabs, fromIndex, toIndex),
-                isInitialized: true,
             };
         }
 
@@ -306,10 +287,6 @@ export function GraphWorkspaceProvider({
         },
         [workspace.isInitialized]
     );
-
-    const requestSaveWorkspace = useCallback(() => {
-        dispatch({ type: 'request-save-workspace' });
-    }, []);
 
     const markTabPendingSave = useCallback((tabId: string) => {
         dispatch({ type: 'mark-tab-pending-save', tabId });
@@ -359,9 +336,7 @@ export function GraphWorkspaceProvider({
             activeTabId: workspace.activeTabId,
             activeTab,
             isInitialized: workspace.isInitialized,
-            saveRequestVersion: workspace.saveRequestVersion,
             initializeWorkspace,
-            requestSaveWorkspace,
             markTabPendingSave,
             clearTabPendingSave,
             clearAllPendingSave,
@@ -376,9 +351,7 @@ export function GraphWorkspaceProvider({
             workspace.activeTabId,
             activeTab,
             workspace.isInitialized,
-            workspace.saveRequestVersion,
             initializeWorkspace,
-            requestSaveWorkspace,
             markTabPendingSave,
             clearTabPendingSave,
             clearAllPendingSave,

@@ -23,9 +23,7 @@ export type GraphWorkspaceContextProperties = {
     activeTabId: string;
     activeTab: GraphWorkspaceTab | null;
     isInitialized: boolean;
-    saveRequestVersion: number;
     initializeWorkspace: (state: PersistedWorkspaceState | null) => boolean;
-    requestSaveWorkspace: () => void;
     markTabPendingSave: (tabId: string) => void;
     clearTabPendingSave: (tabId: string) => void;
     clearAllPendingSave: () => void;

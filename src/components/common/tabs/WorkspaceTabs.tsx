@@ -136,7 +136,7 @@ export function WorkspaceTabs<T extends string>({
                                 <>
                                     <button
                                         title={
-                                            `${tab.label}${tab.pendingSave ? ' (Unsaved changes)' : ''}\n` +
+                                            `${tab.label}\n` +
                                             '(Double-click to rename)'
                                         }
                                         className={
@@ -175,22 +175,6 @@ export function WorkspaceTabs<T extends string>({
                                     >
                                         {AppIcons.Close({ size: 12 })}
                                     </button>
-
-                                    <div
-                                        className={
-                                            'pointer-events-none ' +
-                                            'absolute top-1/2 right-6.5 -translate-y-1/2 ' +
-                                            'inline-grid *:[grid-area:1/1] transition-opacity ' +
-                                            (tab.pendingSave
-                                                ? 'opacity-100 group-hover:opacity-0 group-focus-within:opacity-0'
-                                                : 'opacity-0')
-                                        }
-                                        title="Unsaved graph changes"
-                                        aria-label="Unsaved graph changes"
-                                    >
-                                        <div className="status status-accent animate-ping" />
-                                        <div className="status status-accent" />
-                                    </div>
                                 </>
                             )}
                         </div>
@@ -204,7 +188,6 @@ export function WorkspaceTabs<T extends string>({
 export type WorkspaceTabItem<T extends string> = {
     id: T;
     label: string;
-    pendingSave?: boolean;
     disabled?: boolean;
 };
 

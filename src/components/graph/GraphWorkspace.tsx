@@ -1,10 +1,10 @@
 import { AppIcons } from '@/components/common/AppIcons';
 import { WorkspaceTabs } from '@/components/common/tabs';
-import { useGetGraph, useGraphMutation, useWorkspacePersistence } from '@/hooks';
+import { useGetGraph, useWorkspacePersistence } from '@/hooks';
 import { makeScopedGraphRegistryId } from '@/utils/graphRegistry';
 import { useGraphRegistry, useGraphWorkspace } from '@Contexts';
 import { ConfirmModal } from '@Modals';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { GraphCanvas } from './GraphCanvas';
 
 const MAIN_GRAPH_ID = 'main-graph';
@@ -16,7 +16,6 @@ export function GraphWorkspace() {
     useWorkspacePersistence(MAIN_GRAPH_ID);
 
     const graphRef = useGetGraph(MAIN_GRAPH_ID);
-    const { syncAll } = useGraphMutation(MAIN_GRAPH_ID);
     const [tabIdToClose, setTabIdToClose] = useState<string | null>(null);
 
     const pendingCloseTabName = useMemo(() => {
@@ -29,7 +28,6 @@ export function GraphWorkspace() {
 
     const handleCloseTab = useCallback(
         (tabId: string) => {
-            const tab = tabs.find((currentTab) => currentTab.id === tabId);
             const scopedGraphId = makeScopedGraphRegistryId(MAIN_GRAPH_ID, tabId);
             const activeGraph = graphRef.current;
             const tabGraph =
@@ -40,14 +38,14 @@ export function GraphWorkspace() {
                 (tabGraph.nodes().length > 0 || tabGraph.edges().length > 0)
             );
 
-            if (tab?.pendingSave || hasGraphData) {
+            if (hasGraphData) {
                 setTabIdToClose(tabId);
                 return;
             }
 
             closeTab(tabId);
         },
-        [tabs, registry, graphRef, activeTabId, closeTab]
+        [registry, graphRef, activeTabId, closeTab]
     );
 
     const handleCancelCloseTab = useCallback(() => {
@@ -61,16 +59,6 @@ export function GraphWorkspace() {
 
         setTabIdToClose(null);
     }, [tabIdToClose, closeTab]);
-
-    useEffect(() => {
-        const core = graphRef.current;
-
-        if (!core) {
-            return;
-        }
-
-        syncAll(core);
-    }, [activeTabId, graphRef, syncAll]);
 
     return (
         <div className="flex h-full flex-col">
@@ -95,7 +83,6 @@ export function GraphWorkspace() {
                         tabs={tabs.map((tab) => ({
                             id: tab.id,
                             label: tab.name,
-                            pendingSave: tab.pendingSave,
                         }))}
                         activeTab={activeTabId}
                         onTabChange={setActiveTab}

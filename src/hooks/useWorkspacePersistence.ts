@@ -53,7 +53,6 @@ export function useWorkspacePersistence(graphId = 'main-graph') {
         tabs,
         activeTabId,
         isInitialized,
-        saveRequestVersion,
         initializeWorkspace,
         clearTabPendingSave,
         clearAllPendingSave,
@@ -64,6 +63,8 @@ export function useWorkspacePersistence(graphId = 'main-graph') {
         selectionInfo: { setInfo },
     } = useGraphSelection();
     const { addToast } = useToasts();
+    const tabsRef = useRef(tabs);
+    tabsRef.current = tabs;
     const runtimeStateRef = useRef<WorkspacePersistenceRuntimeState>({
         didLoad: false,
         toasts: {
@@ -71,11 +72,9 @@ export function useWorkspacePersistence(graphId = 'main-graph') {
             didNotifyAutoSaveError: false,
         },
         persistence: {
-            lastHandledSaveRequestVersion: 0,
             lastAutosavedSignature: '',
             pendingHydrationTabIds: new Set(),
             hydratedTabInstances: new Map(),
-            persistedSnapshots: new Map(),
             lastSavedSnapshots: new Map(),
         },
     });
@@ -97,30 +96,28 @@ export function useWorkspacePersistence(graphId = 'main-graph') {
                 return false;
             }
 
-            const tab = tabs.find((candidateTab) => candidateTab.id === tabId);
+            const tab = tabsRef.current.find(
+                (candidateTab) => candidateTab.id === tabId
+            );
 
             if (!tab) {
                 runtime.persistence.pendingHydrationTabIds.delete(tabId);
-                runtime.persistence.persistedSnapshots.delete(tabId);
                 runtime.persistence.hydratedTabInstances.delete(tabId);
                 return false;
             }
 
             const scopedGraphId = makeScopedGraphRegistryId(graphId, tabId);
-            const hasPersistedSnapshot =
-                runtime.persistence.persistedSnapshots.has(tabId);
-            const hasLastSavedSnapshot =
+            const hasSavedSnapshot =
                 runtime.persistence.lastSavedSnapshots.has(tabId);
 
-            if (!hasPersistedSnapshot && !hasLastSavedSnapshot) {
+            if (!hasSavedSnapshot) {
                 runtime.persistence.hydratedTabInstances.set(tabId, core);
                 runtime.persistence.pendingHydrationTabIds.delete(tabId);
                 return true;
             }
 
-            const snapshot = hasPersistedSnapshot
-                ? (runtime.persistence.persistedSnapshots.get(tabId) ?? null)
-                : (runtime.persistence.lastSavedSnapshots.get(tabId) ?? null);
+            const snapshot =
+                runtime.persistence.lastSavedSnapshots.get(tabId) ?? null;
             const restored = restoreGraph(core, snapshot);
 
             if (!restored) {
@@ -142,7 +139,6 @@ export function useWorkspacePersistence(graphId = 'main-graph') {
 
             runtime.persistence.hydratedTabInstances.set(tabId, core);
             runtime.persistence.pendingHydrationTabIds.delete(tabId);
-            runtime.persistence.persistedSnapshots.delete(tabId);
             logger.debug(`Completed hydration for tab "${tab.name}".`, {
                 tabId,
                 scopedGraphId,
@@ -160,7 +156,6 @@ export function useWorkspacePersistence(graphId = 'main-graph') {
             registry,
             setInfo,
             syncAll,
-            tabs,
         ]
     );
 
@@ -195,9 +190,6 @@ export function useWorkspacePersistence(graphId = 'main-graph') {
             return;
         }
 
-        runtime.persistence.persistedSnapshots = new Map(
-            persistedState.tabs.map((tab) => [tab.id, tab.graph])
-        );
         runtime.persistence.lastSavedSnapshots = new Map(
             persistedState.tabs.map((tab) => [tab.id, tab.graph])
         );
@@ -241,7 +233,6 @@ export function useWorkspacePersistence(graphId = 'main-graph') {
         for (const pendingTabId of runtime.persistence.pendingHydrationTabIds) {
             if (!currentTabIds.has(pendingTabId)) {
                 runtime.persistence.pendingHydrationTabIds.delete(pendingTabId);
-                runtime.persistence.persistedSnapshots.delete(pendingTabId);
                 runtime.persistence.hydratedTabInstances.delete(pendingTabId);
             }
         }
@@ -258,27 +249,21 @@ export function useWorkspacePersistence(graphId = 'main-graph') {
             return;
         }
 
-        let graphSnapshots = runtime.persistence.lastSavedSnapshots;
-        if (saveRequestVersion > runtime.persistence.lastHandledSaveRequestVersion) {
-            runtime.persistence.lastHandledSaveRequestVersion = saveRequestVersion;
-            graphSnapshots = new Map<string, PersistedWorkspaceTab['graph']>(
-                tabs.map((tab) => {
-                    const scopedGraphId = makeScopedGraphRegistryId(graphId, tab.id);
-                    const core = registry.get(scopedGraphId);
+        const graphSnapshots = new Map<string, PersistedWorkspaceTab['graph']>(
+            tabs.map((tab) => {
+                if (runtime.persistence.pendingHydrationTabIds.has(tab.id)) {
+                    return [
+                        tab.id,
+                        runtime.persistence.lastSavedSnapshots.get(tab.id) ?? null,
+                    ];
+                }
 
-                    if (runtime.persistence.pendingHydrationTabIds.has(tab.id)) {
-                        return [
-                            tab.id,
-                            runtime.persistence.lastSavedSnapshots.get(tab.id) ??
-                                runtime.persistence.persistedSnapshots.get(tab.id) ??
-                                null,
-                        ];
-                    }
-
-                    return [tab.id, core ? serializeGraph(core) : null];
-                })
-            );
-        }
+                const core = registry.get(
+                    makeScopedGraphRegistryId(graphId, tab.id)
+                );
+                return [tab.id, core ? serializeGraph(core) : null];
+            })
+        );
 
         const shellTabs = buildPersistedTabsFromSnapshots(tabs, graphSnapshots);
         const shellSignature = makeWorkspaceSignature(shellTabs);
@@ -314,16 +299,7 @@ export function useWorkspacePersistence(graphId = 'main-graph') {
         runtime.persistence.lastAutosavedSignature = shellSignature;
         runtime.persistence.lastSavedSnapshots = graphSnapshots;
         clearAllPendingSave();
-    }, [
-        tabs,
-        activeTabId,
-        isInitialized,
-        addToast,
-        graphId,
-        registry,
-        saveRequestVersion,
-        clearAllPendingSave,
-    ]);
+    }, [tabs, isInitialized, addToast, graphId, registry, clearAllPendingSave]);
 }
 
 type WorkspacePersistenceRuntimeState = {
@@ -333,11 +309,9 @@ type WorkspacePersistenceRuntimeState = {
         didNotifyAutoSaveError: boolean;
     };
     persistence: {
-        lastHandledSaveRequestVersion: number;
         lastAutosavedSignature: string;
         pendingHydrationTabIds: Set<string>;
         hydratedTabInstances: Map<string, GraphInstance>;
-        persistedSnapshots: Map<string, PersistedWorkspaceTab['graph']>;
         lastSavedSnapshots: Map<string, PersistedWorkspaceTab['graph']>;
     };
 };

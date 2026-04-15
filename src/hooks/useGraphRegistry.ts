@@ -1,10 +1,10 @@
+import type { GraphInstance } from '@/types/graph';
 import { makeScopedGraphRegistryId as makeActiveGraphRegistryId } from '@/utils/graphRegistry';
 import {
     useGraphRegistry as useGraphRegistryContext,
     useGraphWorkspace,
 } from '@Contexts';
 import { useEffect, useRef, type RefObject } from 'react';
-import type { GraphInstance } from '@/types/graph';
 
 export function useRegisterGraphByTab(
     id: string,
@@ -13,15 +13,14 @@ export function useRegisterGraphByTab(
 ) {
     const registry = useGraphRegistryContext();
     const { activeTabId } = useGraphWorkspace();
+    const resolvedTabId = tabId ?? activeTabId;
 
     useEffect(() => {
-        const targetTabId = tabId ?? activeTabId;
-
-        if (!targetTabId) {
+        if (!resolvedTabId) {
             return;
         }
 
-        const activeGraphId = makeActiveGraphRegistryId(id, targetTabId);
+        const activeGraphId = makeActiveGraphRegistryId(id, resolvedTabId);
 
         if (api.current) {
             registry.register(activeGraphId, api.current);
@@ -32,7 +31,7 @@ export function useRegisterGraphByTab(
                 registry.unregister(activeGraphId);
             }
         };
-    }, [id, api, registry, activeTabId, tabId]);
+    }, [id, api, registry, resolvedTabId]);
 }
 
 export function useGetGraph(id: string): RefObject<GraphInstance> {
@@ -48,8 +47,9 @@ export function useGetGraph(id: string): RefObject<GraphInstance> {
 
         const activeGraphId = makeActiveGraphRegistryId(id, activeTabId);
 
-        if (registry.get(activeGraphId)) {
-            core.current = registry.get(activeGraphId);
+        const instance = registry.get(activeGraphId);
+        if (instance) {
+            core.current = instance;
         }
 
         return registry.subscribe(activeGraphId, (instance) => {
@@ -67,25 +67,25 @@ export function useGetGraphByTab(
     const registry = useGraphRegistryContext();
     const { activeTabId } = useGraphWorkspace();
     const core = useRef<GraphInstance>(null);
+    const resolvedTabId = tabId ?? activeTabId;
 
     useEffect(() => {
-        const targetTabId = tabId ?? activeTabId;
-
-        if (!targetTabId) {
+        if (!resolvedTabId) {
             core.current = null;
             return;
         }
 
-        const activeGraphId = makeActiveGraphRegistryId(id, targetTabId);
+        const activeGraphId = makeActiveGraphRegistryId(id, resolvedTabId);
 
-        if (registry.get(activeGraphId)) {
-            core.current = registry.get(activeGraphId);
+        const instance = registry.get(activeGraphId);
+        if (instance) {
+            core.current = instance;
         }
 
         return registry.subscribe(activeGraphId, (instance) => {
             core.current = instance;
         });
-    }, [id, registry, activeTabId, tabId]);
+    }, [id, registry, resolvedTabId]);
 
     return core;
 }
