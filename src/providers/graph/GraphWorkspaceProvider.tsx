@@ -1,7 +1,7 @@
+import { loadWorkspaceState } from '@/services/persistence';
 import type {
     GraphWorkspaceContextProperties,
     GraphWorkspaceTab,
-    PersistedWorkspaceState,
 } from '@/types/workspace';
 import { GraphWorkspaceContext } from '@Contexts';
 import { useCallback, useMemo, useReducer, type ReactNode } from 'react';
@@ -10,14 +10,9 @@ type WorkspaceState = {
     tabs: GraphWorkspaceTab[];
     activeTabId: string;
     nextTabNumber: number;
-    isInitialized: boolean;
 };
 
 type WorkspaceAction =
-    | { type: 'initialize-workspace'; state: PersistedWorkspaceState | null }
-    | { type: 'mark-tab-pending-save'; tabId: string }
-    | { type: 'clear-tab-pending-save'; tabId: string }
-    | { type: 'clear-all-pending-save' }
     | { type: 'create-tab'; name?: string }
     | { type: 'close-tab'; tabId: string }
     | { type: 'rename-tab'; tabId: string; name: string }
@@ -54,35 +49,30 @@ function makeTab(tabId: string, name?: string): GraphWorkspaceTab {
     return {
         id: tabId,
         name: name?.trim() ?? makeDefaultTabName(tabId),
-        pendingSave: false,
     };
 }
 
 function makeInitialWorkspaceState(): WorkspaceState {
+    const persisted = loadWorkspaceState();
+
+    if (persisted && persisted.tabs.length > 0) {
+        const tabs = [...persisted.tabs]
+            .sort((left, right) => left.order - right.order)
+            .map((tab) => makeTab(tab.id, tab.name));
+
+        return {
+            tabs,
+            activeTabId: tabs[0].id,
+            nextTabNumber: getNextTabNumber(tabs),
+        };
+    }
+
     const initialTab = makeTab(DEFAULT_TAB_ID);
 
     return {
         tabs: [initialTab],
         activeTabId: initialTab.id,
         nextTabNumber: getNextTabNumber([initialTab]),
-        isInitialized: false,
-    };
-}
-
-function hydrateWorkspaceState(
-    persistedState: PersistedWorkspaceState
-): WorkspaceState {
-    const tabs = [...persistedState.tabs]
-        .sort((left, right) => left.order - right.order)
-        .map((tab) => makeTab(tab.id, tab.name));
-
-    const activeTabId = tabs[0]?.id ?? DEFAULT_TAB_ID;
-
-    return {
-        tabs,
-        activeTabId,
-        nextTabNumber: getNextTabNumber(tabs),
-        isInitialized: true,
     };
 }
 
@@ -103,68 +93,6 @@ function workspaceReducer(
     action: WorkspaceAction
 ): WorkspaceState {
     switch (action.type) {
-        case 'initialize-workspace': {
-            if (state.isInitialized) {
-                return state;
-            }
-
-            if (action.state === null) {
-                return { ...state, isInitialized: true };
-            }
-
-            return hydrateWorkspaceState(action.state);
-        }
-
-        case 'mark-tab-pending-save': {
-            const shouldMarkPending = state.tabs.some(
-                (tab) => tab.id === action.tabId && !tab.pendingSave
-            );
-
-            if (!shouldMarkPending) {
-                return state;
-            }
-
-            return {
-                ...state,
-                tabs: state.tabs.map((tab) =>
-                    tab.id === action.tabId ? { ...tab, pendingSave: true } : tab
-                ),
-            };
-        }
-
-        case 'clear-tab-pending-save': {
-            const hasPendingTab = state.tabs.some(
-                (tab) => tab.id === action.tabId && tab.pendingSave
-            );
-
-            if (!hasPendingTab) {
-                return state;
-            }
-
-            return {
-                ...state,
-                tabs: state.tabs.map((tab) =>
-                    tab.id === action.tabId ? { ...tab, pendingSave: false } : tab
-                ),
-            };
-        }
-
-        case 'clear-all-pending-save': {
-            const hasPendingTabs = state.tabs.some((tab) => tab.pendingSave);
-
-            if (!hasPendingTabs) {
-                return state;
-            }
-
-            return {
-                ...state,
-                tabs: state.tabs.map((tab) => ({
-                    ...tab,
-                    pendingSave: false,
-                })),
-            };
-        }
-
         case 'create-tab': {
             const tabNumber = state.nextTabNumber;
             const tabId = `graph-tab-${String(tabNumber)}`;
@@ -276,30 +204,6 @@ export function GraphWorkspaceProvider({
         makeInitialWorkspaceState()
     );
 
-    const initializeWorkspace = useCallback(
-        (state: PersistedWorkspaceState | null) => {
-            if (workspace.isInitialized) {
-                return false;
-            }
-
-            dispatch({ type: 'initialize-workspace', state });
-            return true;
-        },
-        [workspace.isInitialized]
-    );
-
-    const markTabPendingSave = useCallback((tabId: string) => {
-        dispatch({ type: 'mark-tab-pending-save', tabId });
-    }, []);
-
-    const clearTabPendingSave = useCallback((tabId: string) => {
-        dispatch({ type: 'clear-tab-pending-save', tabId });
-    }, []);
-
-    const clearAllPendingSave = useCallback(() => {
-        dispatch({ type: 'clear-all-pending-save' });
-    }, []);
-
     const createTab = useCallback(
         (name?: string) => {
             const tabId = `graph-tab-${String(workspace.nextTabNumber)}`;
@@ -335,11 +239,6 @@ export function GraphWorkspaceProvider({
             tabs: workspace.tabs,
             activeTabId: workspace.activeTabId,
             activeTab,
-            isInitialized: workspace.isInitialized,
-            initializeWorkspace,
-            markTabPendingSave,
-            clearTabPendingSave,
-            clearAllPendingSave,
             createTab,
             closeTab,
             renameTab,
@@ -350,11 +249,6 @@ export function GraphWorkspaceProvider({
             workspace.tabs,
             workspace.activeTabId,
             activeTab,
-            workspace.isInitialized,
-            initializeWorkspace,
-            markTabPendingSave,
-            clearTabPendingSave,
-            clearAllPendingSave,
             createTab,
             closeTab,
             renameTab,

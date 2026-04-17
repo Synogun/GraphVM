@@ -1,7 +1,6 @@
 export type GraphWorkspaceTab = {
     id: string;
     name: string;
-    pendingSave: boolean;
 };
 
 export type PersistedWorkspaceSchemaVersion = 1;
@@ -22,11 +21,6 @@ export type GraphWorkspaceContextProperties = {
     tabs: GraphWorkspaceTab[];
     activeTabId: string;
     activeTab: GraphWorkspaceTab | null;
-    isInitialized: boolean;
-    initializeWorkspace: (state: PersistedWorkspaceState | null) => boolean;
-    markTabPendingSave: (tabId: string) => void;
-    clearTabPendingSave: (tabId: string) => void;
-    clearAllPendingSave: () => void;
     createTab: (name?: string) => string;
     closeTab: (tabId: string) => void;
     renameTab: (tabId: string, name: string) => void;

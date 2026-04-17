@@ -1,317 +1,108 @@
 import { extractElementsInfo } from '@/services/graph';
 import {
-    hasPersistedState,
-    loadWorkspaceState,
-    restoreGraph,
+    buildWorkspaceSignature,
     saveWorkspaceState,
     serializeGraph,
-    WORKSPACE_STORAGE_KEY,
 } from '@/services/persistence';
-import type {
-    GraphInstance,
-    PersistedWorkspaceState,
-    PersistedWorkspaceTab,
-} from '@/types';
+import type { PersistedWorkspaceTab } from '@/types';
 import { makeScopedGraphRegistryId } from '@/utils/graphRegistry';
 import {
     useGraphRegistry,
     useGraphSelection,
     useGraphWorkspace,
+    useSnapshotStore,
     useToasts,
 } from '@Contexts';
 import { Logger } from '@Logger';
-import { useCallback, useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import { useGraphMutation } from './useGraphMutation';
 
 const logger = Logger.createContextLogger('useWorkspacePersistence');
 
-function makeWorkspaceSignature(tabs: PersistedWorkspaceTab[]): string {
-    return JSON.stringify({
-        tabs: tabs.map((tab) => ({
-            id: tab.id,
-            name: tab.name,
-            order: tab.order,
-            graph: tab.graph ? { elements: tab.graph.elements } : null,
-        })),
-    });
-}
-
-function buildPersistedTabsFromSnapshots(
-    tabs: { id: string; name: string }[],
-    snapshots: Map<string, PersistedWorkspaceTab['graph']>
-): PersistedWorkspaceTab[] {
-    return tabs.map((tab, index) => ({
-        id: tab.id,
-        name: tab.name,
-        order: index,
-        graph: snapshots.get(tab.id) ?? null,
-    }));
-}
-
 export function useWorkspacePersistence(graphId = 'main-graph') {
-    const {
-        tabs,
-        activeTabId,
-        isInitialized,
-        initializeWorkspace,
-        clearTabPendingSave,
-        clearAllPendingSave,
-    } = useGraphWorkspace();
+    const { tabs, activeTabId } = useGraphWorkspace();
     const registry = useGraphRegistry();
     const { syncAll } = useGraphMutation(graphId);
     const {
         selectionInfo: { setInfo },
     } = useGraphSelection();
     const { addToast } = useToasts();
+    const store = useSnapshotStore();
+
     const tabsRef = useRef(tabs);
-    tabsRef.current = tabs;
-    const runtimeStateRef = useRef<WorkspacePersistenceRuntimeState>({
-        didLoad: false,
-        toasts: {
-            didNotifyLoadError: false,
-            didNotifyAutoSaveError: false,
-        },
-        persistence: {
-            lastAutosavedSignature: '',
-            pendingHydrationTabIds: new Set(),
-            hydratedTabInstances: new Map(),
-            lastSavedSnapshots: new Map(),
-        },
+    const lastSignatureRef = useRef('');
+
+    useLayoutEffect(() => {
+        tabsRef.current = tabs;
     });
 
-    const hydrateTabIfReady = useCallback(
-        (
-            tabId: string,
-            core = registry.get(makeScopedGraphRegistryId(graphId, tabId))
-        ) => {
-            const runtime = runtimeStateRef.current;
-            const hydratedInstance =
-                runtime.persistence.hydratedTabInstances.get(tabId);
-
-            if (!isInitialized || hydratedInstance === core) {
-                return false;
-            }
-
-            if (tabId !== activeTabId || !core) {
-                return false;
-            }
-
-            const tab = tabsRef.current.find(
-                (candidateTab) => candidateTab.id === tabId
-            );
-
-            if (!tab) {
-                runtime.persistence.pendingHydrationTabIds.delete(tabId);
-                runtime.persistence.hydratedTabInstances.delete(tabId);
-                return false;
-            }
-
-            const scopedGraphId = makeScopedGraphRegistryId(graphId, tabId);
-            const hasSavedSnapshot =
-                runtime.persistence.lastSavedSnapshots.has(tabId);
-
-            if (!hasSavedSnapshot) {
-                runtime.persistence.hydratedTabInstances.set(tabId, core);
-                runtime.persistence.pendingHydrationTabIds.delete(tabId);
-                return true;
-            }
-
-            const snapshot =
-                runtime.persistence.lastSavedSnapshots.get(tabId) ?? null;
-            const restored = restoreGraph(core, snapshot);
-
-            if (!restored) {
-                addToast({
-                    type: 'error',
-                    message: `Failed to restore graph for tab "${tab.name}".`,
-                });
-                logger.error('Failed to restore tab graph snapshot', {
-                    tabId,
-                    scopedGraphId,
-                });
-            }
-
-            syncAll(core);
-            const graphInfo = extractElementsInfo(core.$(':selected'));
-            setInfo(graphInfo);
-
-            clearTabPendingSave(tabId);
-
-            runtime.persistence.hydratedTabInstances.set(tabId, core);
-            runtime.persistence.pendingHydrationTabIds.delete(tabId);
-            logger.debug(`Completed hydration for tab "${tab.name}".`, {
-                tabId,
-                scopedGraphId,
-                restored,
-            });
-
-            return true;
-        },
-        [
-            activeTabId,
-            addToast,
-            clearTabPendingSave,
-            graphId,
-            isInitialized,
-            registry,
-            setInfo,
-            syncAll,
-        ]
-    );
-
+    // ── Effect 1: Active tab UI sync ─────────────────────────────────────────
     useEffect(() => {
-        const runtime = runtimeStateRef.current;
+        const scopedId = makeScopedGraphRegistryId(graphId, activeTabId);
 
-        if (runtime.didLoad) {
-            return;
-        }
-
-        runtime.didLoad = true;
-
-        const persistedState = loadWorkspaceState();
-
-        if (persistedState === null) {
-            if (
-                hasPersistedState(WORKSPACE_STORAGE_KEY) &&
-                !runtime.toasts.didNotifyLoadError
-            ) {
-                runtime.toasts.didNotifyLoadError = true;
-                addToast({
-                    type: 'error',
-                    message:
-                        'Failed to restore previous workspace session. Starting a new workspace.',
-                });
-                logger.warn(
-                    'Persisted workspace payload rejected; starting new workspace'
-                );
-            }
-
-            initializeWorkspace(null);
-            return;
-        }
-
-        runtime.persistence.lastSavedSnapshots = new Map(
-            persistedState.tabs.map((tab) => [tab.id, tab.graph])
-        );
-        runtime.persistence.pendingHydrationTabIds = new Set(
-            persistedState.tabs.map((tab) => tab.id)
-        );
-        runtime.persistence.lastAutosavedSignature = makeWorkspaceSignature(
-            persistedState.tabs
-        );
-        initializeWorkspace(persistedState);
-    }, [initializeWorkspace, addToast]);
-
-    useEffect(() => {
-        if (!isInitialized || !activeTabId) {
-            return;
-        }
-
-        const scopedGraphId = makeScopedGraphRegistryId(graphId, activeTabId);
-
-        return registry.subscribe(scopedGraphId, (instance) => {
-            if (!instance) {
-                runtimeStateRef.current.persistence.hydratedTabInstances.delete(
-                    activeTabId
-                );
+        return registry.subscribe(scopedId, (core) => {
+            if (!core) {
                 return;
             }
 
-            hydrateTabIfReady(activeTabId, instance);
+            syncAll(core);
+            setInfo(extractElementsInfo(core.$(':selected')));
         });
-    }, [activeTabId, graphId, hydrateTabIfReady, isInitialized, registry]);
+    }, [activeTabId, graphId, registry, syncAll, setInfo]);
 
+    // ── Effect 2: Autosave ────────────────────────────────────────────────────
     useEffect(() => {
-        const runtime = runtimeStateRef.current;
+        const save = () => {
+            const currentTabs = tabsRef.current;
+            const persistedTabs: PersistedWorkspaceTab[] = currentTabs.map(
+                (tab, index) => {
+                    const core = registry.get(
+                        makeScopedGraphRegistryId(graphId, tab.id)
+                    );
 
-        if (!isInitialized) {
-            return;
-        }
+                    // If canvas is mounted, serialize current state.
+                    // Otherwise fall back to the last known snapshot.
+                    const graph = core
+                        ? (serializeGraph(core) ?? store.getSnapshot(tab.id))
+                        : store.getSnapshot(tab.id);
 
-        const currentTabIds = new Set(tabs.map((tab) => tab.id));
-
-        for (const pendingTabId of runtime.persistence.pendingHydrationTabIds) {
-            if (!currentTabIds.has(pendingTabId)) {
-                runtime.persistence.pendingHydrationTabIds.delete(pendingTabId);
-                runtime.persistence.hydratedTabInstances.delete(pendingTabId);
-            }
-        }
-
-        tabs.forEach((tab) => {
-            hydrateTabIfReady(tab.id);
-        });
-    }, [tabs, activeTabId, graphId, isInitialized, registry, hydrateTabIfReady]);
-
-    useEffect(() => {
-        const runtime = runtimeStateRef.current;
-
-        if (!isInitialized) {
-            return;
-        }
-
-        const graphSnapshots = new Map<string, PersistedWorkspaceTab['graph']>(
-            tabs.map((tab) => {
-                if (runtime.persistence.pendingHydrationTabIds.has(tab.id)) {
-                    return [
-                        tab.id,
-                        runtime.persistence.lastSavedSnapshots.get(tab.id) ?? null,
-                    ];
+                    return { id: tab.id, name: tab.name, order: index, graph };
                 }
+            );
 
-                const core = registry.get(
-                    makeScopedGraphRegistryId(graphId, tab.id)
-                );
-                return [tab.id, core ? serializeGraph(core) : null];
-            })
-        );
+            const signature = buildWorkspaceSignature(persistedTabs);
 
-        const shellTabs = buildPersistedTabsFromSnapshots(tabs, graphSnapshots);
-        const shellSignature = makeWorkspaceSignature(shellTabs);
+            if (signature === lastSignatureRef.current) {
+                return;
+            }
 
-        if (shellSignature === runtime.persistence.lastAutosavedSignature) {
-            return;
-        }
+            const saved = saveWorkspaceState({ version: 1, tabs: persistedTabs });
 
-        const autosaveState: PersistedWorkspaceState = {
-            version: 1,
-            tabs: shellTabs,
-        };
-
-        const autosaved = saveWorkspaceState(autosaveState);
-
-        if (!autosaved) {
-            if (!runtime.toasts.didNotifyAutoSaveError) {
-                runtime.toasts.didNotifyAutoSaveError = true;
+            if (!saved) {
+                logger.error('Failed to autosave workspace', {
+                    tabCount: currentTabs.length,
+                });
                 addToast({
                     type: 'error',
                     message:
-                        'Failed to save workspace tab changes. Tab metadata may not persist after reload.',
+                        'Failed to autosave workspace. Changes may not persist after reload.',
                 });
+                return;
             }
 
-            logger.error('Failed to autosave workspace tab shell', {
-                tabCount: tabs.length,
+            lastSignatureRef.current = signature;
+            persistedTabs.forEach((tab) => {
+                store.setSnapshot(tab.id, tab.graph);
             });
-            return;
-        }
+            logger.debug('Workspace autosaved.', { tabCount: currentTabs.length });
+        };
 
-        runtime.toasts.didNotifyAutoSaveError = false;
-        runtime.persistence.lastAutosavedSignature = shellSignature;
-        runtime.persistence.lastSavedSnapshots = graphSnapshots;
-        clearAllPendingSave();
-    }, [tabs, isInitialized, addToast, graphId, registry, clearAllPendingSave]);
+        const intervalId = setInterval(save, 5_000);
+        window.addEventListener('beforeunload', save);
+
+        return () => {
+            clearInterval(intervalId);
+            window.removeEventListener('beforeunload', save);
+        };
+    }, [graphId, registry, addToast, store]);
 }
-
-type WorkspacePersistenceRuntimeState = {
-    didLoad: boolean;
-    toasts: {
-        didNotifyLoadError: boolean;
-        didNotifyAutoSaveError: boolean;
-    };
-    persistence: {
-        lastAutosavedSignature: string;
-        pendingHydrationTabIds: Set<string>;
-        hydratedTabInstances: Map<string, GraphInstance>;
-        lastSavedSnapshots: Map<string, PersistedWorkspaceTab['graph']>;
-    };
-};

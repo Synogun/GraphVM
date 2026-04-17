@@ -1,12 +1,11 @@
 import { useGetGraph } from '@/hooks';
 import { setGraphDirected } from '@/services/graph';
-import { useGraphMeta, useGraphWorkspace } from '@Contexts';
+import { useGraphMeta } from '@Contexts';
 import { ToggleInput } from '../common/inputs/ToggleInput';
 
 export function GraphSection() {
     const graphRef = useGetGraph('main-graph');
     const { directed, setDirected } = useGraphMeta();
-    const { activeTabId, markTabPendingSave } = useGraphWorkspace();
 
     const handleToggleDirected = (value: boolean) => {
         const graph = graphRef.current;
@@ -17,7 +16,6 @@ export function GraphSection() {
 
         setGraphDirected(graph, value);
         setDirected(value);
-        markTabPendingSave(activeTabId);
     };
 
     return (

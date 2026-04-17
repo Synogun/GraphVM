@@ -1,4 +1,4 @@
-import { useGraphMutation, useRegisterGraphByTab } from '@/hooks';
+import { useGraphHydration, useGraphMutation, useRegisterGraphByTab } from '@/hooks';
 import {
     bindAutopan,
     destroyGraph,
@@ -29,7 +29,7 @@ export function GraphCanvas({
         selectionInfo: { setInfo: setSelectionInfo },
     } = useGraphSelection();
 
-    const { activeTabId, markTabPendingSave } = useGraphWorkspace();
+    const { activeTabId } = useGraphWorkspace();
 
     const { addToast } = useToasts();
     const addToastRef = useRef(addToast);
@@ -61,17 +61,11 @@ export function GraphCanvas({
         });
 
         const handleGraphMutation = (e: cytoscape.EventObject) => {
-            if (!tabId) {
-                return;
-            }
-
             const core = e.cy;
             const selectedElementsInfo = extractElementsInfo(core.$(':selected'));
 
             syncMeta(core);
-
             setSelectionInfo(selectedElementsInfo);
-            markTabPendingSave(tabId);
         };
 
         const handleElementSelection = (e: cytoscape.EventObject) => {
@@ -149,7 +143,6 @@ export function GraphCanvas({
         tabId,
         containerId,
         graphLimits,
-        markTabPendingSave,
         setSelectionInfo,
         syncAll,
         syncMeta,
@@ -178,6 +171,7 @@ export function GraphCanvas({
     }, [activeTabId, tabId]);
 
     useRegisterGraphByTab(graphId, graphRef, tabId);
+    useGraphHydration(graphId, tabId);
 
     return (
         <div

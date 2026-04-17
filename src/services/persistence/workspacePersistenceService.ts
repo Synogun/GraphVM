@@ -64,6 +64,24 @@ export function saveWorkspaceState(state: PersistedWorkspaceState): boolean {
     });
 }
 
+export function buildWorkspaceSignature(
+    tabs: {
+        id: string;
+        name: string;
+        order: number;
+        graph: cytoscape.CytoscapeOptions | null;
+    }[]
+): string {
+    return JSON.stringify(
+        tabs.map((tab) => ({
+            id: tab.id,
+            name: tab.name,
+            order: tab.order,
+            elements: tab.graph?.elements ?? null,
+        }))
+    );
+}
+
 export function serializeGraph(
     core: cytoscape.Core
 ): cytoscape.CytoscapeOptions | null {

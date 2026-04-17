@@ -3,6 +3,7 @@ import {
     GraphMetaProvider,
     GraphRegistryProvider,
     GraphSelectionProvider,
+    GraphSnapshotStoreProvider,
     GraphWorkspaceProvider,
 } from '../graph';
 import { EdgesProvider } from './EdgesProvider';
@@ -12,17 +13,19 @@ import { NodesProvider } from './NodesProvider';
 export function ElementsProvider({ children }: Readonly<ElementsProviderProps>) {
     return (
         <GraphWorkspaceProvider>
-            <GraphRegistryProvider>
-                <GraphMetaProvider>
-                    <GraphSelectionProvider>
-                        <LayoutProvider>
-                            <NodesProvider>
-                                <EdgesProvider>{children}</EdgesProvider>
-                            </NodesProvider>
-                        </LayoutProvider>
-                    </GraphSelectionProvider>
-                </GraphMetaProvider>
-            </GraphRegistryProvider>
+            <GraphSnapshotStoreProvider>
+                <GraphRegistryProvider>
+                    <GraphMetaProvider>
+                        <GraphSelectionProvider>
+                            <LayoutProvider>
+                                <NodesProvider>
+                                    <EdgesProvider>{children}</EdgesProvider>
+                                </NodesProvider>
+                            </LayoutProvider>
+                        </GraphSelectionProvider>
+                    </GraphMetaProvider>
+                </GraphRegistryProvider>
+            </GraphSnapshotStoreProvider>
         </GraphWorkspaceProvider>
     );
 }
