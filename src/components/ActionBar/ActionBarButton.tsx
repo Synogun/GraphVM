@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 export const ActionBarButtonStyle = 'btn-outline hover:btn-accent focus:btn-accent';
 
 export function ActionBarButton({
+    id,
     label,
     icon,
     onClick,
@@ -16,6 +17,7 @@ export function ActionBarButton({
 
     return (
         <button
+            id={id}
             className={`btn ${classStyle} ${margin} ${className}`}
             disabled={disabled}
             onClick={onClick}
@@ -27,6 +29,7 @@ export function ActionBarButton({
 }
 
 type ActionBarButtonProps = {
+    id?: string;
     label: string;
     isDelete?: boolean;
     icon?: ReactNode;

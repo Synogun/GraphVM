@@ -35,6 +35,7 @@ export function ActionBar({ children }: Readonly<ActionBarProps>) {
             </div>
 
             <ActionBarButton
+                id="new-graph-btn"
                 icon={AppIcons.NewGraph({ size: ICON_SIZE })}
                 label="New Graph"
                 margin="my-1"
@@ -42,6 +43,7 @@ export function ActionBar({ children }: Readonly<ActionBarProps>) {
             />
 
             <ActionBarButton
+                id="import-export-btn"
                 icon={AppIcons.Import({ size: ICON_SIZE })}
                 label="Import / Export"
                 margin="my-1"
@@ -49,6 +51,7 @@ export function ActionBar({ children }: Readonly<ActionBarProps>) {
             />
 
             <ActionBarButton
+                id="algorithms-btn"
                 icon={AppIcons.Algorithms({ size: ICON_SIZE })}
                 label="Algorithms"
                 margin="my-1"
@@ -60,6 +63,7 @@ export function ActionBar({ children }: Readonly<ActionBarProps>) {
             </div>
 
             <ActionBarButton
+                id="arrange-graph-btn"
                 icon={AppIcons.Arrange({ size: ICON_SIZE })}
                 label="Arrange"
                 margin="my-1"
@@ -67,6 +71,7 @@ export function ActionBar({ children }: Readonly<ActionBarProps>) {
             />
 
             <ActionBarButton
+                id="center-graph-btn"
                 icon={AppIcons.Center({ size: ICON_SIZE })}
                 label="Center"
                 margin="my-1"
@@ -78,6 +83,7 @@ export function ActionBar({ children }: Readonly<ActionBarProps>) {
             </div>
 
             <ActionBarButton
+                id="add-node-btn"
                 icon={AppIcons.AddNode({ size: ICON_SIZE })}
                 label="Add node"
                 margin="my-1"
@@ -85,6 +91,7 @@ export function ActionBar({ children }: Readonly<ActionBarProps>) {
             />
 
             <ActionBarButton
+                id="add-edge-btn"
                 icon={AppIcons.AddEdges({ size: ICON_SIZE })}
                 label="Add Edges(s)"
                 margin="my-1"
@@ -92,6 +99,7 @@ export function ActionBar({ children }: Readonly<ActionBarProps>) {
             />
 
             <ActionBarEdgeModeButton
+                id="edge-mode-btn"
                 isCompleteEdgeMode={isCompleteEdgeMode}
                 handleToggleEdgeMode={handleToggleEdgeMode}
                 iconSize={ICON_SIZE}
@@ -99,6 +107,7 @@ export function ActionBar({ children }: Readonly<ActionBarProps>) {
             />
 
             <ActionBarButton
+                id="delete-selected-btn"
                 disabled={isDeleteBtnDisabled}
                 icon={AppIcons.DeleteElements({ size: ICON_SIZE })}
                 isDelete={true}
@@ -112,6 +121,7 @@ export function ActionBar({ children }: Readonly<ActionBarProps>) {
             </div>
 
             <ActionBarButton
+                id="settings-btn"
                 icon={AppIcons.Settings({ size: ICON_SIZE })}
                 label="Settings"
                 margin="my-1"
@@ -119,6 +129,7 @@ export function ActionBar({ children }: Readonly<ActionBarProps>) {
             />
 
             <ActionBarButton
+                id="help-btn"
                 icon={AppIcons.Help({ size: ICON_SIZE })}
                 label="Help"
                 margin="my-1"
@@ -126,6 +137,7 @@ export function ActionBar({ children }: Readonly<ActionBarProps>) {
             />
 
             {/* <a
+                id="github-repo-link"
                 className='btn btn-outline hover:btn-accent'
                 href='https://github.com/Synogun/GraphVM'
                 rel='noopener noreferrer'
@@ -137,6 +149,7 @@ export function ActionBar({ children }: Readonly<ActionBarProps>) {
 
             {isDev() && (
                 <ActionBarButton
+                    id="download-logs-btn"
                     icon={AppIcons.DebugLogs({ size: ICON_SIZE })}
                     label="Download Logs"
                     margin="my-1"
