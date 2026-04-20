@@ -17,6 +17,14 @@ export type PersistedWorkspaceState = {
     tabs: PersistedWorkspaceTab[];
 };
 
+export type GraphSnapshotStore = {
+    getSnapshot: (tabId: string) => cytoscape.CytoscapeOptions | null;
+    setSnapshot: (
+        tabId: string,
+        snapshot: cytoscape.CytoscapeOptions | null
+    ) => void;
+};
+
 export type GraphWorkspaceContextProperties = {
     tabs: GraphWorkspaceTab[];
     activeTabId: string;

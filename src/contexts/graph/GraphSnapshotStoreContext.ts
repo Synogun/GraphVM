@@ -1,14 +1,6 @@
 import { ParsedError } from '@/config/parsedError';
-import type cytoscape from 'cytoscape';
+import type { GraphSnapshotStore } from '@/types/workspace';
 import { createContext, useContext } from 'react';
-
-export type GraphSnapshotStore = {
-    getSnapshot: (tabId: string) => cytoscape.CytoscapeOptions | null;
-    setSnapshot: (
-        tabId: string,
-        snapshot: cytoscape.CytoscapeOptions | null
-    ) => void;
-};
 
 export const GraphSnapshotStoreContext = createContext<
     GraphSnapshotStore | undefined

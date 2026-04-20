@@ -1,4 +1,3 @@
-import { extractElementsInfo } from '@/services/graph';
 import {
     buildWorkspaceSignature,
     saveWorkspaceState,
@@ -8,24 +7,18 @@ import type { PersistedWorkspaceTab } from '@/types';
 import { makeScopedGraphRegistryId } from '@/utils/graphRegistry';
 import {
     useGraphRegistry,
-    useGraphSelection,
     useGraphWorkspace,
     useSnapshotStore,
     useToasts,
 } from '@Contexts';
 import { Logger } from '@Logger';
 import { useEffect, useLayoutEffect, useRef } from 'react';
-import { useGraphMutation } from './useGraphMutation';
 
-const logger = Logger.createContextLogger('useWorkspacePersistence');
+const logger = Logger.createContextLogger('useWorkspaceAutosave');
 
-export function useWorkspacePersistence(graphId = 'main-graph') {
-    const { tabs, activeTabId } = useGraphWorkspace();
+export function useWorkspaceAutosave(graphId = 'main-graph') {
+    const { tabs } = useGraphWorkspace();
     const registry = useGraphRegistry();
-    const { syncAll } = useGraphMutation(graphId);
-    const {
-        selectionInfo: { setInfo },
-    } = useGraphSelection();
     const { addToast } = useToasts();
     const store = useSnapshotStore();
 
@@ -36,21 +29,6 @@ export function useWorkspacePersistence(graphId = 'main-graph') {
         tabsRef.current = tabs;
     });
 
-    // ── Effect 1: Active tab UI sync ─────────────────────────────────────────
-    useEffect(() => {
-        const scopedId = makeScopedGraphRegistryId(graphId, activeTabId);
-
-        return registry.subscribe(scopedId, (core) => {
-            if (!core) {
-                return;
-            }
-
-            syncAll(core);
-            setInfo(extractElementsInfo(core.$(':selected')));
-        });
-    }, [activeTabId, graphId, registry, syncAll, setInfo]);
-
-    // ── Effect 2: Autosave ────────────────────────────────────────────────────
     useEffect(() => {
         const save = () => {
             const currentTabs = tabsRef.current;
@@ -60,8 +38,6 @@ export function useWorkspacePersistence(graphId = 'main-graph') {
                         makeScopedGraphRegistryId(graphId, tab.id)
                     );
 
-                    // If canvas is mounted, serialize current state.
-                    // Otherwise fall back to the last known snapshot.
                     const graph = core
                         ? (serializeGraph(core) ?? store.getSnapshot(tab.id))
                         : store.getSnapshot(tab.id);

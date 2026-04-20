@@ -15,11 +15,10 @@ import { parseKebabCase } from '@/utils/elements';
 import { getDefaultEdgesData, setDefaultEdgesData } from '@/utils/styleHelpers';
 import { useEdgesProperties, useGraphMeta, useGraphSelection } from '@Contexts';
 import { ColorInput, NumberInput, SelectInput } from '@Inputs';
-import { type ChangeEvent, useEffect, useMemo, useRef } from 'react';
+import { type ChangeEvent, useEffect, useMemo } from 'react';
 
 export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
     const graphRef = useGetGraph('main-graph');
-    const changeLineStyleRef = useRef<HTMLSelectElement>(null);
     const {
         labelStyle,
         setLabelStyle,
@@ -38,7 +37,11 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
     const { directed } = useGraphMeta();
     const {
         edges: { selected: selectedEdges },
+        selectionInfo: { info: selectionInfo },
     } = useGraphSelection();
+
+    const isGhostEdgeSelected =
+        selectionInfo.group === 'edge' && selectionInfo.isGhost;
 
     const propertyEditor = usePropertyEditor({
         graphRef,
@@ -107,26 +110,6 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
         setWeight,
         setArrowShape,
     ]);
-
-    useEffect(() => {
-        if (!changeLineStyleRef.current || !graphRef.current) {
-            return;
-        }
-
-        if (selectedEdges.length !== 1) {
-            changeLineStyleRef.current.disabled = false;
-            return;
-        }
-
-        const graph = graphRef.current;
-        const edge = graph.getElementById(selectedEdges[0]);
-        if (edge.empty() || !edge.data('isGhost')) {
-            changeLineStyleRef.current.disabled = false;
-            return;
-        }
-
-        changeLineStyleRef.current.disabled = true;
-    }, [graphRef, selectedEdges]);
 
     const handleChangeLabel = (e: ChangeEvent<HTMLSelectElement>) => {
         const currentDefaults = propertyEditor.resolveDefaults();
@@ -309,12 +292,12 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
             />
 
             <SelectInput
-                ref={changeLineStyleRef}
                 label="Line Style"
                 onChange={handleChangeLineStyle}
                 options={selectLineStyleOptions}
                 value={lineStyle}
                 defaultValue={DefaultEdgesData.style}
+                disabled={isGhostEdgeSelected}
                 tooltip={{
                     content: 'Determine the pattern used to draw the edges.',
                 }}

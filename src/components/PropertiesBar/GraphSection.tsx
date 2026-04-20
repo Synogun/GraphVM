@@ -1,11 +1,12 @@
-import { useGetGraph } from '@/hooks';
+import { useGetGraph, useGraphMutation } from '@/hooks';
 import { setGraphDirected } from '@/services/graph';
 import { useGraphMeta } from '@Contexts';
 import { ToggleInput } from '../common/inputs/ToggleInput';
 
 export function GraphSection() {
     const graphRef = useGetGraph('main-graph');
-    const { directed, setDirected } = useGraphMeta();
+    const { directed } = useGraphMeta();
+    const { syncMeta } = useGraphMutation('main-graph');
 
     const handleToggleDirected = (value: boolean) => {
         const graph = graphRef.current;
@@ -15,7 +16,7 @@ export function GraphSection() {
         }
 
         setGraphDirected(graph, value);
-        setDirected(value);
+        syncMeta(graph);
     };
 
     return (

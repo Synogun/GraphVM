@@ -9,7 +9,7 @@ import {
     ImportExportModal,
     SettingsModal,
 } from '@/lazy';
-import { ElementsProvider } from '@/providers';
+import { AppProviders } from '@/providers';
 import { isDev } from '@/utils/general';
 import { Suspense, useEffect, useMemo, useState } from 'react';
 import { IconContext } from 'react-icons';
@@ -46,7 +46,7 @@ export function App() {
 
     return (
         <IconContext.Provider value={iconStyle}>
-            <ElementsProvider>
+            <AppProviders>
                 <GraphShortcutsBinding />
 
                 <PropertiesBar>
@@ -64,7 +64,7 @@ export function App() {
                 </Suspense>
 
                 <ToastArea />
-            </ElementsProvider>
+            </AppProviders>
         </IconContext.Provider>
     );
 }

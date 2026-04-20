@@ -1,6 +1,6 @@
 import { AppIcons } from '@/components/common/AppIcons';
 import { WorkspaceTabs } from '@/components/common/tabs';
-import { useGetGraph, useWorkspacePersistence } from '@/hooks';
+import { useGetGraph, useTabActivationSync, useWorkspaceAutosave } from '@/hooks';
 import { makeScopedGraphRegistryId } from '@/utils/graphRegistry';
 import { useGraphRegistry, useGraphWorkspace } from '@Contexts';
 import { ConfirmModal } from '@Modals';
@@ -13,7 +13,8 @@ export function GraphWorkspace() {
     const { tabs, activeTabId, setActiveTab, createTab, closeTab, renameTab } =
         useGraphWorkspace();
     const registry = useGraphRegistry();
-    useWorkspacePersistence(MAIN_GRAPH_ID);
+    useTabActivationSync(MAIN_GRAPH_ID);
+    useWorkspaceAutosave(MAIN_GRAPH_ID);
 
     const graphRef = useGetGraph(MAIN_GRAPH_ID);
     const [tabIdToClose, setTabIdToClose] = useState<string | null>(null);
