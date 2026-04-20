@@ -1,4 +1,7 @@
 export * from './useActionBarLogic';
+export * from './useEdgeMode';
+export * from './useElementActions';
+export * from './useGraphActions';
 export * from './useGraphHydration';
 export * from './useGraphMutation';
 export * from './useGraphRegistry';

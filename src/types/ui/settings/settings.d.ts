@@ -42,6 +42,7 @@ export type SettingsData = {
             maxNodes: number;
             maxEdges: number;
         };
+        defaultPaddingOnActions: number;
     };
     shortcuts: ShortcutMap;
 };
@@ -60,6 +61,10 @@ export type SettingsContextProperties = {
         setArrangeOn: (arrangeOn: SettingsData['graph']['arrangeOn']) => void;
         limits: SettingsData['graph']['limits'];
         setLimits: (limits: SettingsData['graph']['limits']) => void;
+        defaultPaddingOnActions: SettingsData['graph']['defaultPaddingOnActions'];
+        setDefaultPaddingOnActions: (
+            value: SettingsData['graph']['defaultPaddingOnActions']
+        ) => void;
     };
     shortcuts: SettingsData['shortcuts'];
     setShortcuts: (shortcuts: SettingsData['shortcuts']) => void;

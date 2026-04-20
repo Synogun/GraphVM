@@ -16,7 +16,7 @@ export function SettingsModal() {
 
     const {
         ui: { setToast, setDisableElementsInfoPanel },
-        graph: { setArrangeOn, setLimits },
+        graph: { setArrangeOn, setLimits, setDefaultPaddingOnActions },
         setShortcuts,
     } = useSettings();
 
@@ -51,6 +51,9 @@ export function SettingsModal() {
         setToast(DefaultSettingsData.ui.toast);
         setArrangeOn(DefaultSettingsData.graph.arrangeOn);
         setLimits(DefaultSettingsData.graph.limits);
+        setDefaultPaddingOnActions(
+            DefaultSettingsData.graph.defaultPaddingOnActions
+        );
         setShortcuts(DefaultSettingsData.shortcuts);
     };
 

@@ -6,7 +6,14 @@ import type { ChangeEvent } from 'react';
 
 export function SettingsGraphTab() {
     const {
-        graph: { arrangeOn, setArrangeOn, limits, setLimits },
+        graph: {
+            arrangeOn,
+            setArrangeOn,
+            limits,
+            setLimits,
+            defaultPaddingOnActions,
+            setDefaultPaddingOnActions,
+        },
     } = useSettings();
 
     const handleArrangeOnChange =
@@ -46,6 +53,10 @@ export function SettingsGraphTab() {
                         onChange={handleArrangeOnChange('addNode')}
                         defaultValue={DefaultSettingsData.graph.arrangeOn.addNode}
                         stateLabels={arrangeToggleLabel}
+                        tooltip={{
+                            content:
+                                'Toggle to enable or disable automatic arrangement when adding a node.',
+                        }}
                     />
 
                     <ToggleInput
@@ -54,6 +65,10 @@ export function SettingsGraphTab() {
                         onChange={handleArrangeOnChange('addEdge')}
                         defaultValue={DefaultSettingsData.graph.arrangeOn.addEdge}
                         stateLabels={arrangeToggleLabel}
+                        tooltip={{
+                            content:
+                                'Toggle to enable or disable automatic arrangement when adding an edge.',
+                        }}
                     />
 
                     <ToggleInput
@@ -62,6 +77,10 @@ export function SettingsGraphTab() {
                         onChange={handleArrangeOnChange('import')}
                         defaultValue={DefaultSettingsData.graph.arrangeOn.import}
                         stateLabels={arrangeToggleLabel}
+                        tooltip={{
+                            content:
+                                'Toggle to enable or disable automatic arrangement when importing a graph.',
+                        }}
                     />
 
                     <ToggleInput
@@ -70,6 +89,10 @@ export function SettingsGraphTab() {
                         onChange={handleArrangeOnChange('editNode')}
                         defaultValue={DefaultSettingsData.graph.arrangeOn.editNode}
                         stateLabels={arrangeToggleLabel}
+                        tooltip={{
+                            content:
+                                'Toggle to enable or disable automatic arrangement when editing a node.',
+                        }}
                     />
 
                     <ToggleInput
@@ -78,6 +101,10 @@ export function SettingsGraphTab() {
                         onChange={handleArrangeOnChange('editEdge')}
                         defaultValue={DefaultSettingsData.graph.arrangeOn.editEdge}
                         stateLabels={arrangeToggleLabel}
+                        tooltip={{
+                            content:
+                                'Toggle to enable or disable automatic arrangement when editing an edge.',
+                        }}
                     />
                 </div>
             </div>
@@ -95,6 +122,10 @@ export function SettingsGraphTab() {
                         step={100}
                         onChange={handleLimitChange('maxNodes')}
                         defaultValue={DefaultSettingsData.graph.limits.maxNodes}
+                        tooltip={{
+                            content:
+                                'The maximum number of nodes allowed in the graph. Setting this limit helps maintain performance and usability, especially for larger graphs. ',
+                        }}
                     />
 
                     <NumberInput
@@ -104,6 +135,38 @@ export function SettingsGraphTab() {
                         step={100}
                         onChange={handleLimitChange('maxEdges')}
                         defaultValue={DefaultSettingsData.graph.limits.maxEdges}
+                        tooltip={{
+                            content:
+                                'The maximum number of edges allowed in the graph. Note that the actual maximum may also be constrained by the node limit, as each node can only have a certain number of edges.',
+                        }}
+                    />
+                </div>
+            </div>
+
+            <div className="space-y-3">
+                <h4 className="text-sm font-semibold uppercase tracking-wide text-base-content/70">
+                    Actions
+                </h4>
+
+                <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-1">
+                    <NumberInput
+                        label="Default padding on actions"
+                        value={defaultPaddingOnActions}
+                        min={0}
+                        step={5}
+                        onChange={(e) => {
+                            const parsed = Number.parseInt(e.target.value, 10);
+                            setDefaultPaddingOnActions(
+                                Number.isFinite(parsed) ? Math.max(0, parsed) : 0
+                            );
+                        }}
+                        defaultValue={
+                            DefaultSettingsData.graph.defaultPaddingOnActions
+                        }
+                        tooltip={{
+                            content:
+                                'The padding (in pixels) applied to the graph when arranging or centering.',
+                        }}
                     />
                 </div>
             </div>

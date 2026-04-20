@@ -20,6 +20,7 @@ export const DefaultSettingsData: SettingsData = {
             maxNodes: 2000,
             maxEdges: 4000,
         },
+        defaultPaddingOnActions: 30,
     },
     shortcuts: {
         deleteSelected: 'Delete',

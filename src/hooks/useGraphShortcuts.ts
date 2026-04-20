@@ -1,4 +1,4 @@
-import { useActionBarLogic } from '@/hooks';
+import { useEdgeMode, useElementActions, useGraphActions } from '@/hooks';
 import type { ShortcutAction } from '@/types/ui/settings';
 import {
     formatShortcutInput,
@@ -22,12 +22,11 @@ export function useGraphShortcuts() {
         handleDeselectAll,
         handleSelectAll,
         handleNewGraph,
-        handleAddNode,
-        handleAddEdges,
         handleArrangeGraph,
         handleCenterGraph,
-        handleToggleEdgeModeShortcut,
-    } = useActionBarLogic();
+    } = useGraphActions();
+    const { handleAddNode, handleAddEdges } = useElementActions();
+    const { handleToggleEdgeModeShortcut } = useEdgeMode();
 
     const isAnyModalOpen =
         isAlgorithmsModalOpen ||

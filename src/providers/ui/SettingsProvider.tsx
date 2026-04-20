@@ -26,12 +26,19 @@ export function SettingsProvider({ children }: Readonly<SettingsProviderProps>) 
         initialSettings.graph.arrangeOn
     );
     const [graphLimits, setGraphLimits] = useState(initialSettings.graph.limits);
+    const [defaultPaddingOnActions, setDefaultPaddingOnActions] = useState(
+        initialSettings.graph.defaultPaddingOnActions
+    );
     const [shortcuts, setShortcuts] = useState(initialSettings.shortcuts);
 
     useEffect(() => {
         const payload = {
             ui: { toast: uiToast, disableElementsInfoPanel },
-            graph: { arrangeOn: graphArrangeOn, limits: graphLimits },
+            graph: {
+                arrangeOn: graphArrangeOn,
+                limits: graphLimits,
+                defaultPaddingOnActions,
+            },
             shortcuts,
         };
 
@@ -39,7 +46,14 @@ export function SettingsProvider({ children }: Readonly<SettingsProviderProps>) 
             storageKey: SETTINGS_STORAGE_KEY,
             state: payload,
         });
-    }, [uiToast, disableElementsInfoPanel, graphArrangeOn, graphLimits, shortcuts]);
+    }, [
+        uiToast,
+        disableElementsInfoPanel,
+        graphArrangeOn,
+        graphLimits,
+        defaultPaddingOnActions,
+        shortcuts,
+    ]);
 
     const value = useMemo(
         () => ({
@@ -54,11 +68,20 @@ export function SettingsProvider({ children }: Readonly<SettingsProviderProps>) 
                 setArrangeOn: setGraphArrangeOn,
                 limits: graphLimits,
                 setLimits: setGraphLimits,
+                defaultPaddingOnActions,
+                setDefaultPaddingOnActions,
             },
             shortcuts,
             setShortcuts,
         }),
-        [uiToast, disableElementsInfoPanel, graphArrangeOn, graphLimits, shortcuts]
+        [
+            uiToast,
+            disableElementsInfoPanel,
+            graphArrangeOn,
+            graphLimits,
+            defaultPaddingOnActions,
+            shortcuts,
+        ]
     );
 
     return (

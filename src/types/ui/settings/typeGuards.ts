@@ -1,5 +1,5 @@
-import type { SettingsData, ShortcutAction, ToastPosition } from '.';
 import { isBoolean, isPositiveInteger, isRecord } from '@/types/typeGuards';
+import type { SettingsData, ShortcutAction, ToastPosition } from '.';
 
 const ValidToastPositions: ToastPosition[] = [
     'top-left',
@@ -47,6 +47,7 @@ export function isSettingsData(value: unknown): value is SettingsData {
     const toast = ui.toast;
     const arrangeOn = graph.arrangeOn;
     const limits = graph.limits;
+    const defaultPaddingOnActions = graph.defaultPaddingOnActions;
     const shortcuts = value.shortcuts;
 
     if (
@@ -71,10 +72,18 @@ export function isSettingsData(value: unknown): value is SettingsData {
     const isLimitsValid =
         isPositiveInteger(limits.maxNodes) && isPositiveInteger(limits.maxEdges);
 
+    const isPaddingValid = isPositiveInteger(defaultPaddingOnActions);
+
     const isShortcutsValid = ValidShortcutActions.every((action) => {
         const shortcut = shortcuts[action];
         return typeof shortcut === 'string' && shortcut.trim().length > 0;
     });
 
-    return isToastValid && isArrangeOnValid && isLimitsValid && isShortcutsValid;
+    return (
+        isToastValid &&
+        isArrangeOnValid &&
+        isLimitsValid &&
+        isPaddingValid &&
+        isShortcutsValid
+    );
 }
