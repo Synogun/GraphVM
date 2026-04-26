@@ -1,6 +1,6 @@
-import { ensureContextMenusExtension } from '@/lazy/cytoscapeExtensions';
 import { Logger } from '@/config/logger';
 import { type ParsedError, parseError } from '@/config/parsedError';
+import { ensureContextMenusExtension } from '@/lazy/cytoscapeExtensions';
 import type {
     BindContextMenuOptions,
     ContextMenuActionDefinition,

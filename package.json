@@ -21,7 +21,7 @@
         "test:unit": "vitest run tests/unit",
         "test:integration": "vitest run tests/integration",
         "test:e2e": "playwright test",
-        "format": "prettier --write \"src/**/*\"",
+        "format": "prettier --write \"src/**/*\" \"tests/**/*\"",
         "preview": "vite preview",
         "countcode": "..\\cloc-2.08.exe --exclude-dir=dist,logs,node_modules,python --exclude-ext=json,md ."
     },
