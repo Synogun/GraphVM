@@ -1,5 +1,6 @@
 import { parseError } from '@/config/parsedError';
 import { ParsedErrorToasts } from '@/constants';
+import { DefaultLayoutOptions } from '@/constants/layoutDefaults';
 import { useGetGraph, useGraphMutation } from '@/hooks';
 import {
     arrangeGraph,
@@ -7,6 +8,7 @@ import {
     removeEdges,
     removeNodes,
     resetGraph,
+    setSelectionOrder,
 } from '@/services/graph';
 import {
     useGraphSelection,
@@ -15,8 +17,6 @@ import {
     useToasts,
 } from '@Contexts';
 import { useCallback } from 'react';
-
-const DEFAULT_LAYOUT = { name: 'circle' };
 
 export function useGraphActions() {
     const { current: currentLayout } = useLayoutProperties();
@@ -49,7 +49,7 @@ export function useGraphActions() {
             return;
         }
 
-        arrangeGraph(graph, currentLayout ?? DEFAULT_LAYOUT);
+        arrangeGraph(graph, currentLayout ?? DefaultLayoutOptions);
     }, [graphRef, currentLayout, addToast]);
 
     const handleCenterGraph = useCallback(() => {
@@ -71,8 +71,7 @@ export function useGraphActions() {
         }
 
         graph.elements(':selected').unselect();
-        graph.data('nodeSelectionOrder', []);
-        graph.data('edgeSelectionOrder', []);
+        setSelectionOrder(graph, [], []);
         syncSelection(graph);
     }, [graphRef, syncSelection, addToast]);
 
@@ -84,12 +83,9 @@ export function useGraphActions() {
         }
 
         graph.elements().select();
-        graph.data(
-            'nodeSelectionOrder',
-            graph.nodes().map((node) => node.id())
-        );
-        graph.data(
-            'edgeSelectionOrder',
+        setSelectionOrder(
+            graph,
+            graph.nodes().map((node) => node.id()),
             graph.edges().map((edge) => edge.id())
         );
         syncSelection(graph);
@@ -111,7 +107,11 @@ export function useGraphActions() {
         const nodesToRemove = selectedElements.filter('node');
         if (nodesToRemove.length > 0) {
             removeNodes(graph, nodesToRemove);
-            graph.data('nodeSelectionOrder', []);
+            setSelectionOrder(
+                graph,
+                [],
+                graph.edges(':selected').map((e) => e.id())
+            );
         }
 
         selectedElements = graph.elements(':selected');
@@ -125,7 +125,7 @@ export function useGraphActions() {
                 return;
             }
 
-            graph.data('edgeSelectionOrder', []);
+            setSelectionOrder(graph, [], []);
         }
 
         syncAll(graph);

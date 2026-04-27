@@ -1,7 +1,9 @@
+import { useGetGraph } from '@/hooks';
 import { useGraphMeta, useToasts } from '@Contexts';
 import { useCallback, useEffect, type ChangeEvent } from 'react';
 
 export function useEdgeMode() {
+    const graphRef = useGetGraph('main-graph');
     const {
         directed,
         edges: { edgeMode, setEdgeMode },
@@ -14,6 +16,17 @@ export function useEdgeMode() {
         }
     }, [directed, edgeMode, setEdgeMode]);
 
+    const persistEdgeMode = useCallback(
+        (newMode: 'path' | 'complete') => {
+            setEdgeMode(newMode);
+            const core = graphRef.current;
+            if (core) {
+                core.data('edgeMode', newMode);
+            }
+        },
+        [graphRef, setEdgeMode]
+    );
+
     const handleToggleEdgeModeShortcut = useCallback(() => {
         if (directed) {
             addToast({
@@ -23,8 +36,8 @@ export function useEdgeMode() {
             return;
         }
 
-        setEdgeMode(edgeMode === 'complete' ? 'path' : 'complete');
-    }, [directed, edgeMode, setEdgeMode, addToast]);
+        persistEdgeMode(edgeMode === 'complete' ? 'path' : 'complete');
+    }, [directed, edgeMode, persistEdgeMode, addToast]);
 
     const handleToggleEdgeMode = useCallback(
         (e: ChangeEvent<HTMLInputElement>) => {
@@ -35,9 +48,9 @@ export function useEdgeMode() {
                 });
                 return;
             }
-            setEdgeMode(e.target.checked ? 'complete' : 'path');
+            persistEdgeMode(e.target.checked ? 'complete' : 'path');
         },
-        [directed, setEdgeMode, addToast]
+        [directed, persistEdgeMode, addToast]
     );
 
     return {

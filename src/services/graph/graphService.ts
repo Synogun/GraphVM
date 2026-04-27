@@ -4,6 +4,7 @@ import {
     DefaultNodesData,
 } from '@/constants/graphDefaults';
 import type { EdgeSelectionInfo, ElementsInfo, NodeSelectionInfo } from '@/types';
+import { isArrayOfStrings } from '@/types/typeGuards';
 import { Logger } from '@Logger';
 import cytoscape from 'cytoscape';
 
@@ -36,6 +37,43 @@ export function resetGraph(core: cytoscape.Core): void {
     core.data('edgeSelectionOrder', []);
 }
 
+export function updateSelectionOrder(
+    core: cytoscape.Core,
+    type: 'add' | 'remove',
+    nodeIds: string[],
+    edgeIds: string[]
+): void {
+    const currentNodes: unknown = core.data('nodeSelectionOrder');
+    const currentEdges: unknown = core.data('edgeSelectionOrder');
+
+    if (!isArrayOfStrings(currentNodes) || !isArrayOfStrings(currentEdges)) {
+        return;
+    }
+
+    if (type === 'add') {
+        core.data('nodeSelectionOrder', [...currentNodes, ...nodeIds]);
+        core.data('edgeSelectionOrder', [...currentEdges, ...edgeIds]);
+    } else {
+        core.data(
+            'nodeSelectionOrder',
+            currentNodes.filter((id) => !nodeIds.includes(id))
+        );
+        core.data(
+            'edgeSelectionOrder',
+            currentEdges.filter((id) => !edgeIds.includes(id))
+        );
+    }
+}
+
+export function setSelectionOrder(
+    core: cytoscape.Core,
+    nodeIds: string[],
+    edgeIds: string[]
+): void {
+    core.data('nodeSelectionOrder', nodeIds);
+    core.data('edgeSelectionOrder', edgeIds);
+}
+
 export function newGraph(
     containerId?: string,
     options?: cytoscape.CytoscapeOptions
@@ -54,6 +92,7 @@ export function newGraph(
 
     newGraph.data('defaultNodesData', { ...DefaultNodesData });
     newGraph.data('defaultEdgesData', { ...DefaultEdgesData });
+    newGraph.data('edgeMode', 'path');
 
     const initialDirected =
         typeof options?.data === 'object' &&

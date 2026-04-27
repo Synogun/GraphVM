@@ -1,5 +1,6 @@
 import { parseError } from '@/config/parsedError';
 import { ParsedErrorToasts } from '@/constants';
+import { DefaultLayoutOptions } from '@/constants/layoutDefaults';
 import { useGetGraph, useGraphMutation } from '@/hooks';
 import { addEdges, addNode, arrangeGraph } from '@/services/graph';
 import { isArrayOfStrings } from '@/types/typeGuards';
@@ -10,8 +11,6 @@ import {
     useToasts,
 } from '@Contexts';
 import { useCallback } from 'react';
-
-const DEFAULT_LAYOUT = { name: 'circle' };
 
 export function useElementActions() {
     const {
@@ -42,7 +41,7 @@ export function useElementActions() {
 
         syncMeta(graph);
         if (arrangeOn.addNode) {
-            arrangeGraph(graph, currentLayout ?? DEFAULT_LAYOUT);
+            arrangeGraph(graph, currentLayout ?? DefaultLayoutOptions);
         }
     }, [graphRef, limits, arrangeOn.addNode, currentLayout, syncMeta, addToast]);
 
@@ -75,7 +74,7 @@ export function useElementActions() {
 
         syncMeta(graph);
         if (arrangeOn.addEdge) {
-            arrangeGraph(graph, currentLayout ?? DEFAULT_LAYOUT);
+            arrangeGraph(graph, currentLayout ?? DefaultLayoutOptions);
         }
     }, [
         graphRef,

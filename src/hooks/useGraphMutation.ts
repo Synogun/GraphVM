@@ -14,7 +14,7 @@ export function useGraphMutation(graphId = 'main-graph') {
     const {
         setDirected,
         nodes: { setCount: setNodeCount },
-        edges: { setCount: setEdgeCount },
+        edges: { setCount: setEdgeCount, setEdgeMode },
     } = useGraphMeta();
 
     const {
@@ -42,9 +42,15 @@ export function useGraphMutation(graphId = 'main-graph') {
             setNodeCount(target.nodes('[!isGhost]').length);
             setEdgeCount(target.edges('[!isGhost]').length);
             setDirected(Boolean(target.data('directed')));
+
+            const storedEdgeMode: unknown = target.data('edgeMode');
+            if (storedEdgeMode === 'path' || storedEdgeMode === 'complete') {
+                setEdgeMode(storedEdgeMode);
+            }
+
             return true;
         },
-        [getGraph, setNodeCount, setEdgeCount, setDirected]
+        [getGraph, setNodeCount, setEdgeCount, setDirected, setEdgeMode]
     );
 
     const syncSelection = useCallback(

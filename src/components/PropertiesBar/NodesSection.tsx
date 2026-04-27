@@ -26,9 +26,10 @@ export function NodesSection({ visible = true }: Readonly<NodeSectionProps>) {
             updateNodes(core, ids, property, value);
         },
     });
+    const { resolveDefaults, getModeValue } = propertyEditor;
 
     useEffect(() => {
-        const currentDefaults = propertyEditor.resolveDefaults();
+        const currentDefaults = resolveDefaults();
         if (!currentDefaults) {
             return;
         }
@@ -41,12 +42,12 @@ export function NodesSection({ visible = true }: Readonly<NodeSectionProps>) {
             return;
         }
 
-        const modeColor = propertyEditor.getModeValue('color') ?? defaultNodeColor;
-        const modeShape = propertyEditor.getModeValue('shape') ?? defaultNodeShape;
+        const modeColor = getModeValue('color') ?? defaultNodeColor;
+        const modeShape = getModeValue('shape') ?? defaultNodeShape;
 
         setColor(modeColor);
         setShape(isNodeShape(modeShape) ? modeShape : defaultNodeShape);
-    }, [propertyEditor, selectedNodes, setColor, setShape]);
+    }, [resolveDefaults, getModeValue, selectedNodes, setColor, setShape]);
 
     // const handleChangeLabel = (e: ChangeEvent<HTMLInputElement>) => {
     //     if (!graphRef.current) { return; }

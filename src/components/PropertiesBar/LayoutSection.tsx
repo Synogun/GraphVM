@@ -16,7 +16,6 @@ export function LayoutSection({ visible = true }: Readonly<LayoutSectionProps>) 
     const {
         type: layoutType,
         setType: setLayoutType,
-        circle: circleLayout,
         grid: gridLayout,
         setCurrent: setCurrentLayout,
     } = useLayoutProperties();
@@ -36,34 +35,17 @@ export function LayoutSection({ visible = true }: Readonly<LayoutSectionProps>) 
             animationEasing: 'ease-out',
         };
 
-        // Delayed
-        // if (layoutType === 'circle') {
-        //     options = {
-        //         ...options,
-        //         name: 'circle',
-        //         radius: circleLayout.radius,
-        //     };
-        // }
-
         if (layoutType === 'grid') {
             options = {
                 ...options,
                 name: 'grid',
-                // rows: gridLayout.rows, // Delayed
                 cols: gridLayout.cols,
             };
         }
 
         setCurrentLayout(options);
         arrangeGraph(graphRef.current, options);
-    }, [
-        graphRef,
-        layoutType,
-        circleLayout.radius,
-        gridLayout.rows,
-        gridLayout.cols,
-        setCurrentLayout,
-    ]);
+    }, [graphRef, layoutType, gridLayout.cols, setCurrentLayout]);
 
     const handleChangeLayoutType = (e: ChangeEvent<HTMLSelectElement>) => {
         const { value } = e.target;
@@ -71,16 +53,6 @@ export function LayoutSection({ visible = true }: Readonly<LayoutSectionProps>) 
 
         setLayoutType(type);
     };
-
-    // Delayed
-    // const handleChangeCircleRadius = (e: ChangeEvent<HTMLInputElement>) => {
-    //     setNumberProperty(e, circleLayout.setRadius, circleLayout.radius, 1, 250);
-    // };
-
-    // In analysis for better use cases
-    // const handleChangeGridRows = (e: ChangeEvent<HTMLInputElement>) => {
-    //     setNumberProperty(e, gridLayout.setRows, gridLayout.rows, 1, 10);
-    // };
 
     const handleChangeGridCols = (e: ChangeEvent<HTMLInputElement>) => {
         setNumberProperty(e, gridLayout.setCols, gridLayout.cols, 1, 10);
@@ -122,36 +94,8 @@ export function LayoutSection({ visible = true }: Readonly<LayoutSectionProps>) 
                 }}
             />
 
-            {/* {layoutType === 'circle' && (
-                    // Better visualized when multi-layout is implemented
-                    // TODO: implement multi-layout
-                    <>
-                        <RangeInput
-                            label="Radius"
-                            max={250}
-                            min={1}
-                            onChange={handleChangeCircleRadius}
-                            step={1}
-                            value={circleLayout.radius}
-                            defaultValue={DefaultCircleLayoutOptions.radius}
-                        />
-                    </>
-                )} */}
-
             {layoutType === 'grid' && (
                 <>
-                    {/* In analysis for better use cases 
-                            TODO: Find use cases for grid rows adjustment or deprecation */}
-                    {/* <RangeInput
-                            label="Rows"
-                            max={10}
-                            min={1}
-                            onChange={handleChangeGridRows}
-                            step={1}
-                            value={gridLayout.rows}
-                            defaultValue={DefaultGridLayoutOptions.rows}
-                        /> */}
-
                     <RangeInput
                         label="Columns"
                         max={10}

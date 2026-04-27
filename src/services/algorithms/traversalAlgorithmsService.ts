@@ -1,3 +1,7 @@
+import { Logger } from '@Logger';
+
+const logger = Logger.createContextLogger('TraversalAlgorithmsService');
+
 export function runBFSAlgorithm({
     graph,
     startNodeId,
@@ -63,6 +67,6 @@ export function parseBFSResult(result: cytoscape.SearchFirstResult) {
         .join(' -> ');
     const foundId = found.map((ele) => `n${String(ele.data('label'))}`).join(', ');
 
-    console.log(`BFS Traversal Path: ${pathIds}`);
-    console.log(`Target Node Found: ${foundId}`);
+    logger.info(`BFS Traversal Path: ${pathIds}`);
+    logger.info(`Target Node Found: ${foundId}`);
 }

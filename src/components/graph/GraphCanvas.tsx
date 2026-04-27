@@ -4,10 +4,10 @@ import {
     destroyGraph,
     extractElementsInfo,
     newGraph,
+    updateSelectionOrder,
 } from '@/services/graph';
 import { mountContextMenu } from '@/services/graph/contextMenusService';
 import type { GraphInstance } from '@/types/graph';
-import { isArrayOfStrings } from '@/types/typeGuards';
 import {
     useGraphSelection,
     useGraphWorkspace,
@@ -72,34 +72,15 @@ export function GraphCanvas({
             const target = e.target as cytoscape.Collection;
             const core = e.cy;
 
-            const currentSelectedNodes: unknown = core.data('nodeSelectionOrder');
-            const currentSelectedEdges: unknown = core.data('edgeSelectionOrder');
-
-            if (
-                !isArrayOfStrings(currentSelectedNodes) ||
-                !isArrayOfStrings(currentSelectedEdges)
-            ) {
-                const message = 'Invalid selection order data.';
-                addToastRef.current({ type: 'error', message });
-                return;
-            }
             const targetNodes = target.filter('node').map((n) => n.id());
             const targetEdges = target.filter('edge').map((n) => n.id());
 
-            let nodeSelectionOrder = [...currentSelectedNodes, ...targetNodes];
-            let edgeSelectionOrder = [...currentSelectedEdges, ...targetEdges];
-
-            if (e.type === 'unselect') {
-                nodeSelectionOrder = nodeSelectionOrder.filter(
-                    (id) => !targetNodes.includes(id)
-                );
-                edgeSelectionOrder = edgeSelectionOrder.filter(
-                    (id) => !targetEdges.includes(id)
-                );
-            }
-
-            core.data('nodeSelectionOrder', nodeSelectionOrder);
-            core.data('edgeSelectionOrder', edgeSelectionOrder);
+            updateSelectionOrder(
+                core,
+                e.type === 'unselect' ? 'remove' : 'add',
+                targetNodes,
+                targetEdges
+            );
 
             const selectedElementsInfo = extractElementsInfo(core.$(':selected'));
 

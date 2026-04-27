@@ -1,10 +1,13 @@
 import { AppIcons } from '@/components/common/AppIcons';
 import { Tabs, type TabItem } from '@/components/common/tabs';
 import { useModals } from '@Contexts';
+import { Logger } from '@Logger';
 import { Modal } from '@Modals';
 import { useMemo, useRef, useState } from 'react';
 import { GenerationTab, type GenerationTabRef } from './GenerationTab';
 import { TraversalTab, type TraversalTabRef } from './TraversalTab';
+
+const logger = Logger.createContextLogger('AlgorithmsModal');
 
 type AlgorithmTabId = 'generative' | 'traversal';
 // TODO: Add more tabs like pathfinding, optimization, etc. in the future
@@ -44,7 +47,7 @@ export function AlgorithmsModal() {
                 traversalTabRef.current?.handleRun();
                 break;
             default:
-                console.warn('Unknown active tab:', activeTab);
+                logger.warn('Unknown active tab:', activeTab);
         }
 
         handleClose();

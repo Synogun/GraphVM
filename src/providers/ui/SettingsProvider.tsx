@@ -15,21 +15,19 @@ function loadInitialSettings() {
 }
 
 export function SettingsProvider({ children }: Readonly<SettingsProviderProps>) {
-    const initialSettings = loadInitialSettings();
+    const [initial] = useState(loadInitialSettings);
 
-    const [uiToast, setUiToast] = useState(initialSettings.ui.toast);
+    const [uiToast, setUiToast] = useState(initial.ui.toast);
     const [disableElementsInfoPanel, setDisableElementsInfoPanel] = useState(
-        initialSettings.ui.disableElementsInfoPanel
+        initial.ui.disableElementsInfoPanel
     );
 
-    const [graphArrangeOn, setGraphArrangeOn] = useState(
-        initialSettings.graph.arrangeOn
-    );
-    const [graphLimits, setGraphLimits] = useState(initialSettings.graph.limits);
+    const [graphArrangeOn, setGraphArrangeOn] = useState(initial.graph.arrangeOn);
+    const [graphLimits, setGraphLimits] = useState(initial.graph.limits);
     const [defaultPaddingOnActions, setDefaultPaddingOnActions] = useState(
-        initialSettings.graph.defaultPaddingOnActions
+        initial.graph.defaultPaddingOnActions
     );
-    const [shortcuts, setShortcuts] = useState(initialSettings.shortcuts);
+    const [shortcuts, setShortcuts] = useState(initial.shortcuts);
 
     useEffect(() => {
         const payload = {

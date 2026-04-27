@@ -53,9 +53,10 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
             updateEdges(core, ids, property, value);
         },
     });
+    const { resolveDefaults, getModeValue } = propertyEditor;
 
     useEffect(() => {
-        const currentDefaults = propertyEditor.resolveDefaults();
+        const currentDefaults = resolveDefaults();
         if (!currentDefaults) {
             return;
         }
@@ -78,15 +79,12 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
             return;
         }
 
-        const modeLabel = propertyEditor.getModeValue('label') ?? defaultEdgesLabel;
-        const modeColor = propertyEditor.getModeValue('color') ?? defaultEdgesColor;
-        const modeLineStyle =
-            propertyEditor.getModeValue('style') ?? defaultEdgesStyle;
-        const modeCurve = propertyEditor.getModeValue('curve') ?? defaultEdgesCurve;
-        const modeWeight =
-            propertyEditor.getModeValue('weight') ?? defaultEdgesWeight;
-        const modeArrowShape =
-            propertyEditor.getModeValue('arrowShape') ?? defaultEdgesArrowShape;
+        const modeLabel = getModeValue('label') ?? defaultEdgesLabel;
+        const modeColor = getModeValue('color') ?? defaultEdgesColor;
+        const modeLineStyle = getModeValue('style') ?? defaultEdgesStyle;
+        const modeCurve = getModeValue('curve') ?? defaultEdgesCurve;
+        const modeWeight = getModeValue('weight') ?? defaultEdgesWeight;
+        const modeArrowShape = getModeValue('arrowShape') ?? defaultEdgesArrowShape;
 
         setLabelStyle(isEdgeLabelStyle(modeLabel) ? modeLabel : defaultEdgesLabel);
         setColor(modeColor);
@@ -101,7 +99,8 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
                 : defaultEdgesArrowShape
         );
     }, [
-        propertyEditor,
+        resolveDefaults,
+        getModeValue,
         selectedEdges,
         setLabelStyle,
         setColor,

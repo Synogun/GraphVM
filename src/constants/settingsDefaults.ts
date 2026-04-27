@@ -17,8 +17,8 @@ export const DefaultSettingsData: SettingsData = {
             import: true,
         },
         limits: {
-            maxNodes: 2000,
-            maxEdges: 4000,
+            maxNodes: 500,
+            maxEdges: 1000,
         },
         defaultPaddingOnActions: 30,
     },
