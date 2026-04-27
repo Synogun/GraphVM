@@ -2,7 +2,7 @@ import { AppIcons } from '@/components/common/AppIcons';
 import { WorkspaceTabs } from '@/components/common/tabs';
 import { useGetGraph, useTabActivationSync, useWorkspaceAutosave } from '@/hooks';
 import { makeScopedGraphRegistryId } from '@/utils/graphRegistry';
-import { useGraphRegistry, useGraphWorkspace } from '@Contexts';
+import { useGraphRegistry, useGraphWorkspace, useSnapshotStore } from '@Contexts';
 import { ConfirmModal } from '@Modals';
 import { useCallback, useMemo, useState } from 'react';
 import { GraphCanvas } from './GraphCanvas';
@@ -13,6 +13,7 @@ export function GraphWorkspace() {
     const { tabs, activeTabId, setActiveTab, createTab, closeTab, renameTab } =
         useGraphWorkspace();
     const registry = useGraphRegistry();
+    const { deleteSnapshot } = useSnapshotStore();
     useTabActivationSync(MAIN_GRAPH_ID);
     useWorkspaceAutosave(MAIN_GRAPH_ID);
 
@@ -45,8 +46,9 @@ export function GraphWorkspace() {
             }
 
             closeTab(tabId);
+            deleteSnapshot(tabId);
         },
-        [registry, graphRef, activeTabId, closeTab]
+        [registry, graphRef, activeTabId, closeTab, deleteSnapshot]
     );
 
     const handleCancelCloseTab = useCallback(() => {
@@ -56,10 +58,11 @@ export function GraphWorkspace() {
     const handleConfirmCloseTab = useCallback(() => {
         if (tabIdToClose) {
             closeTab(tabIdToClose);
+            deleteSnapshot(tabIdToClose);
         }
 
         setTabIdToClose(null);
-    }, [tabIdToClose, closeTab]);
+    }, [tabIdToClose, closeTab, deleteSnapshot]);
 
     return (
         <div className="flex h-full flex-col">

@@ -1,10 +1,14 @@
+import { Logger } from '@/config/logger';
 import type { GraphInstance } from '@/types/graph';
+import { isDev } from '@/utils/general';
 import { makeScopedGraphRegistryId as makeActiveGraphRegistryId } from '@/utils/graphRegistry';
 import {
     useGraphRegistry as useGraphRegistryContext,
     useGraphWorkspace,
 } from '@Contexts';
 import { useEffect, useRef, type RefObject } from 'react';
+
+const logger = Logger.createContextLogger('useGetGraph');
 
 export function useRegisterGraphByTab(
     id: string,
@@ -50,6 +54,11 @@ export function useGetGraph(id: string): RefObject<GraphInstance> {
         const instance = registry.get(activeGraphId);
         if (instance) {
             core.current = instance;
+        } else if (isDev()) {
+            logger.warn(
+                `useGetGraph: tab "${activeTabId}" is active but graph "${activeGraphId}" is not yet registered. ` +
+                    'Callbacks formed before the registry effect fires will see a null ref.'
+            );
         }
 
         return registry.subscribe(activeGraphId, (instance) => {

@@ -172,14 +172,6 @@ export function ImportTab({
             return;
         }
 
-        try {
-            assertImportDataLimits(importData, limits);
-        } catch (error: unknown) {
-            const parsedError = parseError(error);
-            addToast({ type: 'error', message: parsedError.message });
-            return;
-        }
-
         activeGraph.elements().remove();
 
         // @ts-expect-error - CytoscapeOptions is not fully compatible with the expected type for json(), but it contains all necessary data for import

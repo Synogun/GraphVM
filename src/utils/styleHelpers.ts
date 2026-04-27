@@ -84,7 +84,8 @@ export function getEdgeLabel(e: EdgeSingular): string {
     if (effectiveLabel === 'index') return String(e.data('index'));
     if (effectiveLabel === 'custom') {
         // TODO: implement custom label parsing with {propertyName} syntax
-        return '';
+        const id: unknown = e.data('id');
+        return typeof id === 'string' ? id : '';
     }
 
     return '';

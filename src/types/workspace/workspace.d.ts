@@ -23,6 +23,7 @@ export type GraphSnapshotStore = {
         tabId: string,
         snapshot: cytoscape.CytoscapeOptions | null
     ) => void;
+    deleteSnapshot: (tabId: string) => void;
 };
 
 export type GraphWorkspaceContextProperties = {

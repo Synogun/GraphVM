@@ -8,7 +8,7 @@ export type WorkspaceState = {
 };
 
 export type WorkspaceAction =
-    | { type: 'create-tab'; name?: string }
+    | { type: 'create-tab'; tabId: string; name?: string }
     | { type: 'close-tab'; tabId: string }
     | { type: 'rename-tab'; tabId: string; name: string }
     | { type: 'set-active-tab'; tabId: string }
@@ -89,9 +89,7 @@ export function workspaceReducer(
 ): WorkspaceState {
     switch (action.type) {
         case 'create-tab': {
-            const tabNumber = state.nextTabNumber;
-            const tabId = `graph-tab-${String(tabNumber)}`;
-            const tab = makeTab(tabId, action.name);
+            const tab = makeTab(action.tabId, action.name);
 
             return {
                 ...state,

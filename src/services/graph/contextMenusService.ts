@@ -114,17 +114,21 @@ export function createContextMenuActionDefinitions(): ContextMenuActionDefinitio
             onClick: (evt, context) => {
                 const selectedNodes = evt.cy.$('node:selected');
                 const selectedEdges = evt.cy.$('edge:selected');
+                const hasSelection =
+                    selectedNodes.length > 0 || selectedEdges.length > 0;
 
-                if (selectedEdges.length > 0) {
-                    removeEdges(evt.cy, selectedEdges);
-                }
+                try {
+                    if (selectedEdges.length > 0) {
+                        removeEdges(evt.cy, selectedEdges);
+                    }
 
-                if (selectedNodes.length > 0) {
-                    removeNodes(evt.cy, selectedNodes);
-                }
-
-                if (selectedNodes.length > 0 || selectedEdges.length > 0) {
-                    context.syncAll(evt.cy);
+                    if (selectedNodes.length > 0) {
+                        removeNodes(evt.cy, selectedNodes);
+                    }
+                } finally {
+                    if (hasSelection) {
+                        context.syncAll(evt.cy);
+                    }
                 }
             },
         },
@@ -139,8 +143,11 @@ export function createContextMenuActionDefinitions(): ContextMenuActionDefinitio
             hasTrailingDivider: false,
             onClick: (evt, context) => {
                 const target = evt.target as cytoscape.Collection;
-                target.remove();
-                context.syncAll(evt.cy);
+                try {
+                    target.remove();
+                } finally {
+                    context.syncAll(evt.cy);
+                }
             },
         },
         {
@@ -160,8 +167,11 @@ export function createContextMenuActionDefinitions(): ContextMenuActionDefinitio
                     return;
                 }
 
-                addGhostFromNode(evt.cy, target, context.graphLimits);
-                context.syncAll(evt.cy);
+                try {
+                    addGhostFromNode(evt.cy, target, context.graphLimits);
+                } finally {
+                    context.syncAll(evt.cy);
+                }
             },
         },
         {
@@ -176,8 +186,11 @@ export function createContextMenuActionDefinitions(): ContextMenuActionDefinitio
             hasTrailingDivider: false,
             onClick: (evt, context) => {
                 const target = evt.target as cytoscape.NodeSingular;
-                cloneNode(evt.cy, target, context.graphLimits);
-                context.syncAll(evt.cy);
+                try {
+                    cloneNode(evt.cy, target, context.graphLimits);
+                } finally {
+                    context.syncAll(evt.cy);
+                }
             },
         },
     ];

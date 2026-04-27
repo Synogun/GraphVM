@@ -4,30 +4,29 @@ import type { NodesData } from '.';
 export const ValidNodeShapes: cytoscape.Css.NodeShape[] = [
     'ellipse',
     'triangle',
+    'round-triangle',
     'rectangle',
+    'round-rectangle',
     'bottom-round-rectangle',
     'cut-rectangle',
     'barrel',
     'rhomboid',
     'diamond',
+    'round-diamond',
     'pentagon',
+    'round-pentagon',
     'hexagon',
+    'round-hexagon',
     'concave-hexagon',
     'heptagon',
+    'round-heptagon',
     'octagon',
+    'round-octagon',
     'star',
     'tag',
+    'round-tag',
     'vee',
     // 'polygon', // Complex shape // TODO: implement polygon points handling
-    // 'round-rectangle', // TODO: Decide on round shapes handling
-    // 'round-triangle',
-    // 'round-diamond',
-    // 'round-pentagon',
-    // 'round-hexagon',
-    // 'round-heptagon',
-    // 'round-octagon',
-    // 'round-tag',
-    // 'right-rhomboid',
 ];
 
 export function isNodeShape(value: unknown): value is cytoscape.Css.NodeShape {

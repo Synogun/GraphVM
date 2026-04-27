@@ -13,7 +13,7 @@ export function GraphWorkspaceProvider({
     const createTab = useCallback(
         (name?: string) => {
             const tabId = `graph-tab-${String(workspace.nextTabNumber)}`;
-            dispatch({ type: 'create-tab', name });
+            dispatch({ type: 'create-tab', tabId, name });
             return tabId;
         },
         [workspace.nextTabNumber]

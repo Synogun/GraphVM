@@ -20,6 +20,9 @@ export function GraphSnapshotStoreProvider({
             ) => {
                 snapshots.set(tabId, snapshot);
             },
+            deleteSnapshot: (tabId: string) => {
+                snapshots.delete(tabId);
+            },
         };
     }, []);
 

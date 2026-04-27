@@ -16,17 +16,7 @@ export function ElementInfoPanel() {
     }, [selectionInfo]);
 
     return (
-        <div
-            style={{
-                position: 'absolute',
-                right: 0,
-                bottom: 0,
-                margin: '1rem',
-                zIndex: 20,
-                minWidth: 220,
-                maxWidth: 320,
-            }}
-        >
+        <div className="absolute bottom-0 right-0 z-20 m-4 min-w-55 max-w-[320px]">
             {selectionInfo.group !== 'none' && (
                 <div className="rounded border border-gray-200 p-3 text-xs shadow-lg">
                     {infoToRender}
