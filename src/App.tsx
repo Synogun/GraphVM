@@ -9,10 +9,8 @@ import {
     ImportExportModal,
     SettingsModal,
 } from '@/lazy';
-import { AppProviders } from '@/providers';
 import { isDev } from '@/utils/general';
-import { Suspense, useEffect, useMemo, useState } from 'react';
-import { IconContext } from 'react-icons';
+import { Suspense, useEffect, useState } from 'react';
 import { useSettings } from './contexts';
 
 export function App() {
@@ -21,8 +19,6 @@ export function App() {
     const {
         ui: { disableElementsInfoPanel },
     } = useSettings();
-
-    const iconStyle = useMemo(() => ({ style: { verticalAlign: 'middle' } }), []);
 
     useEffect(() => {
         // Simulated loading time - Users thinks its more natural
@@ -45,27 +41,25 @@ export function App() {
     }
 
     return (
-        <IconContext.Provider value={iconStyle}>
-            <AppProviders>
-                <GraphShortcutsBinding />
+        <>
+            <GraphShortcutsBinding />
 
-                <PropertiesBar>
-                    <ActionBar>
-                        <GraphWorkspace />
-                        {!disableElementsInfoPanel && <ElementInfoPanel />}
-                    </ActionBar>
-                </PropertiesBar>
+            <PropertiesBar>
+                <ActionBar>
+                    <GraphWorkspace />
+                    {!disableElementsInfoPanel && <ElementInfoPanel />}
+                </ActionBar>
+            </PropertiesBar>
 
-                <Suspense fallback={<DefaultFallback />}>
-                    <AlgorithmsModal />
-                    <ImportExportModal />
-                    <SettingsModal />
-                    <HelpModal />
-                </Suspense>
+            <Suspense fallback={<DefaultFallback />}>
+                <AlgorithmsModal />
+                <ImportExportModal />
+                <SettingsModal />
+                <HelpModal />
+            </Suspense>
 
-                <ToastArea />
-            </AppProviders>
-        </IconContext.Provider>
+            <ToastArea />
+        </>
     );
 }
 

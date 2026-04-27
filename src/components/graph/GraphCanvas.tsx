@@ -39,10 +39,15 @@ export function GraphCanvas({
     const {
         graph: { limits: graphLimits },
     } = useSettings();
+    const graphLimitsRef = useRef(graphLimits);
 
     useEffect(() => {
         addToastRef.current = addToast;
     }, [addToast]);
+
+    useEffect(() => {
+        graphLimitsRef.current = graphLimits;
+    }, [graphLimits]);
 
     useEffect(() => {
         if (!containerRef.current) {
@@ -95,7 +100,7 @@ export function GraphCanvas({
         const cleanupAutopan = bindAutopan(newCore);
         const cleanupContextMenu = mountContextMenu(newCore, {
             syncAll,
-            graphLimits,
+            graphLimits: graphLimitsRef.current,
             onError: (message) => {
                 addToastRef.current({ type: 'error', message });
             },
@@ -120,15 +125,7 @@ export function GraphCanvas({
             destroyGraph(newCore);
             graphRef.current = null;
         };
-    }, [
-        tabId,
-        containerId,
-        graphLimits,
-        setSelectionInfo,
-        syncAll,
-        syncMeta,
-        syncSelection,
-    ]);
+    }, [tabId, containerId, setSelectionInfo, syncAll, syncMeta, syncSelection]);
 
     useLayoutEffect(() => {
         if (!tabId || activeTabId !== tabId) {
