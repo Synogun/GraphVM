@@ -39,7 +39,10 @@ export async function bindContextMenu(
             disabled: action.disabled ?? false,
             hasTrailingDivider: action.hasTrailingDivider ?? false,
             onClickFunction: (evt: cytoscape.EventObject) => {
-                runContextMenuAction(action, evt, options);
+                runContextMenuAction(action, evt, {
+                    ...options,
+                    graphLimits: options.graphLimits?.current,
+                });
             },
         })),
         menuItemClasses: [

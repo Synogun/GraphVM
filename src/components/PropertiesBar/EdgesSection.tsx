@@ -13,7 +13,12 @@ import {
 } from '@/types/elements/edges/typeGuards';
 import { parseKebabCase } from '@/utils/elements';
 import { getDefaultEdgesData, setDefaultEdgesData } from '@/utils/styleHelpers';
-import { useEdgesProperties, useGraphMeta, useGraphSelection } from '@Contexts';
+import {
+    useEdgesProperties,
+    useGraphMeta,
+    useGraphSelection,
+    useGraphWorkspace,
+} from '@Contexts';
 import { ColorInput, NumberInput, SelectInput } from '@Inputs';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
@@ -35,6 +40,7 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
     } = useEdgesProperties();
 
     const { directed } = useGraphMeta();
+    const { activeTabId } = useGraphWorkspace();
     const {
         edges: { selected: selectedEdges },
         selectionInfo: { info: selectionInfo },
@@ -108,6 +114,7 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
         setCurveStyle,
         setWeight,
         setArrowShape,
+        activeTabId,
     ]);
 
     const handleChangeLabel = (e: ChangeEvent<HTMLSelectElement>) => {

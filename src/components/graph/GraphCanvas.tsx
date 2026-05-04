@@ -100,7 +100,7 @@ export function GraphCanvas({
         const cleanupAutopan = bindAutopan(newCore);
         const cleanupContextMenu = mountContextMenu(newCore, {
             syncAll,
-            graphLimits: graphLimitsRef.current,
+            graphLimits: graphLimitsRef,
             onError: (message) => {
                 addToastRef.current({ type: 'error', message });
             },

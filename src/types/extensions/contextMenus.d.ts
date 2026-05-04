@@ -2,7 +2,7 @@ import type { GraphLimits } from '@/types/ui/settings';
 
 export type BindContextMenuOptions = {
     syncAll: (core: cytoscape.Core) => void;
-    graphLimits?: GraphLimits;
+    graphLimits?: { readonly current: GraphLimits | undefined };
     onError?: (message: string) => void;
     shouldAbort?: () => boolean;
 };

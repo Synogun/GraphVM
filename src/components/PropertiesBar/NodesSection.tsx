@@ -4,13 +4,14 @@ import { updateNodes } from '@/services/graph';
 import { isNodeShape, ValidNodeShapes } from '@/types/elements/nodes/typeGuards';
 import { parseKebabCase } from '@/utils/elements';
 import { getDefaultNodesData, setDefaultNodesData } from '@/utils/styleHelpers';
-import { useGraphSelection, useNodeProperties } from '@Contexts';
+import { useGraphSelection, useGraphWorkspace, useNodeProperties } from '@Contexts';
 import { ColorInput, SelectInput } from '@Inputs';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
 export function NodesSection({ visible = true }: Readonly<NodeSectionProps>) {
     const graphRef = useGetGraph('main-graph');
     const { color, setColor, shape, setShape } = useNodeProperties();
+    const { activeTabId } = useGraphWorkspace();
 
     const {
         nodes: { selected: selectedNodes },
@@ -47,7 +48,14 @@ export function NodesSection({ visible = true }: Readonly<NodeSectionProps>) {
 
         setColor(modeColor);
         setShape(isNodeShape(modeShape) ? modeShape : defaultNodeShape);
-    }, [resolveDefaults, getModeValue, selectedNodes, setColor, setShape]);
+    }, [
+        resolveDefaults,
+        getModeValue,
+        selectedNodes,
+        setColor,
+        setShape,
+        activeTabId,
+    ]);
 
     // const handleChangeLabel = (e: ChangeEvent<HTMLInputElement>) => {
     //     if (!graphRef.current) { return; }
