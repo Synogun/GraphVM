@@ -15,6 +15,8 @@ export const DefaultSettingsData: SettingsData = {
             editNode: false,
             editEdge: false,
             import: true,
+            layoutChange: true,
+            tabChange: false,
         },
         limits: {
             maxNodes: 500,

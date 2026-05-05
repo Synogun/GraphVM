@@ -24,3 +24,20 @@ export function centerGraph(
         core.fit(core.nodes(), padding);
     }
 }
+
+export function updateLayoutOptions(
+    core: cytoscape.Core,
+    options: cytoscape.LayoutOptions,
+    arrange = true
+) {
+    const newOptions = {
+        ...DefaultLayoutOptions,
+        ...options,
+    };
+
+    core.data('layoutOptions', newOptions);
+
+    if (arrange) {
+        arrangeGraph(core, newOptions);
+    }
+}

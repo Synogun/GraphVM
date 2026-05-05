@@ -50,5 +50,5 @@ export const DefaultFcoseLayoutOptions = {
     numIter: 1000,
     initialTemp: 200,
     coolingFactor: 0.95,
-    minTemp: 1.0,
+    minTemp: 1,
 };

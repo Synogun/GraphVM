@@ -10,7 +10,13 @@ export type LayoutType =
 
 export type LayoutContextProperties = {
     current: cytoscape.LayoutOptions | undefined;
-    setCurrent: (layout: cytoscape.LayoutOptions | undefined) => void;
+    setCurrent: (
+        layout:
+            | cytoscape.LayoutOptions
+            | ((
+                  prev: cytoscape.LayoutOptions | undefined
+              ) => cytoscape.LayoutOptions)
+    ) => void;
 
     type: LayoutType;
     setType: (type: LayoutType) => void;

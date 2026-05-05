@@ -37,6 +37,8 @@ export type SettingsData = {
             editNode: boolean;
             editEdge: boolean;
             import: boolean;
+            layoutChange: boolean;
+            tabChange: boolean;
         };
         limits: {
             maxNodes: number;

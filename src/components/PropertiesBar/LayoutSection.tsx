@@ -4,58 +4,112 @@ import {
     DefaultLayoutOptions,
 } from '@/constants/layoutDefaults';
 import { useGetGraph } from '@/hooks';
-import { arrangeGraph } from '@/services/graph';
-import { isLayoutType, ValidGraphLayouts } from '@/types/ui/layout/typeGuards';
+import { arrangeGraph, updateLayoutOptions } from '@/services/graph';
+import type { LayoutType } from '@/types';
+import {
+    isLayoutOptions,
+    isLayoutType,
+    ValidGraphLayouts,
+} from '@/types/ui/layout/typeGuards';
 import { parseKebabCase } from '@/utils/elements';
-import { useLayoutProperties, useToasts } from '@Contexts';
+import {
+    useGraphWorkspace,
+    useLayoutProperties,
+    useSettings,
+    useToasts,
+} from '@Contexts';
 import { RangeInput, SelectInput } from '@Inputs';
-import { type ChangeEvent, useEffect, useMemo } from 'react';
+import { type ChangeEvent, useEffect, useMemo, useRef } from 'react';
 
 export function LayoutSection({ visible = true }: Readonly<LayoutSectionProps>) {
     const graphRef = useGetGraph('main-graph');
     const {
         type: layoutType,
         setType: setLayoutType,
-        grid: gridLayout,
+        grid: { setCols: setGridLayoutCols, cols: gridLayoutCols },
+        current: currentLayout,
         setCurrent: setCurrentLayout,
     } = useLayoutProperties();
 
+    const { activeTabId } = useGraphWorkspace();
     const { addToast } = useToasts();
+
+    const {
+        graph: { arrangeOn },
+    } = useSettings();
+
+    const arrangeOnRef = useRef(arrangeOn);
+
+    useEffect(() => {
+        arrangeOnRef.current = arrangeOn;
+    }, [arrangeOn]);
 
     useEffect(() => {
         if (!graphRef.current) {
             return;
         }
 
-        let options: cytoscape.LayoutOptions = {
-            name: layoutType,
+        const rawOptions: unknown = graphRef.current.data('layoutOptions');
+        const options = isLayoutOptions(rawOptions)
+            ? rawOptions
+            : { ...DefaultLayoutOptions };
 
-            animate: true,
-            animationDuration: 500,
-            animationEasing: 'ease-out',
-        };
-
-        if (layoutType === 'grid') {
-            options = {
-                ...options,
-                name: 'grid',
-                cols: gridLayout.cols,
-            };
+        if (options.name === 'grid') {
+            const gridOptions = { ...DefaultGridLayoutOptions, ...options };
+            setGridLayoutCols(gridOptions.cols || DefaultGridLayoutOptions.cols);
         }
 
+        setLayoutType(
+            isLayoutType(options.name)
+                ? options.name
+                : (DefaultLayoutOptions.name as LayoutType)
+        );
         setCurrentLayout(options);
-        arrangeGraph(graphRef.current, options);
-    }, [graphRef, layoutType, gridLayout.cols, setCurrentLayout]);
+    }, [graphRef, activeTabId, setCurrentLayout, setLayoutType, setGridLayoutCols]);
+
+    useEffect(() => {
+        if (!graphRef.current) {
+            return;
+        }
+
+        if (arrangeOnRef.current.tabChange) {
+            arrangeGraph(graphRef.current, currentLayout);
+        }
+    }, [currentLayout, graphRef]);
 
     const handleChangeLayoutType = (e: ChangeEvent<HTMLSelectElement>) => {
+        if (!graphRef.current) {
+            addToast(ParsedErrorToasts.GraphNotFound);
+            return;
+        }
+
         const { value } = e.target;
-        const type = isLayoutType(value) ? value : 'circle';
+        const type = isLayoutType(value)
+            ? value
+            : (DefaultLayoutOptions.name as LayoutType);
 
         setLayoutType(type);
+        setCurrentLayout((prev) => ({ ...prev, name: type }));
+        updateLayoutOptions(
+            graphRef.current,
+            { name: type },
+            arrangeOnRef.current.layoutChange
+        );
     };
 
     const handleChangeGridCols = (e: ChangeEvent<HTMLInputElement>) => {
-        setNumberProperty(e, gridLayout.setCols, gridLayout.cols, 1, 10);
+        if (!graphRef.current) {
+            addToast(ParsedErrorToasts.GraphNotFound);
+            return;
+        }
+
+        setNumberProperty(e, setGridLayoutCols, gridLayoutCols, 1, 10);
+        setCurrentLayout((prev) => ({ ...prev, cols: Number(e.target.value) }));
+        updateLayoutOptions(
+            graphRef.current,
+            { name: 'grid', cols: Number(e.target.value) },
+            arrangeOnRef.current.layoutChange
+        );
     };
 
     const handleRandomLayout = () => {
@@ -63,7 +117,13 @@ export function LayoutSection({ visible = true }: Readonly<LayoutSectionProps>) 
             addToast(ParsedErrorToasts.GraphNotFound);
             return;
         }
-        arrangeGraph(graphRef.current, { name: 'random' });
+
+        setCurrentLayout((prev) => ({ ...prev, name: 'random' }));
+        updateLayoutOptions(
+            graphRef.current,
+            { name: 'random' },
+            arrangeOnRef.current.layoutChange
+        );
     };
 
     const selectTypeOptions = useMemo(() => {
@@ -95,21 +155,19 @@ export function LayoutSection({ visible = true }: Readonly<LayoutSectionProps>) 
             />
 
             {layoutType === 'grid' && (
-                <>
-                    <RangeInput
-                        label="Columns"
-                        max={10}
-                        min={1}
-                        onChange={handleChangeGridCols}
-                        step={1}
-                        value={gridLayout.cols}
-                        defaultValue={DefaultGridLayoutOptions.cols}
-                        tooltip={{
-                            content:
-                                'Determine the number of columns in the grid layout.',
-                        }}
-                    />
-                </>
+                <RangeInput
+                    label="Columns"
+                    max={10}
+                    min={1}
+                    onChange={handleChangeGridCols}
+                    step={1}
+                    value={gridLayoutCols}
+                    defaultValue={DefaultGridLayoutOptions.cols}
+                    tooltip={{
+                        content:
+                            'Determine the number of columns in the grid layout.',
+                    }}
+                />
             )}
 
             {layoutType === 'random' && (

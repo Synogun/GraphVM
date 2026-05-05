@@ -2,7 +2,7 @@ import { DefaultSettingsData } from '@/constants/settingsDefaults';
 import { useSettings } from '@/contexts';
 import type { SettingsData } from '@/types/ui/settings';
 import { NumberInput, ToggleInput } from '@Inputs';
-import type { ChangeEvent } from 'react';
+import { useMemo, type ChangeEvent } from 'react';
 
 export function SettingsGraphTab() {
     const {
@@ -38,6 +38,67 @@ export function SettingsGraphTab() {
         };
 
     const arrangeToggleLabel = { on: 'Arranging', off: 'Not Arranging' };
+    const arrangeOnToggleData = useMemo(
+        () => [
+            {
+                label: 'Add Node',
+                key: 'addNode',
+                checked: arrangeOn.addNode,
+                defaultValue: DefaultSettingsData.graph.arrangeOn.addNode,
+                tooltip:
+                    'Toggle to enable or disable automatic arrangement when adding a node.',
+            },
+            {
+                label: 'Add Edge',
+                key: 'addEdge',
+                checked: arrangeOn.addEdge,
+                defaultValue: DefaultSettingsData.graph.arrangeOn.addEdge,
+                tooltip:
+                    'Toggle to enable or disable automatic arrangement when adding an edge.',
+            },
+            {
+                label: 'Edit Node',
+                key: 'editNode',
+                checked: arrangeOn.editNode,
+                defaultValue: DefaultSettingsData.graph.arrangeOn.editNode,
+                tooltip:
+                    'Toggle to enable or disable automatic arrangement when editing a node.',
+            },
+            {
+                label: 'Edit Edge',
+                key: 'editEdge',
+                checked: arrangeOn.editEdge,
+                defaultValue: DefaultSettingsData.graph.arrangeOn.editEdge,
+                tooltip:
+                    'Toggle to enable or disable automatic arrangement when editing an edge.',
+            },
+            {
+                label: 'Import',
+                key: 'import',
+                checked: arrangeOn.import,
+                defaultValue: DefaultSettingsData.graph.arrangeOn.import,
+                tooltip:
+                    'Toggle to enable or disable automatic arrangement when importing a graph.',
+            },
+            {
+                label: 'Layout Change',
+                key: 'layoutChange',
+                checked: arrangeOn.layoutChange,
+                defaultValue: DefaultSettingsData.graph.arrangeOn.layoutChange,
+                tooltip:
+                    'Toggle to enable or disable automatic arrangement when changing the layout.',
+            },
+            {
+                label: 'Tab Change',
+                key: 'tabChange',
+                checked: arrangeOn.tabChange,
+                defaultValue: DefaultSettingsData.graph.arrangeOn.tabChange,
+                tooltip:
+                    'Toggle to enable or disable automatic arrangement when changing tabs.',
+            },
+        ],
+        [arrangeOn]
+    );
 
     return (
         <section className="grid gap-6 py-4 lg:grid-cols-2">
@@ -47,65 +108,19 @@ export function SettingsGraphTab() {
                 </h4>
 
                 <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-                    <ToggleInput
-                        label="Add Node"
-                        checked={arrangeOn.addNode}
-                        onChange={handleArrangeOnChange('addNode')}
-                        defaultValue={DefaultSettingsData.graph.arrangeOn.addNode}
-                        stateLabels={arrangeToggleLabel}
-                        tooltip={{
-                            content:
-                                'Toggle to enable or disable automatic arrangement when adding a node.',
-                        }}
-                    />
-
-                    <ToggleInput
-                        label="Add Edge"
-                        checked={arrangeOn.addEdge}
-                        onChange={handleArrangeOnChange('addEdge')}
-                        defaultValue={DefaultSettingsData.graph.arrangeOn.addEdge}
-                        stateLabels={arrangeToggleLabel}
-                        tooltip={{
-                            content:
-                                'Toggle to enable or disable automatic arrangement when adding an edge.',
-                        }}
-                    />
-
-                    <ToggleInput
-                        label="Import"
-                        checked={arrangeOn.import}
-                        onChange={handleArrangeOnChange('import')}
-                        defaultValue={DefaultSettingsData.graph.arrangeOn.import}
-                        stateLabels={arrangeToggleLabel}
-                        tooltip={{
-                            content:
-                                'Toggle to enable or disable automatic arrangement when importing a graph.',
-                        }}
-                    />
-
-                    <ToggleInput
-                        label="Edit Node"
-                        checked={arrangeOn.editNode}
-                        onChange={handleArrangeOnChange('editNode')}
-                        defaultValue={DefaultSettingsData.graph.arrangeOn.editNode}
-                        stateLabels={arrangeToggleLabel}
-                        tooltip={{
-                            content:
-                                'Toggle to enable or disable automatic arrangement when editing a node.',
-                        }}
-                    />
-
-                    <ToggleInput
-                        label="Edit Edge"
-                        checked={arrangeOn.editEdge}
-                        onChange={handleArrangeOnChange('editEdge')}
-                        defaultValue={DefaultSettingsData.graph.arrangeOn.editEdge}
-                        stateLabels={arrangeToggleLabel}
-                        tooltip={{
-                            content:
-                                'Toggle to enable or disable automatic arrangement when editing an edge.',
-                        }}
-                    />
+                    {arrangeOnToggleData.map(({ key, ...toggleData }) => (
+                        <ToggleInput
+                            key={key}
+                            label={toggleData.label}
+                            checked={toggleData.checked}
+                            onChange={handleArrangeOnChange(
+                                key as keyof SettingsData['graph']['arrangeOn']
+                            )}
+                            defaultValue={toggleData.defaultValue}
+                            stateLabels={arrangeToggleLabel}
+                            tooltip={{ content: toggleData.tooltip }}
+                        />
+                    ))}
                 </div>
             </div>
 
