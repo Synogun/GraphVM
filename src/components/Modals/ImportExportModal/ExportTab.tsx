@@ -1,6 +1,6 @@
 import { parseError } from '@/config/parsedError';
 import { ParsedErrorToasts } from '@/constants';
-import { useGetGraph } from '@/hooks';
+import { useGetGraph, useGraphMutation } from '@/hooks';
 import {
     mapElementsToText,
     normalizeCytoscapeOptionsForExport,
@@ -25,6 +25,7 @@ export function ExportTab({
     onReadyStateChange,
 }: Readonly<ExportTabProps>) {
     const graphRef = useGetGraph('main-graph');
+    const { syncSelection } = useGraphMutation('main-graph');
     const [exportFormat, setExportFormat] = useState<
         'text' | 'json' | 'png' | 'jpg'
     >('text');
@@ -102,6 +103,7 @@ export function ExportTab({
 
         if (exportFormat === 'json') {
             activeGraph.elements().unselect();
+            syncSelection(activeGraph);
 
             const json = normalizeCytoscapeOptionsForExport(activeGraph.json());
 

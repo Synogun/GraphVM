@@ -32,9 +32,18 @@ export function SelectInput({
         } as ChangeEvent<HTMLSelectElement>);
     };
 
-    const makeOptionValue = ({ value, label, title: isTitle }: SelectOptionType) => {
+    const makeOptionValue = ({
+        value,
+        label,
+        title: isTitle = false,
+        disabled = false,
+    }: SelectOptionType) => {
         return (
-            <option key={`${value}-option`} value={value} disabled={isTitle}>
+            <option
+                key={`${value}-option`}
+                value={value}
+                disabled={disabled || isTitle}
+            >
                 {label}
             </option>
         );
@@ -64,6 +73,7 @@ type SelectOptionType = {
     label: string;
     value: string;
     title?: boolean;
+    disabled?: boolean;
 };
 
 type SelectInputProps = {

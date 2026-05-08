@@ -1,10 +1,11 @@
-import { resetGraph, setGraphDirected } from '@/services/graph';
+import { arrangeGraph, resetGraph, setGraphDirected } from '@/services/graph';
 import {
     loadPersistedState,
     normalizeCytoscapeOptionsForExport,
     normalizeCytoscapeOptionsForImport,
     savePersistedState,
 } from '@/services/persistence';
+import { isLayoutOptions } from '@/types';
 import { isCytoscapeOptions } from '@/types/graph/typeGuards';
 import type { PersistedWorkspaceState } from '@/types/workspace';
 import {
@@ -117,8 +118,17 @@ export function restoreGraph(
 
     // @ts-expect-error - CytoscapeOptions is not fully compatible with the expected type for json(), but it contains the required graph snapshot data.
     core.json(normalizedSnapshot);
+
+    const rawGraphLayout: unknown = core.data('layoutOptions');
+    const graphLayout = isLayoutOptions(rawGraphLayout) ? rawGraphLayout : undefined;
+
+    if (graphLayout) {
+        arrangeGraph(core, graphLayout);
+    }
+
     core.resize();
     core.fit();
+
     setGraphDirected(core, Boolean(normalizedSnapshot.data?.directed));
     logger.info('Graph restoration complete. Current graph state:', core.json());
 

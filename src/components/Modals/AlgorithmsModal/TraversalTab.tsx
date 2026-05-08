@@ -105,6 +105,34 @@ const ALGORITHM_MAP: Record<
     },
 };
 
+function TraversalParamsSection({
+    params,
+    setParams,
+    graphNodes,
+}: Readonly<TraversalParamsSectionProps>) {
+    switch (params.algorithm) {
+        case 'bfs':
+            return (
+                <BFSParamsInput
+                    params={{ ...params, graphNodes }}
+                    setParams={setParams}
+                />
+            );
+        default:
+            return (
+                <div className="text-sm italic text-gray-500">
+                    Parameter inputs for this algorithm are not implemented yet.
+                </div>
+            );
+    }
+}
+
+type TraversalParamsSectionProps = {
+    params: TraversalParams;
+    setParams: React.Dispatch<React.SetStateAction<TraversalParams>>;
+    graphNodes: Extract<TraversalParams, { algorithm: 'bfs' }>['graphNodes'];
+};
+
 export type TraversalTabRef = {
     handleRun: () => void;
 };
@@ -172,30 +200,6 @@ export const TraversalTab = forwardRef<TraversalTabRef>((_, ref) => {
 
     useImperativeHandle(ref, () => ({ handleRun }));
 
-    const paramsSection = () => {
-        switch (params.algorithm) {
-            case 'bfs':
-                return (
-                    <BFSParamsInput
-                        params={{
-                            ...params,
-                            graphNodes: graph.current ? graph.current.nodes() : null,
-                            startNodeId: graph.current?.nodes()[0]?.id() ?? '',
-                            directed: Boolean(graph.current?.data('directed')),
-                        }}
-                        setParams={setParams}
-                    />
-                );
-
-            default:
-                return (
-                    <div className="text-sm italic text-gray-500">
-                        Parameter inputs for this algorithm are not implemented yet.
-                    </div>
-                );
-        }
-    };
-
     const updateAlgorithm = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const newAlgorithm = event.target.value;
 
@@ -212,8 +216,9 @@ export const TraversalTab = forwardRef<TraversalTabRef>((_, ref) => {
 
     const graphAlgorithmSelectOptions = useMemo(() => {
         return ValidTraversalAlgorithms.map((algorithm) => ({
-            label: parseKebabCase(algorithm),
+            label: algorithm === 'bfs' ? parseKebabCase(algorithm) : `${parseKebabCase(algorithm)} (W.I.P.)`,
             value: algorithm,
+            disabled: algorithm !== 'bfs',
         }));
     }, []);
 
@@ -251,7 +256,11 @@ export const TraversalTab = forwardRef<TraversalTabRef>((_, ref) => {
                 </p>
             </div>
 
-            {paramsSection()}
+            <TraversalParamsSection
+                params={params}
+                setParams={setParams}
+                graphNodes={graph.current?.nodes() ?? null}
+            />
         </div>
     );
 });
