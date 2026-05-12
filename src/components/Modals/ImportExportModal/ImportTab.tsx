@@ -78,7 +78,7 @@ export function ImportTab({
                 });
             });
 
-            handleDataPreview(content, file.type as FileType);
+            handleDataPreview(content, file.type);
         } catch (error: unknown) {
             const parsedError = parseError(error);
             addToast({

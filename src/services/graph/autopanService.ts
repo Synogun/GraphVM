@@ -125,7 +125,7 @@ export function bindAutopan(
         if (grabCount === 1) {
             cachedRect = container.getBoundingClientRect();
         }
-        setPositionFromOriginalEvent(e.originalEvent as Event | undefined);
+        setPositionFromOriginalEvent(e.originalEvent);
         startLoop();
     };
 

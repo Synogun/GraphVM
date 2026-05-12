@@ -14,7 +14,6 @@ import { parseKebabCase } from '@/utils/elements';
 import { useToasts } from '@Contexts';
 import {
     forwardRef,
-    useEffect,
     useImperativeHandle,
     useMemo,
     useState,
@@ -138,28 +137,22 @@ export type TraversalTabRef = {
 };
 
 export const TraversalTab = forwardRef<TraversalTabRef>((_, ref) => {
-    const [params, setParams] = useState({
-        ...DefaultTraversalParams,
-    });
-
     const graph = useGetGraph('main-graph');
     const { syncAll } = useGraphMutation('main-graph');
-
     const { addToast } = useToasts();
 
-    useEffect(() => {
+    const [params, setParams] = useState<TraversalParams>(() => {
         const activeGraph = graph.current;
-
-        if (params.algorithm === 'bfs') {
-            setParams((prevParams) => ({
-                ...prevParams,
-                ...ALGORITHM_MAP.bfs.params,
+        if (DefaultTraversalParams.algorithm === 'bfs') {
+            return {
+                ...DefaultTraversalParams,
                 directed: Boolean(activeGraph?.data('directed')),
                 startNodeId: activeGraph?.nodes()[0]?.id() ?? '',
                 graphNodes: activeGraph ? activeGraph.nodes() : null,
-            }));
+            };
         }
-    }, [graph, params.algorithm]);
+        return { ...DefaultTraversalParams };
+    });
 
     const handleRun = () => {
         const activeGraph = graph.current;
@@ -211,7 +204,17 @@ export const TraversalTab = forwardRef<TraversalTabRef>((_, ref) => {
             return;
         }
 
-        setParams(ALGORITHM_MAP[newAlgorithm].params);
+        const activeGraph = graph.current;
+        if (newAlgorithm === 'bfs') {
+            setParams({
+                ...ALGORITHM_MAP.bfs.params,
+                directed: Boolean(activeGraph?.data('directed')),
+                startNodeId: activeGraph?.nodes()[0]?.id() ?? '',
+                graphNodes: activeGraph ? activeGraph.nodes() : null,
+            });
+        } else {
+            setParams(ALGORITHM_MAP[newAlgorithm].params);
+        }
     };
 
     const graphAlgorithmSelectOptions = useMemo(() => {
