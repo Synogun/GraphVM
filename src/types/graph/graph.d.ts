@@ -1,3 +1,5 @@
+import type { GenerationFamily } from '@/types/algorithms/generationAlgorithms';
+
 export type GraphInstance = cytoscape.Core | null;
 
 export type AutopanOptions = {
@@ -99,6 +101,8 @@ export type CoreInfo = {
 export type GraphMetaContextProperties = {
     directed: boolean;
     setDirected: (directed: boolean) => void;
+    families: GenerationFamily[];
+    setFamilies: (families: GenerationFamily[]) => void;
     nodes: {
         count: number;
         setCount: (count: number) => void;

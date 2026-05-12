@@ -69,6 +69,10 @@ export function GraphCanvas({
             const core = e.cy;
             const selectedElementsInfo = extractElementsInfo(core.$(':selected'));
 
+            if (e.type === 'add' || e.type === 'remove') {
+                core.removeData('generationFamily');
+            }
+
             syncMeta(core);
             setSelectionInfo(selectedElementsInfo);
         };

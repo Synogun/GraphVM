@@ -2,6 +2,7 @@ import { parseError } from '@/config/parsedError';
 import { useGetGraph } from '@/hooks';
 import { useGraphMeta, useGraphSelection } from '@Contexts';
 import { Logger } from '@Logger';
+import { isGenerationFamily } from '@/types/algorithms/generationAlgorithmsTypeGuards';
 import { useCallback } from 'react';
 
 const logger = Logger.createContextLogger('useGraphMutation');
@@ -13,6 +14,7 @@ export function useGraphMutation(graphId = 'main-graph') {
 
     const {
         setDirected,
+        setFamilies,
         nodes: { setCount: setNodeCount },
         edges: { setCount: setEdgeCount, setEdgeMode },
     } = useGraphMeta();
@@ -48,9 +50,14 @@ export function useGraphMutation(graphId = 'main-graph') {
                 setEdgeMode(storedEdgeMode);
             }
 
+            const storedFamilies: unknown = target.data('generationFamily');
+            setFamilies(
+                Array.isArray(storedFamilies) ? storedFamilies.filter(isGenerationFamily) : []
+            );
+
             return true;
         },
-        [getGraph, setNodeCount, setEdgeCount, setDirected, setEdgeMode]
+        [getGraph, setNodeCount, setEdgeCount, setDirected, setEdgeMode, setFamilies]
     );
 
     const syncSelection = useCallback(

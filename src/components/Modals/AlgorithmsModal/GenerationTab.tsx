@@ -281,6 +281,7 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
             return;
         }
 
+        activeGraph.data('generationFamily', [params.family]);
         syncAll(activeGraph);
 
         setParams({ ...DefaultGenerationParams });
