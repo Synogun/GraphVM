@@ -14,6 +14,7 @@ import { parseKebabCase } from '@/utils/elements';
 import { useToasts } from '@Contexts';
 import {
     forwardRef,
+    useEffect,
     useImperativeHandle,
     useMemo,
     useState,
@@ -154,6 +155,22 @@ export const TraversalTab = forwardRef<TraversalTabRef>((_, ref) => {
         return { ...DefaultTraversalParams };
     });
 
+    useEffect(() => {
+        const activeGraph = graph.current;
+        if (!activeGraph) return;
+
+        setParams((prev) => {
+            if (prev.algorithm !== 'bfs') return prev;
+            const nodes = activeGraph.nodes();
+            return {
+                ...prev,
+                directed: Boolean(activeGraph.data('directed')),
+                startNodeId: prev.startNodeId || nodes[0].id(),
+                graphNodes: nodes,
+            };
+        });
+    }, [graph]);
+
     const handleRun = () => {
         const activeGraph = graph.current;
 
@@ -206,12 +223,13 @@ export const TraversalTab = forwardRef<TraversalTabRef>((_, ref) => {
 
         const activeGraph = graph.current;
         if (newAlgorithm === 'bfs') {
-            setParams({
+            setParams((prev) => ({
+                ...prev,
                 ...ALGORITHM_MAP.bfs.params,
                 directed: Boolean(activeGraph?.data('directed')),
                 startNodeId: activeGraph?.nodes()[0]?.id() ?? '',
                 graphNodes: activeGraph ? activeGraph.nodes() : null,
-            });
+            }));
         } else {
             setParams(ALGORITHM_MAP[newAlgorithm].params);
         }
@@ -219,7 +237,10 @@ export const TraversalTab = forwardRef<TraversalTabRef>((_, ref) => {
 
     const graphAlgorithmSelectOptions = useMemo(() => {
         return ValidTraversalAlgorithms.map((algorithm) => ({
-            label: algorithm === 'bfs' ? parseKebabCase(algorithm) : `${parseKebabCase(algorithm)} (W.I.P.)`,
+            label:
+                algorithm === 'bfs'
+                    ? parseKebabCase(algorithm)
+                    : `${parseKebabCase(algorithm)} (W.I.P.)`,
             value: algorithm,
             disabled: algorithm !== 'bfs',
         }));

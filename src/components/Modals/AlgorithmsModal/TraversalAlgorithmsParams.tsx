@@ -62,10 +62,16 @@ export function BFSParamsInput({ params, setParams }: ParamsInputProps) {
                         { label: 'Only Selected Nodes', value: 'selected' },
                     ]}
                     onChange={(e) => {
+                        const newOnlySelected = e.target.value === 'selected';
+                        const newNodes = newOnlySelected
+                            ? (params.graphNodes?.filter((node) =>
+                                  node.selected()
+                              ) ?? [])
+                            : (params.graphNodes ?? []);
                         setParams({
                             ...params,
-                            onlySelected: e.target.value === 'selected',
-                            startNodeId: nodes[0]?.id() ?? '',
+                            onlySelected: newOnlySelected,
+                            startNodeId: newNodes[0]?.id() ?? '',
                         });
                     }}
                 />
