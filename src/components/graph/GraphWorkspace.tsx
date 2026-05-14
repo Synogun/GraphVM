@@ -2,7 +2,8 @@ import { AppIcons } from '@/components/common/AppIcons';
 import { WorkspaceTabs } from '@/components/common/tabs';
 import { useGetGraph, useTabActivationSync, useWorkspaceAutosave } from '@/hooks';
 import { makeScopedGraphRegistryId } from '@/utils/graphRegistry';
-import { useGraphRegistry, useGraphWorkspace, useSnapshotStore } from '@Contexts';
+import { useGraphWorkspaceStore } from '@/stores/graphWorkspaceStore';
+import { useGraphRegistry, useSnapshotStore } from '@Contexts';
 import { ConfirmModal } from '@Modals';
 import { useCallback, useMemo, useState } from 'react';
 import { GraphCanvas } from './GraphCanvas';
@@ -10,8 +11,12 @@ import { GraphCanvas } from './GraphCanvas';
 const MAIN_GRAPH_ID = 'main-graph';
 
 export function GraphWorkspace() {
-    const { tabs, activeTabId, setActiveTab, createTab, closeTab, renameTab } =
-        useGraphWorkspace();
+    const tabs = useGraphWorkspaceStore((s) => s.tabs);
+    const activeTabId = useGraphWorkspaceStore((s) => s.activeTabId);
+    const setActiveTab = useGraphWorkspaceStore((s) => s.setActiveTab);
+    const createTab = useGraphWorkspaceStore((s) => s.createTab);
+    const closeTab = useGraphWorkspaceStore((s) => s.closeTab);
+    const renameTab = useGraphWorkspaceStore((s) => s.renameTab);
     const registry = useGraphRegistry();
     const { deleteSnapshot } = useSnapshotStore();
     useTabActivationSync(MAIN_GRAPH_ID);

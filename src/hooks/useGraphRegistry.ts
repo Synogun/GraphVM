@@ -2,10 +2,8 @@ import { Logger } from '@/config/logger';
 import type { GraphInstance } from '@/types/graph';
 import { isDev } from '@/utils/general';
 import { makeScopedGraphRegistryId as makeActiveGraphRegistryId } from '@/utils/graphRegistry';
-import {
-    useGraphRegistry as useGraphRegistryContext,
-    useGraphWorkspace,
-} from '@Contexts';
+import { useGraphWorkspaceStore } from '@/stores/graphWorkspaceStore';
+import { useGraphRegistry as useGraphRegistryContext } from '@Contexts';
 import { useEffect, useRef, type RefObject } from 'react';
 
 const logger = Logger.createContextLogger('useGetGraph');
@@ -16,7 +14,7 @@ export function useRegisterGraphByTab(
     tabId?: string
 ) {
     const registry = useGraphRegistryContext();
-    const { activeTabId } = useGraphWorkspace();
+    const activeTabId = useGraphWorkspaceStore((s) => s.activeTabId);
     const resolvedTabId = tabId ?? activeTabId;
 
     useEffect(() => {
@@ -40,7 +38,7 @@ export function useRegisterGraphByTab(
 
 export function useGetGraph(id: string): RefObject<GraphInstance> {
     const registry = useGraphRegistryContext();
-    const { activeTabId } = useGraphWorkspace();
+    const activeTabId = useGraphWorkspaceStore((s) => s.activeTabId);
     const core = useRef<GraphInstance>(null);
 
     useEffect(() => {
@@ -74,7 +72,7 @@ export function useGetGraphByTab(
     tabId?: string
 ): RefObject<GraphInstance> {
     const registry = useGraphRegistryContext();
-    const { activeTabId } = useGraphWorkspace();
+    const activeTabId = useGraphWorkspaceStore((s) => s.activeTabId);
     const core = useRef<GraphInstance>(null);
     const resolvedTabId = tabId ?? activeTabId;
 

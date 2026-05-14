@@ -1,11 +1,7 @@
 import { restoreGraph } from '@/services/persistence';
+import { useGraphWorkspaceStore } from '@/stores/graphWorkspaceStore';
 import { makeScopedGraphRegistryId } from '@/utils/graphRegistry';
-import {
-    useGraphRegistry,
-    useGraphWorkspace,
-    useSnapshotStore,
-    useToasts,
-} from '@Contexts';
+import { useGraphRegistry, useSnapshotStore, useToasts } from '@Contexts';
 import { Logger } from '@Logger';
 import { useEffect, useLayoutEffect, useRef } from 'react';
 
@@ -14,7 +10,7 @@ const logger = Logger.createContextLogger('useGraphHydration');
 export function useGraphHydration(graphId: string, tabId: string | undefined) {
     const store = useSnapshotStore();
     const registry = useGraphRegistry();
-    const { tabs } = useGraphWorkspace();
+    const tabs = useGraphWorkspaceStore((s) => s.tabs);
     const { addToast } = useToasts();
 
     const tabsRef = useRef(tabs);

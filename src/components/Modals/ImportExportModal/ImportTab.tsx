@@ -9,7 +9,8 @@ import {
     type FileType,
 } from '@/services/persistence';
 import { getDefaultEdgesData, getDefaultNodesData } from '@/utils/styleHelpers';
-import { useLayoutProperties, useSettings, useToasts } from '@Contexts';
+import { useLayoutStore } from '@/stores/layoutStore';
+import { useSettings, useToasts } from '@Contexts';
 import cytoscape, { type CytoscapeOptions } from 'cytoscape';
 import {
     useCallback,
@@ -29,7 +30,7 @@ export function ImportTab({
     const graphRef = useGetGraph('main-graph');
     const { syncAll } = useGraphMutation('main-graph');
 
-    const { current: currentLayout } = useLayoutProperties();
+    const currentLayout = useLayoutStore((s) => s.current);
     const {
         graph: { limits },
     } = useSettings();

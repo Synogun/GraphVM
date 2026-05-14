@@ -4,18 +4,17 @@ import { updateNodes } from '@/services/graph';
 import { isNodeShape, ValidNodeShapes } from '@/types/elements/nodes/typeGuards';
 import { parseKebabCase } from '@/utils/elements';
 import { getDefaultNodesData, setDefaultNodesData } from '@/utils/styleHelpers';
-import { useGraphSelection, useGraphWorkspace, useNodeProperties } from '@Contexts';
+import { useGraphSelectionStore } from '@/stores/graphSelectionStore';
+import { useGraphWorkspaceStore } from '@/stores/graphWorkspaceStore';
+import { useNodeProperties } from '@Contexts';
 import { ColorInput, SelectInput } from '@Inputs';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
 export function NodesSection({ visible = true }: Readonly<NodeSectionProps>) {
     const graphRef = useGetGraph('main-graph');
     const { color, setColor, shape, setShape } = useNodeProperties();
-    const { activeTabId } = useGraphWorkspace();
-
-    const {
-        nodes: { selected: selectedNodes },
-    } = useGraphSelection();
+    const activeTabId = useGraphWorkspaceStore((s) => s.activeTabId);
+    const selectedNodes = useGraphSelectionStore((s) => s.selectedNodes);
 
     const propertyEditor = usePropertyEditor({
         graphRef,

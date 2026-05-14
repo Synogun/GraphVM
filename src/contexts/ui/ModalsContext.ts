@@ -1,17 +1,27 @@
-import { ParsedError } from '@/config/parsedError';
-import type { ModalsContextProperties } from '@/types/ui/popups';
-import { createContext, useContext } from 'react';
-
-export const ModalsContext = createContext<ModalsContextProperties | undefined>(
-    undefined
-);
+import { useModalsStore } from '@/stores/modalsStore';
 
 export function useModals() {
-    const context = useContext(ModalsContext);
+    const isAlgorithmsModalOpen = useModalsStore((s) => s.isAlgorithmsModalOpen);
+    const isHelpModalOpen = useModalsStore((s) => s.isHelpModalOpen);
+    const isSettingsModalOpen = useModalsStore((s) => s.isSettingsModalOpen);
+    const isImportExportModalOpen = useModalsStore((s) => s.isImportExportModalOpen);
+    const setIsAlgorithmsModalOpen = useModalsStore(
+        (s) => s.setIsAlgorithmsModalOpen
+    );
+    const setIsHelpModalOpen = useModalsStore((s) => s.setIsHelpModalOpen);
+    const setIsSettingsModalOpen = useModalsStore((s) => s.setIsSettingsModalOpen);
+    const setIsImportExportModalOpen = useModalsStore(
+        (s) => s.setIsImportExportModalOpen
+    );
 
-    if (context === undefined) {
-        throw new ParsedError('useModals must be used within a ModalsProvider');
-    }
-
-    return context;
+    return {
+        isAlgorithmsModalOpen,
+        setIsAlgorithmsModalOpen,
+        isHelpModalOpen,
+        setIsHelpModalOpen,
+        isSettingsModalOpen,
+        setIsSettingsModalOpen,
+        isImportExportModalOpen,
+        setIsImportExportModalOpen,
+    };
 }

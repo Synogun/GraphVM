@@ -2,7 +2,8 @@ import { AppIcons } from '@/components/common/AppIcons';
 import { Tabs, type TabItem } from '@/components/common/tabs';
 import { useGetGraph } from '@/hooks';
 import { arrangeGraph } from '@/services/graph';
-import { useLayoutProperties, useModals, useSettings } from '@Contexts';
+import { useLayoutStore } from '@/stores/layoutStore';
+import { useModals, useSettings } from '@Contexts';
 import { Modal } from '@Modals';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { ExportTab } from './ExportTab';
@@ -23,7 +24,7 @@ type ImportExportTabId = 'import' | 'export';
 export function ImportExportModal() {
     const modals = useModals();
     const graphRef = useGetGraph('main-graph');
-    const { current: currentLayout } = useLayoutProperties();
+    const currentLayout = useLayoutStore((s) => s.current);
     const {
         graph: {
             arrangeOn: { import: arrangeOnImport },

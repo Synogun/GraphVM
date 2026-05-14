@@ -1,12 +1,10 @@
+import { useGraphSelectionStore } from '@/stores/graphSelectionStore';
 import type { ElementsInfo } from '@/types/graph';
 import { parseCamelCase } from '@/utils/elements';
-import { useGraphSelection } from '@Contexts';
 import { useMemo } from 'react';
 
 export function ElementInfoPanel() {
-    const {
-        selectionInfo: { info: selectionInfo },
-    } = useGraphSelection();
+    const selectionInfo = useGraphSelectionStore((s) => s.selectionInfo);
 
     const infoToRender = useMemo(() => {
         if (selectionInfo.group === 'none') {

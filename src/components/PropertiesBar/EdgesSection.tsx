@@ -13,12 +13,10 @@ import {
 } from '@/types/elements/edges/typeGuards';
 import { parseKebabCase } from '@/utils/elements';
 import { getDefaultEdgesData, setDefaultEdgesData } from '@/utils/styleHelpers';
-import {
-    useEdgesProperties,
-    useGraphMeta,
-    useGraphSelection,
-    useGraphWorkspace,
-} from '@Contexts';
+import { useGraphSelectionStore } from '@/stores/graphSelectionStore';
+import { useGraphMetaStore } from '@/stores/graphMetaStore';
+import { useGraphWorkspaceStore } from '@/stores/graphWorkspaceStore';
+import { useEdgesProperties } from '@Contexts';
 import { ColorInput, NumberInput, SelectInput } from '@Inputs';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
@@ -39,12 +37,10 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
         setArrowShape,
     } = useEdgesProperties();
 
-    const { directed } = useGraphMeta();
-    const { activeTabId } = useGraphWorkspace();
-    const {
-        edges: { selected: selectedEdges },
-        selectionInfo: { info: selectionInfo },
-    } = useGraphSelection();
+    const directed = useGraphMetaStore((s) => s.directed);
+    const activeTabId = useGraphWorkspaceStore((s) => s.activeTabId);
+    const selectedEdges = useGraphSelectionStore((s) => s.selectedEdges);
+    const selectionInfo = useGraphSelectionStore((s) => s.selectionInfo);
 
     const isGhostEdgeSelected =
         selectionInfo.group === 'edge' && selectionInfo.isGhost;

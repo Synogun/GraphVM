@@ -1,17 +1,9 @@
-import { ParsedError } from '@/config/parsedError';
-import type { ToastContextProperties } from '@/types/ui/popups';
-import { createContext, useContext } from 'react';
-
-export const ToastsContext = createContext<ToastContextProperties | undefined>(
-    undefined
-);
+import { useToastsStore } from '@/stores/toastsStore';
 
 export function useToasts() {
-    const context = useContext(ToastsContext);
+    const pool = useToastsStore((s) => s.pool);
+    const addToast = useToastsStore((s) => s.addToast);
+    const removeToast = useToastsStore((s) => s.removeToast);
 
-    if (context === undefined) {
-        throw new ParsedError('useToasts must be used within a ToastsProvider');
-    }
-
-    return context;
+    return { pool, addToast, removeToast };
 }

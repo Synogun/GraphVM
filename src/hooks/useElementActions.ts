@@ -3,20 +3,15 @@ import { ParsedErrorToasts } from '@/constants';
 import { DefaultLayoutOptions } from '@/constants/layoutDefaults';
 import { useGetGraph, useGraphMutation } from '@/hooks';
 import { addEdges, addNode, arrangeGraph } from '@/services/graph';
+import { useGraphMetaStore } from '@/stores/graphMetaStore';
+import { useLayoutStore } from '@/stores/layoutStore';
 import { isArrayOfStrings } from '@/types/typeGuards';
-import {
-    useGraphMeta,
-    useLayoutProperties,
-    useSettings,
-    useToasts,
-} from '@Contexts';
+import { useSettings, useToasts } from '@Contexts';
 import { useCallback } from 'react';
 
 export function useElementActions() {
-    const {
-        edges: { edgeMode },
-    } = useGraphMeta();
-    const { current: currentLayout } = useLayoutProperties();
+    const edgeMode = useGraphMetaStore((s) => s.edgeMode);
+    const currentLayout = useLayoutStore((s) => s.current);
     const {
         graph: { limits, arrangeOn },
     } = useSettings();

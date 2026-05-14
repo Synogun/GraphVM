@@ -1,16 +1,16 @@
 import { extractElementsInfo } from '@/services/graph';
+import { useGraphSelectionStore } from '@/stores/graphSelectionStore';
+import { useGraphWorkspaceStore } from '@/stores/graphWorkspaceStore';
 import { makeScopedGraphRegistryId } from '@/utils/graphRegistry';
-import { useGraphRegistry, useGraphSelection, useGraphWorkspace } from '@Contexts';
+import { useGraphRegistry } from '@Contexts';
 import { useEffect } from 'react';
 import { useGraphMutation } from './useGraphMutation';
 
 export function useTabActivationSync(graphId = 'main-graph') {
-    const { activeTabId } = useGraphWorkspace();
+    const activeTabId = useGraphWorkspaceStore((s) => s.activeTabId);
     const registry = useGraphRegistry();
     const { syncAll } = useGraphMutation(graphId);
-    const {
-        selectionInfo: { setInfo },
-    } = useGraphSelection();
+    const setSelectionInfo = useGraphSelectionStore((s) => s.setSelectionInfo);
 
     useEffect(() => {
         const scopedId = makeScopedGraphRegistryId(graphId, activeTabId);
@@ -21,7 +21,7 @@ export function useTabActivationSync(graphId = 'main-graph') {
             }
 
             syncAll(core);
-            setInfo(extractElementsInfo(core.$(':selected')));
+            setSelectionInfo(extractElementsInfo(core.$(':selected')));
         });
-    }, [activeTabId, graphId, registry, syncAll, setInfo]);
+    }, [activeTabId, graphId, registry, syncAll, setSelectionInfo]);
 }

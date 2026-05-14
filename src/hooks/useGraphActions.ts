@@ -10,23 +10,18 @@ import {
     resetGraph,
     setSelectionOrder,
 } from '@/services/graph';
-import {
-    useGraphSelection,
-    useLayoutProperties,
-    useSettings,
-    useToasts,
-} from '@Contexts';
+import { useGraphSelectionStore } from '@/stores/graphSelectionStore';
+import { useLayoutStore } from '@/stores/layoutStore';
+import { useSettings, useToasts } from '@Contexts';
 import { useCallback } from 'react';
 
 export function useGraphActions() {
-    const { current: currentLayout } = useLayoutProperties();
+    const currentLayout = useLayoutStore((s) => s.current);
     const {
         graph: { defaultPaddingOnActions },
     } = useSettings();
-    const {
-        nodes: { selected: selectedNodes },
-        edges: { selected: selectedEdges },
-    } = useGraphSelection();
+    const selectedNodes = useGraphSelectionStore((s) => s.selectedNodes);
+    const selectedEdges = useGraphSelectionStore((s) => s.selectedEdges);
     const graphRef = useGetGraph('main-graph');
     const { syncAll, syncSelection } = useGraphMutation('main-graph');
     const { addToast } = useToasts();

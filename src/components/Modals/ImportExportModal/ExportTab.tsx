@@ -6,7 +6,8 @@ import {
     normalizeCytoscapeOptionsForExport,
 } from '@/services/persistence';
 import { makeBlobAndDownload } from '@/utils/general';
-import { useGraphMeta, useToasts } from '@Contexts';
+import { useGraphMetaStore } from '@/stores/graphMetaStore';
+import { useToasts } from '@Contexts';
 import type cytoscape from 'cytoscape';
 import {
     useCallback,
@@ -33,9 +34,7 @@ export function ExportTab({
         cytoscape.ExportStringOptions & cytoscape.ExportJpgStringOptions
     >({});
 
-    const {
-        nodes: { count: nodeCount },
-    } = useGraphMeta();
+    const nodeCount = useGraphMetaStore((s) => s.nodeCount);
 
     const { addToast } = useToasts();
 

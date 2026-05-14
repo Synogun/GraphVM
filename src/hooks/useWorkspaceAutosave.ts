@@ -3,21 +3,17 @@ import {
     saveWorkspaceState,
     serializeGraph,
 } from '@/services/persistence';
+import { useGraphWorkspaceStore } from '@/stores/graphWorkspaceStore';
 import type { PersistedWorkspaceTab } from '@/types';
 import { makeScopedGraphRegistryId } from '@/utils/graphRegistry';
-import {
-    useGraphRegistry,
-    useGraphWorkspace,
-    useSnapshotStore,
-    useToasts,
-} from '@Contexts';
+import { useGraphRegistry, useSnapshotStore, useToasts } from '@Contexts';
 import { Logger } from '@Logger';
 import { useEffect, useLayoutEffect, useRef } from 'react';
 
 const logger = Logger.createContextLogger('useWorkspaceAutosave');
 
 export function useWorkspaceAutosave(graphId = 'main-graph') {
-    const { tabs } = useGraphWorkspace();
+    const tabs = useGraphWorkspaceStore((s) => s.tabs);
     const registry = useGraphRegistry();
     const { addToast } = useToasts();
     const store = useSnapshotStore();

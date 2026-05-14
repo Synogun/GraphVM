@@ -1,8 +1,9 @@
 import { parseError } from '@/config/parsedError';
 import { useGetGraph } from '@/hooks';
-import { useGraphMeta, useGraphSelection } from '@Contexts';
-import { Logger } from '@Logger';
+import { useGraphMetaStore } from '@/stores/graphMetaStore';
+import { useGraphSelectionStore } from '@/stores/graphSelectionStore';
 import { isGenerationFamily } from '@/types/algorithms/generationAlgorithmsTypeGuards';
+import { Logger } from '@Logger';
 import { useCallback } from 'react';
 
 const logger = Logger.createContextLogger('useGraphMutation');
@@ -12,17 +13,13 @@ type GraphMutationAction<TResult> = (core: cytoscape.Core) => TResult;
 export function useGraphMutation(graphId = 'main-graph') {
     const graphRef = useGetGraph(graphId);
 
-    const {
-        setDirected,
-        setFamilies,
-        nodes: { setCount: setNodeCount },
-        edges: { setCount: setEdgeCount, setEdgeMode },
-    } = useGraphMeta();
-
-    const {
-        nodes: { setSelected: setSelectedNodes },
-        edges: { setSelected: setSelectedEdges },
-    } = useGraphSelection();
+    const setDirected = useGraphMetaStore((s) => s.setDirected);
+    const setFamilies = useGraphMetaStore((s) => s.setFamilies);
+    const setNodeCount = useGraphMetaStore((s) => s.setNodeCount);
+    const setEdgeCount = useGraphMetaStore((s) => s.setEdgeCount);
+    const setEdgeMode = useGraphMetaStore((s) => s.setEdgeMode);
+    const setSelectedNodes = useGraphSelectionStore((s) => s.setSelectedNodes);
+    const setSelectedEdges = useGraphSelectionStore((s) => s.setSelectedEdges);
 
     const getGraph = useCallback(() => {
         const core = graphRef.current;
@@ -52,7 +49,9 @@ export function useGraphMutation(graphId = 'main-graph') {
 
             const storedFamilies: unknown = target.data('generationFamily');
             setFamilies(
-                Array.isArray(storedFamilies) ? storedFamilies.filter(isGenerationFamily) : []
+                Array.isArray(storedFamilies)
+                    ? storedFamilies.filter(isGenerationFamily)
+                    : []
             );
 
             return true;

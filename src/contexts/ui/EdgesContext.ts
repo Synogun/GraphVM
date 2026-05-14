@@ -1,19 +1,31 @@
-import { ParsedError } from '@/config/parsedError';
-import type { EdgesContextProperties } from '@/types/elements/edges';
-import { createContext, useContext } from 'react';
-
-export const EdgesContext = createContext<EdgesContextProperties | undefined>(
-    undefined
-);
+import { useEdgesStore } from '@/stores/edgesStore';
 
 export function useEdgesProperties() {
-    const context = useContext(EdgesContext);
+    const labelStyle = useEdgesStore((s) => s.labelStyle);
+    const weight = useEdgesStore((s) => s.weight);
+    const color = useEdgesStore((s) => s.color);
+    const lineStyle = useEdgesStore((s) => s.lineStyle);
+    const curveStyle = useEdgesStore((s) => s.curveStyle);
+    const arrowShape = useEdgesStore((s) => s.arrowShape);
+    const setLabelStyle = useEdgesStore((s) => s.setLabelStyle);
+    const setWeight = useEdgesStore((s) => s.setWeight);
+    const setColor = useEdgesStore((s) => s.setColor);
+    const setLineStyle = useEdgesStore((s) => s.setLineStyle);
+    const setCurveStyle = useEdgesStore((s) => s.setCurveStyle);
+    const setArrowShape = useEdgesStore((s) => s.setArrowShape);
 
-    if (context === undefined) {
-        throw new ParsedError(
-            'useEdgesProperties must be used within an EdgesProvider'
-        );
-    }
-
-    return context;
+    return {
+        labelStyle,
+        setLabelStyle,
+        weight,
+        setWeight,
+        color,
+        setColor,
+        lineStyle,
+        setLineStyle,
+        curveStyle,
+        setCurveStyle,
+        arrowShape,
+        setArrowShape,
+    };
 }

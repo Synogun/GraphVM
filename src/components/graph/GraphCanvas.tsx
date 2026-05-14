@@ -7,13 +7,10 @@ import {
     updateSelectionOrder,
 } from '@/services/graph';
 import { mountContextMenu } from '@/services/graph/contextMenusService';
+import { useGraphSelectionStore } from '@/stores/graphSelectionStore';
+import { useGraphWorkspaceStore } from '@/stores/graphWorkspaceStore';
 import type { GraphInstance } from '@/types/graph';
-import {
-    useGraphSelection,
-    useGraphWorkspace,
-    useSettings,
-    useToasts,
-} from '@Contexts';
+import { useSettings, useToasts } from '@Contexts';
 import type cytoscape from 'cytoscape';
 import { useEffect, useLayoutEffect, useRef } from 'react';
 
@@ -25,11 +22,8 @@ export function GraphCanvas({
     const containerRef = useRef<HTMLDivElement>(null);
     const graphRef = useRef<GraphInstance>(null);
 
-    const {
-        selectionInfo: { setInfo: setSelectionInfo },
-    } = useGraphSelection();
-
-    const { activeTabId } = useGraphWorkspace();
+    const setSelectionInfo = useGraphSelectionStore((s) => s.setSelectionInfo);
+    const activeTabId = useGraphWorkspaceStore((s) => s.activeTabId);
 
     const { addToast } = useToasts();
     const addToastRef = useRef(addToast);

@@ -32,7 +32,8 @@ import {
     ValidGenerationFamilies,
 } from '@/types/algorithms';
 import { parseKebabCase } from '@/utils/elements';
-import { useLayoutProperties, useSettings, useToasts } from '@Contexts';
+import { useLayoutStore } from '@/stores/layoutStore';
+import { useSettings, useToasts } from '@Contexts';
 import { SelectInput } from '@Inputs';
 import { forwardRef, useImperativeHandle, useMemo, useState } from 'react';
 import {
@@ -148,12 +149,11 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
     });
 
     const graph = useGetGraph('main-graph');
-    const {
-        current: currentLayout,
-        setCurrent: setLayout,
-        grid,
-        setType,
-    } = useLayoutProperties();
+    const currentLayout = useLayoutStore((s) => s.current);
+    const setLayout = useLayoutStore((s) => s.setCurrent);
+    const setType = useLayoutStore((s) => s.setType);
+    const setCols = useLayoutStore((s) => s.setCols);
+    const setRows = useLayoutStore((s) => s.setRows);
     const { syncAll } = useGraphMutation('main-graph');
     const {
         graph: { limits },
@@ -190,8 +190,8 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
                         };
                         setType('grid');
                         setLayout({ ...layout });
-                        grid.setCols(params.cols);
-                        grid.setRows(params.rows);
+                        setCols(params.cols);
+                        setRows(params.rows);
                     }
                     generateGridGraph(activeGraph, params, layout, limits);
                     break;
@@ -231,7 +231,7 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
                         };
                         setType('grid');
                         setLayout({ ...layout });
-                        grid.setCols(params.P);
+                        setCols(params.P);
                     }
 
                     generateHlpGraph(activeGraph, params, layout);

@@ -5,6 +5,8 @@ import {
 } from '@/constants/layoutDefaults';
 import { useGetGraph } from '@/hooks';
 import { arrangeGraph, updateLayoutOptions } from '@/services/graph';
+import { useGraphWorkspaceStore } from '@/stores/graphWorkspaceStore';
+import { useLayoutStore } from '@/stores/layoutStore';
 import type { LayoutType } from '@/types';
 import {
     isLayoutOptions,
@@ -12,26 +14,19 @@ import {
     ValidGraphLayouts,
 } from '@/types/ui/layout/typeGuards';
 import { parseKebabCase } from '@/utils/elements';
-import {
-    useGraphWorkspace,
-    useLayoutProperties,
-    useSettings,
-    useToasts,
-} from '@Contexts';
+import { useSettings, useToasts } from '@Contexts';
 import { RangeInput, SelectInput } from '@Inputs';
 import { type ChangeEvent, useEffect, useMemo, useRef } from 'react';
 
 export function LayoutSection({ visible = true }: Readonly<LayoutSectionProps>) {
     const graphRef = useGetGraph('main-graph');
-    const {
-        type: layoutType,
-        setType: setLayoutType,
-        grid: { setCols: setGridLayoutCols, cols: gridLayoutCols },
-        current: currentLayout,
-        setCurrent: setCurrentLayout,
-    } = useLayoutProperties();
-
-    const { activeTabId } = useGraphWorkspace();
+    const layoutType = useLayoutStore((s) => s.type);
+    const setLayoutType = useLayoutStore((s) => s.setType);
+    const gridLayoutCols = useLayoutStore((s) => s.cols);
+    const setGridLayoutCols = useLayoutStore((s) => s.setCols);
+    const currentLayout = useLayoutStore((s) => s.current);
+    const setCurrentLayout = useLayoutStore((s) => s.setCurrent);
+    const activeTabId = useGraphWorkspaceStore((s) => s.activeTabId);
     const { addToast } = useToasts();
 
     const {
