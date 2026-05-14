@@ -2,7 +2,7 @@ import { AppIcons } from '@/components/common/AppIcons';
 import { Tabs, type TabItem } from '@/components/common/tabs';
 import { DefaultSettingsData } from '@/constants/settingsDefaults';
 import { useModals, useSettings } from '@Contexts';
-import { Modal } from '@Modals';
+import { Modal } from '@Modals/Modal';
 import { useMemo, useState } from 'react';
 import { SettingsGraphTab } from './SettingsGraphTab';
 import { SettingsInterfaceTab } from './SettingsInterfaceTab';

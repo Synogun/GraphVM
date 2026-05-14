@@ -1,6 +1,6 @@
 import { Tabs, type TabItem } from '@/components/common/tabs';
 import { useModals } from '@Contexts';
-import { Modal } from '@Modals';
+import { Modal } from '@Modals/Modal';
 import { useMemo, useState } from 'react';
 import { ControlsInfo } from './ControlsInfo';
 import { HelpElementsInfo } from './HelpElementsInfo';

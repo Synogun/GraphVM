@@ -2,7 +2,7 @@ import { AppIcons } from '@/components/common/AppIcons';
 import { Tabs, type TabItem } from '@/components/common/tabs';
 import { useModals } from '@Contexts';
 import { Logger } from '@Logger';
-import { Modal } from '@Modals';
+import { Modal } from '@Modals/Modal';
 import { useMemo, useRef, useState } from 'react';
 import { GenerationTab, type GenerationTabRef } from './GenerationTab';
 import { TraversalTab, type TraversalTabRef } from './TraversalTab';

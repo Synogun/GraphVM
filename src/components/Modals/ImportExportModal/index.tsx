@@ -4,7 +4,7 @@ import { useGetGraph } from '@/hooks';
 import { arrangeGraph } from '@/services/graph';
 import { useLayoutStore } from '@/stores/layoutStore';
 import { useModals, useSettings } from '@Contexts';
-import { Modal } from '@Modals';
+import { Modal } from '@Modals/Modal';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { ExportTab } from './ExportTab';
 import { ImportTab } from './ImportTab';

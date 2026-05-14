@@ -7,7 +7,7 @@ const logger = Logger.createContextLogger('toastsStore');
 
 type ToastsStore = {
     pool: ToastData[];
-    _timeouts: Map<string, NodeJS.Timeout>;
+    _timeouts: Map<string, ReturnType<typeof setTimeout>>;
     _activeKeys: Set<string>;
     addToast: (toast: Omit<ToastData, 'id'>) => void;
     removeToast: (id: string) => void;

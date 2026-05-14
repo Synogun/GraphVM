@@ -1,16 +1,14 @@
 import tailwindcss from '@tailwindcss/vite';
-import react from '@vitejs/plugin-react';
+import babel from '@rolldown/plugin-babel';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import { defineConfig } from 'vitest/config';
 
 // https://vite.dev/config/
 export default defineConfig({
     base: '/GraphVM/',
     plugins: [
-        react({
-            babel: {
-                plugins: ['babel-plugin-react-compiler'],
-            },
-        }),
+        react(),
+        babel({ presets: [reactCompilerPreset()] }),
         tailwindcss(),
     ],
     resolve: {
@@ -26,11 +24,14 @@ export default defineConfig({
         },
     },
     build: {
-        rollupOptions: {
+        chunkSizeWarningLimit: 600,
+        rolldownOptions: {
             output: {
-                manualChunks: {
-                    cytoscape: ['cytoscape'],
-                    react: ['react', 'react-dom'],
+                codeSplitting: {
+                    groups: [
+                        { name: 'cytoscape', test: /node_modules\/cytoscape/ },
+                        { name: 'react', test: /node_modules\/react/ },
+                    ],
                 },
             },
         },

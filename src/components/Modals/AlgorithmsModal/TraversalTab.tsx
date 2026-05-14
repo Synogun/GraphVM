@@ -159,6 +159,8 @@ export const TraversalTab = forwardRef<TraversalTabRef>((_, ref) => {
         const activeGraph = graph.current;
         if (!activeGraph) return;
 
+        // graph.current is null during useState init (set by useGetGraph's effect); this effect runs after
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setParams((prev) => {
             if (prev.algorithm !== 'bfs') return prev;
             const nodes = activeGraph.nodes();

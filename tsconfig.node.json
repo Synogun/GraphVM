@@ -21,15 +21,15 @@
         "noFallthroughCasesInSwitch": true,
         "noUncheckedSideEffectImports": true,
         "jsx": "react-jsx",
-        "baseUrl": "./src",
+        "types": ["node"],
         "paths": {
-            "@/*": ["./*"],
-            "@Modals": ["./components/Modals"],
-            "@Modals/*": ["./components/Modals/*"],
-            "@Inputs": ["./components/common/inputs"],
-            "@Contexts": ["./contexts"],
-            "@Logger": ["./config/logger"],
-            "@Config": ["./config"]
+            "@/*": ["./src/*"],
+            "@Modals": ["./src/components/Modals"],
+            "@Modals/*": ["./src/components/Modals/*"],
+            "@Inputs": ["./src/components/common/inputs"],
+            "@Contexts": ["./src/contexts"],
+            "@Logger": ["./src/config/logger"],
+            "@Config": ["./src/config"]
         }
     },
     "include": [
