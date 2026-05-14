@@ -23,3 +23,9 @@ export const HelpModal = lazy(() =>
         default: module.HelpModal,
     }))
 );
+
+export const NodeLabelModal = lazy(() =>
+    import('@Modals/NodeLabelModal').then((module) => ({
+        default: module.NodeLabelModal,
+    }))
+);

@@ -7,6 +7,7 @@ import {
     AlgorithmsModal,
     HelpModal,
     ImportExportModal,
+    NodeLabelModal,
     SettingsModal,
 } from '@/lazy';
 import { isDev } from '@/utils/general';
@@ -56,6 +57,7 @@ export function App() {
                 <ImportExportModal />
                 <SettingsModal />
                 <HelpModal />
+                <NodeLabelModal />
             </Suspense>
 
             <ToastArea />

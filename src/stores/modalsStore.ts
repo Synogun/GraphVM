@@ -20,4 +20,8 @@ export const useModalsStore = create<ModalsStore>()((set) => ({
     setIsImportExportModalOpen: (isOpen) => {
         set({ isImportExportModalOpen: isOpen });
     },
+    isNodeLabelModalOpen: false,
+    setIsNodeLabelModalOpen: (isOpen) => {
+        set({ isNodeLabelModalOpen: isOpen });
+    },
 }));

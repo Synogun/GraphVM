@@ -6,13 +6,14 @@ import { parseKebabCase } from '@/utils/elements';
 import { getDefaultNodesData, setDefaultNodesData } from '@/utils/styleHelpers';
 import { useGraphSelectionStore } from '@/stores/graphSelectionStore';
 import { useGraphWorkspaceStore } from '@/stores/graphWorkspaceStore';
-import { useNodeProperties } from '@Contexts';
-import { ColorInput, SelectInput } from '@Inputs';
+import { useModals, useNodeProperties } from '@Contexts';
+import { ButtonInput, ColorInput, SelectInput } from '@Inputs';
 import { type ChangeEvent, useEffect, useMemo } from 'react';
 
 export function NodesSection({ visible = true }: Readonly<NodeSectionProps>) {
     const graphRef = useGetGraph('main-graph');
     const { color, setColor, shape, setShape } = useNodeProperties();
+    const { setIsNodeLabelModalOpen } = useModals();
     const activeTabId = useGraphWorkspaceStore((s) => s.activeTabId);
     const selectedNodes = useGraphSelectionStore((s) => s.selectedNodes);
 
@@ -112,11 +113,14 @@ export function NodesSection({ visible = true }: Readonly<NodeSectionProps>) {
                 <h1 className="text-lg font-bold text-center">Nodes</h1>
             </div>
 
-            {/* <SelectInput
-                label='Label'
-                onChange={ handleChangeLabel }
-                // value={ nodeProperties.label }
-            /> */}
+            <ButtonInput
+                label="Label"
+                onClick={() => { setIsNodeLabelModalOpen(true); }}
+                disabled={selectedNodes.length === 0}
+                tooltip={{ content: 'Edit labels of selected nodes.' }}
+            >
+                Edit Labels
+            </ButtonInput>
 
             <ColorInput
                 label="Color"

@@ -13,6 +13,8 @@ export function useModals() {
     const setIsImportExportModalOpen = useModalsStore(
         (s) => s.setIsImportExportModalOpen
     );
+    const isNodeLabelModalOpen = useModalsStore((s) => s.isNodeLabelModalOpen);
+    const setIsNodeLabelModalOpen = useModalsStore((s) => s.setIsNodeLabelModalOpen);
 
     return {
         isAlgorithmsModalOpen,
@@ -23,5 +25,7 @@ export function useModals() {
         setIsSettingsModalOpen,
         isImportExportModalOpen,
         setIsImportExportModalOpen,
+        isNodeLabelModalOpen,
+        setIsNodeLabelModalOpen,
     };
 }

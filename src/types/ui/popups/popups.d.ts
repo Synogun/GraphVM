@@ -7,6 +7,8 @@ export type ModalsContextProperties = {
     setIsSettingsModalOpen: (isOpen: boolean) => void;
     isImportExportModalOpen: boolean;
     setIsImportExportModalOpen: (isOpen: boolean) => void;
+    isNodeLabelModalOpen: boolean;
+    setIsNodeLabelModalOpen: (isOpen: boolean) => void;
 };
 
 export type ToastType = 'info' | 'success' | 'warning' | 'error';
