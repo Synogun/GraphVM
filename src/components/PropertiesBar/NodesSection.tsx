@@ -115,7 +115,9 @@ export function NodesSection({ visible = true }: Readonly<NodeSectionProps>) {
 
             <ButtonInput
                 label="Label"
-                onClick={() => { setIsNodeLabelModalOpen(true); }}
+                onClick={() => {
+                    setIsNodeLabelModalOpen(true);
+                }}
                 disabled={selectedNodes.length === 0}
                 tooltip={{ content: 'Edit labels of selected nodes.' }}
             >

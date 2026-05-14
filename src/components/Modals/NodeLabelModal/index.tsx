@@ -26,6 +26,7 @@ export function NodeLabelModal() {
             initialMap[nodeId] = label;
         }
 
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setLabelMap(initialMap);
     }, [isNodeLabelModalOpen]); // eslint-disable-line react-hooks/exhaustive-deps
 

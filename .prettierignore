@@ -3,6 +3,9 @@ build
 coverage
 node_modules
 
+# Binary/non-parseable assets
+*.svg
+
 # Ignore algorithm's validation files
 python/**/venv
 python/**/__pycache__
