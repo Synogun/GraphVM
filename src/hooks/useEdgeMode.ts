@@ -1,7 +1,7 @@
 import { useGetGraph } from '@/hooks';
 import { useGraphMetaStore } from '@/stores/graphMetaStore';
 import { useToasts } from '@Contexts';
-import { useCallback, useEffect, type ChangeEvent } from 'react';
+import { useCallback, type ChangeEvent } from 'react';
 
 export function useEdgeMode() {
     const graphRef = useGetGraph('main-graph');
@@ -9,12 +9,6 @@ export function useEdgeMode() {
     const edgeMode = useGraphMetaStore((s) => s.edgeMode);
     const setEdgeMode = useGraphMetaStore((s) => s.setEdgeMode);
     const { addToast } = useToasts();
-
-    useEffect(() => {
-        if (directed && edgeMode === 'complete') {
-            setEdgeMode('path');
-        }
-    }, [directed, edgeMode, setEdgeMode]);
 
     const persistEdgeMode = useCallback(
         (newMode: 'path' | 'complete') => {

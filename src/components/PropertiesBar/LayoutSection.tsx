@@ -26,6 +26,7 @@ export function LayoutSection({ visible = true }: Readonly<LayoutSectionProps>) 
     const setGridLayoutCols = useLayoutStore((s) => s.setCols);
     const currentLayout = useLayoutStore((s) => s.current);
     const setCurrentLayout = useLayoutStore((s) => s.setCurrent);
+    const syncLayout = useLayoutStore((s) => s.syncLayout);
     const activeTabId = useGraphWorkspaceStore((s) => s.activeTabId);
     const { addToast } = useToasts();
 
@@ -49,18 +50,18 @@ export function LayoutSection({ visible = true }: Readonly<LayoutSectionProps>) 
             ? rawOptions
             : { ...DefaultLayoutOptions };
 
-        if (options.name === 'grid') {
-            const gridOptions = { ...DefaultGridLayoutOptions, ...options };
-            setGridLayoutCols(gridOptions.cols || DefaultGridLayoutOptions.cols);
-        }
+        const type = isLayoutType(options.name)
+            ? options.name
+            : (DefaultLayoutOptions.name as LayoutType);
 
-        setLayoutType(
-            isLayoutType(options.name)
-                ? options.name
-                : (DefaultLayoutOptions.name as LayoutType)
-        );
-        setCurrentLayout(options);
-    }, [graphRef, activeTabId, setCurrentLayout, setLayoutType, setGridLayoutCols]);
+        const cols =
+            options.name === 'grid'
+                ? ({ ...DefaultGridLayoutOptions, ...options }.cols ||
+                  DefaultGridLayoutOptions.cols)
+                : undefined;
+
+        syncLayout(type, options, cols);
+    }, [graphRef, activeTabId, syncLayout]);
 
     useEffect(() => {
         if (!graphRef.current) {

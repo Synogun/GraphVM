@@ -4,31 +4,34 @@ import { useGraphSelectionStore } from '@/stores/graphSelectionStore';
 import { useModals, useToasts } from '@Contexts';
 import { TextInput } from '@Inputs';
 import { Modal } from '@Modals/Modal';
-import { useEffect, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 
 export function NodeLabelModal() {
-    const { isNodeLabelModalOpen, setIsNodeLabelModalOpen } = useModals();
+    const { isNodeLabelModalOpen } = useModals();
+    if (!isNodeLabelModalOpen) return null;
+    return <NodeLabelModalContent />;
+}
+
+function NodeLabelModalContent() {
+    const { setIsNodeLabelModalOpen } = useModals();
     const { addToast } = useToasts();
     const graphRef = useGetGraph('main-graph');
     const selectedNodes = useGraphSelectionStore((s) => s.selectedNodes);
+
     const [labelMap, setLabelMap] = useState<Record<string, string>>({});
 
-    useEffect(() => {
-        if (!isNodeLabelModalOpen) {
-            return;
-        }
-
+    useLayoutEffect(() => {
         const core = graphRef.current;
-        const initialMap: Record<string, string> = {};
-
-        for (const nodeId of selectedNodes) {
-            const label = core ? (core.$id(nodeId).data('label') as string) : '';
-            initialMap[nodeId] = label;
-        }
-
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setLabelMap(initialMap);
-    }, [isNodeLabelModalOpen]); // eslint-disable-line react-hooks/exhaustive-deps
+        setLabelMap(
+            Object.fromEntries(
+                selectedNodes.map((nodeId) => [
+                    nodeId,
+                    core ? (core.$id(nodeId).data('label') as string) : '',
+                ])
+            )
+        );
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount initializer: reads Cytoscape once when modal opens; intentionally omits graphRef/selectedNodes
+    }, []);
 
     const handleClose = () => {
         setIsNodeLabelModalOpen(false);
@@ -67,7 +70,7 @@ export function NodeLabelModal() {
             id="node-label-modal"
             title="Edit Labels"
             subtitle="Edit the label of each selected node individually."
-            show={isNodeLabelModalOpen}
+            show={true}
             onClose={handleClose}
             actions={modalActions}
         >

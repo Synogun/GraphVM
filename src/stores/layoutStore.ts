@@ -21,6 +21,11 @@ type LayoutStore = {
     setRadius: (radius: number) => void;
     setRows: (rows: number) => void;
     setCols: (cols: number) => void;
+    syncLayout: (
+        type: LayoutType,
+        current: cytoscape.LayoutOptions,
+        cols?: number
+    ) => void;
 };
 
 export const useLayoutStore = create<LayoutStore>()((set) => ({
@@ -47,5 +52,12 @@ export const useLayoutStore = create<LayoutStore>()((set) => ({
     },
     setCols: (cols) => {
         set({ cols });
+    },
+    syncLayout: (type, current, cols) => {
+        set((state) => ({
+            type,
+            current,
+            cols: cols ?? state.cols,
+        }));
     },
 }));
