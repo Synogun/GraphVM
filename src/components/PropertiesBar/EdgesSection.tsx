@@ -11,31 +11,25 @@ import {
     ValidEdgeLabelStyle,
     ValidEdgeLineStyles,
 } from '@/types/elements/edges/typeGuards';
-import { parseKebabCase } from '@/utils/elements';
+import type { EdgeCurveStyle, EdgeLabelStyle } from '@/types/elements/edges';
+import type cytoscape from 'cytoscape';
+import { findPropertyValueMode, parseKebabCase } from '@/utils/elements';
 import { getDefaultEdgesData, setDefaultEdgesData } from '@/utils/styleHelpers';
 import { useGraphSelectionStore } from '@/stores/graphSelectionStore';
 import { useGraphMetaStore } from '@/stores/graphMetaStore';
 import { useGraphWorkspaceStore } from '@/stores/graphWorkspaceStore';
-import { useEdgesProperties } from '@Contexts';
 import { ColorInput, NumberInput, SelectInput } from '@Inputs';
-import { type ChangeEvent, useEffect, useMemo } from 'react';
+import { type ChangeEvent, useLayoutEffect, useMemo, useState } from 'react';
 
 export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
     const graphRef = useGetGraph('main-graph');
-    const {
-        labelStyle,
-        setLabelStyle,
-        weight,
-        setWeight,
-        color,
-        setColor,
-        lineStyle,
-        setLineStyle,
-        curveStyle,
-        setCurveStyle,
-        arrowShape,
-        setArrowShape,
-    } = useEdgesProperties();
+
+    const [labelStyle, setLabelStyle] = useState<EdgeLabelStyle>(DefaultEdgesData.label);
+    const [color, setColor] = useState<string>(DefaultEdgesData.color);
+    const [lineStyle, setLineStyle] = useState<cytoscape.Css.LineStyle>(DefaultEdgesData.style);
+    const [curveStyle, setCurveStyle] = useState<EdgeCurveStyle>(DefaultEdgesData.curve);
+    const [weight, setWeight] = useState<number>(DefaultEdgesData.weight);
+    const [arrowShape, setArrowShape] = useState<cytoscape.Css.ArrowShape>(DefaultEdgesData.arrowShape);
 
     const directed = useGraphMetaStore((s) => s.directed);
     const activeTabId = useGraphWorkspaceStore((s) => s.activeTabId);
@@ -55,63 +49,39 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
             updateEdges(core, ids, property, value);
         },
     });
-    const { resolveDefaults, getModeValue } = propertyEditor;
 
-    useEffect(() => {
-        const currentDefaults = resolveDefaults();
-        if (!currentDefaults) {
-            return;
-        }
+    useLayoutEffect(() => {
+        const core = graphRef.current;
+        if (!core) return;
 
-        const {
-            label: defaultEdgesLabel,
-            color: defaultEdgesColor,
-            style: defaultEdgesStyle,
-            curve: defaultEdgesCurve,
-            weight: defaultEdgesWeight,
-            arrowShape: defaultEdgesArrowShape,
-        } = currentDefaults;
+        const currentDefaults = getDefaultEdgesData(core);
 
         if (selectedEdges.length === 0) {
-            setLabelStyle(defaultEdgesLabel);
-            setColor(defaultEdgesColor);
-            setLineStyle(defaultEdgesStyle);
-            setCurveStyle(defaultEdgesCurve);
-            setWeight(defaultEdgesWeight);
+            setLabelStyle(currentDefaults.label);
+            setColor(currentDefaults.color);
+            setLineStyle(currentDefaults.style);
+            setCurveStyle(currentDefaults.curve);
+            setWeight(currentDefaults.weight);
+            setArrowShape(currentDefaults.arrowShape);
             return;
         }
 
-        const modeLabel = getModeValue('label') ?? defaultEdgesLabel;
-        const modeColor = getModeValue('color') ?? defaultEdgesColor;
-        const modeLineStyle = getModeValue('style') ?? defaultEdgesStyle;
-        const modeCurve = getModeValue('curve') ?? defaultEdgesCurve;
-        const modeWeight = getModeValue('weight') ?? defaultEdgesWeight;
-        const modeArrowShape = getModeValue('arrowShape') ?? defaultEdgesArrowShape;
+        const collection = core.edges().filter((e) => selectedEdges.includes(e.id()));
+        const rawLabel = findPropertyValueMode(collection, 'label') ?? currentDefaults.label;
+        const rawColor = findPropertyValueMode(collection, 'color') ?? currentDefaults.color;
+        const rawStyle = findPropertyValueMode(collection, 'style') ?? currentDefaults.style;
+        const rawCurve = findPropertyValueMode(collection, 'curve') ?? currentDefaults.curve;
+        const rawWeight = findPropertyValueMode(collection, 'weight') ?? currentDefaults.weight;
+        const rawArrowShape = findPropertyValueMode(collection, 'arrowShape') ?? currentDefaults.arrowShape;
 
-        setLabelStyle(isEdgeLabelStyle(modeLabel) ? modeLabel : defaultEdgesLabel);
-        setColor(modeColor);
-        setLineStyle(
-            isEdgeLineStyle(modeLineStyle) ? modeLineStyle : defaultEdgesStyle
-        );
-        setCurveStyle(isEdgeCurve(modeCurve) ? modeCurve : defaultEdgesCurve);
-        setWeight(Number(modeWeight) || defaultEdgesWeight);
-        setArrowShape(
-            isEdgeArrowShape(modeArrowShape)
-                ? modeArrowShape
-                : defaultEdgesArrowShape
-        );
-    }, [
-        resolveDefaults,
-        getModeValue,
-        selectedEdges,
-        setLabelStyle,
-        setColor,
-        setLineStyle,
-        setCurveStyle,
-        setWeight,
-        setArrowShape,
-        activeTabId,
-    ]);
+        setLabelStyle(isEdgeLabelStyle(rawLabel) ? rawLabel : currentDefaults.label);
+        setColor(rawColor);
+        setLineStyle(isEdgeLineStyle(rawStyle) ? rawStyle : currentDefaults.style);
+        setCurveStyle(isEdgeCurve(rawCurve) ? rawCurve : currentDefaults.curve);
+        setWeight(Number(rawWeight) || currentDefaults.weight);
+        setArrowShape(isEdgeArrowShape(rawArrowShape) ? rawArrowShape : currentDefaults.arrowShape);
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- graphRef is a stable ref; reading .current inside the effect is intentional
+    }, [selectedEdges, activeTabId]);
 
     const handleChangeLabel = (e: ChangeEvent<HTMLSelectElement>) => {
         const currentDefaults = propertyEditor.resolveDefaults();
