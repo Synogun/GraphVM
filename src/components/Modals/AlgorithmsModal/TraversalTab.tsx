@@ -164,10 +164,11 @@ export const TraversalTab = forwardRef<TraversalTabRef>((_, ref) => {
         setParams((prev) => {
             if (prev.algorithm !== 'bfs') return prev;
             const nodes = activeGraph.nodes();
+
             return {
                 ...prev,
                 directed: Boolean(activeGraph.data('directed')),
-                startNodeId: prev.startNodeId || nodes[0].id(),
+                startNodeId: prev.startNodeId || nodes.eq(0).id(),
                 graphNodes: nodes,
             };
         });
