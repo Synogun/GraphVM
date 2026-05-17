@@ -15,13 +15,11 @@ import {
 import { MdFilterCenterFocus, MdPalette, MdSettings } from 'react-icons/md';
 import { PiFediverseLogo, PiGraph, PiLineSegments, PiShuffle } from 'react-icons/pi';
 import { RiSave3Fill } from 'react-icons/ri';
+import { TbReport } from 'react-icons/tb';
 import {
-    TbLayoutSidebarLeftCollapseFilled,
-    TbLayoutSidebarLeftExpandFilled,
-    TbLayoutSidebarRightCollapseFilled,
-    TbLayoutSidebarRightExpandFilled,
-    TbReport,
-} from 'react-icons/tb';
+    VscLayoutSidebarLeftDock,
+    VscLayoutSidebarRightDock,
+} from 'react-icons/vsc';
 
 export const AppIcons = {
     NewGraph: (props: IconBaseProps) => <PiGraph {...props} />,
@@ -42,16 +40,22 @@ export const AppIcons = {
     DebugLogs: (props: IconBaseProps) => <TbReport {...props} />,
     ColorPalette: (props: IconBaseProps) => <MdPalette {...props} />,
     SidebarLeftCollapse: (props: IconBaseProps) => (
-        <TbLayoutSidebarLeftCollapseFilled {...props} />
+        <VscLayoutSidebarLeftDock {...props} />
     ),
     SidebarLeftExpand: (props: IconBaseProps) => (
-        <TbLayoutSidebarLeftExpandFilled {...props} />
+        <VscLayoutSidebarRightDock {...props} />
     ),
     SidebarRightCollapse: (props: IconBaseProps) => (
-        <TbLayoutSidebarRightCollapseFilled {...props} />
+        <VscLayoutSidebarLeftDock
+            {...props}
+            className={`${props.className ?? ''} rotate-180`}
+        />
     ),
     SidebarRightExpand: (props: IconBaseProps) => (
-        <TbLayoutSidebarRightExpandFilled {...props} />
+        <VscLayoutSidebarRightDock
+            {...props}
+            className={`${props.className ?? ''} rotate-180`}
+        />
     ),
     Checkmark: (props: IconBaseProps) => <FaCheck {...props} />,
     Import: (props: IconBaseProps) => <BiImport {...props} />,

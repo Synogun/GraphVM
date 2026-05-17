@@ -86,7 +86,7 @@ export function GraphWorkspace() {
                 confirmButtonClassName="btn-error"
             />
 
-            <div className="border-base-300 bg-base-200 border-b px-4 pt-2">
+            <div className="border-base-300 bg-base-200 border-b pr-4 pt-2 lg:pl-0 pl-4">
                 <div className="flex items-start gap-3">
                     <WorkspaceTabs
                         tabs={tabs.map((tab) => ({

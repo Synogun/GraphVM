@@ -1,5 +1,6 @@
 import type { ChangeEvent } from 'react';
 import { AppIcons } from '../common/AppIcons';
+import { ActionBarTooltipClassName } from './ActionBarButton';
 
 export function ActionBarEdgeModeButton({
     id,
@@ -10,16 +11,18 @@ export function ActionBarEdgeModeButton({
     iconSize = '1.5em',
     className = '',
     disabled = false,
+    condensed = false,
 }: Readonly<ActionBarEdgeModeButtonProps>) {
     const colorIfComplete = isCompleteEdgeMode ? 'btn-accent' : 'btn-outline';
     const activeColor = disabled ? 'btn-disabled' : colorIfComplete;
 
     const swapStyle = 'flex mx-auto text-center gap-2';
+    const tooltipLabel = isCompleteEdgeMode ? 'Complete Mode' : 'Path Mode';
 
-    return (
+    const button = (
         <label
             id={id ? `${id}-label` : undefined}
-            className={`btn ${activeColor} hover:btn-accent swap hover:swap-rotate my-1 ${className}`}
+            className={`btn w-full ${activeColor} hover:btn-accent swap hover:swap-rotate my-1 ${className}`}
             aria-disabled={disabled}
         >
             <input
@@ -30,13 +33,25 @@ export function ActionBarEdgeModeButton({
                 disabled={disabled}
             />
             <div className={`swap-off ${swapStyle}`}>
-                {AppIcons.PathEdgeMode({ size: iconSize })} Path Mode
+                {AppIcons.PathEdgeMode({ size: iconSize })}
+                {condensed ? null : ' Path Mode'}
             </div>
             <div className={`swap-on ${swapStyle}`}>
-                {AppIcons.CompleteEdgeMode({ size: iconSize })} Complete Mode
+                {AppIcons.CompleteEdgeMode({ size: iconSize })}
+                {condensed ? null : ' Complete Mode'}
             </div>
         </label>
     );
+
+    if (condensed) {
+        return (
+            <div className={ActionBarTooltipClassName} data-tip={tooltipLabel}>
+                {button}
+            </div>
+        );
+    }
+
+    return button;
 }
 
 type ActionBarEdgeModeButtonProps = {
@@ -46,4 +61,5 @@ type ActionBarEdgeModeButtonProps = {
     iconSize?: string | number;
     className?: string;
     disabled?: boolean;
+    condensed?: boolean;
 };
