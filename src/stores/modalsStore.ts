@@ -24,4 +24,8 @@ export const useModalsStore = create<ModalsStore>()((set) => ({
     setIsNodeLabelModalOpen: (isOpen) => {
         set({ isNodeLabelModalOpen: isOpen });
     },
+    isEdgeLabelModalOpen: false,
+    setIsEdgeLabelModalOpen: (isOpen) => {
+        set({ isEdgeLabelModalOpen: isOpen });
+    },
 }));

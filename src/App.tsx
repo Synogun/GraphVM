@@ -5,6 +5,7 @@ import { ElementInfoPanel, GraphWorkspace } from '@/components/graph';
 import { useGraphShortcuts } from '@/hooks';
 import {
     AlgorithmsModal,
+    EdgeLabelModal,
     HelpModal,
     ImportExportModal,
     NodeLabelModal,
@@ -62,6 +63,7 @@ export function App() {
                 <SettingsModal />
                 <HelpModal />
                 <NodeLabelModal />
+                <EdgeLabelModal />
             </Suspense>
 
             <ToastArea />

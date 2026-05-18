@@ -18,18 +18,21 @@ import { getDefaultEdgesData, setDefaultEdgesData } from '@/utils/styleHelpers';
 import { useGraphSelectionStore } from '@/stores/graphSelectionStore';
 import { useGraphMetaStore } from '@/stores/graphMetaStore';
 import { useGraphWorkspaceStore } from '@/stores/graphWorkspaceStore';
-import { ColorInput, NumberInput, SelectInput } from '@Inputs';
+import { useModals } from '@Contexts';
+import { ButtonInput, ColorInput, NumberInput, SelectInput } from '@Inputs';
 import { type ChangeEvent, useLayoutEffect, useMemo, useState } from 'react';
 
 export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
     const graphRef = useGetGraph('main-graph');
 
-    const [labelStyle, setLabelStyle] = useState<EdgeLabelStyle>(DefaultEdgesData.label);
+    const [labelStyle, setLabelStyle] = useState<EdgeLabelStyle>(DefaultEdgesData.labelStyle);
     const [color, setColor] = useState<string>(DefaultEdgesData.color);
     const [lineStyle, setLineStyle] = useState<cytoscape.Css.LineStyle>(DefaultEdgesData.style);
     const [curveStyle, setCurveStyle] = useState<EdgeCurveStyle>(DefaultEdgesData.curve);
     const [weight, setWeight] = useState<number>(DefaultEdgesData.weight);
     const [arrowShape, setArrowShape] = useState<cytoscape.Css.ArrowShape>(DefaultEdgesData.arrowShape);
+
+    const { setIsEdgeLabelModalOpen } = useModals();
 
     const directed = useGraphMetaStore((s) => s.directed);
     const activeTabId = useGraphWorkspaceStore((s) => s.activeTabId);
@@ -46,7 +49,7 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
         setDefaults: setDefaultEdgesData,
         getElements: (core) => core.edges(),
         updateElements: (core, ids, property, value) => {
-            updateEdges(core, ids, property, value);
+            if (value !== undefined) updateEdges(core, ids, property, value);
         },
     });
 
@@ -57,7 +60,7 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
         const currentDefaults = getDefaultEdgesData(core);
 
         if (selectedEdges.length === 0) {
-            setLabelStyle(currentDefaults.label);
+            setLabelStyle(currentDefaults.labelStyle);
             setColor(currentDefaults.color);
             setLineStyle(currentDefaults.style);
             setCurveStyle(currentDefaults.curve);
@@ -67,14 +70,14 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
         }
 
         const collection = core.edges().filter((e) => selectedEdges.includes(e.id()));
-        const rawLabel = findPropertyValueMode(collection, 'label') ?? currentDefaults.label;
+        const rawLabel = findPropertyValueMode(collection, 'labelStyle') ?? currentDefaults.labelStyle;
         const rawColor = findPropertyValueMode(collection, 'color') ?? currentDefaults.color;
         const rawStyle = findPropertyValueMode(collection, 'style') ?? currentDefaults.style;
         const rawCurve = findPropertyValueMode(collection, 'curve') ?? currentDefaults.curve;
         const rawWeight = findPropertyValueMode(collection, 'weight') ?? currentDefaults.weight;
         const rawArrowShape = findPropertyValueMode(collection, 'arrowShape') ?? currentDefaults.arrowShape;
 
-        setLabelStyle(isEdgeLabelStyle(rawLabel) ? rawLabel : currentDefaults.label);
+        setLabelStyle(isEdgeLabelStyle(rawLabel) ? rawLabel : currentDefaults.labelStyle);
         setColor(rawColor);
         setLineStyle(isEdgeLineStyle(rawStyle) ? rawStyle : currentDefaults.style);
         setCurveStyle(isEdgeCurve(rawCurve) ? rawCurve : currentDefaults.curve);
@@ -92,11 +95,33 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
         const { value } = e.target;
 
         const parsedValue =
-            value && isEdgeLabelStyle(value) ? value : currentDefaults.label;
+            value && isEdgeLabelStyle(value) ? value : currentDefaults.labelStyle;
 
-        const didApply = propertyEditor.applyValue('label', parsedValue);
+        const didApply = propertyEditor.applyValue('labelStyle', parsedValue);
         if (!didApply) {
             return;
+        }
+
+        if (selectedEdges.length > 0) {
+            const core = graphRef.current;
+            if (core) {
+                core.edges()
+                    .filter((edge) => selectedEdges.includes(edge.id()))
+                    .forEach((edge) => {
+                        let newLabel = '';
+                        if (parsedValue === 'weight') {
+                            newLabel = String(edge.data('weight'));
+                        } else if (parsedValue === 'index') {
+                            newLabel = String(edge.data('index'));
+                        } else if (parsedValue === 'custom') {
+                            const existing = edge.data('label') as string | undefined;
+                            if (existing) return;
+                            if (labelStyle === 'weight') newLabel = String(edge.data('weight'));
+                            else if (labelStyle === 'index') newLabel = String(edge.data('index'));
+                        }
+                        updateEdges(core, [edge.id()], 'label', newLabel);
+                    });
+            }
         }
 
         setLabelStyle(parsedValue);
@@ -118,6 +143,15 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
         const didApply = propertyEditor.applyValue('weight', parsedValue);
         if (!didApply) {
             return;
+        }
+
+        if (labelStyle === 'weight' && selectedEdges.length > 0) {
+            const core = graphRef.current;
+            if (core) {
+                selectedEdges.forEach((edgeId) => {
+                    updateEdges(core, [edgeId], 'label', String(parsedValue));
+                });
+            }
         }
 
         setWeight(parsedValue);
@@ -249,11 +283,22 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
                 onChange={handleChangeLabel}
                 options={selectLabelOptions}
                 value={labelStyle}
-                defaultValue={DefaultEdgesData.label}
+                defaultValue={DefaultEdgesData.labelStyle}
                 tooltip={{
                     content: 'Determine the text that appears on the edges.',
                 }}
             />
+
+            {labelStyle === 'custom' && (
+                <ButtonInput
+                    label="Label"
+                    onClick={() => setIsEdgeLabelModalOpen(true)}
+                    disabled={selectedEdges.length === 0}
+                    tooltip={{ content: 'Edit labels of selected edges.' }}
+                >
+                    Edit Labels
+                </ButtonInput>
+            )}
 
             <ColorInput
                 label="Color"

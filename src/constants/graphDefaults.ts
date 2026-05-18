@@ -28,7 +28,7 @@ export const DefaultEdgesData: EdgesData = {
     source: '',
     target: '',
     weight: 1,
-    label: 'hidden',
+    labelStyle: 'hidden',
     color: '#cccccc',
     style: 'solid',
     curve: 'bezier',

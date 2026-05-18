@@ -57,7 +57,7 @@ export const ValidEdgeLabelStyle: EdgeLabelStyle[] = [
     'hidden',
     'weight',
     'index',
-    // 'custom'
+    'custom',
 ];
 
 export function isEdgeLabelStyle(value: unknown): value is EdgeLabelStyle {
@@ -80,7 +80,7 @@ export function isDefaultEdgeData(data: unknown): data is EdgesData {
     const hasColor = typeof candidate.color === 'string';
     const hasWeight =
         typeof candidate.weight === 'number' && !Number.isNaN(candidate.weight);
-    const hasLabel = isEdgeLabelStyle(candidate.label);
+    const hasLabelStyle = isEdgeLabelStyle(candidate.labelStyle);
     const hasStyle = isEdgeLineStyle(candidate.style);
     const hasCurve = isEdgeCurve(candidate.curve);
     const hasArrowShape = isEdgeArrowShape(candidate.arrowShape);
@@ -91,7 +91,7 @@ export function isDefaultEdgeData(data: unknown): data is EdgesData {
         hasTarget,
         hasColor,
         hasWeight,
-        hasLabel,
+        hasLabelStyle,
         hasStyle,
         hasCurve,
         hasArrowShape,

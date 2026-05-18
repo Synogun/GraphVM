@@ -29,3 +29,9 @@ export const NodeLabelModal = lazy(() =>
         default: module.NodeLabelModal,
     }))
 );
+
+export const EdgeLabelModal = lazy(() =>
+    import('@Modals/EdgeLabelModal').then((module) => ({
+        default: module.EdgeLabelModal,
+    }))
+);

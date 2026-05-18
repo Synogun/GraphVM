@@ -150,7 +150,7 @@ function extractSingleElementInfo(element: cytoscape.SingularData): ElementsInfo
         const info: EdgeSelectionInfo = {
             group: 'edge',
             id: element.id(),
-            label: String(element.data('label')),
+            label: String(element.data('labelStyle') ?? 'hidden'),
             source: `Node ${sourceLabel} (${source.id()})`,
             target: `Node ${targetLabel} (${target.id()})`,
             [`Node ${sourceLabel} degree`]: sourceDegree,

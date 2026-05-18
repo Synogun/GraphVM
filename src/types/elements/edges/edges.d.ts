@@ -17,7 +17,8 @@ export type EdgesData = {
     source: string;
     target: string;
     weight: number;
-    label: EdgeLabelStyle;
+    labelStyle: EdgeLabelStyle;
+    label?: string;
     color: string;
     style: cytoscape.Css.LineStyle;
     curve: EdgeCurveStyle;
