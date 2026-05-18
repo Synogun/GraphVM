@@ -6,6 +6,7 @@ import { useGraphWorkspaceStore } from '@/stores/graphWorkspaceStore';
 import { useGraphRegistry, useSnapshotStore } from '@Contexts';
 import { ConfirmModal } from '@Modals';
 import { useCallback, useMemo, useState } from 'react';
+import { CanvasToolbar } from './CanvasToolbar';
 import { GraphCanvas } from './GraphCanvas';
 
 const MAIN_GRAPH_ID = 'main-graph';
@@ -133,6 +134,7 @@ export function GraphWorkspace() {
                         </div>
                     );
                 })}
+                <CanvasToolbar />
             </div>
         </div>
     );

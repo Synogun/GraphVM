@@ -1,4 +1,5 @@
 export * from './useActionBarLogic';
+export * from './useCanvasToolbar';
 export * from './useEdgeMode';
 export * from './useElementActions';
 export * from './useGraphActions';

@@ -16,7 +16,7 @@ export function ElementInfoPanel() {
     return (
         <div className="absolute bottom-0 right-0 z-20 m-4 min-w-55 max-w-[320px]">
             {selectionInfo.group !== 'none' && (
-                <div className="rounded border border-gray-200 p-3 text-xs shadow-lg">
+                <div className="bg-base-200 rounded-lg border border-base-300 shadow-xl/45 p-3 text-xs select-none">
                     {infoToRender}
                 </div>
             )}

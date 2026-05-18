@@ -5,7 +5,11 @@ import { type ReactNode } from 'react';
 import { version } from '../../../package.json';
 import { AppIcons } from '../common/AppIcons';
 import { SideBar } from '../common/SideBar';
-import { ActionBarButton, ActionBarButtonStyle, ActionBarTooltipClassName } from './ActionBarButton';
+import {
+    ActionBarButton,
+    ActionBarButtonStyle,
+    ActionBarTooltipClassName,
+} from './ActionBarButton';
 import { ActionBarEdgeModeButton } from './ActionBarEdgeModeButton';
 
 const ICON_SIZE = '1.5em';
@@ -58,26 +62,6 @@ export function ActionBar({ children }: Readonly<ActionBarProps>) {
                 onClick={handleAlgorithms}
             />
 
-            <div className="divider my-3">
-                <h1 className="text-base font-bold text-center">Organize</h1>
-            </div>
-
-            <ActionBarButton
-                id="arrange-graph-btn"
-                icon={<AppIcons.Arrange size={ICON_SIZE} />}
-                label="Arrange"
-                className="my-1"
-                onClick={handleArrangeGraph}
-            />
-
-            <ActionBarButton
-                id="center-graph-btn"
-                icon={<AppIcons.Center size={ICON_SIZE} />}
-                label="Center"
-                className="my-1"
-                onClick={handleCenterGraph}
-            />
-
             <div className="lg:hidden w-full">
                 <div className="divider my-3">
                     <h1 className="text-base font-bold text-center">Elements</h1>
@@ -115,6 +99,26 @@ export function ActionBar({ children }: Readonly<ActionBarProps>) {
                     isDelete={true}
                     label="Delete Selected"
                     onClick={handleDeleteSelected}
+                />
+
+                <div className="divider my-3">
+                    <h1 className="text-base font-bold text-center">Organize</h1>
+                </div>
+
+                <ActionBarButton
+                    id="arrange-graph-btn"
+                    icon={<AppIcons.Arrange size={ICON_SIZE} />}
+                    label="Arrange"
+                    className="my-1"
+                    onClick={handleArrangeGraph}
+                />
+
+                <ActionBarButton
+                    id="center-graph-btn"
+                    icon={<AppIcons.Center size={ICON_SIZE} />}
+                    label="Center"
+                    className="my-1"
+                    onClick={handleCenterGraph}
                 />
             </div>
 
@@ -233,9 +237,7 @@ export function ActionBar({ children }: Readonly<ActionBarProps>) {
                 width="w-50"
                 sidebarChildren={DrawerContent}
             >
-                <div className="lg:pl-14 flex flex-col h-full">
-                    {children}
-                </div>
+                <div className="lg:pl-14 flex flex-col h-full">{children}</div>
             </SideBar>
         </>
     );
