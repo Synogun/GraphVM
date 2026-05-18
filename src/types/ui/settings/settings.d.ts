@@ -1,3 +1,40 @@
+export type DaisyUITheme =
+    | 'light'
+    | 'dark'
+    | 'cupcake'
+    | 'bumblebee'
+    | 'emerald'
+    | 'corporate'
+    | 'retro'
+    | 'garden'
+    | 'lofi'
+    | 'pastel'
+    | 'fantasy'
+    | 'wireframe'
+    | 'business'
+    | 'lemonade'
+    | 'winter'
+    | 'sunset'
+    | 'caramellatte'
+    | 'silk'
+    | 'synthwave'
+    | 'cyberpunk'
+    | 'valentine'
+    | 'halloween'
+    | 'forest'
+    | 'aqua'
+    | 'black'
+    | 'luxury'
+    | 'dracula'
+    | 'cmyk'
+    | 'autumn'
+    | 'acid'
+    | 'night'
+    | 'coffee'
+    | 'dim'
+    | 'nord'
+    | 'abyss';
+
 export type ToastPosition =
     | 'top-left'
     | 'top-center'
@@ -29,6 +66,7 @@ export type SettingsData = {
             position: ToastPosition;
         };
         disableElementsInfoPanel: boolean;
+        theme: DaisyUITheme;
     };
     graph: {
         arrangeOn: {
@@ -57,6 +95,8 @@ export type SettingsContextProperties = {
         setToast: (toast: SettingsData['ui']['toast']) => void;
         disableElementsInfoPanel: SettingsData['ui']['disableElementsInfoPanel'];
         setDisableElementsInfoPanel: (value: boolean) => void;
+        theme: SettingsData['ui']['theme'];
+        setTheme: (theme: SettingsData['ui']['theme']) => void;
     };
     graph: {
         arrangeOn: SettingsData['graph']['arrangeOn'];

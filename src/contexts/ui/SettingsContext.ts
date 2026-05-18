@@ -8,6 +8,7 @@ export function useSettings() {
     const setDisableElementsInfoPanel = useSettingsStore(
         (s) => s.setDisableElementsInfoPanel
     );
+    const setTheme = useSettingsStore((s) => s.setTheme);
     const setArrangeOn = useSettingsStore((s) => s.setArrangeOn);
     const setLimits = useSettingsStore((s) => s.setLimits);
     const setDefaultPaddingOnActions = useSettingsStore(
@@ -21,6 +22,8 @@ export function useSettings() {
             setToast,
             disableElementsInfoPanel: ui.disableElementsInfoPanel,
             setDisableElementsInfoPanel,
+            theme: ui.theme,
+            setTheme,
         },
         graph: {
             arrangeOn: graph.arrangeOn,

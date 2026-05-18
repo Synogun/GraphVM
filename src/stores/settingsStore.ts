@@ -9,6 +9,7 @@ export const SETTINGS_STORAGE_KEY = 'graphvm.settings.v1';
 type SettingsStore = SettingsData & {
     setToast: (toast: SettingsData['ui']['toast']) => void;
     setDisableElementsInfoPanel: (value: boolean) => void;
+    setTheme: (theme: SettingsData['ui']['theme']) => void;
     setArrangeOn: (arrangeOn: SettingsData['graph']['arrangeOn']) => void;
     setLimits: (limits: SettingsData['graph']['limits']) => void;
     setDefaultPaddingOnActions: (value: number) => void;
@@ -30,6 +31,9 @@ export const useSettingsStore = create<SettingsStore>()((set) => ({
     },
     setDisableElementsInfoPanel: (value) => {
         set((s) => ({ ui: { ...s.ui, disableElementsInfoPanel: value } }));
+    },
+    setTheme: (theme) => {
+        set((s) => ({ ui: { ...s.ui, theme } }));
     },
     setArrangeOn: (arrangeOn) => {
         set((s) => ({ graph: { ...s.graph, arrangeOn } }));

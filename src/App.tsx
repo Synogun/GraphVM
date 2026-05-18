@@ -18,8 +18,12 @@ export function App() {
     const [loadingApp, setLoadingApp] = useState(true);
 
     const {
-        ui: { disableElementsInfoPanel },
+        ui: { disableElementsInfoPanel, theme },
     } = useSettings();
+
+    useEffect(() => {
+        document.documentElement.setAttribute('data-theme', theme);
+    }, [theme]);
 
     useEffect(() => {
         // Simulated loading time - Users thinks its more natural

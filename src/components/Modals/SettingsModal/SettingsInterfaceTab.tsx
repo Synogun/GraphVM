@@ -1,8 +1,16 @@
 import { DefaultSettingsData } from '@/constants/settingsDefaults';
 import { useSettings } from '@/contexts/ui';
 import type { ToastPosition } from '@/types/ui';
+import { ValidDaisyUIThemes, isValidDaisyUITheme } from '@/types/ui/settings/typeGuards';
 import { NumberInput, SelectInput, ToggleInput } from '@Inputs';
 import type { ChangeEvent } from 'react';
+
+const THEME_OPTIONS = [...ValidDaisyUIThemes]
+    .sort((a, b) => a.localeCompare(b))
+    .map((theme) => ({
+        label: theme.charAt(0).toUpperCase() + theme.slice(1),
+        value: theme,
+    }));
 
 const TOAST_POSITION_OPTIONS: { label: string; value: ToastPosition }[] = [
     { label: 'Top Left', value: 'top-left' },
@@ -23,6 +31,8 @@ export function SettingsInterfaceTab() {
             setToast,
             disableElementsInfoPanel,
             setDisableElementsInfoPanel,
+            theme,
+            setTheme,
         },
     } = useSettings();
 
@@ -45,6 +55,11 @@ export function SettingsInterfaceTab() {
             ...toast,
             position,
         });
+    };
+
+    const handleThemeChange = (event: ChangeEvent<HTMLSelectElement>) => {
+        const value = event.target.value;
+        if (isValidDaisyUITheme(value)) setTheme(value);
     };
 
     const handleDisableElementsInfoPanelChange = (
@@ -78,6 +93,17 @@ export function SettingsInterfaceTab() {
                     defaultValue={DefaultSettingsData.ui.toast.position}
                     tooltip={{
                         content: 'Position on the screen where toasts will appear.',
+                    }}
+                />
+
+                <SelectInput
+                    label="Theme"
+                    value={theme}
+                    onChange={handleThemeChange}
+                    options={THEME_OPTIONS}
+                    defaultValue={DefaultSettingsData.ui.theme}
+                    tooltip={{
+                        content: 'Visual theme for the application.',
                     }}
                 />
             </section>

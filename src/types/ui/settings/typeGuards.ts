@@ -1,5 +1,17 @@
 import { isBoolean, isPositiveInteger, isRecord } from '@/types/typeGuards';
-import type { SettingsData, ShortcutAction, ToastPosition } from '.';
+import type { DaisyUITheme, SettingsData, ShortcutAction, ToastPosition } from '.';
+
+export const ValidDaisyUIThemes: DaisyUITheme[] = [
+    'light', 'dark', 'cupcake', 'bumblebee', 'emerald', 'corporate', 'retro',
+    'garden', 'lofi', 'pastel', 'fantasy', 'wireframe', 'business', 'lemonade',
+    'winter', 'sunset', 'caramellatte', 'silk', 'synthwave', 'cyberpunk',
+    'valentine', 'halloween', 'forest', 'aqua', 'black', 'luxury', 'dracula',
+    'cmyk', 'autumn', 'acid', 'night', 'coffee', 'dim', 'nord', 'abyss',
+];
+
+export function isValidDaisyUITheme(value: unknown): value is DaisyUITheme {
+    return typeof value === 'string' && (ValidDaisyUIThemes as string[]).includes(value);
+}
 
 const ValidToastPositions: ToastPosition[] = [
     'top-left',
@@ -62,6 +74,8 @@ export function isSettingsData(value: unknown): value is SettingsData {
     const isToastValid =
         isPositiveInteger(toast.duration) && isValidToastPosition(toast.position);
 
+    const isThemeValid = isValidDaisyUITheme(ui.theme);
+
     const isArrangeOnValid =
         isBoolean(arrangeOn.addNode) &&
         isBoolean(arrangeOn.addEdge) &&
@@ -81,6 +95,7 @@ export function isSettingsData(value: unknown): value is SettingsData {
 
     return (
         isToastValid &&
+        isThemeValid &&
         isArrangeOnValid &&
         isLimitsValid &&
         isPaddingValid &&
