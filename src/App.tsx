@@ -23,7 +23,7 @@ export function App() {
     } = useSettings();
 
     useEffect(() => {
-        document.documentElement.setAttribute('data-theme', theme);
+        document.documentElement.dataset.theme = theme;
     }, [theme]);
 
     useEffect(() => {

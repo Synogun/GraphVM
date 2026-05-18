@@ -30,10 +30,7 @@ export function ActionBarButton({
 
     if (condensed) {
         return (
-            <div
-                className={ActionBarTooltipClassName}
-                data-tip={label}
-            >
+            <div className={ActionBarTooltipClassName} data-tip={label}>
                 {button}
             </div>
         );

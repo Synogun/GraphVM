@@ -53,7 +53,10 @@ export function useCanvasToolbar() {
         (percent: number) => {
             const core = graphRef.current;
             if (!core) return;
-            const clamped = Math.max(MIN_ZOOM * 100, Math.min(MAX_ZOOM * 100, percent));
+            const clamped = Math.max(
+                MIN_ZOOM * 100,
+                Math.min(MAX_ZOOM * 100, percent)
+            );
             core.zoom(clamped / 100);
         },
         [graphRef]

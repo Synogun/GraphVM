@@ -20,28 +20,35 @@ function EdgeLabelModalContent() {
 
     const [labelMap, setLabelMap] = useState<Record<string, string>>({});
     const [displayMap, setDisplayMap] = useState<Record<string, string>>({});
+    const [tooltipMap, setTooltipMap] = useState<Record<string, string>>({});
 
     useLayoutEffect(() => {
         const core = graphRef.current;
         const labels: Record<string, string> = {};
         const display: Record<string, string> = {};
+        const tooltips: Record<string, string> = {};
 
         for (const edgeId of selectedEdges) {
-            labels[edgeId] = core ? ((core.$id(edgeId).data('label') as string) ?? '') : '';
             if (core) {
-                const sourceId = core.$id(edgeId).data('source') as string;
-                const targetId = core.$id(edgeId).data('target') as string;
+                const edge = core.$id(edgeId);
+                labels[edgeId] = edge.data('label') as string;
+                const sourceId = edge.data('source') as string;
+                const targetId = edge.data('target') as string;
                 const sourceLabel = core.$id(sourceId).data('label') as string;
                 const targetLabel = core.$id(targetId).data('label') as string;
-                display[edgeId] = `${sourceLabel} (${sourceId}) → ${targetLabel} (${targetId})`;
+                display[edgeId] = `${sourceLabel} → ${targetLabel}`;
+                tooltips[edgeId] = `${sourceId} → ${targetId}`;
             } else {
+                labels[edgeId] = '';
                 display[edgeId] = edgeId;
             }
         }
 
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setLabelMap(labels);
         setDisplayMap(display);
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount initializer: reads Cytoscape once when modal opens; intentionally omits graphRef/selectedEdges
+        setTooltipMap(tooltips);
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- mount initializer: reads Cytoscape once when modal opens; intentionally omits graphRef/selectedEdges
     }, []);
 
     const handleClose = () => {
@@ -97,6 +104,11 @@ function EdgeLabelModalContent() {
                                 [edgeId]: e.target.value,
                             }));
                         }}
+                        tooltip={
+                            tooltipMap[edgeId]
+                                ? { content: tooltipMap[edgeId] }
+                                : undefined
+                        }
                         allowClear={false}
                     />
                 ))}

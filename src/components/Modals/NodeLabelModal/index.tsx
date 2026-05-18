@@ -30,7 +30,7 @@ function NodeLabelModalContent() {
                 ])
             )
         );
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount initializer: reads Cytoscape once when modal opens; intentionally omits graphRef/selectedNodes
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- mount initializer: reads Cytoscape once when modal opens; intentionally omits graphRef/selectedNodes
     }, []);
 
     const handleClose = () => {

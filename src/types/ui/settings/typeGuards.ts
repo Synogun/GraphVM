@@ -1,6 +1,7 @@
 import { isBoolean, isPositiveInteger, isRecord } from '@/types/typeGuards';
 import type { DaisyUITheme, SettingsData, ShortcutAction, ToastPosition } from '.';
 
+// prettier-ignore
 export const ValidDaisyUIThemes: DaisyUITheme[] = [
     'light', 'dark', 'cupcake', 'bumblebee', 'emerald', 'corporate', 'retro',
     'garden', 'lofi', 'pastel', 'fantasy', 'wireframe', 'business', 'lemonade',
@@ -10,7 +11,9 @@ export const ValidDaisyUIThemes: DaisyUITheme[] = [
 ];
 
 export function isValidDaisyUITheme(value: unknown): value is DaisyUITheme {
-    return typeof value === 'string' && (ValidDaisyUIThemes as string[]).includes(value);
+    return (
+        typeof value === 'string' && (ValidDaisyUIThemes as string[]).includes(value)
+    );
 }
 
 const ValidToastPositions: ToastPosition[] = [

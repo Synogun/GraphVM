@@ -23,7 +23,8 @@ export const useGraphMetaStore = create<GraphMetaStore>()((set) => ({
     setDirected: (directed) => {
         set((state) => ({
             directed,
-            edgeMode: directed && state.edgeMode === 'complete' ? 'path' : state.edgeMode,
+            edgeMode:
+                directed && state.edgeMode === 'complete' ? 'path' : state.edgeMode,
         }));
     },
     setFamilies: (families) => {

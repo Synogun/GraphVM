@@ -1,7 +1,10 @@
 import { DefaultSettingsData } from '@/constants/settingsDefaults';
 import { useSettings } from '@/contexts/ui';
 import type { ToastPosition } from '@/types/ui';
-import { ValidDaisyUIThemes, isValidDaisyUITheme } from '@/types/ui/settings/typeGuards';
+import {
+    ValidDaisyUIThemes,
+    isValidDaisyUITheme,
+} from '@/types/ui/settings/typeGuards';
 import { NumberInput, SelectInput, ToggleInput } from '@Inputs';
 import type { ChangeEvent } from 'react';
 
@@ -116,7 +119,8 @@ export function SettingsInterfaceTab() {
                         options={TOAST_POSITION_OPTIONS}
                         defaultValue={DefaultSettingsData.ui.toast.position}
                         tooltip={{
-                            content: 'Position on the screen where toasts will appear.',
+                            content:
+                                'Position on the screen where toasts will appear.',
                         }}
                     />
                 </div>
@@ -132,7 +136,9 @@ export function SettingsInterfaceTab() {
                         label="Disable Elements Info Panel"
                         checked={disableElementsInfoPanel}
                         onChange={handleDisableElementsInfoPanelChange}
-                        defaultValue={DefaultSettingsData.ui.disableElementsInfoPanel}
+                        defaultValue={
+                            DefaultSettingsData.ui.disableElementsInfoPanel
+                        }
                         stateLabels={{ on: 'Disabled', off: 'Enabled' }}
                         tooltip={{
                             content:

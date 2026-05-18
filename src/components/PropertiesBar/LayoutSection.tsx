@@ -56,8 +56,8 @@ export function LayoutSection({ visible = true }: Readonly<LayoutSectionProps>) 
 
         const cols =
             options.name === 'grid'
-                ? ({ ...DefaultGridLayoutOptions, ...options }.cols ||
-                  DefaultGridLayoutOptions.cols)
+                ? { ...DefaultGridLayoutOptions, ...options }.cols ||
+                  DefaultGridLayoutOptions.cols
                 : undefined;
 
         syncLayout(type, options, cols);

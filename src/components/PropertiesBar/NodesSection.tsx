@@ -13,7 +13,9 @@ import { type ChangeEvent, useLayoutEffect, useMemo, useState } from 'react';
 export function NodesSection({ visible = true }: Readonly<NodeSectionProps>) {
     const graphRef = useGetGraph('main-graph');
     const [color, setColor] = useState<string>(DefaultNodesData.color);
-    const [shape, setShape] = useState<cytoscape.Css.NodeShape>(DefaultNodesData.shape);
+    const [shape, setShape] = useState<cytoscape.Css.NodeShape>(
+        DefaultNodesData.shape
+    );
     const { setIsNodeLabelModalOpen } = useModals();
     const activeTabId = useGraphWorkspaceStore((s) => s.activeTabId);
     const selectedNodes = useGraphSelectionStore((s) => s.selectedNodes);
@@ -41,10 +43,16 @@ export function NodesSection({ visible = true }: Readonly<NodeSectionProps>) {
             return;
         }
 
-        const collection = core.nodes().filter((n) => selectedNodes.includes(n.id()));
-        const modeColor = findPropertyValueMode(collection, 'color') ?? currentDefaults.color;
-        const modeShapeRaw = findPropertyValueMode(collection, 'shape') ?? currentDefaults.shape;
-        const modeShape = isNodeShape(modeShapeRaw) ? modeShapeRaw : currentDefaults.shape;
+        const collection = core
+            .nodes()
+            .filter((n) => selectedNodes.includes(n.id()));
+        const modeColor =
+            findPropertyValueMode(collection, 'color') ?? currentDefaults.color;
+        const modeShapeRaw =
+            findPropertyValueMode(collection, 'shape') ?? currentDefaults.shape;
+        const modeShape = isNodeShape(modeShapeRaw)
+            ? modeShapeRaw
+            : currentDefaults.shape;
 
         setColor(modeColor);
         setShape(modeShape);

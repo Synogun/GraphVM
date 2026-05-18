@@ -76,7 +76,9 @@ export function CanvasToolbar() {
                     inputMode="numeric"
                     className="input input-xs w-14 text-center tabular-nums"
                     value={editValue}
-                    onChange={(e) => { setEditValue(e.target.value.replace(DIGITS_ONLY, '')); }}
+                    onChange={(e) => {
+                        setEditValue(e.target.value.replace(DIGITS_ONLY, ''));
+                    }}
                     onBlur={commitEdit}
                     onKeyDown={handleKeyDown}
                     aria-label="Set zoom percentage"
