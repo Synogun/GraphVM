@@ -69,58 +69,78 @@ export function SettingsInterfaceTab() {
     };
 
     return (
-        <>
-            <section className="grid gap-5 py-4 md:grid-cols-2">
-                <NumberInput
-                    label="Toast duration (ms)"
-                    value={toast.duration}
-                    min={250}
-                    max={20000}
-                    step={250}
-                    onChange={handleToastDurationChange}
-                    defaultValue={DefaultSettingsData.ui.toast.duration}
-                    tooltip={{
-                        content:
-                            'Duration in milliseconds for which toasts are displayed. Minimum is 250ms.',
-                    }}
-                />
+        <section className="grid gap-6 py-4 lg:grid-cols-2">
+            <div className="space-y-3">
+                <h4 className="text-sm font-semibold uppercase tracking-wide text-base-content/70">
+                    Appearance
+                </h4>
 
-                <SelectInput
-                    label="Toast position"
-                    value={toast.position}
-                    onChange={handleToastPositionChange}
-                    options={TOAST_POSITION_OPTIONS}
-                    defaultValue={DefaultSettingsData.ui.toast.position}
-                    tooltip={{
-                        content: 'Position on the screen where toasts will appear.',
-                    }}
-                />
+                <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-1">
+                    <SelectInput
+                        label="Theme"
+                        value={theme}
+                        onChange={handleThemeChange}
+                        options={THEME_OPTIONS}
+                        defaultValue={DefaultSettingsData.ui.theme}
+                        tooltip={{
+                            content: 'Visual theme for the application.',
+                        }}
+                    />
+                </div>
+            </div>
 
-                <SelectInput
-                    label="Theme"
-                    value={theme}
-                    onChange={handleThemeChange}
-                    options={THEME_OPTIONS}
-                    defaultValue={DefaultSettingsData.ui.theme}
-                    tooltip={{
-                        content: 'Visual theme for the application.',
-                    }}
-                />
-            </section>
+            <div className="space-y-3">
+                <h4 className="text-sm font-semibold uppercase tracking-wide text-base-content/70">
+                    Notifications
+                </h4>
 
-            <section className="grid gap-5 py-4 md:grid-cols-2">
-                <ToggleInput
-                    label="Disable Elements Info Panel"
-                    checked={disableElementsInfoPanel}
-                    onChange={handleDisableElementsInfoPanelChange}
-                    defaultValue={DefaultSettingsData.ui.disableElementsInfoPanel}
-                    stateLabels={{ on: 'Disabled', off: 'Enabled' }}
-                    tooltip={{
-                        content:
-                            'When enabled, the panel that shows information about selected nodes and edges will be hidden.',
-                    }}
-                />
-            </section>
-        </>
+                <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-1">
+                    <NumberInput
+                        label="Toast duration (ms)"
+                        value={toast.duration}
+                        min={250}
+                        max={20000}
+                        step={250}
+                        onChange={handleToastDurationChange}
+                        defaultValue={DefaultSettingsData.ui.toast.duration}
+                        tooltip={{
+                            content:
+                                'Duration in milliseconds for which toasts are displayed. Minimum is 250ms.',
+                        }}
+                    />
+
+                    <SelectInput
+                        label="Toast position"
+                        value={toast.position}
+                        onChange={handleToastPositionChange}
+                        options={TOAST_POSITION_OPTIONS}
+                        defaultValue={DefaultSettingsData.ui.toast.position}
+                        tooltip={{
+                            content: 'Position on the screen where toasts will appear.',
+                        }}
+                    />
+                </div>
+            </div>
+
+            <div className="space-y-3">
+                <h4 className="text-sm font-semibold uppercase tracking-wide text-base-content/70">
+                    Interface
+                </h4>
+
+                <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-1">
+                    <ToggleInput
+                        label="Disable Elements Info Panel"
+                        checked={disableElementsInfoPanel}
+                        onChange={handleDisableElementsInfoPanelChange}
+                        defaultValue={DefaultSettingsData.ui.disableElementsInfoPanel}
+                        stateLabels={{ on: 'Disabled', off: 'Enabled' }}
+                        tooltip={{
+                            content:
+                                'When enabled, the panel that shows information about selected nodes and edges will be hidden.',
+                        }}
+                    />
+                </div>
+            </div>
+        </section>
     );
 }
