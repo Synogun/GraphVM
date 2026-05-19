@@ -218,8 +218,8 @@ function extractCoreInfo(core: cytoscape.Core): ElementsInfo {
         directed,
         nodeCount,
         edgeCount,
-        ghostNodeCount,
-        ghostEdgeCount,
+        ...(ghostNodeCount > 0 ? { ghostNodeCount } : {}),
+        ...(ghostEdgeCount > 0 ? { ghostEdgeCount } : {}),
         components: core.elements('[!isGhost]').components().length,
     };
 }
