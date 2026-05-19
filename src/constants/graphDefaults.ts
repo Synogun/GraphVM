@@ -154,8 +154,12 @@ export const DefaultAutopanOptions: AutopanOptions = {
     margin: 25,
 };
 
+export const GRAPH_MIN_ZOOM = 0.1;
+export const GRAPH_MAX_ZOOM = 5;
+
 export const DefaultGraphOptions: CytoscapeOptions = {
     layout: DefaultLayoutOptions,
     style: DefaultStylesheet,
-    minZoom: 0.1,
+    minZoom: GRAPH_MIN_ZOOM,
+    maxZoom: GRAPH_MAX_ZOOM,
 };

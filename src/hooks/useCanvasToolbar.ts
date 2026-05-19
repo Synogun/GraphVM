@@ -1,13 +1,16 @@
-import { ParsedErrorToasts } from '@/constants';
+import { GRAPH_MAX_ZOOM, GRAPH_MIN_ZOOM, ParsedErrorToasts } from '@/constants';
 import { useGraphActions } from '@/hooks/useGraphActions';
 import { useGetGraph } from '@/hooks/useGraphRegistry';
 import { useGraphWorkspaceStore } from '@/stores/graphWorkspaceStore';
 import { useToasts } from '@Contexts';
+import type cytoscape from 'cytoscape';
 import { useCallback, useEffect, useState } from 'react';
 
 const ZOOM_FACTOR = 1.25;
-const MAX_ZOOM = 5;
-const MIN_ZOOM = 0.1;
+
+function viewportCenter(core: cytoscape.Core) {
+    return { x: core.width() / 2, y: core.height() / 2 };
+}
 
 export function useCanvasToolbar() {
     const graphRef = useGetGraph('main-graph');
@@ -37,7 +40,10 @@ export function useCanvasToolbar() {
             addToast(ParsedErrorToasts.GraphNotFound);
             return;
         }
-        core.zoom(Math.min(core.zoom() * ZOOM_FACTOR, MAX_ZOOM));
+        core.zoom({
+            level: Math.min(core.zoom() * ZOOM_FACTOR, GRAPH_MAX_ZOOM),
+            renderedPosition: viewportCenter(core),
+        });
     }, [graphRef, addToast]);
 
     const handleZoomOut = useCallback(() => {
@@ -46,7 +52,10 @@ export function useCanvasToolbar() {
             addToast(ParsedErrorToasts.GraphNotFound);
             return;
         }
-        core.zoom(Math.max(core.zoom() / ZOOM_FACTOR, MIN_ZOOM));
+        core.zoom({
+            level: Math.max(core.zoom() / ZOOM_FACTOR, GRAPH_MIN_ZOOM),
+            renderedPosition: viewportCenter(core),
+        });
     }, [graphRef, addToast]);
 
     const handleZoomTo = useCallback(
@@ -54,10 +63,13 @@ export function useCanvasToolbar() {
             const core = graphRef.current;
             if (!core) return;
             const clamped = Math.max(
-                MIN_ZOOM * 100,
-                Math.min(MAX_ZOOM * 100, percent)
+                GRAPH_MIN_ZOOM * 100,
+                Math.min(GRAPH_MAX_ZOOM * 100, percent)
             );
-            core.zoom(clamped / 100);
+            core.zoom({
+                level: clamped / 100,
+                renderedPosition: viewportCenter(core),
+            });
         },
         [graphRef]
     );

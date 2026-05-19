@@ -1,3 +1,4 @@
+import { GRAPH_MAX_ZOOM, GRAPH_MIN_ZOOM } from '@/constants';
 import { useGraphHydration, useGraphMutation, useRegisterGraphByTab } from '@/hooks';
 import {
     bindAutopan,
@@ -91,9 +92,21 @@ export function GraphCanvas({
             syncSelection(core);
         };
 
+        const handleZoom = (e: cytoscape.EventObject) => {
+            const core = e.cy;
+            const zoom = core.zoom();
+            const center = { x: core.width() / 2, y: core.height() / 2 };
+            if (zoom > GRAPH_MAX_ZOOM) {
+                core.zoom({ level: GRAPH_MAX_ZOOM, renderedPosition: center });
+            } else if (zoom < GRAPH_MIN_ZOOM) {
+                core.zoom({ level: GRAPH_MIN_ZOOM, renderedPosition: center });
+            }
+        };
+
         newCore.on('select unselect', 'node, edge', handleElementSelection);
         newCore.on('add remove', 'node, edge', handleGraphMutation);
         newCore.on('data', 'node, edge', handleGraphMutation);
+        newCore.on('zoom', handleZoom);
 
         const cleanupAutopan = bindAutopan(newCore);
         const cleanupContextMenu = mountContextMenu(newCore, {
@@ -120,6 +133,7 @@ export function GraphCanvas({
             newCore.off('select unselect', 'node, edge', handleElementSelection);
             newCore.off('add remove', 'node, edge', handleGraphMutation);
             newCore.off('data', 'node, edge', handleGraphMutation);
+            newCore.off('zoom', handleZoom);
             destroyGraph(newCore);
             graphRef.current = null;
         };
