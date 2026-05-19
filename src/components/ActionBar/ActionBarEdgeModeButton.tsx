@@ -17,7 +17,9 @@ export function ActionBarEdgeModeButton({
     const activeColor = disabled ? 'btn-disabled' : colorIfComplete;
 
     const swapStyle = 'flex mx-auto text-center gap-2';
-    const tooltipLabel = isCompleteEdgeMode ? 'Complete Mode' : 'Path Mode';
+    const tooltipLabel = isCompleteEdgeMode
+        ? 'Edge Insertion Mode\nComplete Mode'
+        : 'Edge Insertion Mode\nPath Mode';
 
     const button = (
         <label
@@ -45,7 +47,10 @@ export function ActionBarEdgeModeButton({
 
     if (condensed) {
         return (
-            <div className={ActionBarTooltipClassName} data-tip={tooltipLabel}>
+            <div
+                className={`${ActionBarTooltipClassName} [&::before]:whitespace-pre-line [&::before]:text-center [&::after]:whitespace-pre-line [&::after]:text-center`}
+                data-tip={tooltipLabel}
+            >
                 {button}
             </div>
         );
