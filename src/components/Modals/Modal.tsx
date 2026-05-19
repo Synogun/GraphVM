@@ -21,6 +21,9 @@ export function Modal({
             modal.showModal();
         } else {
             modal.close();
+            if (document.activeElement instanceof HTMLElement) {
+                document.activeElement.blur();
+            }
         }
     }, [show]);
 
@@ -38,9 +41,6 @@ export function Modal({
 
         return () => {
             modal.removeEventListener('close', handleClose);
-            if (document.activeElement instanceof HTMLElement) {
-                document.activeElement.blur();
-            }
         };
     }, [onClose, show]);
 
