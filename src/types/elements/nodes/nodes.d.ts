@@ -6,6 +6,7 @@ export type NodesData = {
     color: string;
     shape: cytoscape.Css.NodeShape;
     isGhost: boolean;
+    ghostOf?: string;
 };
 
 export type NodeContextProperties = {

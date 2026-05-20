@@ -45,10 +45,9 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
     const directed = useGraphMetaStore((s) => s.directed);
     const activeTabId = useGraphWorkspaceStore((s) => s.activeTabId);
     const selectedEdges = useGraphSelectionStore((s) => s.selectedEdges);
-    const selectionInfo = useGraphSelectionStore((s) => s.selectionInfo);
 
-    const isGhostEdgeSelected =
-        selectionInfo.group === 'edge' && selectionInfo.isGhost;
+
+    const [isAnyGhostEdgeSelected, setIsAnyGhostEdgeSelected] = useState(false);
 
     const propertyEditor = usePropertyEditor({
         graphRef,
@@ -74,25 +73,30 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
             setCurveStyle(currentDefaults.curve);
             setWeight(currentDefaults.weight);
             setArrowShape(currentDefaults.arrowShape);
+            setIsAnyGhostEdgeSelected(false);
             return;
         }
+
+        setIsAnyGhostEdgeSelected(
+            selectedEdges.some((id) => Boolean(core.$id(id).data('isGhost')))
+        );
 
         const collection = core
             .edges()
             .filter((e) => selectedEdges.includes(e.id()));
         const rawLabel =
-            findPropertyValueMode(collection, 'labelStyle') ??
+            findPropertyValueMode(collection, 'labelStyle', true) ??
             currentDefaults.labelStyle;
         const rawColor =
-            findPropertyValueMode(collection, 'color') ?? currentDefaults.color;
+            findPropertyValueMode(collection, 'color', true) ?? currentDefaults.color;
         const rawStyle =
             findPropertyValueMode(collection, 'style') ?? currentDefaults.style;
         const rawCurve =
-            findPropertyValueMode(collection, 'curve') ?? currentDefaults.curve;
+            findPropertyValueMode(collection, 'curve', true) ?? currentDefaults.curve;
         const rawWeight =
-            findPropertyValueMode(collection, 'weight') ?? currentDefaults.weight;
+            findPropertyValueMode(collection, 'weight', true) ?? currentDefaults.weight;
         const rawArrowShape =
-            findPropertyValueMode(collection, 'arrowShape') ??
+            findPropertyValueMode(collection, 'arrowShape', true) ??
             currentDefaults.arrowShape;
 
         setLabelStyle(
@@ -342,7 +346,7 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
                 options={selectLineStyleOptions}
                 value={lineStyle}
                 defaultValue={DefaultEdgesData.style}
-                disabled={isGhostEdgeSelected}
+                disabled={isAnyGhostEdgeSelected}
                 tooltip={{
                     content: 'Determine the pattern used to draw the edges.',
                 }}

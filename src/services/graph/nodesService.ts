@@ -167,63 +167,6 @@ export function updateNodes(
     nodesCollection.data(property, parsedValue);
 }
 
-export function addGhostFromNode(
-    core: cytoscape.Core,
-    node: cytoscape.NodeSingular,
-    limits?: GraphLimits
-) {
-    if (node.isEdge()) {
-        throw new ParsedError('Ghost nodes can only be created from nodes.', {
-            context: { elementId: node.id() },
-        });
-    }
-
-    if (node.data('isGhost')) {
-        throw new ParsedError(
-            'Cannot create a ghost node from another ghost node.',
-            { context: { elementId: node.id() } }
-        );
-    }
-
-    const existingEdgeIds = new Set(core.edges().map((edge) => edge.id()));
-
-    let newNode: cytoscape.NodeSingular;
-    try {
-        newNode = cloneNode(core, node, limits);
-    } catch (error: unknown) {
-        const parsedError = parseError(error);
-        throw new ParsedError('Failed to add ghost node.', {
-            cause: parsedError,
-            context: { elementId: node.id() },
-        });
-    }
-
-    try {
-        newNode.data('isGhost', true);
-        newNode.addClass('ghost-element');
-
-        const clonedEdges = newNode.connectedEdges().filter((edge) => {
-            return !existingEdgeIds.has(edge.id());
-        });
-
-        clonedEdges.forEach((edge) => {
-            edge.data('isGhost', true);
-            edge.data('style', 'dashed');
-            edge.addClass('ghost-element');
-        });
-    } catch (error: unknown) {
-        const parsedError = parseError(error);
-        newNode.remove();
-
-        throw new ParsedError('Failed to add ghost edges.', {
-            cause: parsedError,
-            context: { elementId: node.id() },
-        });
-    }
-
-    return core.$id(newNode.id());
-}
-
 export function cloneNode(
     core: cytoscape.Core,
     node: cytoscape.NodeSingular,

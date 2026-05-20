@@ -27,7 +27,7 @@ export function NodesSection({ visible = true }: Readonly<NodeSectionProps>) {
         setDefaults: setDefaultNodesData,
         getElements: (core) => core.nodes(),
         updateElements: (core, ids, property, value) => {
-            updateNodes(core, ids, property, value);
+            if (value !== undefined) updateNodes(core, ids, property, value);
         },
     });
 
@@ -47,9 +47,9 @@ export function NodesSection({ visible = true }: Readonly<NodeSectionProps>) {
             .nodes()
             .filter((n) => selectedNodes.includes(n.id()));
         const modeColor =
-            findPropertyValueMode(collection, 'color') ?? currentDefaults.color;
+            findPropertyValueMode(collection, 'color', true) ?? currentDefaults.color;
         const modeShapeRaw =
-            findPropertyValueMode(collection, 'shape') ?? currentDefaults.shape;
+            findPropertyValueMode(collection, 'shape', true) ?? currentDefaults.shape;
         const modeShape = isNodeShape(modeShapeRaw)
             ? modeShapeRaw
             : currentDefaults.shape;

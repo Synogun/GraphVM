@@ -56,6 +56,7 @@ export type NodeSelectionInfo = {
     inDegree?: number;
     outDegree?: number;
     isGhost: boolean;
+    ghostOf?: string;
     [key: string]: string | number | boolean | undefined;
 } & BaseSelectionInfo;
 
@@ -73,6 +74,7 @@ export type EdgeSelectionInfo = {
     target?: string;
     isSimple: boolean;
     isGhost: boolean;
+    ghostOf?: string;
     [key: string]: string | number | boolean | undefined;
 } & BaseSelectionInfo;
 

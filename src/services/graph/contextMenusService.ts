@@ -9,7 +9,8 @@ import type {
 import type cytoscape from 'cytoscape';
 import type contextMenus from 'cytoscape-context-menus';
 import { removeEdges } from './edgesService';
-import { addGhostFromNode, cloneNode, removeNodes } from './nodesService';
+import { addGhost, removeAllGhosts, removeGhost } from './ghostService';
+import { cloneNode, removeNodes } from './nodesService';
 
 const logger = Logger.createContextLogger('ContextMenuDefinitions');
 
@@ -165,13 +166,43 @@ export function createContextMenuActionDefinitions(): ContextMenuActionDefinitio
             hasTrailingDivider: false,
             onClick: (evt, context) => {
                 const target = evt.target as cytoscape.NodeSingular;
-
-                if (target.data('isGhost')) {
-                    return;
-                }
-
                 try {
-                    addGhostFromNode(evt.cy, target, context.graphLimits);
+                    addGhost(evt.cy, target, context.graphLimits);
+                } finally {
+                    context.syncAll(evt.cy);
+                }
+            },
+        },
+        {
+            id: 'removeGhost',
+            content: 'Remove Ghost',
+            tooltipText: 'Removes this ghost node and its ghost edges',
+            selector: 'node[?isGhost]',
+            coreAsWell: false,
+            show: true,
+            disabled: false,
+            hasTrailingDivider: false,
+            onClick: (evt, context) => {
+                const target = evt.target as cytoscape.NodeSingular;
+                try {
+                    removeGhost(evt.cy, target);
+                } finally {
+                    context.syncAll(evt.cy);
+                }
+            },
+        },
+        {
+            id: 'removeAllGhosts',
+            content: 'Remove All Ghosts',
+            tooltipText: 'Removes all ghost nodes and their ghost edges from the graph',
+            selector: 'node, edge',
+            coreAsWell: true,
+            show: true,
+            disabled: false,
+            hasTrailingDivider: false,
+            onClick: (evt, context) => {
+                try {
+                    removeAllGhosts(evt.cy);
                 } finally {
                     context.syncAll(evt.cy);
                 }
