@@ -136,9 +136,10 @@ function extractSingleElementInfo(element: cytoscape.SingularData): ElementsInfo
         const ghostOf = element.data('ghostOf') as string | undefined;
         if (ghostOf) {
             const original = element.cy().$id(ghostOf);
-            info.ghostOf = original.length > 0
-                ? `Node ${String(original.data('label'))} (${ghostOf})`
-                : ghostOf;
+            info.ghostOf =
+                original.length > 0
+                    ? `Node ${String(original.data('label'))} (${ghostOf})`
+                    : ghostOf;
         }
 
         return info;
@@ -175,9 +176,8 @@ function extractSingleElementInfo(element: cytoscape.SingularData): ElementsInfo
         const ghostOf = element.data('ghostOf') as string | undefined;
         if (ghostOf) {
             const original = element.cy().$id(ghostOf);
-            info.ghostOf = original.length > 0
-                ? `Edge ${original.id()} (${ghostOf})`
-                : ghostOf;
+            info.ghostOf =
+                original.length > 0 ? `Edge ${original.id()} (${ghostOf})` : ghostOf;
         }
 
         return info;

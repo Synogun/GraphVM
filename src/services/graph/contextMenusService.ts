@@ -194,7 +194,8 @@ export function createContextMenuActionDefinitions(): ContextMenuActionDefinitio
         {
             id: 'removeAllGhosts',
             content: 'Remove All Ghosts',
-            tooltipText: 'Removes all ghost nodes and their ghost edges from the graph',
+            tooltipText:
+                'Removes all ghost nodes and their ghost edges from the graph',
             selector: 'node, edge',
             coreAsWell: true,
             show: true,

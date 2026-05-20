@@ -46,7 +46,6 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
     const activeTabId = useGraphWorkspaceStore((s) => s.activeTabId);
     const selectedEdges = useGraphSelectionStore((s) => s.selectedEdges);
 
-
     const [isAnyGhostEdgeSelected, setIsAnyGhostEdgeSelected] = useState(false);
 
     const propertyEditor = usePropertyEditor({
@@ -88,13 +87,16 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
             findPropertyValueMode(collection, 'labelStyle', true) ??
             currentDefaults.labelStyle;
         const rawColor =
-            findPropertyValueMode(collection, 'color', true) ?? currentDefaults.color;
+            findPropertyValueMode(collection, 'color', true) ??
+            currentDefaults.color;
         const rawStyle =
             findPropertyValueMode(collection, 'style') ?? currentDefaults.style;
         const rawCurve =
-            findPropertyValueMode(collection, 'curve', true) ?? currentDefaults.curve;
+            findPropertyValueMode(collection, 'curve', true) ??
+            currentDefaults.curve;
         const rawWeight =
-            findPropertyValueMode(collection, 'weight', true) ?? currentDefaults.weight;
+            findPropertyValueMode(collection, 'weight', true) ??
+            currentDefaults.weight;
         const rawArrowShape =
             findPropertyValueMode(collection, 'arrowShape', true) ??
             currentDefaults.arrowShape;

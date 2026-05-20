@@ -62,8 +62,16 @@ describe('ghostService', () => {
 
         it('creates ghost edge for each incoming edge with ghostOf pointing to original edge', () => {
             core.add([
-                { group: 'nodes', data: { id: 'a', label: '1', index: 1 }, position: { x: 0, y: 0 } },
-                { group: 'nodes', data: { id: 'b', label: '2', index: 2 }, position: { x: 100, y: 0 } },
+                {
+                    group: 'nodes',
+                    data: { id: 'a', label: '1', index: 1 },
+                    position: { x: 0, y: 0 },
+                },
+                {
+                    group: 'nodes',
+                    data: { id: 'b', label: '2', index: 2 },
+                    position: { x: 100, y: 0 },
+                },
             ]);
             addEdge(core, { data: { source: 'a', target: 'b' } });
             const originalEdge = core.edges().first();
@@ -79,8 +87,16 @@ describe('ghostService', () => {
 
         it('creates ghost edge for each outgoing edge with ghostOf pointing to original edge', () => {
             core.add([
-                { group: 'nodes', data: { id: 'a', label: '1', index: 1 }, position: { x: 0, y: 0 } },
-                { group: 'nodes', data: { id: 'b', label: '2', index: 2 }, position: { x: 100, y: 0 } },
+                {
+                    group: 'nodes',
+                    data: { id: 'a', label: '1', index: 1 },
+                    position: { x: 0, y: 0 },
+                },
+                {
+                    group: 'nodes',
+                    data: { id: 'b', label: '2', index: 2 },
+                    position: { x: 100, y: 0 },
+                },
             ]);
             addEdge(core, { data: { source: 'a', target: 'b' } });
             const originalEdge = core.edges().first();
@@ -96,8 +112,16 @@ describe('ghostService', () => {
 
         it('creates one ghost edge per parallel incoming edge', () => {
             core.add([
-                { group: 'nodes', data: { id: 'a', label: '1', index: 1 }, position: { x: 0, y: 0 } },
-                { group: 'nodes', data: { id: 'b', label: '2', index: 2 }, position: { x: 100, y: 0 } },
+                {
+                    group: 'nodes',
+                    data: { id: 'a', label: '1', index: 1 },
+                    position: { x: 0, y: 0 },
+                },
+                {
+                    group: 'nodes',
+                    data: { id: 'b', label: '2', index: 2 },
+                    position: { x: 100, y: 0 },
+                },
             ]);
             addEdge(core, { data: { source: 'a', target: 'b' } });
             addEdge(core, { data: { source: 'a', target: 'b' } });
@@ -109,8 +133,16 @@ describe('ghostService', () => {
 
         it('creates one ghost edge per parallel outgoing edge', () => {
             core.add([
-                { group: 'nodes', data: { id: 'a', label: '1', index: 1 }, position: { x: 0, y: 0 } },
-                { group: 'nodes', data: { id: 'b', label: '2', index: 2 }, position: { x: 100, y: 0 } },
+                {
+                    group: 'nodes',
+                    data: { id: 'a', label: '1', index: 1 },
+                    position: { x: 0, y: 0 },
+                },
+                {
+                    group: 'nodes',
+                    data: { id: 'b', label: '2', index: 2 },
+                    position: { x: 100, y: 0 },
+                },
             ]);
             addEdge(core, { data: { source: 'a', target: 'b' } });
             addEdge(core, { data: { source: 'a', target: 'b' } });
@@ -150,8 +182,16 @@ describe('ghostService', () => {
 
         it('removes connected ghost edges when ghost node is removed', () => {
             core.add([
-                { group: 'nodes', data: { id: 'real', label: 'R', index: 1 }, position: { x: 0, y: 0 } },
-                { group: 'nodes', data: { id: 'other', label: 'O', index: 2 }, position: { x: 200, y: 0 } },
+                {
+                    group: 'nodes',
+                    data: { id: 'real', label: 'R', index: 1 },
+                    position: { x: 0, y: 0 },
+                },
+                {
+                    group: 'nodes',
+                    data: { id: 'other', label: 'O', index: 2 },
+                    position: { x: 200, y: 0 },
+                },
             ]);
             addEdge(core, { data: { source: 'real', target: 'other' } });
             const ghost = addGhost(core, core.$id('real'));
@@ -164,8 +204,16 @@ describe('ghostService', () => {
 
         it('does not remove real nodes or edges', () => {
             core.add([
-                { group: 'nodes', data: { id: 'real', label: 'R', index: 1 }, position: { x: 0, y: 0 } },
-                { group: 'nodes', data: { id: 'other', label: 'O', index: 2 }, position: { x: 200, y: 0 } },
+                {
+                    group: 'nodes',
+                    data: { id: 'real', label: 'R', index: 1 },
+                    position: { x: 0, y: 0 },
+                },
+                {
+                    group: 'nodes',
+                    data: { id: 'other', label: 'O', index: 2 },
+                    position: { x: 200, y: 0 },
+                },
             ]);
             addEdge(core, { data: { source: 'real', target: 'other' } });
             const ghost = addGhost(core, core.$id('real'));
@@ -178,15 +226,25 @@ describe('ghostService', () => {
 
         it('throws when element is not a ghost node', () => {
             addNode(core, { data: { id: 'real', label: 'R' } });
-            expect(() => removeGhost(core, core.$id('real'))).toThrow(ParsedError);
+            expect(() => {
+                removeGhost(core, core.$id('real'));
+            }).toThrow(ParsedError);
         });
     });
 
     describe('removeAllGhosts', () => {
         it('removes all ghost nodes and their connected edges', () => {
             core.add([
-                { group: 'nodes', data: { id: 'real', label: 'R', index: 1 }, position: { x: 0, y: 0 } },
-                { group: 'nodes', data: { id: 'other', label: 'O', index: 2 }, position: { x: 200, y: 0 } },
+                {
+                    group: 'nodes',
+                    data: { id: 'real', label: 'R', index: 1 },
+                    position: { x: 0, y: 0 },
+                },
+                {
+                    group: 'nodes',
+                    data: { id: 'other', label: 'O', index: 2 },
+                    position: { x: 200, y: 0 },
+                },
             ]);
             addEdge(core, { data: { source: 'real', target: 'other' } });
             addGhost(core, core.$id('real'));
@@ -203,7 +261,9 @@ describe('ghostService', () => {
         it('is a no-op when no ghost nodes exist', () => {
             addNode(core, { data: { id: 'real', label: 'R' } });
 
-            expect(() => removeAllGhosts(core)).not.toThrow();
+            expect(() => {
+                removeAllGhosts(core);
+            }).not.toThrow();
             expect(core.nodes()).toHaveLength(1);
         });
     });
@@ -261,8 +321,16 @@ describe('ghostService', () => {
 
         it('converts connected ghost edges to real edges', () => {
             core.add([
-                { group: 'nodes', data: { id: 'real', label: 'R', index: 1 }, position: { x: 0, y: 0 } },
-                { group: 'nodes', data: { id: 'other', label: 'O', index: 2 }, position: { x: 200, y: 0 } },
+                {
+                    group: 'nodes',
+                    data: { id: 'real', label: 'R', index: 1 },
+                    position: { x: 0, y: 0 },
+                },
+                {
+                    group: 'nodes',
+                    data: { id: 'other', label: 'O', index: 2 },
+                    position: { x: 200, y: 0 },
+                },
             ]);
             addEdge(core, { data: { source: 'real', target: 'other' } });
             const ghost = addGhost(core, core.$id('real'));
@@ -277,8 +345,16 @@ describe('ghostService', () => {
 
         it('resets promoted ghost edge style to solid', () => {
             core.add([
-                { group: 'nodes', data: { id: 'real', label: 'R', index: 1 }, position: { x: 0, y: 0 } },
-                { group: 'nodes', data: { id: 'other', label: 'O', index: 2 }, position: { x: 200, y: 0 } },
+                {
+                    group: 'nodes',
+                    data: { id: 'real', label: 'R', index: 1 },
+                    position: { x: 0, y: 0 },
+                },
+                {
+                    group: 'nodes',
+                    data: { id: 'other', label: 'O', index: 2 },
+                    position: { x: 200, y: 0 },
+                },
             ]);
             addEdge(core, { data: { source: 'real', target: 'other' } });
             const ghost = addGhost(core, core.$id('real'));
@@ -291,8 +367,16 @@ describe('ghostService', () => {
 
         it('does not affect real nodes or edges', () => {
             core.add([
-                { group: 'nodes', data: { id: 'real', label: 'R', index: 1 }, position: { x: 0, y: 0 } },
-                { group: 'nodes', data: { id: 'other', label: 'O', index: 2 }, position: { x: 200, y: 0 } },
+                {
+                    group: 'nodes',
+                    data: { id: 'real', label: 'R', index: 1 },
+                    position: { x: 0, y: 0 },
+                },
+                {
+                    group: 'nodes',
+                    data: { id: 'other', label: 'O', index: 2 },
+                    position: { x: 200, y: 0 },
+                },
             ]);
             addEdge(core, { data: { source: 'real', target: 'other' } });
             const ghost = addGhost(core, core.$id('real'));
@@ -306,7 +390,9 @@ describe('ghostService', () => {
 
         it('throws when element is not a ghost node', () => {
             addNode(core, { data: { id: 'real', label: 'R' } });
-            expect(() => promoteGhost(core, core.$id('real'))).toThrow(ParsedError);
+            expect(() => {
+                promoteGhost(core, core.$id('real'));
+            }).toThrow(ParsedError);
         });
 
         it('promoted node is no longer returned by getGhostsOf', () => {

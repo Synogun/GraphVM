@@ -47,9 +47,11 @@ export function NodesSection({ visible = true }: Readonly<NodeSectionProps>) {
             .nodes()
             .filter((n) => selectedNodes.includes(n.id()));
         const modeColor =
-            findPropertyValueMode(collection, 'color', true) ?? currentDefaults.color;
+            findPropertyValueMode(collection, 'color', true) ??
+            currentDefaults.color;
         const modeShapeRaw =
-            findPropertyValueMode(collection, 'shape', true) ?? currentDefaults.shape;
+            findPropertyValueMode(collection, 'shape', true) ??
+            currentDefaults.shape;
         const modeShape = isNodeShape(modeShapeRaw)
             ? modeShapeRaw
             : currentDefaults.shape;
