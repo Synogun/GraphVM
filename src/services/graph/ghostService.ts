@@ -1,10 +1,10 @@
-import { DefaultEdgesData } from '@/constants/graphDefaults';
 import { ParsedError, parseError } from '@/config/parsedError';
+import { DefaultEdgesData } from '@/constants/graphDefaults';
 import type { GraphLimits } from '@/types/ui/settings';
 import { extractElementData } from '@/utils';
 import type cytoscape from 'cytoscape';
-import { addEdge } from './edgesService';
-import { addNode } from './nodesService';
+import { addEdge, removeEdges } from './edgesService';
+import { addNode, removeNodes } from './nodesService';
 
 export function addGhost(
     core: cytoscape.Core,
@@ -92,15 +92,19 @@ export function addGhost(
 
 export function removeGhost(
     _core: cytoscape.Core,
-    ghostNode: cytoscape.NodeSingular
+    ghostElement: cytoscape.NodeSingular | cytoscape.EdgeSingular
 ): void {
-    if (!ghostNode.data('isGhost')) {
+    if (!ghostElement.data('isGhost')) {
         throw new ParsedError('Element is not a ghost node.', {
-            context: { elementId: ghostNode.id() },
+            context: { elementId: ghostElement.id() },
         });
     }
 
-    ghostNode.remove();
+    if (ghostElement.isNode()) {
+        removeNodes(_core, ghostElement);
+    } else {
+        removeEdges(_core, ghostElement);
+    }
 }
 
 export function removeAllGhosts(core: cytoscape.Core): void {

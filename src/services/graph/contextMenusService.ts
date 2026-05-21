@@ -12,7 +12,7 @@ import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import type { IconType } from 'react-icons';
 import { GoPencil, GoTrash } from 'react-icons/go';
-import { IoCloseCircle, IoCopyOutline } from 'react-icons/io5';
+import { IoCopyOutline } from 'react-icons/io5';
 import { MdDeleteSweep } from 'react-icons/md';
 import { PiGhost } from 'react-icons/pi';
 import { removeEdges, updateEdges } from './edgesService';
@@ -154,13 +154,23 @@ export function createContextMenuActionDefinitions(): ContextMenuActionDefinitio
             tooltipText: 'Removes the element',
             selector: 'node, edge',
             coreAsWell: false,
-            show: false,
+            show: true,
             disabled: false,
             hasTrailingDivider: false,
             onClick: (evt, context) => {
-                const target = evt.target as cytoscape.Collection;
+                const target = evt.target as
+                    | cytoscape.NodeSingular
+                    | cytoscape.EdgeSingular;
                 try {
-                    target.remove();
+                    if (target.data('isGhost')) {
+                        removeGhost(evt.cy, target);
+                    }
+
+                    if (target.isNode()) {
+                        removeNodes(evt.cy, target);
+                    } else {
+                        removeEdges(evt.cy, target);
+                    }
                 } finally {
                     context.syncAll(evt.cy);
                 }
@@ -180,24 +190,6 @@ export function createContextMenuActionDefinitions(): ContextMenuActionDefinitio
                 const target = evt.target as cytoscape.NodeSingular;
                 try {
                     addGhost(evt.cy, target, context.graphLimits);
-                } finally {
-                    context.syncAll(evt.cy);
-                }
-            },
-        },
-        {
-            id: 'removeGhost',
-            content: menuItemContent(IoCloseCircle, 'Remove Ghost'),
-            tooltipText: 'Removes this ghost node and its ghost edges',
-            selector: 'node[?isGhost]',
-            coreAsWell: false,
-            show: true,
-            disabled: false,
-            hasTrailingDivider: false,
-            onClick: (evt, context) => {
-                const target = evt.target as cytoscape.NodeSingular;
-                try {
-                    removeGhost(evt.cy, target);
                 } finally {
                     context.syncAll(evt.cy);
                 }
