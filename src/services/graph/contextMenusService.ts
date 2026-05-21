@@ -11,6 +11,7 @@ import type contextMenus from 'cytoscape-context-menus';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import type { IconType } from 'react-icons';
+import { FaCode } from 'react-icons/fa6';
 import { GoPencil, GoTrash } from 'react-icons/go';
 import { IoCopyOutline } from 'react-icons/io5';
 import { MdDeleteSweep } from 'react-icons/md';
@@ -118,6 +119,19 @@ export function mountContextMenu(
 
 export function createContextMenuActionDefinitions(): ContextMenuActionDefinition[] {
     return [
+        {
+            id: 'runAlgorithm',
+            content: menuItemContent(FaCode, 'Run an Algorithm'),
+            tooltipText: 'Open the algorithms panel to run an algorithm',
+            selector: '',
+            coreAsWell: true,
+            show: true,
+            disabled: false,
+            hasTrailingDivider: false,
+            onClick: (_evt, context) => {
+                context.openAlgorithmsModal?.();
+            },
+        },
         {
             id: 'removeSelectedElement',
             content: menuItemContent(GoTrash, 'Remove selected elements'),

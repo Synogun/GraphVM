@@ -7,6 +7,7 @@ export type BindContextMenuOptions = {
     shouldAbort?: () => boolean;
     openNodeLabelModal?: () => void;
     openEdgeLabelModal?: () => void;
+    openAlgorithmsModal?: () => void;
 };
 
 export type ContextMenuActionDependencies = {
@@ -15,6 +16,7 @@ export type ContextMenuActionDependencies = {
     onError?: (message: string) => void;
     openNodeLabelModal?: () => void;
     openEdgeLabelModal?: () => void;
+    openAlgorithmsModal?: () => void;
 };
 
 export type ContextMenuActionDefinition = {

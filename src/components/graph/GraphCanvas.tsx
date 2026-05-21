@@ -39,6 +39,9 @@ export function GraphCanvas({
 
     const setIsNodeLabelModalOpen = useModalsStore((s) => s.setIsNodeLabelModalOpen);
     const setIsEdgeLabelModalOpen = useModalsStore((s) => s.setIsEdgeLabelModalOpen);
+    const setIsAlgorithmsModalOpen = useModalsStore(
+        (s) => s.setIsAlgorithmsModalOpen
+    );
 
     useEffect(() => {
         addToastRef.current = addToast;
@@ -133,6 +136,9 @@ export function GraphCanvas({
             openEdgeLabelModal: () => {
                 setIsEdgeLabelModalOpen(true);
             },
+            openAlgorithmsModal: () => {
+                setIsAlgorithmsModalOpen(true);
+            },
         });
 
         graphRef.current = newCore;
@@ -156,6 +162,7 @@ export function GraphCanvas({
         syncSelection,
         setIsNodeLabelModalOpen,
         setIsEdgeLabelModalOpen,
+        setIsAlgorithmsModalOpen,
     ]);
 
     useLayoutEffect(() => {
