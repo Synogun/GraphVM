@@ -1,3 +1,4 @@
+import { ParsedErrorToasts } from '@/constants';
 import { useGetGraph } from '@/hooks';
 import { updateEdges } from '@/services/graph';
 import { useGraphSelectionStore } from '@/stores/graphSelectionStore';
@@ -58,7 +59,7 @@ function EdgeLabelModalContent() {
     const handleConfirm = () => {
         const core = graphRef.current;
         if (!core) {
-            addToast({ type: 'error', message: 'Graph not available.' });
+            addToast(ParsedErrorToasts.GraphNotFound);
             return;
         }
 

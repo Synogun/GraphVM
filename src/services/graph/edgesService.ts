@@ -4,6 +4,7 @@ import type { EdgesData } from '@/types/elements/edges';
 import {
     isEdgeArrowShape,
     isEdgeCurve,
+    isEdgeLabelStyle,
     isEdgeLineStyle,
 } from '@/types/elements/edges/typeGuards';
 import type { GraphLimits } from '@/types/ui/settings';
@@ -179,8 +180,18 @@ export function updateEdges(
 
     const customValidation = [
         {
+            property: 'labelStyle',
+            validate: isEdgeLabelStyle,
+            default: defaultEdgesData.labelStyle,
+        },
+        {
+            property: 'label',
+            validate: (val: unknown) => val,
+            default: defaultEdgesData.label,
+        },
+        {
             property: 'weight',
-            validate: (val: string | number | boolean) =>
+            validate: (val: unknown) =>
                 !Number.isNaN(Number(val)) && Number(val) >= 0,
             default: defaultEdgesData.weight,
         },
@@ -202,19 +213,33 @@ export function updateEdges(
     ];
 
     let parsedValue = value;
-    if (customValidation.some((v) => v.property === property)) {
-        const validator = customValidation.find((v) => v.property === property);
+    const validator = customValidation.find((v) => v.property === property);
 
-        if (!validator) {
-            throw new ParsedError(`No validator found for property: ${property}`);
-        }
-
+    if (validator) {
         parsedValue = validator.validate(value) ? value : validator.default;
+    } else {
+        throw new ParsedError(`No validator found for property: ${property}`);
     }
 
     if (property === 'style') {
         // Ghost Nodes can't change line style, in order to keep visual distinction
         edgesCollection = edgesCollection.filter((e) => !e.data('isGhost'));
+    }
+
+    if (property === 'labelStyle') {
+        if (parsedValue === 'hidden') {
+            edgesCollection.data('label', '');
+        } else if (parsedValue === 'weight') {
+            edgesCollection.forEach((edge) => {
+                edge.data('label', String(edge.data('weight')));
+            });
+        } else if (parsedValue === 'index') {
+            edgesCollection.forEach((edge) => {
+                edge.data('label', String(edge.data('index')));
+            });
+        } else if (parsedValue === 'custom') {
+            /* Since the label already exists, no need to re-set it */
+        }
     }
 
     edgesCollection.data(property, parsedValue);

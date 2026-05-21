@@ -20,6 +20,8 @@ describe('edgesService', () => {
     let core: cytoscape.Core;
 
     beforeEach(() => {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        core?.destroy();
         core = createSeededGraph();
     });
 
@@ -214,6 +216,31 @@ describe('edgesService', () => {
             const edges = summarizeEdges(core);
             expect(edges.find((edge) => edge.id === targetId)?.weight).toBe(9);
             expect(edges.find((edge) => edge.id !== targetId)?.weight).toBe(1);
+        });
+
+        it('changes label based on labelStyle', () => {
+            addEdge(core, { data: { id: 'edge-1', source: 'a', target: 'b' } });
+            addEdge(core, { data: { id: 'edge-2', source: 'b', target: 'c' } });
+            addEdge(core, {
+                data: { id: 'edge-3', source: 'c', target: 'a', weight: 5 },
+            });
+
+            updateEdges(core, ['edge-1'], 'labelStyle', 'hidden');
+            updateEdges(core, ['edge-2'], 'labelStyle', 'index');
+            updateEdges(core, ['edge-3'], 'labelStyle', 'weight');
+
+            expect(core.$id('edge-1').data('label')).toBe('');
+            expect(core.$id('edge-2').data('label')).toBe('2');
+            expect(core.$id('edge-3').data('label')).toBe('5');
+        });
+
+        it('falls back to default labelStyle when invalid labelStyle provided', () => {
+            const defaults = getDefaultEdgesData(core);
+            addEdge(core, { data: { id: 'edge-1', source: 'a', target: 'b' } });
+
+            updateEdges(core, ['edge-1'], 'labelStyle', 'not-a-valid-labelStyle');
+
+            expect(core.$id('edge-1').data('labelStyle')).toBe(defaults.labelStyle);
         });
 
         it('falls back to default weight when invalid weight provided', () => {

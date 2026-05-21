@@ -46,8 +46,6 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
     const activeTabId = useGraphWorkspaceStore((s) => s.activeTabId);
     const selectedEdges = useGraphSelectionStore((s) => s.selectedEdges);
 
-    const [isAnyGhostEdgeSelected, setIsAnyGhostEdgeSelected] = useState(false);
-
     const propertyEditor = usePropertyEditor({
         graphRef,
         selectedIds: selectedEdges,
@@ -55,7 +53,9 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
         setDefaults: setDefaultEdgesData,
         getElements: (core) => core.edges(),
         updateElements: (core, ids, property, value) => {
-            if (value !== undefined) updateEdges(core, ids, property, value);
+            if (value !== undefined) {
+                updateEdges(core, ids, property, value);
+            }
         },
     });
 
@@ -72,18 +72,13 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
             setCurveStyle(currentDefaults.curve);
             setWeight(currentDefaults.weight);
             setArrowShape(currentDefaults.arrowShape);
-            setIsAnyGhostEdgeSelected(false);
             return;
         }
-
-        setIsAnyGhostEdgeSelected(
-            selectedEdges.some((id) => Boolean(core.$id(id).data('isGhost')))
-        );
 
         const collection = core
             .edges()
             .filter((e) => selectedEdges.includes(e.id()));
-        const rawLabel =
+        const rawLabelStyle =
             findPropertyValueMode(collection, 'labelStyle', true) ??
             currentDefaults.labelStyle;
         const rawColor =
@@ -102,12 +97,18 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
             currentDefaults.arrowShape;
 
         setLabelStyle(
-            isEdgeLabelStyle(rawLabel) ? rawLabel : currentDefaults.labelStyle
+            isEdgeLabelStyle(rawLabelStyle)
+                ? rawLabelStyle
+                : currentDefaults.labelStyle
         );
         setColor(rawColor);
         setLineStyle(isEdgeLineStyle(rawStyle) ? rawStyle : currentDefaults.style);
         setCurveStyle(isEdgeCurve(rawCurve) ? rawCurve : currentDefaults.curve);
-        setWeight(Number(rawWeight) || currentDefaults.weight);
+        setWeight(
+            Number.isNaN(Number(rawWeight))
+                ? currentDefaults.weight
+                : Number(rawWeight)
+        );
         setArrowShape(
             isEdgeArrowShape(rawArrowShape)
                 ? rawArrowShape
@@ -116,7 +117,7 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
         // eslint-disable-next-line react-hooks/exhaustive-deps -- graphRef is a stable ref; reading .current inside the effect is intentional
     }, [selectedEdges, activeTabId]);
 
-    const handleChangeLabel = (e: ChangeEvent<HTMLSelectElement>) => {
+    const handleChangeLabelStyle = (e: ChangeEvent<HTMLSelectElement>) => {
         const currentDefaults = propertyEditor.resolveDefaults();
         if (!currentDefaults) {
             return;
@@ -130,32 +131,6 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
         const didApply = propertyEditor.applyValue('labelStyle', parsedValue);
         if (!didApply) {
             return;
-        }
-
-        if (selectedEdges.length > 0) {
-            const core = graphRef.current;
-            if (core) {
-                core.edges()
-                    .filter((edge) => selectedEdges.includes(edge.id()))
-                    .forEach((edge) => {
-                        let newLabel = '';
-                        if (parsedValue === 'weight') {
-                            newLabel = String(edge.data('weight'));
-                        } else if (parsedValue === 'index') {
-                            newLabel = String(edge.data('index'));
-                        } else if (parsedValue === 'custom') {
-                            const existing = edge.data('label') as
-                                | string
-                                | undefined;
-                            if (existing) return;
-                            if (labelStyle === 'weight')
-                                newLabel = String(edge.data('weight'));
-                            else if (labelStyle === 'index')
-                                newLabel = String(edge.data('index'));
-                        }
-                        updateEdges(core, [edge.id()], 'label', newLabel);
-                    });
-            }
         }
 
         setLabelStyle(parsedValue);
@@ -177,13 +152,6 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
         const didApply = propertyEditor.applyValue('weight', parsedValue);
         if (!didApply) {
             return;
-        }
-
-        if (labelStyle === 'weight' && selectedEdges.length > 0) {
-            const core = graphRef.current;
-            if (core) {
-                updateEdges(core, selectedEdges, 'label', String(parsedValue));
-            }
         }
 
         setWeight(parsedValue);
@@ -255,7 +223,7 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
         setArrowShape(parsedValue);
     };
 
-    const selectLabelOptions = useMemo(() => {
+    const selectLabelStyleOptions = useMemo(() => {
         return [
             { label: 'Pick a label style', value: '', title: true },
             ...ValidEdgeLabelStyle.map((style) => ({
@@ -312,8 +280,8 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
 
             <SelectInput
                 label="Label Style"
-                onChange={handleChangeLabel}
-                options={selectLabelOptions}
+                onChange={handleChangeLabelStyle}
+                options={selectLabelStyleOptions}
                 value={labelStyle}
                 defaultValue={DefaultEdgesData.labelStyle}
                 tooltip={{
@@ -348,7 +316,6 @@ export function EdgesSection({ visible = true }: Readonly<EdgesSectionProps>) {
                 options={selectLineStyleOptions}
                 value={lineStyle}
                 defaultValue={DefaultEdgesData.style}
-                disabled={isAnyGhostEdgeSelected}
                 tooltip={{
                     content: 'Determine the pattern used to draw the edges.',
                 }}
