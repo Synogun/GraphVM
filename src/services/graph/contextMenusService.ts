@@ -8,9 +8,21 @@ import type {
 } from '@/types';
 import type cytoscape from 'cytoscape';
 import type contextMenus from 'cytoscape-context-menus';
+import React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import type { IconType } from 'react-icons';
+import { GoPencil, GoTrash } from 'react-icons/go';
+import { IoCloseCircle, IoCopyOutline } from 'react-icons/io5';
+import { MdDeleteSweep } from 'react-icons/md';
+import { PiGhost } from 'react-icons/pi';
 import { removeEdges, updateEdges } from './edgesService';
 import { addGhost, removeAllGhosts, removeGhost } from './ghostService';
 import { cloneNode, removeNodes } from './nodesService';
+
+function menuItemContent(Icon: IconType, label: string): string {
+    const iconHtml = renderToStaticMarkup(React.createElement(Icon, { size: 15 }));
+    return `<span style="display:flex;align-items:center;gap:6px">${iconHtml}${label}</span>`;
+}
 
 const logger = Logger.createContextLogger('ContextMenuDefinitions');
 
@@ -52,7 +64,7 @@ export async function bindContextMenu(
             'hover:bg-base-300 hover:shadow-lg',
         ],
         contextMenuClasses: [
-            'bg-base-200 text-md',
+            'bg-base-200 text-xs',
             'rounded shadow-lg',
             'border border-accent hover:border-accent-focus',
         ],
@@ -108,7 +120,7 @@ export function createContextMenuActionDefinitions(): ContextMenuActionDefinitio
     return [
         {
             id: 'removeSelectedElement',
-            content: 'Remove selected elements',
+            content: menuItemContent(GoTrash, 'Remove selected elements'),
             tooltipText: 'Removes the selected elements',
             selector: '',
             coreAsWell: true,
@@ -138,7 +150,7 @@ export function createContextMenuActionDefinitions(): ContextMenuActionDefinitio
         },
         {
             id: 'removeElement',
-            content: 'Remove element',
+            content: menuItemContent(GoTrash, 'Remove element'),
             tooltipText: 'Removes the element',
             selector: 'node, edge',
             coreAsWell: false,
@@ -156,7 +168,7 @@ export function createContextMenuActionDefinitions(): ContextMenuActionDefinitio
         },
         {
             id: 'addGhostFromElement',
-            content: 'Add Ghost from Element',
+            content: menuItemContent(PiGhost, 'Add Ghost from Element'),
             tooltipText:
                 'Adds a ghost node based on the element, check for more details in Help modal',
             selector: 'node[!isGhost]',
@@ -175,7 +187,7 @@ export function createContextMenuActionDefinitions(): ContextMenuActionDefinitio
         },
         {
             id: 'removeGhost',
-            content: 'Remove Ghost',
+            content: menuItemContent(IoCloseCircle, 'Remove Ghost'),
             tooltipText: 'Removes this ghost node and its ghost edges',
             selector: 'node[?isGhost]',
             coreAsWell: false,
@@ -193,7 +205,7 @@ export function createContextMenuActionDefinitions(): ContextMenuActionDefinitio
         },
         {
             id: 'removeAllGhosts',
-            content: 'Remove All Ghosts',
+            content: menuItemContent(MdDeleteSweep, 'Remove All Ghosts'),
             tooltipText:
                 'Removes all ghost nodes and their ghost edges from the graph',
             selector: '',
@@ -211,7 +223,7 @@ export function createContextMenuActionDefinitions(): ContextMenuActionDefinitio
         },
         {
             id: 'cloneNode',
-            content: 'Clone Node',
+            content: menuItemContent(IoCopyOutline, 'Clone Node'),
             tooltipText:
                 'Clones the selected node, check for more details in Help modal',
             selector: 'node',
@@ -230,7 +242,7 @@ export function createContextMenuActionDefinitions(): ContextMenuActionDefinitio
         },
         {
             id: 'changeLabel',
-            content: 'Change Label',
+            content: menuItemContent(GoPencil, 'Change Label'),
             tooltipText: 'Change the label of this element',
             selector: 'node, edge',
             coreAsWell: false,
