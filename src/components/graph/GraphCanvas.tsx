@@ -10,6 +10,7 @@ import {
 import { mountContextMenu } from '@/services/graph/contextMenusService';
 import { useGraphSelectionStore } from '@/stores/graphSelectionStore';
 import { useGraphWorkspaceStore } from '@/stores/graphWorkspaceStore';
+import { useModalsStore } from '@/stores/modalsStore';
 import type { GraphInstance } from '@/types/graph';
 import { useSettings, useToasts } from '@Contexts';
 import type cytoscape from 'cytoscape';
@@ -35,6 +36,9 @@ export function GraphCanvas({
         graph: { limits: graphLimits },
     } = useSettings();
     const graphLimitsRef = useRef(graphLimits);
+
+    const setIsNodeLabelModalOpen = useModalsStore((s) => s.setIsNodeLabelModalOpen);
+    const setIsEdgeLabelModalOpen = useModalsStore((s) => s.setIsEdgeLabelModalOpen);
 
     useEffect(() => {
         addToastRef.current = addToast;
@@ -123,6 +127,12 @@ export function GraphCanvas({
                         parsedError.message,
                 });
             },
+            openNodeLabelModal: () => {
+                setIsNodeLabelModalOpen(true);
+            },
+            openEdgeLabelModal: () => {
+                setIsEdgeLabelModalOpen(true);
+            },
         });
 
         graphRef.current = newCore;
@@ -137,7 +147,16 @@ export function GraphCanvas({
             destroyGraph(newCore);
             graphRef.current = null;
         };
-    }, [tabId, containerId, setSelectionInfo, syncAll, syncMeta, syncSelection]);
+    }, [
+        tabId,
+        containerId,
+        setSelectionInfo,
+        syncAll,
+        syncMeta,
+        syncSelection,
+        setIsNodeLabelModalOpen,
+        setIsEdgeLabelModalOpen,
+    ]);
 
     useLayoutEffect(() => {
         if (!tabId || activeTabId !== tabId) {

@@ -5,12 +5,16 @@ export type BindContextMenuOptions = {
     graphLimits?: { readonly current: GraphLimits | undefined };
     onError?: (message: string) => void;
     shouldAbort?: () => boolean;
+    openNodeLabelModal?: () => void;
+    openEdgeLabelModal?: () => void;
 };
 
 export type ContextMenuActionDependencies = {
     syncAll: (core: cytoscape.Core) => void;
     graphLimits?: GraphLimits;
     onError?: (message: string) => void;
+    openNodeLabelModal?: () => void;
+    openEdgeLabelModal?: () => void;
 };
 
 export type ContextMenuActionDefinition = {

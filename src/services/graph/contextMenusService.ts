@@ -8,7 +8,7 @@ import type {
 } from '@/types';
 import type cytoscape from 'cytoscape';
 import type contextMenus from 'cytoscape-context-menus';
-import { removeEdges } from './edgesService';
+import { removeEdges, updateEdges } from './edgesService';
 import { addGhost, removeAllGhosts, removeGhost } from './ghostService';
 import { cloneNode, removeNodes } from './nodesService';
 
@@ -110,7 +110,7 @@ export function createContextMenuActionDefinitions(): ContextMenuActionDefinitio
             id: 'removeSelectedElement',
             content: 'Remove selected elements',
             tooltipText: 'Removes the selected elements',
-            selector: 'node, edge',
+            selector: '',
             coreAsWell: true,
             show: true,
             disabled: false,
@@ -196,7 +196,7 @@ export function createContextMenuActionDefinitions(): ContextMenuActionDefinitio
             content: 'Remove All Ghosts',
             tooltipText:
                 'Removes all ghost nodes and their ghost edges from the graph',
-            selector: 'node, edge',
+            selector: '',
             coreAsWell: true,
             show: true,
             disabled: false,
@@ -226,6 +226,44 @@ export function createContextMenuActionDefinitions(): ContextMenuActionDefinitio
                 } finally {
                     context.syncAll(evt.cy);
                 }
+            },
+        },
+        {
+            id: 'changeLabel',
+            content: 'Change Label',
+            tooltipText: 'Change the label of this element',
+            selector: 'node, edge',
+            coreAsWell: false,
+            show: true,
+            disabled: false,
+            hasTrailingDivider: false,
+            onClick: (evt, context) => {
+                const target = evt.target as cytoscape.SingularElementArgument;
+
+                if (target.isEdge()) {
+                    const selectedEdges = evt.cy.$('edge:selected');
+                    const edgesToUpdate =
+                        selectedEdges.length > 0 && target.selected()
+                            ? selectedEdges
+                            : (target as cytoscape.EdgeCollection);
+
+                    if (!target.selected()) {
+                        evt.cy.$(':selected').unselect();
+                        target.select();
+                    }
+
+                    const edgeIds = edgesToUpdate.map((e) => e.id());
+                    updateEdges(evt.cy, edgeIds, 'labelStyle', 'custom');
+                    context.openEdgeLabelModal?.();
+                } else {
+                    if (!target.selected()) {
+                        evt.cy.$(':selected').unselect();
+                        target.select();
+                    }
+
+                    context.openNodeLabelModal?.();
+                }
+                context.syncAll(evt.cy);
             },
         },
     ];
