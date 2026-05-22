@@ -8,14 +8,10 @@ import type {
 } from '@/types';
 import type cytoscape from 'cytoscape';
 import type contextMenus from 'cytoscape-context-menus';
+import { AppIcons } from '@/components/common/AppIcons';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import type { IconType } from 'react-icons';
-import { FaCode } from 'react-icons/fa6';
-import { GoPencil, GoTrash } from 'react-icons/go';
-import { IoCopyOutline } from 'react-icons/io5';
-import { MdDeleteSweep } from 'react-icons/md';
-import { PiGhost } from 'react-icons/pi';
 import { removeEdges, updateEdges } from './edgesService';
 import { addGhost, removeAllGhosts, removeGhost } from './ghostService';
 import { cloneNode, removeNodes } from './nodesService';
@@ -121,7 +117,7 @@ export function createContextMenuActionDefinitions(): ContextMenuActionDefinitio
     return [
         {
             id: 'runAlgorithm',
-            content: menuItemContent(FaCode, 'Run an Algorithm'),
+            content: menuItemContent(AppIcons.Algorithms, 'Run an Algorithm'),
             tooltipText: 'Open the algorithms panel to run an algorithm',
             selector: '',
             coreAsWell: true,
@@ -134,7 +130,7 @@ export function createContextMenuActionDefinitions(): ContextMenuActionDefinitio
         },
         {
             id: 'removeSelectedElement',
-            content: menuItemContent(GoTrash, 'Remove selected elements'),
+            content: menuItemContent(AppIcons.DeleteElements, 'Remove selected elements'),
             tooltipText: 'Removes the selected elements',
             selector: '',
             coreAsWell: true,
@@ -164,7 +160,7 @@ export function createContextMenuActionDefinitions(): ContextMenuActionDefinitio
         },
         {
             id: 'removeElement',
-            content: menuItemContent(GoTrash, 'Remove element'),
+            content: menuItemContent(AppIcons.DeleteElements, 'Remove element'),
             tooltipText: 'Removes the element',
             selector: 'node, edge',
             coreAsWell: false,
@@ -192,7 +188,7 @@ export function createContextMenuActionDefinitions(): ContextMenuActionDefinitio
         },
         {
             id: 'addGhostFromElement',
-            content: menuItemContent(PiGhost, 'Add Ghost from Element'),
+            content: menuItemContent(AppIcons.Ghost, 'Add Ghost from Element'),
             tooltipText:
                 'Adds a ghost node based on the element, check for more details in Help modal',
             selector: 'node[!isGhost]',
@@ -211,7 +207,7 @@ export function createContextMenuActionDefinitions(): ContextMenuActionDefinitio
         },
         {
             id: 'removeAllGhosts',
-            content: menuItemContent(MdDeleteSweep, 'Remove All Ghosts'),
+            content: menuItemContent(AppIcons.ClearAll, 'Remove All Ghosts'),
             tooltipText:
                 'Removes all ghost nodes and their ghost edges from the graph',
             selector: '',
@@ -229,7 +225,7 @@ export function createContextMenuActionDefinitions(): ContextMenuActionDefinitio
         },
         {
             id: 'cloneNode',
-            content: menuItemContent(IoCopyOutline, 'Clone Node'),
+            content: menuItemContent(AppIcons.Copy, 'Clone Node'),
             tooltipText:
                 'Clones the selected node, check for more details in Help modal',
             selector: 'node',
@@ -248,7 +244,7 @@ export function createContextMenuActionDefinitions(): ContextMenuActionDefinitio
         },
         {
             id: 'changeLabel',
-            content: menuItemContent(GoPencil, 'Change Label'),
+            content: menuItemContent(AppIcons.Edit, 'Change Label'),
             tooltipText: 'Change the label of this element',
             selector: 'node, edge',
             coreAsWell: false,

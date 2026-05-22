@@ -4,16 +4,17 @@ import { BiExport, BiImport } from 'react-icons/bi';
 import { FaCheck, FaGithub } from 'react-icons/fa';
 import { FaCircleInfo, FaCode } from 'react-icons/fa6';
 import { FiHelpCircle } from 'react-icons/fi';
-import { GoTrash } from 'react-icons/go';
+import { GoPencil, GoTrash } from 'react-icons/go';
 import { IoIosAdd } from 'react-icons/io';
 import {
     IoAddCircleOutline,
     IoClose,
     IoCloseCircle,
+    IoCopyOutline,
     IoWarningOutline,
 } from 'react-icons/io5';
-import { MdFilterCenterFocus, MdPalette, MdSettings } from 'react-icons/md';
-import { PiFediverseLogo, PiGraph, PiLineSegments, PiShuffle } from 'react-icons/pi';
+import { MdDeleteSweep, MdFilterCenterFocus, MdPalette, MdSettings } from 'react-icons/md';
+import { PiFediverseLogo, PiGhost, PiGraph, PiLineSegments, PiShuffle } from 'react-icons/pi';
 import { RiSave3Fill } from 'react-icons/ri';
 import { TbReport } from 'react-icons/tb';
 import {
@@ -63,4 +64,8 @@ export const AppIcons = {
     Info: (props: IconBaseProps) => <FaCircleInfo {...props} />,
     Warning: (props: IconBaseProps) => <IoWarningOutline {...props} />,
     Add: (props: IconBaseProps) => <IoIosAdd {...props} />,
+    Edit: (props: IconBaseProps) => <GoPencil {...props} />,
+    Copy: (props: IconBaseProps) => <IoCopyOutline {...props} />,
+    ClearAll: (props: IconBaseProps) => <MdDeleteSweep {...props} />,
+    Ghost: (props: IconBaseProps) => <PiGhost {...props} />,
 };
