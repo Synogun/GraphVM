@@ -1,4 +1,3 @@
-import { isString } from '@/types';
 import { type TraversalParams } from '@/types/algorithms';
 import { SelectInput } from '@Inputs';
 
@@ -24,17 +23,11 @@ export function BFSParamsInput({ params, setParams }: ParamsInputProps) {
                     value={params.startNodeId}
                     disabled={nodes.length === 0}
                     tooltip={{
-                        content:
-                            'Select the starting node for the BFS traversal. ' +
-                            'Only nodes present in the graph will be listed. ' +
-                            "If 'Only Selected Nodes' is chosen in the Node Scope, " +
-                            'only selected nodes will be available for selection.',
+                        content: 'Select the starting node for the BFS traversal.',
                     }}
                     options={nodes.map((node) => {
-                        const label: unknown = node.data('label');
-
                         return {
-                            label: isString(label) ? label.trim() : node.id(),
+                            label: `${String(node.data('label'))}  (${node.id()})`,
                             value: node.id(),
                         };
                     })}
