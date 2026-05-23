@@ -35,5 +35,9 @@ export const DefaultSettingsData: SettingsData = {
         arrangeGraph: 'A',
         centerGraph: 'C',
         toggleEdgeMode: 'M',
+        animPlayPause: 'Space',
+        animStepForward: 'ArrowRight',
+        animStepBackward: 'ArrowLeft',
+        animStop: 'Escape',
     },
 };

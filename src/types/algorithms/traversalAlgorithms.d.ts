@@ -22,6 +22,10 @@ export type BFSParams = {
 
 export type DFSParams = {
     algorithm: 'dfs';
+    startNodeId: string;
+    directed: boolean;
+    onlySelected: boolean;
+    graphNodes: cytoscape.NodeCollection | null;
 } & BaseTraversalParams;
 
 export type DijkstraParams = {

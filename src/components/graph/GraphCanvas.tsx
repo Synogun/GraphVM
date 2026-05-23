@@ -1,5 +1,7 @@
 import { GRAPH_MAX_ZOOM, GRAPH_MIN_ZOOM } from '@/constants';
 import { useGraphHydration, useGraphMutation, useRegisterGraphByTab } from '@/hooks';
+import { useAnimationPlayback } from '@/hooks/useAnimationPlayback';
+import { useAnimationVisuals } from '@/hooks/useAnimationVisuals';
 import {
     bindAutopan,
     destroyGraph,
@@ -8,6 +10,7 @@ import {
     updateSelectionOrder,
 } from '@/services/graph';
 import { mountContextMenu } from '@/services/graph/contextMenusService';
+import { useAnimationStore } from '@/stores/animationStore';
 import { useGraphSelectionStore } from '@/stores/graphSelectionStore';
 import { useGraphWorkspaceStore } from '@/stores/graphWorkspaceStore';
 import { useModalsStore } from '@/stores/modalsStore';
@@ -36,6 +39,10 @@ export function GraphCanvas({
         graph: { limits: graphLimits },
     } = useSettings();
     const graphLimitsRef = useRef(graphLimits);
+
+    const status = useAnimationStore((s) => s.tabs[tabId ?? '']?.status ?? 'idle');
+    const isLocked = status !== 'idle';
+    const isLockedRef = useRef(isLocked);
 
     const setIsNodeLabelModalOpen = useModalsStore((s) => s.setIsNodeLabelModalOpen);
     const setIsEdgeLabelModalOpen = useModalsStore((s) => s.setIsEdgeLabelModalOpen);
@@ -116,11 +123,12 @@ export function GraphCanvas({
         newCore.on('zoom', handleZoom);
 
         const cleanupAutopan = bindAutopan(newCore);
-        const cleanupContextMenu = mountContextMenu(newCore, {
+        const contextMenuControl = mountContextMenu(newCore, {
             syncAll,
             graphLimits: graphLimitsRef,
+            isAnimationLocked: isLockedRef,
             onError: (message) => {
-                addToastRef.current({ type: 'error', message });
+                addToastRef.current({ type: 'warning', message });
             },
             onBindError: (parsedError) => {
                 addToastRef.current({
@@ -145,7 +153,7 @@ export function GraphCanvas({
 
         return () => {
             cleanupAutopan();
-            cleanupContextMenu();
+            contextMenuControl.destroy();
             newCore.off('select unselect', 'node, edge', handleElementSelection);
             newCore.off('add remove', 'node, edge', handleGraphMutation);
             newCore.off('data', 'node, edge', handleGraphMutation);
@@ -164,6 +172,10 @@ export function GraphCanvas({
         setIsEdgeLabelModalOpen,
         setIsAlgorithmsModalOpen,
     ]);
+
+    useEffect(() => {
+        isLockedRef.current = isLocked;
+    }, [isLocked]);
 
     useLayoutEffect(() => {
         if (!tabId || activeTabId !== tabId) {
@@ -188,13 +200,17 @@ export function GraphCanvas({
 
     useRegisterGraphByTab(graphId, graphRef, tabId);
     useGraphHydration(graphId, tabId);
+    useAnimationPlayback(tabId);
+    useAnimationVisuals(graphRef, tabId);
 
     return (
-        <div
-            className="h-full w-full bg-base-100"
-            ref={containerRef}
-            id={containerId}
-        />
+        <div className="relative h-full w-full">
+            <div
+                className="h-full w-full bg-base-100"
+                ref={containerRef}
+                id={containerId}
+            />
+        </div>
     );
 }
 

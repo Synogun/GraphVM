@@ -54,6 +54,26 @@ const SHORTCUT_FIELDS: {
         label: 'Toggle edge mode',
         hint: 'Switch edge creation between path and complete modes.',
     },
+    {
+        action: 'animPlayPause',
+        label: 'Play / Pause',
+        hint: 'Toggle animation playback. Only active during animation.',
+    },
+    {
+        action: 'animStepForward',
+        label: 'Step forward',
+        hint: 'Advance animation by one step. Only active during animation.',
+    },
+    {
+        action: 'animStepBackward',
+        label: 'Step backward',
+        hint: 'Go back one animation step. Only active during animation.',
+    },
+    {
+        action: 'animStop',
+        label: 'Stop animation',
+        hint: 'Stop and reset the animation. Only active during animation.',
+    },
 ];
 
 export function SettingsShortcutsTab() {

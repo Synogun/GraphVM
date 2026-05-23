@@ -11,10 +11,27 @@ import {
     IoClose,
     IoCloseCircle,
     IoCopyOutline,
+    IoPause,
+    IoPlay,
+    IoPlayBack,
+    IoPlayForward,
+    IoStop,
     IoWarningOutline,
 } from 'react-icons/io5';
-import { MdDeleteSweep, MdFilterCenterFocus, MdPalette, MdSettings } from 'react-icons/md';
-import { PiFediverseLogo, PiGhost, PiGraph, PiLineSegments, PiShuffle } from 'react-icons/pi';
+import {
+    MdDeleteSweep,
+    MdFilterCenterFocus,
+    MdOutlineReplay,
+    MdPalette,
+    MdSettings,
+} from 'react-icons/md';
+import {
+    PiFediverseLogo,
+    PiGhost,
+    PiGraph,
+    PiLineSegments,
+    PiShuffle,
+} from 'react-icons/pi';
 import { RiSave3Fill } from 'react-icons/ri';
 import { TbReport } from 'react-icons/tb';
 import {
@@ -68,4 +85,10 @@ export const AppIcons = {
     Copy: (props: IconBaseProps) => <IoCopyOutline {...props} />,
     ClearAll: (props: IconBaseProps) => <MdDeleteSweep {...props} />,
     Ghost: (props: IconBaseProps) => <PiGhost {...props} />,
+    AnimPlay: (props: IconBaseProps) => <IoPlay {...props} />,
+    AnimPause: (props: IconBaseProps) => <IoPause {...props} />,
+    AnimForward: (props: IconBaseProps) => <IoPlayForward {...props} />,
+    AnimBackward: (props: IconBaseProps) => <IoPlayBack {...props} />,
+    AnimStop: (props: IconBaseProps) => <IoStop {...props} />,
+    AnimReplay: (props: IconBaseProps) => <MdOutlineReplay {...props} />,
 };

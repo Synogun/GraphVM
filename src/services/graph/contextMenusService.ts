@@ -1,3 +1,4 @@
+import { AppIcons } from '@/components/common/AppIcons';
 import { Logger } from '@/config/logger';
 import { type ParsedError, parseError } from '@/config/parsedError';
 import { ensureContextMenusExtension } from '@/lazy/cytoscapeExtensions';
@@ -5,16 +6,24 @@ import type {
     BindContextMenuOptions,
     ContextMenuActionDefinition,
     ContextMenuActionDependencies,
+    ContextMenuControl,
 } from '@/types';
 import type cytoscape from 'cytoscape';
 import type contextMenus from 'cytoscape-context-menus';
-import { AppIcons } from '@/components/common/AppIcons';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import type { IconType } from 'react-icons';
 import { removeEdges, updateEdges } from './edgesService';
 import { addGhost, removeAllGhosts, removeGhost } from './ghostService';
 import { cloneNode, removeNodes } from './nodesService';
+
+const LOCKABLE_ITEM_IDS = new Set([
+    'removeSelectedElement',
+    'removeElement',
+    'addGhostFromElement',
+    'removeAllGhosts',
+    'cloneNode',
+]);
 
 function menuItemContent(Icon: IconType, label: string): string {
     const iconHtml = renderToStaticMarkup(React.createElement(Icon, { size: 15 }));
@@ -26,12 +35,14 @@ const logger = Logger.createContextLogger('ContextMenuDefinitions');
 export async function bindContextMenu(
     cy: cytoscape.Core,
     options: BindContextMenuOptions
-): Promise<() => void> {
+): Promise<ContextMenuControl> {
     await ensureContextMenusExtension();
 
     if (options.shouldAbort?.()) {
-        return () => {
-            /* no cleanup needed since we didn't bind anything */
+        return {
+            destroy: () => {
+                /* Empty */
+            },
         };
     }
 
@@ -49,6 +60,13 @@ export async function bindContextMenu(
             disabled: action.disabled ?? false,
             hasTrailingDivider: action.hasTrailingDivider ?? false,
             onClickFunction: (evt: cytoscape.EventObject) => {
+                if (
+                    LOCKABLE_ITEM_IDS.has(action.id) &&
+                    options.isAnimationLocked?.current
+                ) {
+                    options.onError?.('Stop the animation to edit the graph.');
+                    return;
+                }
                 runContextMenuAction(action, evt, {
                     ...options,
                     graphLimits: options.graphLimits?.current,
@@ -69,8 +87,10 @@ export async function bindContextMenu(
 
     const contextMenu = cy.contextMenus(menuOptions);
 
-    return () => {
-        contextMenu.destroy();
+    return {
+        destroy: () => {
+            contextMenu.destroy();
+        },
     };
 }
 
@@ -79,11 +99,10 @@ export function mountContextMenu(
     options: BindContextMenuOptions & {
         onBindError?: (error: ParsedError) => void;
     }
-): () => void {
+): ContextMenuControl {
     let disposed = false;
-    let cleanupContextMenu = () => {
-        /* no cleanup needed for now */
-    };
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    let cleanupFn = () => {};
 
     void bindContextMenu(cy, {
         ...options,
@@ -95,21 +114,24 @@ export function mountContextMenu(
             return options.shouldAbort?.() ?? false;
         },
     })
-        .then((cleanup) => {
+        .then((control) => {
             if (disposed) {
-                cleanup();
+                control.destroy();
                 return;
             }
-
-            cleanupContextMenu = cleanup;
+            cleanupFn = control.destroy;
         })
         .catch((error: unknown) => {
-            options.onBindError?.(parseError(error));
+            if (!disposed) {
+                options.onBindError?.(parseError(error));
+            }
         });
 
-    return () => {
-        disposed = true;
-        cleanupContextMenu();
+    return {
+        destroy: () => {
+            disposed = true;
+            cleanupFn();
+        },
     };
 }
 
@@ -130,7 +152,10 @@ export function createContextMenuActionDefinitions(): ContextMenuActionDefinitio
         },
         {
             id: 'removeSelectedElement',
-            content: menuItemContent(AppIcons.DeleteElements, 'Remove selected elements'),
+            content: menuItemContent(
+                AppIcons.DeleteElements,
+                'Remove selected elements'
+            ),
             tooltipText: 'Removes the selected elements',
             selector: '',
             coreAsWell: true,

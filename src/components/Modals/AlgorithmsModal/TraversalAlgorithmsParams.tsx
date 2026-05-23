@@ -1,9 +1,10 @@
+import type React from 'react';
 import { type TraversalParams } from '@/types/algorithms';
 import { SelectInput } from '@Inputs';
 
 type ParamsInputProps = Readonly<{
     params: TraversalParams;
-    setParams: (params: TraversalParams) => void;
+    setParams: React.Dispatch<React.SetStateAction<TraversalParams>>;
 }>;
 
 export function BFSParamsInput({ params, setParams }: ParamsInputProps) {
@@ -73,6 +74,70 @@ export function BFSParamsInput({ params, setParams }: ParamsInputProps) {
                         No nodes selected
                     </span>
                 )}
+            </div>
+        </div>
+    );
+}
+
+export function DFSParamsInput({
+    params,
+    setParams,
+}: Readonly<{
+    params: Extract<TraversalParams, { algorithm: 'dfs' }>;
+    setParams: React.Dispatch<React.SetStateAction<TraversalParams>>;
+}>) {
+    const nodes = params.onlySelected
+        ? (params.graphNodes?.filter((node) => node.selected()) ?? [])
+        : (params.graphNodes ?? []);
+
+    const nodeOptions = [...nodes].map((node) => ({
+        label: `${String(node.data('label') ?? '')}  (${node.id()})`,
+        value: node.id(),
+    }));
+
+    return (
+        <div className="grid grid-cols-3 items-center gap-4">
+            <div>
+                <SelectInput
+                    label="Start Node"
+                    value={params.startNodeId}
+                    disabled={nodes.length === 0}
+                    tooltip={{
+                        content: 'Select the starting node for the DFS traversal.',
+                    }}
+                    options={nodeOptions}
+                    onChange={(e) => {
+                        setParams((prev) => ({ ...prev, startNodeId: e.target.value }));
+                    }}
+                />
+            </div>
+            <div>
+                <SelectInput
+                    label="Node Scope"
+                    value={params.onlySelected ? 'selected' : 'all'}
+                    tooltip={{
+                        content:
+                            'Choose the scope of nodes to consider during traversal. ' +
+                            'Selecting "All Nodes" will include every node in the graph, ' +
+                            'while "Only Selected Nodes" will limit the traversal to elements ' +
+                            'that are currently selected.',
+                    }}
+                    options={[
+                        { label: 'All Nodes', value: 'all' },
+                        { label: 'Only Selected Nodes', value: 'selected' },
+                    ]}
+                    onChange={(e) => {
+                        const newOnlySelected = e.target.value === 'selected';
+                        const newNodes = newOnlySelected
+                            ? (params.graphNodes?.filter((node) => node.selected()) ?? [])
+                            : (params.graphNodes ?? []);
+                        setParams((prev) => ({
+                            ...prev,
+                            onlySelected: newOnlySelected,
+                            startNodeId: newNodes[0]?.id() ?? '',
+                        }));
+                    }}
+                />
             </div>
         </div>
     );

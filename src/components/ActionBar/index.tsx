@@ -30,6 +30,8 @@ export function ActionBar({ children }: Readonly<ActionBarProps>) {
         isDeleteBtnDisabled,
         isCompleteEdgeMode,
         isEdgeModeLocked,
+        isAnimationLocked,
+        lockTooltip,
     } = useActionBarLogic();
 
     const DrawerContent = (
@@ -72,6 +74,7 @@ export function ActionBar({ children }: Readonly<ActionBarProps>) {
                     icon={<AppIcons.AddNode size={ICON_SIZE} />}
                     className="my-1"
                     label="Add Node"
+                    disabled={isAnimationLocked}
                     onClick={handleAddNode}
                 />
 
@@ -80,6 +83,7 @@ export function ActionBar({ children }: Readonly<ActionBarProps>) {
                     icon={<AppIcons.AddEdges size={ICON_SIZE} />}
                     className="my-1"
                     label="Add Edge(s)"
+                    disabled={isAnimationLocked}
                     onClick={handleAddEdges}
                 />
 
@@ -93,7 +97,7 @@ export function ActionBar({ children }: Readonly<ActionBarProps>) {
 
                 <ActionBarButton
                     id="delete-selected-btn-mobile"
-                    disabled={isDeleteBtnDisabled}
+                    disabled={isDeleteBtnDisabled || isAnimationLocked}
                     className="my-1"
                     icon={<AppIcons.DeleteElements size={ICON_SIZE} />}
                     isDelete={true}
@@ -180,6 +184,8 @@ export function ActionBar({ children }: Readonly<ActionBarProps>) {
                     label="Add Node"
                     className="my-1"
                     condensed
+                    disabled={isAnimationLocked}
+                    tooltipSuffix={lockTooltip}
                     onClick={handleAddNode}
                 />
 
@@ -189,6 +195,8 @@ export function ActionBar({ children }: Readonly<ActionBarProps>) {
                     className="my-1"
                     label="Add Edge(s)"
                     condensed
+                    disabled={isAnimationLocked}
+                    tooltipSuffix={lockTooltip}
                     onClick={handleAddEdges}
                 />
 
@@ -203,12 +211,13 @@ export function ActionBar({ children }: Readonly<ActionBarProps>) {
 
                 <ActionBarButton
                     id="delete-selected-btn"
-                    disabled={isDeleteBtnDisabled}
+                    disabled={isDeleteBtnDisabled || isAnimationLocked}
                     className="my-1"
                     icon={<AppIcons.DeleteElements size={ICON_SIZE} />}
                     isDelete={true}
                     label="Delete Selected"
                     condensed
+                    tooltipSuffix={isAnimationLocked ? lockTooltip : undefined}
                     onClick={handleDeleteSelected}
                 />
 

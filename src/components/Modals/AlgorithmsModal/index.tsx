@@ -85,7 +85,7 @@ export function AlgorithmsModal() {
                         <GenerationTab ref={generationTabRef} />
                     )}
                     {activeTab === 'traversal' && (
-                        <TraversalTab ref={traversalTabRef} />
+                        <TraversalTab ref={traversalTabRef} isOpen={isAlgorithmsModalOpen} />
                     )}
                 </div>
             </main>

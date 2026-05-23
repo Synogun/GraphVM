@@ -2,10 +2,13 @@ import { AppIcons } from '@/components/common/AppIcons';
 import { WorkspaceTabs } from '@/components/common/tabs';
 import { useGetGraph, useTabActivationSync, useWorkspaceAutosave } from '@/hooks';
 import { makeScopedGraphRegistryId } from '@/utils/graphRegistry';
+import { useAnimationStore } from '@/stores/animationStore';
+import { useSettingsStore } from '@/stores/settingsStore';
 import { useGraphWorkspaceStore } from '@/stores/graphWorkspaceStore';
 import { useGraphRegistry, useSnapshotStore } from '@Contexts';
 import { ConfirmModal } from '@Modals';
 import { useCallback, useMemo, useState } from 'react';
+import { AnimationToolbar } from './AnimationToolbar';
 import { CanvasToolbar } from './CanvasToolbar';
 import { GraphCanvas } from './GraphCanvas';
 
@@ -23,6 +26,8 @@ export function GraphWorkspace() {
     useTabActivationSync(MAIN_GRAPH_ID);
     useWorkspaceAutosave(MAIN_GRAPH_ID);
 
+    const infoPanelDisabled = useSettingsStore((s) => s.ui.disableElementsInfoPanel);
+    const isAnimating = useAnimationStore((s) => activeTabId ? (s.tabs[activeTabId]?.status ?? 'idle') !== 'idle' : false);
     const graphRef = useGetGraph(MAIN_GRAPH_ID);
     const [tabIdToClose, setTabIdToClose] = useState<string | null>(null);
 
@@ -134,7 +139,14 @@ export function GraphWorkspace() {
                         </div>
                     );
                 })}
-                <CanvasToolbar />
+                <div className={`absolute ${isAnimating ? 'bottom-16' : 'bottom-4'} left-4 z-5 hidden lg:block`}>
+                    <CanvasToolbar />
+                </div>
+                {activeTabId && (
+                    <div className={`absolute bottom-4 left-4 z-5 hidden lg:flex ${infoPanelDisabled ? 'right-4' : 'right-64'}`}>
+                        <AnimationToolbar tabId={activeTabId} />
+                    </div>
+                )}
             </div>
         </div>
     );

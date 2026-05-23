@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 
 export const ActionBarButtonStyle = 'btn-outline hover:btn-accent focus:btn-accent';
 export const ActionBarTooltipClassName =
-    'tooltip tooltip-right block w-full [&::before]:delay-500 [&::after]:delay-500';
+    'tooltip tooltip-right block w-full [&::before]:delay-500 [&::after]:delay-500 [&::before]:whitespace-pre-line';
 
 export function ActionBarButton({
     id,
@@ -13,6 +13,7 @@ export function ActionBarButton({
     disabled = false,
     isDelete = false,
     className = '',
+    tooltipSuffix,
 }: Readonly<ActionBarButtonProps>) {
     const classStyle = isDelete ? 'btn-error' : ActionBarButtonStyle;
 
@@ -30,7 +31,7 @@ export function ActionBarButton({
 
     if (condensed) {
         return (
-            <div className={ActionBarTooltipClassName} data-tip={label}>
+            <div className={ActionBarTooltipClassName} data-tip={tooltipSuffix ? `${label}\n(${tooltipSuffix})` : label}>
                 {button}
             </div>
         );
@@ -48,4 +49,5 @@ type ActionBarButtonProps = {
     condensed?: boolean;
     disabled?: boolean;
     className?: string;
+    tooltipSuffix?: string;
 };

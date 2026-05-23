@@ -1,4 +1,4 @@
-import { useEdgeMode, useElementActions, useGraphActions } from '@/hooks';
+import { useAnimationLock, useEdgeMode, useElementActions, useGraphActions } from '@/hooks';
 import { useModals } from '@Contexts';
 import { useCallback } from 'react';
 
@@ -13,6 +13,7 @@ export function useActionBarLogic() {
     const graphActions = useGraphActions();
     const elementActions = useElementActions();
     const edgeModeProps = useEdgeMode();
+    const { isLocked: isAnimationLocked, lockTooltip } = useAnimationLock();
 
     const handleAlgorithms = useCallback(() => {
         setIsAlgorithmsModalOpen(true);
@@ -38,5 +39,7 @@ export function useActionBarLogic() {
         handleImportExport,
         handleSettings,
         handleHelp,
+        isAnimationLocked,
+        lockTooltip,
     };
 }

@@ -1,8 +1,13 @@
 import type { GraphLimits } from '@/types/ui/settings';
 
+export type ContextMenuControl = {
+    destroy: () => void;
+};
+
 export type BindContextMenuOptions = {
     syncAll: (core: cytoscape.Core) => void;
     graphLimits?: { readonly current: GraphLimits | undefined };
+    isAnimationLocked?: { readonly current: boolean };
     onError?: (message: string) => void;
     shouldAbort?: () => boolean;
     openNodeLabelModal?: () => void;

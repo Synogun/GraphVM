@@ -44,7 +44,7 @@ export function CanvasToolbar() {
     };
 
     return (
-        <div className="absolute bottom-4 left-4 z-5 hidden lg:flex items-center bg-base-200 rounded-lg border border-base-300 shadow-xl/45 p-1 gap-0.5 select-none">
+        <div className="flex items-center bg-base-200 rounded-lg border border-base-300 shadow-xl/45 p-1 gap-0.5 select-none">
             <div className="tooltip tooltip-top" data-tip="Arrange">
                 <button
                     className="btn btn-sm btn-ghost hover:btn-accent"

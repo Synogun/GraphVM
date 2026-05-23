@@ -1,3 +1,4 @@
+export * from './animationTypes.d';
 export * from './generationAlgorithms.d';
 export * from './generationAlgorithmsTypeGuards';
 export * from './traversalAlgorithms.d';

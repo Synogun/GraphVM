@@ -2,8 +2,11 @@ import { SelectInput } from '@/components/common';
 import { parseError } from '@/config/parsedError';
 import { ParsedErrorToasts } from '@/constants';
 import { DefaultTraversalParams } from '@/constants/algorithmDefaults';
-import { useGetGraph, useGraphMutation } from '@/hooks';
-import { runBFSAlgorithm } from '@/services';
+import { useGetGraph } from '@/hooks';
+import { runBFSAnimation } from '@/services/algorithms/bfsAnimationService';
+import { runDFSAnimation } from '@/services/algorithms/dfsAnimationService';
+import { useAnimationStore } from '@/stores/animationStore';
+import { useGraphWorkspaceStore } from '@/stores/graphWorkspaceStore';
 import {
     isTraversalAlgorithm,
     ValidTraversalAlgorithms,
@@ -19,7 +22,7 @@ import {
     useMemo,
     useState,
 } from 'react';
-import { BFSParamsInput } from './TraversalAlgorithmsParams';
+import { BFSParamsInput, DFSParamsInput } from './TraversalAlgorithmsParams';
 
 const ALGORITHM_MAP: Record<
     TraversalAlgorithm,
@@ -44,6 +47,10 @@ const ALGORITHM_MAP: Record<
     dfs: {
         params: {
             algorithm: 'dfs',
+            startNodeId: '',
+            directed: false,
+            onlySelected: false,
+            graphNodes: null,
         },
         description:
             'Depth-First Search (DFS) explores as far as possible along each ' +
@@ -118,6 +125,13 @@ function TraversalParamsSection({
                     setParams={setParams}
                 />
             );
+        case 'dfs':
+            return (
+                <DFSParamsInput
+                    params={{ ...params, graphNodes }}
+                    setParams={setParams}
+                />
+            );
         default:
             return (
                 <div className="text-sm italic text-gray-500">
@@ -137,10 +151,15 @@ export type TraversalTabRef = {
     handleRun: () => void;
 };
 
-export const TraversalTab = forwardRef<TraversalTabRef>((_, ref) => {
+type TraversalTabProps = {
+    isOpen: boolean;
+};
+
+export const TraversalTab = forwardRef<TraversalTabRef, TraversalTabProps>(({ isOpen }, ref) => {
     const graph = useGetGraph('main-graph');
-    const { syncAll } = useGraphMutation('main-graph');
     const { addToast } = useToasts();
+    const activeTabId = useGraphWorkspaceStore((s) => s.activeTabId);
+    const { initAnimation, play } = useAnimationStore.getState();
 
     const [params, setParams] = useState<TraversalParams>(() => {
         const activeGraph = graph.current;
@@ -174,6 +193,28 @@ export const TraversalTab = forwardRef<TraversalTabRef>((_, ref) => {
         });
     }, [graph]);
 
+    useEffect(() => {
+        if (!isOpen) return;
+        const activeGraph = graph.current;
+        if (!activeGraph) return;
+
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setParams((prev) => {
+            if (prev.algorithm !== 'bfs' && prev.algorithm !== 'dfs') return prev;
+            const nodes = activeGraph.nodes();
+            const nodeIds = nodes.map((n) => n.id());
+            const validStartId = nodeIds.includes(prev.startNodeId)
+                ? prev.startNodeId
+                : (nodes[0]?.id() ?? '');
+            return {
+                ...prev,
+                directed: Boolean(activeGraph.data('directed')),
+                startNodeId: validStartId,
+                graphNodes: nodes,
+            };
+        });
+    }, [isOpen, graph]);
+
     const handleRun = () => {
         const activeGraph = graph.current;
 
@@ -182,17 +223,40 @@ export const TraversalTab = forwardRef<TraversalTabRef>((_, ref) => {
             return;
         }
 
+        if (!activeTabId) {
+            addToast({ type: 'error', message: 'No active tab found.' });
+            return;
+        }
+
+        if ((params.algorithm === 'bfs' || params.algorithm === 'dfs') && !params.startNodeId) {
+            addToast({ type: 'error', message: 'Please select a start node before running.' });
+            return;
+        }
+
         try {
             switch (params.algorithm) {
-                case 'bfs':
-                    runBFSAlgorithm({
+                case 'bfs': {
+                    const animation = runBFSAnimation({
                         graph: activeGraph,
                         startNodeId: params.startNodeId,
                         directed: Boolean(activeGraph.data('directed')),
                         onlySelected: params.onlySelected,
                     });
+                    initAnimation(activeTabId, animation);
+                    play(activeTabId);
                     break;
-
+                }
+                case 'dfs': {
+                    const animation = runDFSAnimation({
+                        graph: activeGraph,
+                        startNodeId: params.startNodeId,
+                        directed: Boolean(activeGraph.data('directed')),
+                        onlySelected: params.onlySelected,
+                    });
+                    initAnimation(activeTabId, animation);
+                    play(activeTabId);
+                    break;
+                }
                 default:
                     throw new Error(
                         `Algorithm not implemented: ${params.algorithm}`
@@ -207,7 +271,6 @@ export const TraversalTab = forwardRef<TraversalTabRef>((_, ref) => {
             return;
         }
 
-        syncAll(activeGraph);
         setParams({ ...DefaultTraversalParams });
     };
 
@@ -233,6 +296,14 @@ export const TraversalTab = forwardRef<TraversalTabRef>((_, ref) => {
                 startNodeId: activeGraph?.nodes()[0]?.id() ?? '',
                 graphNodes: activeGraph ? activeGraph.nodes() : null,
             }));
+        } else if (newAlgorithm === 'dfs') {
+            setParams((prev) => ({
+                ...prev,
+                ...ALGORITHM_MAP.dfs.params,
+                directed: Boolean(activeGraph?.data('directed')),
+                startNodeId: activeGraph?.nodes()[0]?.id() ?? '',
+                graphNodes: activeGraph ? activeGraph.nodes() : null,
+            }));
         } else {
             setParams(ALGORITHM_MAP[newAlgorithm].params);
         }
@@ -241,11 +312,11 @@ export const TraversalTab = forwardRef<TraversalTabRef>((_, ref) => {
     const graphAlgorithmSelectOptions = useMemo(() => {
         return ValidTraversalAlgorithms.map((algorithm) => ({
             label:
-                algorithm === 'bfs'
+                algorithm === 'bfs' || algorithm === 'dfs'
                     ? parseKebabCase(algorithm)
                     : `${parseKebabCase(algorithm)} (W.I.P.)`,
             value: algorithm,
-            disabled: algorithm !== 'bfs',
+            disabled: algorithm !== 'bfs' && algorithm !== 'dfs',
         }));
     }, []);
 

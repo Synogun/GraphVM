@@ -1,12 +1,19 @@
-import { useEdgeMode, useElementActions, useGraphActions } from '@/hooks';
+import { useAnimationLock, useEdgeMode, useElementActions, useGraphActions } from '@/hooks';
 import type { ShortcutAction } from '@/types/ui/settings';
 import {
     formatShortcutInput,
     isEditableTarget,
     isShortcutMatch,
 } from '@/utils/shortcuts';
-import { useModals, useSettings } from '@Contexts';
+import { useModals, useSettings, useToasts } from '@Contexts';
 import { useEffect, useMemo } from 'react';
+
+const MUTATION_SHORTCUT_ACTIONS = new Set<ShortcutAction>([
+    'addNode',
+    'addEdges',
+    'deleteSelected',
+    'newGraph',
+]);
 
 export function useGraphShortcuts() {
     const { shortcuts } = useSettings();
@@ -27,6 +34,8 @@ export function useGraphShortcuts() {
     } = useGraphActions();
     const { handleAddNode, handleAddEdges } = useElementActions();
     const { handleToggleEdgeModeShortcut } = useEdgeMode();
+    const { isLocked } = useAnimationLock();
+    const { addToast } = useToasts();
 
     const isAnyModalOpen =
         isAlgorithmsModalOpen ||
@@ -34,7 +43,7 @@ export function useGraphShortcuts() {
         isSettingsModalOpen ||
         isImportExportModalOpen;
 
-    const actionHandlers = useMemo<Record<ShortcutAction, () => void>>(
+    const actionHandlers = useMemo<Partial<Record<ShortcutAction, () => void>>>(
         () => ({
             deleteSelected: handleDeleteSelected,
             deselectAll: handleDeselectAll,
@@ -78,14 +87,23 @@ export function useGraphShortcuts() {
                 return;
             }
 
+            const handler = actionHandlers[matchedAction[0]];
+            if (!handler) return;
+
             event.preventDefault();
             event.stopPropagation();
-            actionHandlers[matchedAction[0]]();
+
+            if (isLocked && MUTATION_SHORTCUT_ACTIONS.has(matchedAction[0])) {
+                addToast({ type: 'warning', message: 'Stop the animation to edit the graph.' });
+                return;
+            }
+
+            handler();
         };
 
         window.addEventListener('keydown', handleKeyDown);
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [isAnyModalOpen, shortcuts, actionHandlers]);
+    }, [isAnyModalOpen, shortcuts, actionHandlers, isLocked, addToast]);
 }

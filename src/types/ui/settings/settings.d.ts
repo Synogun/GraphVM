@@ -55,7 +55,11 @@ export type ShortcutAction =
     | 'addEdges'
     | 'arrangeGraph'
     | 'centerGraph'
-    | 'toggleEdgeMode';
+    | 'toggleEdgeMode'
+    | 'animPlayPause'
+    | 'animStepForward'
+    | 'animStepBackward'
+    | 'animStop';
 
 export type ShortcutMap = Record<ShortcutAction, string>;
 

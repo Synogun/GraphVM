@@ -147,6 +147,34 @@ export const DefaultStylesheet: StylesheetCSS[] = [
             display: 'none',
         },
     },
+    {
+        selector: 'node.anim-visited',
+        css: {
+            'background-color': '#22c55e',
+        },
+    },
+    {
+        selector: 'node.anim-in-frontier',
+        css: {
+            'background-color': '#3b82f6',
+        },
+    },
+    {
+        selector: 'node.anim-current',
+        css: {
+            'background-color': '#f59e0b',
+            'border-color': '#d97706',
+            'border-width': 3,
+        },
+    },
+    {
+        selector: 'edge.anim-active-edge',
+        css: {
+            'line-color': '#f97316',
+            'target-arrow-color': '#f97316',
+            width: 4,
+        },
+    },
 ];
 
 export const DefaultAutopanOptions: AutopanOptions = {

@@ -3,6 +3,7 @@ import {
     workspaceReducer,
     type WorkspaceState,
 } from '@/services/persistence/workspaceStateService';
+import { useAnimationStore } from '@/stores/animationStore';
 import { create } from 'zustand';
 
 type GraphWorkspaceStore = WorkspaceState & {
@@ -25,6 +26,7 @@ export const useGraphWorkspaceStore = create<GraphWorkspaceStore>()((set, get) =
 
     closeTab: (tabId) => {
         set((s) => workspaceReducer(s, { type: 'close-tab', tabId }));
+        useAnimationStore.getState().cleanupTab(tabId);
     },
 
     renameTab: (tabId, name) => {
