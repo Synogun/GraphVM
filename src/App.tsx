@@ -2,7 +2,7 @@ import { ActionBar } from '@/components/ActionBar';
 import { PropertiesBar } from '@/components/PropertiesBar';
 import { DefaultFallback, LoadingHero, ToastArea } from '@/components/feedback';
 import { ElementInfoPanel, GraphWorkspace } from '@/components/graph';
-import { useAnimationShortcuts, useGraphShortcuts } from '@/hooks';
+import { useAnimationShortcuts, useGraphShortcuts, useShareLink } from '@/hooks';
 import {
     AlgorithmsModal,
     EdgeLabelModal,
@@ -17,6 +17,7 @@ import { useSettings } from './contexts';
 
 export function App() {
     const [loadingApp, setLoadingApp] = useState(true);
+    useShareLink();
 
     const {
         ui: { disableElementsInfoPanel, theme },

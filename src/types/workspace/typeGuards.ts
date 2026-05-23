@@ -1,6 +1,6 @@
 import { isCytoscapeOptions } from '@/types/graph/typeGuards';
 import { isPositiveInteger, isRecord, isString } from '@/types/typeGuards';
-import type { PersistedWorkspaceState, PersistedWorkspaceTab } from '.';
+import type { PersistedWorkspaceState, PersistedWorkspaceTab, SharePayload } from '.';
 
 export const WORKSPACE_SCHEMA_VERSION = 1;
 
@@ -38,4 +38,16 @@ export function isPersistedWorkspaceState(
     const uniqueTabIds = new Set(tabIds);
 
     return uniqueTabIds.size === tabIds.length;
+}
+
+export function isSharePayload(value: unknown): value is SharePayload {
+    if (!isRecord(value)) {
+        return false;
+    }
+
+    return (
+        value.v === 1 &&
+        isString(value.name) &&
+        ('graph' in value && (value.graph === null || isCytoscapeOptions(value.graph)))
+    );
 }

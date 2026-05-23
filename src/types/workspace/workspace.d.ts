@@ -36,3 +36,11 @@ export type GraphWorkspaceContextProperties = {
     setActiveTab: (tabId: string) => void;
     reorderTabs: (fromIndex: number, toIndex: number) => void;
 };
+
+export type SharePayloadVersion = 1;
+
+export type SharePayload = {
+    v: SharePayloadVersion;
+    name: string;
+    graph: cytoscape.CytoscapeOptions | null;
+};

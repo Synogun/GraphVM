@@ -3,7 +3,7 @@ import { AiOutlineNodeIndex } from 'react-icons/ai';
 import { BiExport, BiImport } from 'react-icons/bi';
 import { FaCheck, FaGithub } from 'react-icons/fa';
 import { FaCircleInfo, FaCode } from 'react-icons/fa6';
-import { FiHelpCircle } from 'react-icons/fi';
+import { FiHelpCircle, FiShare2 } from 'react-icons/fi';
 import { GoPencil, GoTrash } from 'react-icons/go';
 import { IoIosAdd } from 'react-icons/io';
 import {
@@ -77,6 +77,7 @@ export const AppIcons = {
     ),
     Checkmark: (props: IconBaseProps) => <FaCheck {...props} />,
     Import: (props: IconBaseProps) => <BiImport {...props} />,
+    Share: (props: IconBaseProps) => <FiShare2 {...props} />,
     Export: (props: IconBaseProps) => <BiExport {...props} />,
     Info: (props: IconBaseProps) => <FaCircleInfo {...props} />,
     Warning: (props: IconBaseProps) => <IoWarningOutline {...props} />,

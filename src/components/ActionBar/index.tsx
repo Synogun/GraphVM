@@ -27,6 +27,7 @@ export function ActionBar({ children }: Readonly<ActionBarProps>) {
         handleDeleteSelected,
         handleSettings,
         handleHelp,
+        handleShareGraph,
         isDeleteBtnDisabled,
         isCompleteEdgeMode,
         isEdgeModeLocked,
@@ -54,6 +55,14 @@ export function ActionBar({ children }: Readonly<ActionBarProps>) {
                 label="Import / Export"
                 className="my-1"
                 onClick={handleImportExport}
+            />
+
+            <ActionBarButton
+                id="share-graph-btn"
+                icon={<AppIcons.Share size={ICON_SIZE} />}
+                label="Share Graph"
+                className="my-1"
+                onClick={() => { void handleShareGraph(); }}
             />
 
             <ActionBarButton
