@@ -1,6 +1,10 @@
 import { useAnimationStore } from '@/stores/animationStore';
 import { useGraphWorkspaceStore } from '@/stores/graphWorkspaceStore';
-import { formatShortcutInput, isEditableTarget, isShortcutMatch } from '@/utils/shortcuts';
+import {
+    formatShortcutInput,
+    isEditableTarget,
+    isShortcutMatch,
+} from '@/utils/shortcuts';
 import { useModals, useSettings } from '@Contexts';
 import { useEffect } from 'react';
 

@@ -68,7 +68,11 @@ export function runBFSAnimation({
             const neighbor = resolveNeighbor(edge, nodeId);
             const neighborId = neighbor.id();
 
-            if (visited.has(neighborId) || !elements.has(neighbor) || queue.includes(neighborId)) {
+            if (
+                visited.has(neighborId) ||
+                !elements.has(neighbor) ||
+                queue.includes(neighborId)
+            ) {
                 continue;
             }
 

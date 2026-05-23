@@ -3,7 +3,7 @@ import type cytoscape from 'cytoscape';
 export function validateTraversalStart(
     graph: cytoscape.Core,
     startNodeId: string,
-    onlySelected: boolean,
+    onlySelected: boolean
 ): cytoscape.Collection {
     const elements = onlySelected
         ? graph.$('[!isGhost]:selected')
@@ -23,7 +23,7 @@ export function validateTraversalStart(
 
 export function resolveNeighbor(
     edge: cytoscape.EdgeSingular,
-    nodeId: string,
+    nodeId: string
 ): cytoscape.NodeSingular {
     return edge.source().id() === nodeId ? edge.target() : edge.source();
 }

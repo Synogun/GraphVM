@@ -32,7 +32,10 @@ describe('lzStorage', () => {
 
     it('returns null for decompressed but invalid JSON', () => {
         // Store a valid lz-string compressed value that is not valid JSON
-        localStorage.setItem('bad-json', LZString.compressToBase64('not valid json {'));
+        localStorage.setItem(
+            'bad-json',
+            LZString.compressToBase64('not valid json {')
+        );
         expect(lzLoad('bad-json')).toBeNull();
     });
 });

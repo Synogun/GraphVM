@@ -201,8 +201,13 @@ export function AnimationToolbar({ tabId }: Readonly<AnimationToolbarProps>) {
                 }}
                 onClick={handleBarClick}
                 onKeyDown={(e) => {
-                    if (e.key === 'ArrowRight') { e.preventDefault(); stepForward(tabId); }
-                    else if (e.key === 'ArrowLeft') { e.preventDefault(); stepBackward(tabId); }
+                    if (e.key === 'ArrowRight') {
+                        e.preventDefault();
+                        stepForward(tabId);
+                    } else if (e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        stepBackward(tabId);
+                    }
                 }}
             >
                 <div

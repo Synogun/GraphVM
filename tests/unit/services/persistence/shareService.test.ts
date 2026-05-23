@@ -17,7 +17,10 @@ describe('encodeSharePayload / decodeSharePayload', () => {
         const payload = {
             v: 1 as const,
             name: 'My Graph',
-            graph: { elements: { nodes: [{ data: { id: 'n1', label: 'A' } }], edges: [] }, style: [] },
+            graph: {
+                elements: { nodes: [{ data: { id: 'n1', label: 'A' } }], edges: [] },
+                style: [],
+            },
         };
         const encoded = encodeSharePayload(payload);
         expect(decodeSharePayload(encoded)).toEqual(payload);
@@ -28,7 +31,9 @@ describe('encodeSharePayload / decodeSharePayload', () => {
     });
 
     it('returns null for valid lz-string but wrong shape', () => {
-        const bad = LZString.compressToEncodedURIComponent(JSON.stringify({ foo: 'bar' }));
+        const bad = LZString.compressToEncodedURIComponent(
+            JSON.stringify({ foo: 'bar' })
+        );
         expect(decodeSharePayload(bad)).toBeNull();
     });
 

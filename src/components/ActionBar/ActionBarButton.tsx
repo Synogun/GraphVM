@@ -31,7 +31,10 @@ export function ActionBarButton({
 
     if (condensed) {
         return (
-            <div className={ActionBarTooltipClassName} data-tip={tooltipSuffix ? `${label}\n(${tooltipSuffix})` : label}>
+            <div
+                className={ActionBarTooltipClassName}
+                data-tip={tooltipSuffix ? `${label}\n(${tooltipSuffix})` : label}
+            >
                 {button}
             </div>
         );

@@ -1,5 +1,8 @@
 import { create } from 'zustand';
-import type { AlgorithmAnimation, PlaybackStatus } from '@/types/algorithms/animationTypes';
+import type {
+    AlgorithmAnimation,
+    PlaybackStatus,
+} from '@/types/algorithms/animationTypes';
 import { lzLoad, lzSave } from '@/utils/lzStorage';
 
 export type TabAnimationState = {
@@ -30,12 +33,20 @@ function defaultTabState(): TabAnimationState {
 }
 
 function loadInitialTabs(): Record<string, TabAnimationState> {
-    const saved = lzLoad(ANIMATION_STORAGE_KEY) as { tabs: Record<string, TabAnimationState> } | null;
+    const saved = lzLoad(ANIMATION_STORAGE_KEY) as {
+        tabs: Record<string, TabAnimationState>;
+    } | null;
     if (!saved?.tabs) return {};
     return Object.fromEntries(
         Object.entries(saved.tabs).map(([tabId, tab]) => [
             tabId,
-            { ...tab, status: (tab.status === 'playing' || tab.status === 'finished') ? 'paused' : tab.status },
+            {
+                ...tab,
+                status:
+                    tab.status === 'playing' || tab.status === 'finished'
+                        ? 'paused'
+                        : tab.status,
+            },
         ])
     );
 }
@@ -43,62 +54,93 @@ function loadInitialTabs(): Record<string, TabAnimationState> {
 export const useAnimationStore = create<AnimationStore>()((set) => ({
     tabs: loadInitialTabs(),
 
-    initAnimation: (tabId, animation) =>
-        { set((s) => ({
+    initAnimation: (tabId, animation) => {
+        set((s) => ({
             tabs: { ...s.tabs, [tabId]: { ...defaultTabState(), animation } },
-        })); },
+        }));
+    },
 
-    play: (tabId) =>
-        { set((s) => {
+    play: (tabId) => {
+        set((s) => {
             const tab = s.tabs[tabId];
             if (!tab?.animation) return s;
             return { tabs: { ...s.tabs, [tabId]: { ...tab, status: 'playing' } } };
-        }); },
+        });
+    },
 
-    pause: (tabId) =>
-        { set((s) => {
+    pause: (tabId) => {
+        set((s) => {
             const tab = s.tabs[tabId];
             if (!tab) return s;
             return { tabs: { ...s.tabs, [tabId]: { ...tab, status: 'paused' } } };
-        }); },
+        });
+    },
 
-    stop: (tabId) =>
-        { set((s) => {
+    stop: (tabId) => {
+        set((s) => {
             if (!s.tabs[tabId]) return s;
             return { tabs: { ...s.tabs, [tabId]: defaultTabState() } };
-        }); },
+        });
+    },
 
-    replay: (tabId) =>
-        { set((s) => {
+    replay: (tabId) => {
+        set((s) => {
             const tab = s.tabs[tabId];
             if (!tab?.animation) return s;
-            return { tabs: { ...s.tabs, [tabId]: { ...tab, currentStepIndex: 0, status: 'playing' } } };
-        }); },
+            return {
+                tabs: {
+                    ...s.tabs,
+                    [tabId]: { ...tab, currentStepIndex: 0, status: 'playing' },
+                },
+            };
+        });
+    },
 
-    stepForward: (tabId) =>
-        { set((s) => {
+    stepForward: (tabId) => {
+        set((s) => {
             const tab = s.tabs[tabId];
             if (!tab?.animation || tab.animation.steps.length === 0) return s;
             const lastIndex = tab.animation.steps.length - 1;
             if (tab.currentStepIndex >= lastIndex) {
-                return { tabs: { ...s.tabs, [tabId]: { ...tab, status: 'finished', currentStepIndex: lastIndex } } };
+                return {
+                    tabs: {
+                        ...s.tabs,
+                        [tabId]: {
+                            ...tab,
+                            status: 'finished',
+                            currentStepIndex: lastIndex,
+                        },
+                    },
+                };
             }
             const nextIndex = tab.currentStepIndex + 1;
             const status = nextIndex >= lastIndex ? 'finished' : tab.status;
-            return { tabs: { ...s.tabs, [tabId]: { ...tab, currentStepIndex: nextIndex, status } } };
-        }); },
+            return {
+                tabs: {
+                    ...s.tabs,
+                    [tabId]: { ...tab, currentStepIndex: nextIndex, status },
+                },
+            };
+        });
+    },
 
-    stepBackward: (tabId) =>
-        { set((s) => {
+    stepBackward: (tabId) => {
+        set((s) => {
             const tab = s.tabs[tabId];
             if (!tab) return s;
             const prevIndex = Math.max(0, tab.currentStepIndex - 1);
             const status = tab.status === 'finished' ? 'paused' : tab.status;
-            return { tabs: { ...s.tabs, [tabId]: { ...tab, currentStepIndex: prevIndex, status } } };
-        }); },
+            return {
+                tabs: {
+                    ...s.tabs,
+                    [tabId]: { ...tab, currentStepIndex: prevIndex, status },
+                },
+            };
+        });
+    },
 
-    seekTo: (tabId, stepIndex) =>
-        { set((s) => {
+    seekTo: (tabId, stepIndex) => {
+        set((s) => {
             const tab = s.tabs[tabId];
             if (!tab?.animation || tab.animation.steps.length === 0) return s;
             const lastIndex = tab.animation.steps.length - 1;
@@ -112,15 +154,22 @@ export const useAnimationStore = create<AnimationStore>()((set) => ({
             } else {
                 status = tab.status;
             }
-            return { tabs: { ...s.tabs, [tabId]: { ...tab, currentStepIndex: clamped, status } } };
-        }); },
+            return {
+                tabs: {
+                    ...s.tabs,
+                    [tabId]: { ...tab, currentStepIndex: clamped, status },
+                },
+            };
+        });
+    },
 
-    setSpeed: (tabId, speed) =>
-        { set((s) => {
+    setSpeed: (tabId, speed) => {
+        set((s) => {
             const tab = s.tabs[tabId];
             if (!tab) return s;
             return { tabs: { ...s.tabs, [tabId]: { ...tab, speed } } };
-        }); },
+        });
+    },
 
     cleanupTab: (tabId) => {
         set((s) => ({

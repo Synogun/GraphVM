@@ -5,10 +5,19 @@ import type { GraphInstance } from '@/types/graph';
 
 const ANIM_CLASSES = 'anim-current anim-in-frontier anim-visited anim-active-edge';
 
-export function useAnimationVisuals(graphRef: RefObject<GraphInstance>, tabId: string | undefined): void {
-    const status = useAnimationStore((s) => (tabId ? (s.tabs[tabId]?.status ?? 'idle') : 'idle'));
-    const animation = useAnimationStore((s) => (tabId ? (s.tabs[tabId]?.animation ?? null) : null));
-    const currentStepIndex = useAnimationStore((s) => (tabId ? (s.tabs[tabId]?.currentStepIndex ?? 0) : 0));
+export function useAnimationVisuals(
+    graphRef: RefObject<GraphInstance>,
+    tabId: string | undefined
+): void {
+    const status = useAnimationStore((s) =>
+        tabId ? (s.tabs[tabId]?.status ?? 'idle') : 'idle'
+    );
+    const animation = useAnimationStore((s) =>
+        tabId ? (s.tabs[tabId]?.animation ?? null) : null
+    );
+    const currentStepIndex = useAnimationStore((s) =>
+        tabId ? (s.tabs[tabId]?.currentStepIndex ?? 0) : 0
+    );
 
     useEffect(() => {
         const core = graphRef.current;
@@ -18,7 +27,8 @@ export function useAnimationVisuals(graphRef: RefObject<GraphInstance>, tabId: s
 
         if (!tabId || status === 'idle' || !animation) return;
 
-        if (currentStepIndex < 0 || currentStepIndex >= animation.steps.length) return;
+        if (currentStepIndex < 0 || currentStepIndex >= animation.steps.length)
+            return;
         const step = animation.steps[currentStepIndex];
 
         for (const nodeId of step.visited) {

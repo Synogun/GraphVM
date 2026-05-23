@@ -62,7 +62,9 @@ export function ActionBar({ children }: Readonly<ActionBarProps>) {
                 icon={<AppIcons.Share size={ICON_SIZE} />}
                 label="Share Graph"
                 className="my-1"
-                onClick={() => { void handleShareGraph(); }}
+                onClick={() => {
+                    void handleShareGraph();
+                }}
             />
 
             <ActionBarButton

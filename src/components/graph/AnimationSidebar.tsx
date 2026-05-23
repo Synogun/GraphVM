@@ -14,7 +14,10 @@ export function AnimationSidebar({ tabId }: Readonly<AnimationSidebarProps>) {
     const [graph, setGraph] = useState<GraphInstance | null>(null);
 
     useEffect(() => {
-        return registry.subscribe(makeScopedGraphRegistryId('main-graph', tabId), setGraph);
+        return registry.subscribe(
+            makeScopedGraphRegistryId('main-graph', tabId),
+            setGraph
+        );
     }, [registry, tabId]);
 
     if (!tab || tab.status === 'idle' || !tab.animation) return null;
@@ -48,7 +51,9 @@ export function AnimationSidebar({ tabId }: Readonly<AnimationSidebarProps>) {
 
             <div className="flex justify-between items-center py-1.5">
                 <span className="text-base-content/60">Start</span>
-                <span className="font-mono">{nodeDisplay(animation.params.startNodeId)}</span>
+                <span className="font-mono">
+                    {nodeDisplay(animation.params.startNodeId)}
+                </span>
             </div>
 
             <div className="divider mb-1">

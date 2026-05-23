@@ -21,7 +21,8 @@ export function useShareLink() {
         if (!payload) {
             addToast({
                 type: 'error',
-                message: 'Failed to load shared graph. The link may be invalid or corrupted.',
+                message:
+                    'Failed to load shared graph. The link may be invalid or corrupted.',
             });
             return;
         }

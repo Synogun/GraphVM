@@ -155,210 +155,219 @@ type TraversalTabProps = {
     isOpen: boolean;
 };
 
-export const TraversalTab = forwardRef<TraversalTabRef, TraversalTabProps>(({ isOpen }, ref) => {
-    const graph = useGetGraph('main-graph');
-    const { addToast } = useToasts();
-    const activeTabId = useGraphWorkspaceStore((s) => s.activeTabId);
-    const { initAnimation, play } = useAnimationStore.getState();
+export const TraversalTab = forwardRef<TraversalTabRef, TraversalTabProps>(
+    ({ isOpen }, ref) => {
+        const graph = useGetGraph('main-graph');
+        const { addToast } = useToasts();
+        const activeTabId = useGraphWorkspaceStore((s) => s.activeTabId);
+        const { initAnimation, play } = useAnimationStore.getState();
 
-    const [params, setParams] = useState<TraversalParams>(() => {
-        const activeGraph = graph.current;
-        if (DefaultTraversalParams.algorithm === 'bfs') {
-            return {
-                ...DefaultTraversalParams,
-                directed: Boolean(activeGraph?.data('directed')),
-                startNodeId: activeGraph?.nodes()[0]?.id() ?? '',
-                graphNodes: activeGraph ? activeGraph.nodes() : null,
-            };
-        }
-        return { ...DefaultTraversalParams };
-    });
-
-    useEffect(() => {
-        const activeGraph = graph.current;
-        if (!activeGraph) return;
-
-        // graph.current is null during useState init (set by useGetGraph's effect); this effect runs after
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setParams((prev) => {
-            if (prev.algorithm !== 'bfs') return prev;
-            const nodes = activeGraph.nodes();
-
-            return {
-                ...prev,
-                directed: Boolean(activeGraph.data('directed')),
-                startNodeId: prev.startNodeId || nodes.eq(0).id(),
-                graphNodes: nodes,
-            };
-        });
-    }, [graph]);
-
-    useEffect(() => {
-        if (!isOpen) return;
-        const activeGraph = graph.current;
-        if (!activeGraph) return;
-
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setParams((prev) => {
-            if (prev.algorithm !== 'bfs' && prev.algorithm !== 'dfs') return prev;
-            const nodes = activeGraph.nodes();
-            const nodeIds = nodes.map((n) => n.id());
-            const validStartId = nodeIds.includes(prev.startNodeId)
-                ? prev.startNodeId
-                : (nodes[0]?.id() ?? '');
-            return {
-                ...prev,
-                directed: Boolean(activeGraph.data('directed')),
-                startNodeId: validStartId,
-                graphNodes: nodes,
-            };
-        });
-    }, [isOpen, graph]);
-
-    const handleRun = () => {
-        const activeGraph = graph.current;
-
-        if (!activeGraph) {
-            addToast(ParsedErrorToasts.GraphNotFound);
-            return;
-        }
-
-        if (!activeTabId) {
-            addToast({ type: 'error', message: 'No active tab found.' });
-            return;
-        }
-
-        if ((params.algorithm === 'bfs' || params.algorithm === 'dfs') && !params.startNodeId) {
-            addToast({ type: 'error', message: 'Please select a start node before running.' });
-            return;
-        }
-
-        try {
-            switch (params.algorithm) {
-                case 'bfs': {
-                    const animation = runBFSAnimation({
-                        graph: activeGraph,
-                        startNodeId: params.startNodeId,
-                        directed: Boolean(activeGraph.data('directed')),
-                        onlySelected: params.onlySelected,
-                    });
-                    initAnimation(activeTabId, animation);
-                    play(activeTabId);
-                    break;
-                }
-                case 'dfs': {
-                    const animation = runDFSAnimation({
-                        graph: activeGraph,
-                        startNodeId: params.startNodeId,
-                        directed: Boolean(activeGraph.data('directed')),
-                        onlySelected: params.onlySelected,
-                    });
-                    initAnimation(activeTabId, animation);
-                    play(activeTabId);
-                    break;
-                }
-                default:
-                    throw new Error(
-                        `Algorithm not implemented: ${params.algorithm}`
-                    );
+        const [params, setParams] = useState<TraversalParams>(() => {
+            const activeGraph = graph.current;
+            if (DefaultTraversalParams.algorithm === 'bfs') {
+                return {
+                    ...DefaultTraversalParams,
+                    directed: Boolean(activeGraph?.data('directed')),
+                    startNodeId: activeGraph?.nodes()[0]?.id() ?? '',
+                    graphNodes: activeGraph ? activeGraph.nodes() : null,
+                };
             }
-        } catch (error) {
-            const parsedError = parseError(error);
-            addToast({
-                type: 'error',
-                message: parsedError.message,
+            return { ...DefaultTraversalParams };
+        });
+
+        useEffect(() => {
+            const activeGraph = graph.current;
+            if (!activeGraph) return;
+
+            // graph.current is null during useState init (set by useGetGraph's effect); this effect runs after
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setParams((prev) => {
+                if (prev.algorithm !== 'bfs') return prev;
+                const nodes = activeGraph.nodes();
+
+                return {
+                    ...prev,
+                    directed: Boolean(activeGraph.data('directed')),
+                    startNodeId: prev.startNodeId || nodes.eq(0).id(),
+                    graphNodes: nodes,
+                };
             });
-            return;
-        }
+        }, [graph]);
 
-        setParams({ ...DefaultTraversalParams });
-    };
+        useEffect(() => {
+            if (!isOpen) return;
+            const activeGraph = graph.current;
+            if (!activeGraph) return;
 
-    useImperativeHandle(ref, () => ({ handleRun }));
-
-    const updateAlgorithm = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const newAlgorithm = event.target.value;
-
-        if (!isTraversalAlgorithm(newAlgorithm)) {
-            addToast({
-                type: 'error',
-                message: `Invalid algorithm selected: ${newAlgorithm}`,
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setParams((prev) => {
+                if (prev.algorithm !== 'bfs' && prev.algorithm !== 'dfs')
+                    return prev;
+                const nodes = activeGraph.nodes();
+                const nodeIds = nodes.map((n) => n.id());
+                const validStartId = nodeIds.includes(prev.startNodeId)
+                    ? prev.startNodeId
+                    : (nodeIds[0] ?? '');
+                return {
+                    ...prev,
+                    directed: Boolean(activeGraph.data('directed')),
+                    startNodeId: validStartId,
+                    graphNodes: nodes,
+                };
             });
-            return;
-        }
+        }, [isOpen, graph]);
 
-        const activeGraph = graph.current;
-        if (newAlgorithm === 'bfs') {
-            setParams((prev) => ({
-                ...prev,
-                ...ALGORITHM_MAP.bfs.params,
-                directed: Boolean(activeGraph?.data('directed')),
-                startNodeId: activeGraph?.nodes()[0]?.id() ?? '',
-                graphNodes: activeGraph ? activeGraph.nodes() : null,
+        const handleRun = () => {
+            const activeGraph = graph.current;
+
+            if (!activeGraph) {
+                addToast(ParsedErrorToasts.GraphNotFound);
+                return;
+            }
+
+            if (!activeTabId) {
+                addToast({ type: 'error', message: 'No active tab found.' });
+                return;
+            }
+
+            if (
+                (params.algorithm === 'bfs' || params.algorithm === 'dfs') &&
+                !params.startNodeId
+            ) {
+                addToast({
+                    type: 'error',
+                    message: 'Please select a start node before running.',
+                });
+                return;
+            }
+
+            try {
+                switch (params.algorithm) {
+                    case 'bfs': {
+                        const animation = runBFSAnimation({
+                            graph: activeGraph,
+                            startNodeId: params.startNodeId,
+                            directed: Boolean(activeGraph.data('directed')),
+                            onlySelected: params.onlySelected,
+                        });
+                        initAnimation(activeTabId, animation);
+                        play(activeTabId);
+                        break;
+                    }
+                    case 'dfs': {
+                        const animation = runDFSAnimation({
+                            graph: activeGraph,
+                            startNodeId: params.startNodeId,
+                            directed: Boolean(activeGraph.data('directed')),
+                            onlySelected: params.onlySelected,
+                        });
+                        initAnimation(activeTabId, animation);
+                        play(activeTabId);
+                        break;
+                    }
+                    default:
+                        throw new Error(
+                            `Algorithm not implemented: ${params.algorithm}`
+                        );
+                }
+            } catch (error) {
+                const parsedError = parseError(error);
+                addToast({
+                    type: 'error',
+                    message: parsedError.message,
+                });
+                return;
+            }
+
+            setParams({ ...DefaultTraversalParams });
+        };
+
+        useImperativeHandle(ref, () => ({ handleRun }));
+
+        const updateAlgorithm = (event: React.ChangeEvent<HTMLSelectElement>) => {
+            const newAlgorithm = event.target.value;
+
+            if (!isTraversalAlgorithm(newAlgorithm)) {
+                addToast({
+                    type: 'error',
+                    message: `Invalid algorithm selected: ${newAlgorithm}`,
+                });
+                return;
+            }
+
+            const activeGraph = graph.current;
+            if (newAlgorithm === 'bfs') {
+                setParams((prev) => ({
+                    ...prev,
+                    ...ALGORITHM_MAP.bfs.params,
+                    directed: Boolean(activeGraph?.data('directed')),
+                    startNodeId: activeGraph?.nodes()[0]?.id() ?? '',
+                    graphNodes: activeGraph ? activeGraph.nodes() : null,
+                }));
+            } else if (newAlgorithm === 'dfs') {
+                setParams((prev) => ({
+                    ...prev,
+                    ...ALGORITHM_MAP.dfs.params,
+                    directed: Boolean(activeGraph?.data('directed')),
+                    startNodeId: activeGraph?.nodes()[0]?.id() ?? '',
+                    graphNodes: activeGraph ? activeGraph.nodes() : null,
+                }));
+            } else {
+                setParams(ALGORITHM_MAP[newAlgorithm].params);
+            }
+        };
+
+        const graphAlgorithmSelectOptions = useMemo(() => {
+            return ValidTraversalAlgorithms.map((algorithm) => ({
+                label:
+                    algorithm === 'bfs' || algorithm === 'dfs'
+                        ? parseKebabCase(algorithm)
+                        : `${parseKebabCase(algorithm)} (W.I.P.)`,
+                value: algorithm,
+                disabled: algorithm !== 'bfs' && algorithm !== 'dfs',
             }));
-        } else if (newAlgorithm === 'dfs') {
-            setParams((prev) => ({
-                ...prev,
-                ...ALGORITHM_MAP.dfs.params,
-                directed: Boolean(activeGraph?.data('directed')),
-                startNodeId: activeGraph?.nodes()[0]?.id() ?? '',
-                graphNodes: activeGraph ? activeGraph.nodes() : null,
-            }));
-        } else {
-            setParams(ALGORITHM_MAP[newAlgorithm].params);
-        }
-    };
+        }, []);
 
-    const graphAlgorithmSelectOptions = useMemo(() => {
-        return ValidTraversalAlgorithms.map((algorithm) => ({
-            label:
-                algorithm === 'bfs' || algorithm === 'dfs'
-                    ? parseKebabCase(algorithm)
-                    : `${parseKebabCase(algorithm)} (W.I.P.)`,
-            value: algorithm,
-            disabled: algorithm !== 'bfs' && algorithm !== 'dfs',
-        }));
-    }, []);
-
-    return (
-        <div className="flex flex-col gap-4 py-4">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div>
-                    <SelectInput
-                        label="Traversal Algorithm"
-                        options={graphAlgorithmSelectOptions}
-                        value={params.algorithm}
-                        onChange={updateAlgorithm}
-                    />
-                    <p className="ml-1 mt-1 text-xs text-base-content/70">
-                        Select the traversal algorithm to run.
-                    </p>
-                </div>
-                <div className="flex flex-col">
-                    <span className="mb-1 ml-1 text-xs opacity-50">
-                        <strong>DESCRIPTION</strong>
-                    </span>
-                    <div className="flex flex-1 items-center rounded-lg bg-base-200 p-3 text-sm text-base-content/80">
-                        {ALGORITHM_MAP[params.algorithm].description}
+        return (
+            <div className="flex flex-col gap-4 py-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div>
+                        <SelectInput
+                            label="Traversal Algorithm"
+                            options={graphAlgorithmSelectOptions}
+                            value={params.algorithm}
+                            onChange={updateAlgorithm}
+                        />
+                        <p className="ml-1 mt-1 text-xs text-base-content/70">
+                            Select the traversal algorithm to run.
+                        </p>
+                    </div>
+                    <div className="flex flex-col">
+                        <span className="mb-1 ml-1 text-xs opacity-50">
+                            <strong>DESCRIPTION</strong>
+                        </span>
+                        <div className="flex flex-1 items-center rounded-lg bg-base-200 p-3 text-sm text-base-content/80">
+                            {ALGORITHM_MAP[params.algorithm].description}
+                        </div>
                     </div>
                 </div>
+
+                <div className="divider text-sm opacity-50 mb-0" />
+
+                <div className="flex flex-col gap-1">
+                    <span className="font-bold text-lg">Parameters</span>
+                    <p className="text-xs text-base-content/70">
+                        Select the properties of the graph to traverse. The available
+                        options will depend on the chosen traversal algorithm.
+                    </p>
+                </div>
+
+                <TraversalParamsSection
+                    params={params}
+                    setParams={setParams}
+                    graphNodes={graph.current?.nodes() ?? null}
+                />
             </div>
-
-            <div className="divider text-sm opacity-50 mb-0" />
-
-            <div className="flex flex-col gap-1">
-                <span className="font-bold text-lg">Parameters</span>
-                <p className="text-xs text-base-content/70">
-                    Select the properties of the graph to traverse. The available
-                    options will depend on the chosen traversal algorithm.
-                </p>
-            </div>
-
-            <TraversalParamsSection
-                params={params}
-                setParams={setParams}
-                graphNodes={graph.current?.nodes() ?? null}
-            />
-        </div>
-    );
-});
+        );
+    }
+);

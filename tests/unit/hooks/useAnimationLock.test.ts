@@ -7,9 +7,22 @@ const TAB = 'tab-1';
 
 const mockAnimation: BFSAnimation = {
     algorithm: 'bfs',
-    params: { algorithm: 'bfs', startNodeId: 'a', directed: false, onlySelected: false, graphNodeIds: ['a'] },
+    params: {
+        algorithm: 'bfs',
+        startNodeId: 'a',
+        directed: false,
+        onlySelected: false,
+        graphNodeIds: ['a'],
+    },
     steps: [
-        { operation: 'enqueue', nodeId: 'a', currentNode: 'a', visited: [], frontier: ['a'], metrics: { depth: { a: 0 } } },
+        {
+            operation: 'enqueue',
+            nodeId: 'a',
+            currentNode: 'a',
+            visited: [],
+            frontier: ['a'],
+            metrics: { depth: { a: 0 } },
+        },
     ],
 };
 

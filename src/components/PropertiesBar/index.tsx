@@ -10,7 +10,9 @@ import { NodesSection } from './NodesSection';
 
 function PropertiesSidebarContent() {
     const activeTabId = useGraphWorkspaceStore((s) => s.activeTabId);
-    const animStatus = useAnimationStore((s) => (activeTabId ? (s.tabs[activeTabId]?.status ?? 'idle') : 'idle'));
+    const animStatus = useAnimationStore((s) =>
+        activeTabId ? (s.tabs[activeTabId]?.status ?? 'idle') : 'idle'
+    );
 
     if (activeTabId && animStatus !== 'idle') {
         return <AnimationSidebar tabId={activeTabId} />;

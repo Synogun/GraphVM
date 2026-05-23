@@ -27,7 +27,9 @@ export function GraphWorkspace() {
     useWorkspaceAutosave(MAIN_GRAPH_ID);
 
     const infoPanelDisabled = useSettingsStore((s) => s.ui.disableElementsInfoPanel);
-    const isAnimating = useAnimationStore((s) => activeTabId ? (s.tabs[activeTabId]?.status ?? 'idle') !== 'idle' : false);
+    const isAnimating = useAnimationStore((s) =>
+        activeTabId ? (s.tabs[activeTabId]?.status ?? 'idle') !== 'idle' : false
+    );
     const graphRef = useGetGraph(MAIN_GRAPH_ID);
     const [tabIdToClose, setTabIdToClose] = useState<string | null>(null);
 
@@ -139,11 +141,15 @@ export function GraphWorkspace() {
                         </div>
                     );
                 })}
-                <div className={`absolute ${isAnimating ? 'bottom-16' : 'bottom-4'} left-4 z-5 hidden lg:block`}>
+                <div
+                    className={`absolute ${isAnimating ? 'bottom-16' : 'bottom-4'} left-4 z-5 hidden lg:block`}
+                >
                     <CanvasToolbar />
                 </div>
                 {activeTabId && (
-                    <div className={`absolute bottom-4 left-4 z-5 hidden lg:flex ${infoPanelDisabled ? 'right-4' : 'right-64'}`}>
+                    <div
+                        className={`absolute bottom-4 left-4 z-5 hidden lg:flex ${infoPanelDisabled ? 'right-4' : 'right-64'}`}
+                    >
                         <AnimationToolbar tabId={activeTabId} />
                     </div>
                 )}

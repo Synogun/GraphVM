@@ -1,4 +1,9 @@
-import { useAnimationLock, useEdgeMode, useElementActions, useGraphActions } from '@/hooks';
+import {
+    useAnimationLock,
+    useEdgeMode,
+    useElementActions,
+    useGraphActions,
+} from '@/hooks';
 import type { ShortcutAction } from '@/types/ui/settings';
 import {
     formatShortcutInput,
@@ -94,7 +99,10 @@ export function useGraphShortcuts() {
             event.stopPropagation();
 
             if (isLocked && MUTATION_SHORTCUT_ACTIONS.has(matchedAction[0])) {
-                addToast({ type: 'warning', message: 'Stop the animation to edit the graph.' });
+                addToast({
+                    type: 'warning',
+                    message: 'Stop the animation to edit the graph.',
+                });
                 return;
             }
 

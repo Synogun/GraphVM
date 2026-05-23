@@ -107,7 +107,10 @@ export function DFSParamsInput({
                     }}
                     options={nodeOptions}
                     onChange={(e) => {
-                        setParams((prev) => ({ ...prev, startNodeId: e.target.value }));
+                        setParams((prev) => ({
+                            ...prev,
+                            startNodeId: e.target.value,
+                        }));
                     }}
                 />
             </div>
@@ -129,7 +132,9 @@ export function DFSParamsInput({
                     onChange={(e) => {
                         const newOnlySelected = e.target.value === 'selected';
                         const newNodes = newOnlySelected
-                            ? (params.graphNodes?.filter((node) => node.selected()) ?? [])
+                            ? (params.graphNodes?.filter((node) =>
+                                  node.selected()
+                              ) ?? [])
                             : (params.graphNodes ?? []);
                         setParams((prev) => ({
                             ...prev,

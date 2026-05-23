@@ -8,7 +8,11 @@ describe('isSharePayload', () => {
 
     it('accepts valid payload with graph object', () => {
         expect(
-            isSharePayload({ v: 1, name: 'My Graph', graph: { elements: { nodes: [], edges: [] }, style: [] } })
+            isSharePayload({
+                v: 1,
+                name: 'My Graph',
+                graph: { elements: { nodes: [], edges: [] }, style: [] },
+            })
         ).toBe(true);
     });
 
