@@ -53,7 +53,7 @@ export function addEdge(
     options: cytoscape.EdgeDefinition,
     classes?: string[],
     limits?: GraphLimits
-) {
+): cytoscape.EdgeSingular {
     if (!options.data.source) {
         throw new ParsedError('Source node is required');
     }
@@ -99,6 +99,8 @@ export function addEdge(
     if (isDirected) {
         core.$id(insertedEdgeId).addClass('directed');
     }
+
+    return core.$id(insertedEdgeId);
 }
 
 export function addEdges(
@@ -212,14 +214,13 @@ export function updateEdges(
         },
     ];
 
-    let parsedValue = value;
     const validator = customValidation.find((v) => v.property === property);
 
-    if (validator) {
-        parsedValue = validator.validate(value) ? value : validator.default;
-    } else {
+    if (!validator) {
         throw new ParsedError(`No validator found for property: ${property}`);
     }
+
+    const parsedValue = validator.validate(value) ? value : validator.default;
 
     if (property === 'style') {
         // Ghost Nodes can't change line style, in order to keep visual distinction

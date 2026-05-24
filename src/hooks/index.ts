@@ -1,4 +1,6 @@
 export * from './useActionBarLogic';
+export * from './useClipboardActions';
+export * from './useClipboardShortcuts';
 export * from './useAnimationLock';
 export * from './useAnimationPlayback';
 export * from './useAnimationShortcuts';

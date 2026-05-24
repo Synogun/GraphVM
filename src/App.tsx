@@ -2,7 +2,12 @@ import { ActionBar } from '@/components/ActionBar';
 import { PropertiesBar } from '@/components/PropertiesBar';
 import { DefaultFallback, LoadingHero, ToastArea } from '@/components/feedback';
 import { ElementInfoPanel, GraphWorkspace } from '@/components/graph';
-import { useAnimationShortcuts, useGraphShortcuts, useShareLink } from '@/hooks';
+import {
+    useAnimationShortcuts,
+    useClipboardShortcuts,
+    useGraphShortcuts,
+    useShareLink,
+} from '@/hooks';
 import {
     AlgorithmsModal,
     EdgeLabelModal,
@@ -74,6 +79,7 @@ export function App() {
 
 function GraphShortcutsBinding() {
     useGraphShortcuts();
+    useClipboardShortcuts();
     useAnimationShortcuts();
     return null;
 }
