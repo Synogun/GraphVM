@@ -3,8 +3,7 @@ import { parseError } from '@/config/parsedError';
 import { ParsedErrorToasts } from '@/constants';
 import { DefaultTraversalParams } from '@/constants/algorithmDefaults';
 import { useGetGraph } from '@/hooks';
-import { runBFSAnimation } from '@/services/algorithms/bfsAnimationService';
-import { runDFSAnimation } from '@/services/algorithms/dfsAnimationService';
+import { runBFSAnimation, runDFSAnimation } from '@/services/algorithms/traversal';
 import { useAnimationStore } from '@/stores/animationStore';
 import { useGraphWorkspaceStore } from '@/stores/graphWorkspaceStore';
 import {

@@ -9,6 +9,13 @@ import {
     MinimumStarGenerationParams,
     MinimumWheelGenerationParams,
 } from '@/constants/algorithmDefaults';
+import {
+    addEdge,
+    addEdges,
+    addNode,
+    arrangeGraph,
+    resetGraph,
+} from '@/services/graph';
 import type {
     BipartiteGraphParams,
     CircleGraphParams,
@@ -21,10 +28,6 @@ import type {
 } from '@/types/algorithms/generationAlgorithms';
 import type { GraphLimits } from '@/types/ui/settings';
 import type cytoscape from 'cytoscape';
-import { addEdge, addEdges } from '../graph/edgesService';
-import { resetGraph } from '../graph/graphService';
-import { arrangeGraph } from '../graph/layoutService';
-import { addNode } from '../graph/nodesService';
 
 export function generateCompleteGraph(
     graph: cytoscape.Core,

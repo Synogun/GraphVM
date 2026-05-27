@@ -1,3 +1,2 @@
-export * from './generationAlgorithmsService';
-export * from './HlpPrimeGeneration';
-export * from './traversalAlgorithmsService';
+export * from './generation';
+export * from './traversal';
