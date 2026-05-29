@@ -1,6 +1,6 @@
+import { runBFSAnimation } from '@/services/algorithms/traversal';
 import cytoscape from 'cytoscape';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { runBFSAnimation } from '@/services/algorithms/bfsAnimationService';
 
 describe('runBFSAnimation', () => {
     let core: cytoscape.Core;

@@ -1,6 +1,6 @@
+import { runDFSAnimation } from '@/services/algorithms/traversal';
 import cytoscape from 'cytoscape';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { runDFSAnimation } from '@/services/algorithms/dfsAnimationService';
 
 describe('runDFSAnimation', () => {
     let core: cytoscape.Core;
@@ -83,10 +83,10 @@ describe('runDFSAnimation', () => {
             directed: false,
             onlySelected: false,
         });
-        const last = result.steps[result.steps.length - 1];
-        expect(last.metrics.depth.a).toBe(0);
-        expect(typeof last.metrics.depth.b).toBe('number');
-        expect(typeof last.metrics.depth.c).toBe('number');
+        const last = result.steps.at(-1);
+        expect(last?.metrics.depth.a).toBe(0);
+        expect(typeof last?.metrics.depth.b).toBe('number');
+        expect(typeof last?.metrics.depth.c).toBe('number');
     });
 
     it('throws when start node does not exist', () => {

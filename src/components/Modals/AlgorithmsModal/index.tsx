@@ -4,12 +4,13 @@ import { useModals } from '@Contexts';
 import { Logger } from '@Logger';
 import { Modal } from '@Modals/Modal';
 import { useMemo, useRef, useState } from 'react';
+import { ColoringTab, type ColoringTabRef } from './ColoringTab';
 import { GenerationTab, type GenerationTabRef } from './GenerationTab';
 import { TraversalTab, type TraversalTabRef } from './TraversalTab';
 
 const logger = Logger.createContextLogger('AlgorithmsModal');
 
-type AlgorithmTabId = 'generative' | 'traversal';
+type AlgorithmTabId = 'generative' | 'traversal' | 'coloring';
 // TODO: Add more tabs like pathfinding, optimization, etc. in the future
 
 export function AlgorithmsModal() {
@@ -17,6 +18,7 @@ export function AlgorithmsModal() {
     const [activeTab, setActiveTab] = useState<AlgorithmTabId>('generative');
     const generationTabRef = useRef<GenerationTabRef>(null);
     const traversalTabRef = useRef<TraversalTabRef>(null);
+    const coloringTabRef = useRef<ColoringTabRef>(null);
 
     const tabConfig = useMemo<TabItem<AlgorithmTabId>[]>(
         () => [
@@ -29,6 +31,11 @@ export function AlgorithmsModal() {
                 id: 'traversal',
                 label: 'Traversal',
                 icon: <AppIcons.PathEdgeMode size={16} />,
+            },
+            {
+                id: 'coloring',
+                label: 'Coloring',
+                icon: <AppIcons.ColorPalette size={16} />,
             },
         ],
         []
@@ -45,6 +52,9 @@ export function AlgorithmsModal() {
                 break;
             case 'traversal':
                 traversalTabRef.current?.handleRun();
+                break;
+            case 'coloring':
+                coloringTabRef.current?.handleRun();
                 break;
             default:
                 logger.warn('Unknown active tab:', activeTab);
@@ -87,6 +97,12 @@ export function AlgorithmsModal() {
                     {activeTab === 'traversal' && (
                         <TraversalTab
                             ref={traversalTabRef}
+                            isOpen={isAlgorithmsModalOpen}
+                        />
+                    )}
+                    {activeTab === 'coloring' && (
+                        <ColoringTab
+                            ref={coloringTabRef}
                             isOpen={isAlgorithmsModalOpen}
                         />
                     )}

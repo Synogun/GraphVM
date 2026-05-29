@@ -175,6 +175,14 @@ export const DefaultStylesheet: StylesheetCSS[] = [
             width: 4,
         },
     },
+    {
+        selector: 'edge[animColor]',
+        css: { 'line-color': 'data(animColor)', width: 3 },
+    },
+    {
+        selector: 'node.anim-fan-vertex',
+        css: { 'background-color': 'hsl(var(--a))' },
+    },
 ];
 
 export const DefaultAutopanOptions: AutopanOptions = {

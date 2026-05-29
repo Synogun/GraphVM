@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useGraphRegistry } from '@Contexts';
 import { useAnimationStore } from '@/stores/animationStore';
 import type { GraphInstance } from '@/types/graph';
+import type { BFSStep } from '@/types';
 import { makeScopedGraphRegistryId } from '@/utils/graphRegistry';
 
 type AnimationSidebarProps = {
@@ -26,15 +27,49 @@ export function AnimationSidebar({ tabId }: Readonly<AnimationSidebarProps>) {
     if (currentStepIndex >= animation.steps.length) return null;
     const step = animation.steps[currentStepIndex];
 
-    const isBFS = animation.algorithm === 'bfs';
-    const frontierLabel = isBFS ? 'Queue' : 'Stack';
-    const frontier = step.frontier as string[];
-    const depth = step.metrics.depth;
-
     const nodeDisplay = (id: string) => {
         const label = graph?.$id(id).data('label') as string | undefined;
         return label ? `${label} (${id})` : id;
     };
+
+    if (animation.algorithm !== 'bfs' && animation.algorithm !== 'dfs') {
+        return (
+            <div className="text-sm">
+                <div className="divider mb-1">
+                    <h1 className="text-lg font-bold text-center">Algorithm</h1>
+                </div>
+
+                <div className="flex justify-between items-center py-1.5">
+                    <span className="text-base-content/60">Algorithm</span>
+                    <span className="font-bold font-mono">
+                        {animation.algorithm.toUpperCase()}
+                    </span>
+                </div>
+
+                <div className="divider mb-1">
+                    <h1 className="text-lg font-bold text-center">Step</h1>
+                </div>
+
+                <div className="flex justify-between items-center py-1.5">
+                    <span className="text-base-content/60">Progress</span>
+                    <span className="tabular-nums">
+                        {currentStepIndex + 1} / {animation.steps.length}
+                    </span>
+                </div>
+
+                <div className="flex justify-between items-center py-1.5">
+                    <span className="text-base-content/60">Operation</span>
+                    <span className="font-mono text-xs">{step.operation}</span>
+                </div>
+            </div>
+        );
+    }
+
+    const traversalStep = step as BFSStep;
+    const isBFS = animation.algorithm === 'bfs';
+    const frontierLabel = isBFS ? 'Queue' : 'Stack';
+    const frontier = traversalStep.frontier as string[];
+    const depth = traversalStep.metrics.depth;
 
     return (
         <div className="text-sm">
@@ -69,12 +104,12 @@ export function AnimationSidebar({ tabId }: Readonly<AnimationSidebarProps>) {
 
             <div className="flex justify-between items-center py-1.5">
                 <span className="text-base-content/60">Operation</span>
-                <span className="font-mono text-xs">{step.operation}</span>
+                <span className="font-mono text-xs">{traversalStep.operation}</span>
             </div>
 
             <div className="flex justify-between items-center py-1.5">
                 <span className="text-base-content/60">Current</span>
-                <span className="font-mono">{nodeDisplay(step.currentNode)}</span>
+                <span className="font-mono">{nodeDisplay(traversalStep.currentNode)}</span>
             </div>
 
             <div className="divider mb-1">
@@ -97,11 +132,11 @@ export function AnimationSidebar({ tabId }: Readonly<AnimationSidebarProps>) {
                 <h1 className="text-lg font-bold text-center">Visited</h1>
             </div>
 
-            {step.visited.length === 0 ? (
+            {traversalStep.visited.length === 0 ? (
                 <span className="text-base-content/40 italic text-xs">none</span>
             ) : (
                 <div className="flex flex-wrap gap-1 pb-1">
-                    {step.visited.map((id) => (
+                    {traversalStep.visited.map((id: string) => (
                         <span
                             key={id}
                             className="badge badge-xs badge-success font-mono"

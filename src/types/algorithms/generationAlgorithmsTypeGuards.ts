@@ -94,6 +94,19 @@ export function isHlpGraphParams(
     );
 }
 
+export function isHlpGraphMetadata(
+    metadata: unknown
+): metadata is { L: number; P: number } {
+    return (
+        typeof metadata === 'object' &&
+        metadata !== null &&
+        'L' in metadata &&
+        'P' in metadata &&
+        typeof (metadata as { L: unknown }).L === 'number' &&
+        typeof (metadata as { P: unknown }).P === 'number'
+    );
+}
+
 export function isBipartiteGraphParams(
     params: GenerationParams
 ): params is BipartiteGraphParams {

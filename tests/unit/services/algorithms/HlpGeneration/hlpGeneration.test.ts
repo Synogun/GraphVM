@@ -3,8 +3,10 @@ import {
     makeHlpEdgeSet,
     makeHlpGeneratingSet,
     makeHlpNodeSet,
-} from '@/services/algorithms/HlpPrimeGeneration';
+} from '@/services/algorithms/generation/HlpPrimeGeneration';
+import { generateHlpGraph } from '@/services/algorithms/generation/HlpPrimeGeneration/generateHlpGraph';
 import { describe, expect, it } from 'vitest';
+import cytoscape from 'cytoscape';
 import { loadHlpValidation, sortByCoordinates } from './validation/utils';
 
 describe('HlpPrimeGeneration', () => {
@@ -80,8 +82,29 @@ describe('HlpPrimeGeneration', () => {
                 ).sort(sortByCoordinates);
 
                 expect(hlpEdgeSet.length).toBe(expectedEdgeSet.length);
-                expect(hlpEdgeSet).toEqual(expectedEdgeSet);
+                // Compare only the first two elements (sourceIndex, targetIndex)
+                // ignoring the generatorIndex which was added
+                expect(hlpEdgeSet.map((e) => e.slice(0, 2))).toEqual(expectedEdgeSet);
+                // Verify generatorIndex is included for each edge
+                expect(hlpEdgeSet.every((e) => e.length === 3)).toBe(true);
+                expect(hlpEdgeSet.every((e) => typeof e[2] === 'number')).toBe(true);
             }
         }
+    });
+
+    it('stores coord and L and P on node metadata', () => {
+        const core = cytoscape({ headless: true });
+        generateHlpGraph(core, { L: 3, P: 3 });
+        const meta = core.nodes().first().data('metadata');
+        expect(meta.L).toBe(3);
+        expect(meta.P).toBe(3);
+        expect(Array.isArray(meta.coord)).toBe(true);
+    });
+
+    it('stores generatorIndex on edge metadata', () => {
+        const core = cytoscape({ headless: true });
+        generateHlpGraph(core, { L: 3, P: 3 });
+        const meta = core.edges().first().data('metadata');
+        expect(typeof meta.generatorIndex).toBe('number');
     });
 });

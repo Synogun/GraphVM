@@ -14,7 +14,8 @@ export function makeHlpEdgeSet(
     for (let i = 0; i < nodeSet.length; i++) {
         const node = nodeSet[i];
 
-        for (const generator of generatingSet) {
+        for (let gi = 0; gi < generatingSet.length; gi++) {
+            const generator = generatingSet[gi];
             const newCoordinate = node.map(
                 (value, index) => (value + generator[index] + P) % P
             );
@@ -22,7 +23,7 @@ export function makeHlpEdgeSet(
             const newIndex = indexMap.get(key);
 
             if (newIndex !== undefined) {
-                edgeSet.push([i, newIndex]);
+                edgeSet.push([i, newIndex, gi]);
             }
         }
     }

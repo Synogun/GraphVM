@@ -59,6 +59,8 @@ export function generateHlpGraph(
     const nodeSet = makeHlpNodeSet(L, P);
     const edgeSet = makeHlpEdgeSet(nodeSet, generatingSet, P);
 
+    graph.data('metadata', { L, P });
+
     const indexToIdMap = new Map<number, string>();
 
     graph.startBatch();
@@ -66,14 +68,19 @@ export function generateHlpGraph(
     nodeSet.forEach((node, index) => {
         const newNode = addNode(
             graph,
-            { data: { label: `(${node.toString()})` } },
+            {
+                data: {
+                    label: `(${node.toString()})`,
+                    metadata: { coord: node, L, P },
+                },
+            },
             undefined,
             limits
         );
         indexToIdMap.set(index, newNode.id());
     });
 
-    edgeSet.forEach(([sourceIndex, targetIndex]) => {
+    edgeSet.forEach(([sourceIndex, targetIndex, generatorIndex]) => {
         const sourceId = indexToIdMap.get(sourceIndex);
         const targetId = indexToIdMap.get(targetIndex);
 
@@ -86,7 +93,13 @@ export function generateHlpGraph(
         if (sourceId && targetId && !oppositeEdgeExists) {
             addEdge(
                 graph,
-                { data: { source: sourceId, target: targetId } },
+                {
+                    data: {
+                        source: sourceId,
+                        target: targetId,
+                        metadata: { generatorIndex },
+                    },
+                },
                 undefined,
                 limits
             );

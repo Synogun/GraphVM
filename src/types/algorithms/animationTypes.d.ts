@@ -1,3 +1,5 @@
+import type { EdgeColoringAnimation } from './coloringAlgorithms';
+
 export type BaseAlgorithmStep = {
     nodeId: string;
     edgeId?: string;
@@ -48,6 +50,6 @@ export type DFSAnimation = {
     steps: readonly DFSStep[];
 };
 
-export type AlgorithmAnimation = BFSAnimation | DFSAnimation;
+export type AlgorithmAnimation = BFSAnimation | DFSAnimation | EdgeColoringAnimation;
 
 export type PlaybackStatus = 'idle' | 'playing' | 'paused' | 'finished';
