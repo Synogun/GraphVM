@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
-import { useGraphRegistry } from '@Contexts';
 import { useAnimationStore } from '@/stores/animationStore';
+import type { BFSStep, EdgeColoringAnimation, EdgeColoringStep } from '@/types';
+import { isColoringAlgorithm } from '@/types';
 import type { GraphInstance } from '@/types/graph';
-import type { BFSStep } from '@/types';
 import { makeScopedGraphRegistryId } from '@/utils/graphRegistry';
+import { useGraphRegistry } from '@Contexts';
+import { useEffect, useState } from 'react';
 
 type AnimationSidebarProps = {
     tabId: string;
@@ -32,7 +33,22 @@ export function AnimationSidebar({ tabId }: Readonly<AnimationSidebarProps>) {
         return label ? `${label} (${id})` : id;
     };
 
-    if (animation.algorithm !== 'bfs' && animation.algorithm !== 'dfs') {
+    const edgeDisplay = (id: string) => {
+        const el = graph?.$id(id);
+        if (!el || el.length === 0) return id;
+        const src = el.data('source') as string;
+        const tgt = el.data('target') as string;
+        const srcLabel = graph?.$id(src).data('label') as string | undefined;
+        const tgtLabel = graph?.$id(tgt).data('label') as string | undefined;
+        return `${srcLabel ?? src} → ${tgtLabel ?? tgt}`;
+    };
+
+    if (isColoringAlgorithm(animation.algorithm)) {
+        const coloringStep = step as EdgeColoringStep;
+        const coloringAnimation = animation as EdgeColoringAnimation;
+        const palette = coloringAnimation.palette;
+        const assignments = coloringStep.colorAssignments;
+
         return (
             <div className="text-sm">
                 <div className="divider mb-1">
@@ -59,8 +75,84 @@ export function AnimationSidebar({ tabId }: Readonly<AnimationSidebarProps>) {
 
                 <div className="flex justify-between items-center py-1.5">
                     <span className="text-base-content/60">Operation</span>
-                    <span className="font-mono text-xs">{step.operation}</span>
+                    <span className="font-mono text-xs">
+                        {coloringStep.operation}
+                    </span>
                 </div>
+
+                <div className="flex justify-between items-center py-1.5">
+                    <span className="text-base-content/60">Edge</span>
+                    <span className="font-mono text-xs">
+                        {edgeDisplay(coloringStep.edgeId)}
+                    </span>
+                </div>
+
+                {coloringStep.fanVertexIds.length > 0 && (
+                    <>
+                        <div className="divider mb-1">
+                            <h1 className="text-lg font-bold text-center">Fan</h1>
+                        </div>
+                        <ol className="list-decimal list-inside space-y-0.5 text-xs pb-1">
+                            {coloringStep.fanVertexIds.map((id, i) => (
+                                <li
+                                    key={`fan-${id}-${String(i)}`}
+                                    className="font-mono"
+                                >
+                                    {nodeDisplay(id)}
+                                </li>
+                            ))}
+                        </ol>
+                    </>
+                )}
+
+                {coloringStep.pathEdgeIds.length > 0 && (
+                    <>
+                        <div className="divider mb-1">
+                            <h1 className="text-lg font-bold text-center">Path</h1>
+                        </div>
+                        <ol className="list-decimal list-inside space-y-0.5 text-xs pb-1">
+                            {coloringStep.pathEdgeIds.map((id, i) => (
+                                <li
+                                    key={`path-${id}-${String(i)}`}
+                                    className="font-mono"
+                                >
+                                    {edgeDisplay(id)}
+                                </li>
+                            ))}
+                        </ol>
+                    </>
+                )}
+
+                {Object.keys(assignments).length > 0 && (
+                    <>
+                        <div className="divider mb-1">
+                            <h1 className="text-lg font-bold text-center">Colors</h1>
+                        </div>
+                        <div className="space-y-0.5 pb-1">
+                            {Object.entries(assignments).map(
+                                ([edgeId, colorIdx]) => (
+                                    <div
+                                        key={edgeId}
+                                        className="flex justify-between items-center text-xs py-0.5"
+                                    >
+                                        <span className="font-mono truncate max-w-[60%]">
+                                            {edgeDisplay(edgeId)}
+                                        </span>
+                                        <span
+                                            className="badge badge-xs font-mono"
+                                            style={{
+                                                backgroundColor: palette[colorIdx],
+                                                color: '#fff',
+                                            }}
+                                        >
+                                            {String(colorIdx + 1)}
+                                        </span>
+                                    </div>
+                                )
+                            )}
+                        </div>
+                    </>
+                )}
             </div>
         );
     }
@@ -109,7 +201,9 @@ export function AnimationSidebar({ tabId }: Readonly<AnimationSidebarProps>) {
 
             <div className="flex justify-between items-center py-1.5">
                 <span className="text-base-content/60">Current</span>
-                <span className="font-mono">{nodeDisplay(traversalStep.currentNode)}</span>
+                <span className="font-mono">
+                    {nodeDisplay(traversalStep.currentNode)}
+                </span>
             </div>
 
             <div className="divider mb-1">
