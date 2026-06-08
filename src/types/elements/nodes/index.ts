@@ -1,2 +1,2 @@
-export * from './nodes.d';
+export * from './nodes';
 export * from './typeGuards';

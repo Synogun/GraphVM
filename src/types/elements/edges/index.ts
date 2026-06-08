@@ -1,2 +1,2 @@
-export * from './edges.d';
+export * from './edges';
 export * from './typeGuards';
