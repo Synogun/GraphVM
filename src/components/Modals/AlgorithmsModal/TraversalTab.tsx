@@ -1,5 +1,4 @@
 import { SelectInput } from '@/components/common';
-import { parseError } from '@/config/parsedError';
 import { ParsedErrorToasts } from '@/constants';
 import { DefaultTraversalParams } from '@/constants/algorithmDefaults';
 import { useGetGraph } from '@/hooks';
@@ -54,60 +53,6 @@ const ALGORITHM_MAP: Record<
         description:
             'Depth-First Search (DFS) explores as far as possible along each ' +
             'branch before backtracking, starting from a given source node.',
-    },
-    dijkstra: {
-        params: {
-            algorithm: 'dijkstra',
-        },
-        description:
-            "Dijkstra's Algorithm finds the shortest path between nodes in a graph, " +
-            'which may represent, for example, road networks. It uses a priority queue ' +
-            'to explore the graph based on cumulative distance from the source node.',
-    },
-    'a-star': {
-        params: {
-            algorithm: 'a-star',
-        },
-        description:
-            "A* Search Algorithm is an extension of Dijkstra's Algorithm that uses " +
-            'heuristics to estimate the cost to reach the goal, ' +
-            'allowing it to find the shortest path more efficiently in many cases.',
-    },
-    'greedy-best-first': {
-        params: {
-            algorithm: 'greedy-best-first',
-        },
-        description:
-            'Greedy Best-First Search is a search algorithm that expands the node that ' +
-            'appears to be closest to the goal, based on a heuristic function. ' +
-            'It does not guarantee the shortest path.',
-    },
-    'bidirectional-search': {
-        params: {
-            algorithm: 'bidirectional-search',
-        },
-        description:
-            'Bidirectional Search runs two simultaneous searches—one forward from ' +
-            'the source and one backward from the target—hoping that the two searches ' +
-            'meet in the middle, which can significantly reduce search time.',
-    },
-    'iterative-deepening-dfs': {
-        params: {
-            algorithm: 'iterative-deepening-dfs',
-        },
-        description:
-            'Iterative Deepening Depth-First Search (IDDFS) combines the space efficiency ' +
-            'of DFS with the optimality of BFS by performing DFS with increasing depth limits ' +
-            'until the target is found.',
-    },
-    'random-walk': {
-        params: {
-            algorithm: 'random-walk',
-        },
-        description:
-            'Random Walk is a traversal method where the next node is chosen randomly ' +
-            'from the neighbors of the current node. It is often used in scenarios like ' +
-            'network sampling or when exploring unknown graphs.',
     },
 };
 
@@ -200,13 +145,15 @@ export const TraversalTab = forwardRef<TraversalTabRef, TraversalTabProps>(
 
             // eslint-disable-next-line react-hooks/set-state-in-effect
             setParams((prev) => {
-                if (prev.algorithm !== 'bfs' && prev.algorithm !== 'dfs')
+                if (prev.algorithm !== 'bfs') {
                     return prev;
+                }
                 const nodes = activeGraph.nodes();
                 const nodeIds = nodes.map((n) => n.id());
                 const validStartId = nodeIds.includes(prev.startNodeId)
                     ? prev.startNodeId
                     : (nodeIds[0] ?? '');
+
                 return {
                     ...prev,
                     directed: Boolean(activeGraph.data('directed')),
@@ -229,10 +176,7 @@ export const TraversalTab = forwardRef<TraversalTabRef, TraversalTabProps>(
                 return;
             }
 
-            if (
-                (params.algorithm === 'bfs' || params.algorithm === 'dfs') &&
-                !params.startNodeId
-            ) {
+            if (params.algorithm === 'bfs' && !params.startNodeId) {
                 addToast({
                     type: 'error',
                     message: 'Please select a start node before running.',
@@ -240,44 +184,35 @@ export const TraversalTab = forwardRef<TraversalTabRef, TraversalTabProps>(
                 return;
             }
 
-            try {
-                switch (params.algorithm) {
-                    case 'bfs': {
-                        const animation = runBFSAnimation({
-                            graph: activeGraph,
-                            startNodeId: params.startNodeId,
-                            directed: Boolean(activeGraph.data('directed')),
-                            onlySelected: params.onlySelected,
-                        });
-                        initAnimation(activeTabId, animation);
-                        play(activeTabId);
-                        break;
-                    }
-                    case 'dfs': {
-                        const animation = runDFSAnimation({
-                            graph: activeGraph,
-                            startNodeId: params.startNodeId,
-                            directed: Boolean(activeGraph.data('directed')),
-                            onlySelected: params.onlySelected,
-                        });
-                        initAnimation(activeTabId, animation);
-                        play(activeTabId);
-                        break;
-                    }
-                    default:
-                        throw new Error(
-                            `Algorithm not implemented: ${params.algorithm}`
-                        );
+            switch (params.algorithm) {
+                case 'bfs': {
+                    const animation = runBFSAnimation({
+                        graph: activeGraph,
+                        startNodeId: params.startNodeId,
+                        directed: Boolean(activeGraph.data('directed')),
+                        onlySelected: params.onlySelected,
+                    });
+                    initAnimation(activeTabId, animation);
+                    play(activeTabId);
+                    break;
                 }
-            } catch (error) {
-                const parsedError = parseError(error);
-                addToast({
-                    type: 'error',
-                    message: parsedError.message,
-                });
-                return;
+                case 'dfs': {
+                    const animation = runDFSAnimation({
+                        graph: activeGraph,
+                        startNodeId: params.startNodeId,
+                        directed: Boolean(activeGraph.data('directed')),
+                        onlySelected: params.onlySelected,
+                    });
+                    initAnimation(activeTabId, animation);
+                    play(activeTabId);
+                    break;
+                }
+                default:
+                    addToast({
+                        type: 'error',
+                        message: 'Algorithm not implemented',
+                    });
             }
-
             setParams({ ...DefaultTraversalParams });
         };
 
@@ -303,7 +238,7 @@ export const TraversalTab = forwardRef<TraversalTabRef, TraversalTabProps>(
                     startNodeId: activeGraph?.nodes()[0]?.id() ?? '',
                     graphNodes: activeGraph ? activeGraph.nodes() : null,
                 }));
-            } else if (newAlgorithm === 'dfs') {
+            } else {
                 setParams((prev) => ({
                     ...prev,
                     ...ALGORITHM_MAP.dfs.params,
@@ -311,19 +246,13 @@ export const TraversalTab = forwardRef<TraversalTabRef, TraversalTabProps>(
                     startNodeId: activeGraph?.nodes()[0]?.id() ?? '',
                     graphNodes: activeGraph ? activeGraph.nodes() : null,
                 }));
-            } else {
-                setParams(ALGORITHM_MAP[newAlgorithm].params);
             }
         };
 
         const graphAlgorithmSelectOptions = useMemo(() => {
             return ValidTraversalAlgorithms.map((algorithm) => ({
-                label:
-                    algorithm === 'bfs' || algorithm === 'dfs'
-                        ? parseKebabCase(algorithm)
-                        : `${parseKebabCase(algorithm)} (W.I.P.)`,
+                label: parseKebabCase(algorithm),
                 value: algorithm,
-                disabled: algorithm !== 'bfs' && algorithm !== 'dfs',
             }));
         }, []);
 
