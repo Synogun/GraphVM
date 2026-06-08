@@ -17,7 +17,7 @@ function setC(C: ColorMap, u: string, c: number, v: string | undefined): void {
         if (!C.has(u)) {
             C.set(u, new Map());
         }
-        C.get(u)!.set(c, v);
+        C.get(u)?.set(c, v);
     }
 }
 
@@ -29,7 +29,7 @@ function setG(G: EdgeColorMap, u: string, v: string, c: number): void {
     if (!G.has(u)) {
         G.set(u, new Map());
     }
-    G.get(u)!.set(v, c);
+    G.get(u)?.set(v, c);
 }
 
 // --- Exported functions ---

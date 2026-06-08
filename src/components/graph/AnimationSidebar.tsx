@@ -179,7 +179,9 @@ export function AnimationSidebar({ tabId }: Readonly<AnimationSidebarProps>) {
             <div className="flex justify-between items-center py-1.5">
                 <span className="text-base-content/60">Start</span>
                 <span className="font-mono">
-                    {nodeDisplay(animation.params.startNodeId)}
+                    {nodeDisplay(
+                        (animation.params as { startNodeId: string }).startNodeId
+                    )}
                 </span>
             </div>
 

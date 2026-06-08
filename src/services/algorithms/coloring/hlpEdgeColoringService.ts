@@ -82,7 +82,7 @@ export function runHlpEdgeColoringAnimation(
                 ? [
                       ...originalSteps.slice(0, -1),
                       {
-                          ...originalSteps.at(-1),
+                          ...originalSteps[originalSteps.length - 1],
                           colorAssignments: finalAssignments,
                       },
                   ]
@@ -100,7 +100,7 @@ export function runHlpEdgeColoringAnimation(
     // Build node coordinate map: coordKey → nodeId
     const coordMap = new Map<string, string>();
     graph.nodes().forEach((node) => {
-        const coord = node.data('metadata').coord as number[];
+        const coord = (node.data('metadata') as { coord: number[] }).coord;
         coordMap.set(coord.join(','), node.id());
     });
 
@@ -131,11 +131,11 @@ export function runHlpEdgeColoringAnimation(
         // Process each node as potential cycle start
         graph.nodes().forEach((startNode) => {
             const startId = startNode.id();
-            if (colored.has(`cycle_${gi}_${startId}`)) return; // already part of a processed cycle
+            if (colored.has(`cycle_${gi.toString()}_${startId}`)) return; // already part of a processed cycle
 
             // Walk the cycle of length P
             const cycleNodes: string[] = [];
-            let curCoord = startNode.data('metadata').coord as number[];
+            let curCoord = (startNode.data('metadata') as { coord: number[] }).coord;
             for (let step = 0; step < P; step++) {
                 const key = curCoord.join(',');
                 const nodeId = coordMap.get(key);
@@ -150,7 +150,7 @@ export function runHlpEdgeColoringAnimation(
 
             // Mark all nodes in this cycle as visited for this generator
             for (const nid of cycleNodes) {
-                colored.add(`cycle_${gi}_${nid}`);
+                colored.add(`cycle_${gi.toString()}_${nid}`);
             }
 
             // Color cycle edges: even positions get gi, odd positions get gi_inv
