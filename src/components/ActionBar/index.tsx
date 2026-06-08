@@ -1,16 +1,20 @@
-import { useActionBarLogic } from '@/hooks/useActionBarLogic';
+import { useActionBarLogic } from '@/hooks';
 import { isDev } from '@/utils/general';
 import { Logger } from '@Logger';
 import { type ReactNode } from 'react';
-import pkg from '../../../package.json';
+import { version } from '../../../package.json';
 import { AppIcons } from '../common/AppIcons';
 import { SideBar } from '../common/SideBar';
-import { ActionBarButton } from './ActionBarButton';
+import {
+    ActionBarButton,
+    ActionBarButtonStyle,
+    ActionBarTooltipClassName,
+} from './ActionBarButton';
 import { ActionBarEdgeModeButton } from './ActionBarEdgeModeButton';
 
 const ICON_SIZE = '1.5em';
 
-export function ActionBar({ children }: ActionBarProps) {
+export function ActionBar({ children }: Readonly<ActionBarProps>) {
     const {
         handleNewGraph,
         handleAlgorithms,
@@ -23,123 +27,142 @@ export function ActionBar({ children }: ActionBarProps) {
         handleDeleteSelected,
         handleSettings,
         handleHelp,
+        handleShareGraph,
         isDeleteBtnDisabled,
         isCompleteEdgeMode,
         isEdgeModeLocked,
+        isAnimationLocked,
+        lockTooltip,
     } = useActionBarLogic();
 
-    const SidebarChildren = (
+    const DrawerContent = (
         <>
             <div className="divider mt-2">
                 <h1 className="text-xl font-bold text-center">GraphVM</h1>
             </div>
 
             <ActionBarButton
-                icon={AppIcons.NewGraph({ size: ICON_SIZE })}
+                id="new-graph-btn"
+                icon={<AppIcons.NewGraph size={ICON_SIZE} />}
                 label="New Graph"
-                margin="my-1"
+                className="my-1"
                 onClick={handleNewGraph}
             />
 
             <ActionBarButton
-                icon={AppIcons.Algorithms({ size: ICON_SIZE })}
-                label="Algorithms"
-                margin="my-1"
-                onClick={handleAlgorithms}
-            />
-
-            <ActionBarButton
-                icon={AppIcons.ImportExport({ size: ICON_SIZE })}
+                id="import-export-btn"
+                icon={<AppIcons.Import size={ICON_SIZE} />}
                 label="Import / Export"
-                margin="my-1"
+                className="my-1"
                 onClick={handleImportExport}
             />
 
-            <div className="divider my-3">
-                <h1 className="text-base font-bold text-center">Organize</h1>
+            <ActionBarButton
+                id="share-graph-btn"
+                icon={<AppIcons.Share size={ICON_SIZE} />}
+                label="Share Graph"
+                className="my-1"
+                onClick={() => {
+                    void handleShareGraph();
+                }}
+            />
+
+            <ActionBarButton
+                id="algorithms-btn"
+                icon={<AppIcons.Algorithms size={ICON_SIZE} />}
+                label="Algorithms"
+                className="my-1"
+                onClick={handleAlgorithms}
+            />
+
+            <div className="lg:hidden w-full">
+                <div className="divider my-3">
+                    <h1 className="text-base font-bold text-center">Elements</h1>
+                </div>
+
+                <ActionBarButton
+                    id="add-node-btn-mobile"
+                    icon={<AppIcons.AddNode size={ICON_SIZE} />}
+                    className="my-1"
+                    label="Add Node"
+                    disabled={isAnimationLocked}
+                    onClick={handleAddNode}
+                />
+
+                <ActionBarButton
+                    id="add-edge-btn-mobile"
+                    icon={<AppIcons.AddEdges size={ICON_SIZE} />}
+                    className="my-1"
+                    label="Add Edge(s)"
+                    disabled={isAnimationLocked}
+                    onClick={handleAddEdges}
+                />
+
+                <ActionBarEdgeModeButton
+                    id="edge-mode-btn-mobile"
+                    isCompleteEdgeMode={isCompleteEdgeMode}
+                    handleToggleEdgeMode={handleToggleEdgeMode}
+                    iconSize={ICON_SIZE}
+                    disabled={isEdgeModeLocked}
+                />
+
+                <ActionBarButton
+                    id="delete-selected-btn-mobile"
+                    disabled={isDeleteBtnDisabled || isAnimationLocked}
+                    className="my-1"
+                    icon={<AppIcons.DeleteElements size={ICON_SIZE} />}
+                    isDelete={true}
+                    label="Delete Selected"
+                    onClick={handleDeleteSelected}
+                />
+
+                <div className="divider my-3">
+                    <h1 className="text-base font-bold text-center">Organize</h1>
+                </div>
+
+                <ActionBarButton
+                    id="arrange-graph-btn"
+                    icon={<AppIcons.Arrange size={ICON_SIZE} />}
+                    label="Arrange"
+                    className="my-1"
+                    onClick={handleArrangeGraph}
+                />
+
+                <ActionBarButton
+                    id="center-graph-btn"
+                    icon={<AppIcons.Center size={ICON_SIZE} />}
+                    label="Center"
+                    className="my-1"
+                    onClick={handleCenterGraph}
+                />
             </div>
-
-            <ActionBarButton
-                icon={AppIcons.Arrange({ size: ICON_SIZE })}
-                label="Arrange"
-                margin="my-1"
-                onClick={handleArrangeGraph}
-            />
-
-            <ActionBarButton
-                icon={AppIcons.Center({ size: ICON_SIZE })}
-                label="Center"
-                margin="my-1"
-                onClick={handleCenterGraph}
-            />
-
-            <div className="divider my-3">
-                <h1 className="text-base font-bold text-center">Elements</h1>
-            </div>
-
-            <ActionBarButton
-                icon={AppIcons.AddNode({ size: ICON_SIZE })}
-                label="Add node"
-                margin="my-1"
-                onClick={handleAddNode}
-            />
-
-            <ActionBarButton
-                icon={AppIcons.AddEdges({ size: ICON_SIZE })}
-                label="Add Edges(s)"
-                margin="my-1"
-                onClick={handleAddEdges}
-            />
-
-            <ActionBarEdgeModeButton
-                isCompleteEdgeMode={isCompleteEdgeMode}
-                handleToggleEdgeMode={handleToggleEdgeMode}
-                iconSize={ICON_SIZE}
-                disabled={isEdgeModeLocked}
-            />
-
-            <ActionBarButton
-                disabled={isDeleteBtnDisabled}
-                icon={AppIcons.DeleteElements({ size: ICON_SIZE })}
-                isDelete={true}
-                label="Delete Selected"
-                margin="my-1"
-                onClick={handleDeleteSelected}
-            />
 
             <div className="divider mt-auto mb-3">
                 <h1 className="text-base font-bold text-center">Misc</h1>
             </div>
 
             <ActionBarButton
-                icon={AppIcons.Settings({ size: ICON_SIZE })}
+                id="settings-btn"
+                icon={<AppIcons.Settings size={ICON_SIZE} />}
                 label="Settings"
-                margin="my-1"
+                className="my-1"
                 onClick={handleSettings}
             />
 
             <ActionBarButton
-                icon={AppIcons.Help({ size: ICON_SIZE })}
+                id="help-btn"
+                icon={<AppIcons.Help size={ICON_SIZE} />}
                 label="Help"
-                margin="my-1"
+                className="my-1"
                 onClick={handleHelp}
             />
 
-            {/* <a
-                        className='btn btn-outline hover:btn-accent'
-                        href='https://github.com/Synogun/GraphVM'
-                        rel='noopener noreferrer'
-                        role='button'
-                        target='_blank'
-                    >
-                        <span>{actionIcons.github}</span> GH Repository
-                    </a> */}
-
             {isDev() && (
                 <ActionBarButton
-                    icon={AppIcons.DebugLogs({ size: ICON_SIZE })}
+                    id="download-logs-btn"
+                    icon={<AppIcons.DebugLogs size={ICON_SIZE} />}
                     label="Download Logs"
-                    margin="my-1"
+                    className="my-1"
                     onClick={() => {
                         Logger.downloadLogs();
                     }}
@@ -152,7 +175,7 @@ export function ActionBar({ children }: ActionBarProps) {
                 <span className="text-xs text-gray-500" id="credits">
                     @Synogun
                 </span>
-                <span>{`v${pkg.version}`}</span>
+                <span>{`v${version}`}</span>
 
                 {isDev() && (
                     <span className="text-xs text-red-600" id="is-dev">
@@ -164,16 +187,79 @@ export function ActionBar({ children }: ActionBarProps) {
     );
 
     return (
-        <SideBar
-            className="select-none text-center"
-            id="actions-bar"
-            inputId="actions-bar-input"
-            sideClassName="select-none shadow-xl/45"
-            width="w-50"
-            sidebarChildren={SidebarChildren}
-        >
-            {children}
-        </SideBar>
+        <>
+            <aside className="hidden lg:flex fixed left-0 top-0 h-screen w-14 flex-col bg-base-200 z-10 select-none text-center p-2 shadow-xl/45">
+                <ActionBarButton
+                    id="add-node-btn"
+                    icon={<AppIcons.AddNode size={ICON_SIZE} />}
+                    label="Add Node"
+                    className="my-1"
+                    condensed
+                    disabled={isAnimationLocked}
+                    tooltipSuffix={lockTooltip}
+                    onClick={handleAddNode}
+                />
+
+                <ActionBarButton
+                    id="add-edge-btn"
+                    icon={<AppIcons.AddEdges size={ICON_SIZE} />}
+                    className="my-1"
+                    label="Add Edge(s)"
+                    condensed
+                    disabled={isAnimationLocked}
+                    tooltipSuffix={lockTooltip}
+                    onClick={handleAddEdges}
+                />
+
+                <ActionBarEdgeModeButton
+                    id="edge-mode-btn"
+                    isCompleteEdgeMode={isCompleteEdgeMode}
+                    handleToggleEdgeMode={handleToggleEdgeMode}
+                    iconSize={ICON_SIZE}
+                    disabled={isEdgeModeLocked}
+                    condensed
+                />
+
+                <ActionBarButton
+                    id="delete-selected-btn"
+                    disabled={isDeleteBtnDisabled || isAnimationLocked}
+                    className="my-1"
+                    icon={<AppIcons.DeleteElements size={ICON_SIZE} />}
+                    isDelete={true}
+                    label="Delete Selected"
+                    condensed
+                    tooltipSuffix={isAnimationLocked ? lockTooltip : undefined}
+                    onClick={handleDeleteSelected}
+                />
+
+                <div className="mt-auto">
+                    <div
+                        className={ActionBarTooltipClassName}
+                        data-tip="Open Sidebar"
+                    >
+                        <label
+                            htmlFor="actions-bar-input"
+                            className={`btn w-full ${ActionBarButtonStyle} my-1`}
+                            aria-label="open sidebar"
+                        >
+                            <AppIcons.SidebarLeftExpand style={{ scale: 3 }} />
+                        </label>
+                    </div>
+                </div>
+            </aside>
+
+            <SideBar
+                className="select-none text-center"
+                id="actions-bar"
+                inputId="actions-bar-input"
+                openOnLarge={false}
+                sideClassName="select-none shadow-xl/45"
+                width="w-50"
+                sidebarChildren={DrawerContent}
+            >
+                <div className="lg:pl-14 flex flex-col h-full">{children}</div>
+            </SideBar>
+        </>
     );
 }
 

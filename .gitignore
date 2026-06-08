@@ -13,7 +13,7 @@ dist-ssr
 *.local
 
 # Editor directories and files
-.vscode/*
+.vscode
 !.vscode/extensions.json
 .idea
 .DS_Store
@@ -24,3 +24,10 @@ dist-ssr
 *.sw?
 
 notes.md
+
+# Papers and other non-public validation files 
+# # Was allowed to use but can't confirm if i can publish it
+python
+
+test-results
+coverage

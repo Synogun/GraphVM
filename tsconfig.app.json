@@ -3,13 +3,14 @@
         "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
         "target": "ES2022",
         "useDefineForClassFields": true,
-        "lib": ["ES2022", "DOM", "DOM.Iterable"],
+        "lib": ["ES2023", "DOM"],
         "module": "ESNext",
         "skipLibCheck": true,
 
         /* Bundler mode */
         "moduleResolution": "bundler",
         "allowImportingTsExtensions": true,
+        "resolveJsonModule": true,
         "verbatimModuleSyntax": true,
         "moduleDetection": "force",
         "noEmit": true,
@@ -22,14 +23,15 @@
         "erasableSyntaxOnly": true,
         "noFallthroughCasesInSwitch": true,
         "noUncheckedSideEffectImports": true,
-        "baseUrl": "./src",
+        "rootDir": "./src",
         "paths": {
-            "@/*": ["./*"],
-            "@Modals": ["./components/Modals"],
-            "@Modals/*": ["./components/Modals/*"],
-            "@Inputs": ["./components/common/inputs"],
-            "@Contexts": ["./contexts"],
-            "@Logger": ["./config/logger"]
+            "@/*": ["./src/*"],
+            "@Modals": ["./src/components/Modals"],
+            "@Modals/*": ["./src/components/Modals/*"],
+            "@Inputs": ["./src/components/common/inputs"],
+            "@Contexts": ["./src/contexts"],
+            "@Logger": ["./src/config/logger"],
+            "@Config": ["./src/config"]
         }
     },
     "include": ["src"]

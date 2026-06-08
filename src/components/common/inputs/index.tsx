@@ -1,3 +1,4 @@
+export { ButtonInput } from './ButtonInput';
 export { ColorInput } from './ColorInput';
 export { NumberInput } from './NumberInput';
 export { RangeInput } from './RangeInput';

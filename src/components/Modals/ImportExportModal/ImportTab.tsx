@@ -1,15 +1,16 @@
-import { ParsedError, ParsedErrorToasts, parseError } from '@/config/parsedError';
-import { useGetGraph } from '@/hooks/useGraphRegistry';
-import { newGraph, setGraphDirected } from '@/services/graphService';
-import { parseTextData, type FileType } from '@/services/importExportService';
-import { arrangeGraph } from '@/services/layoutService';
-import { isCytoscapeOptions, isStylesheetStyleArray } from '@/types/graphTypeGuards';
+import { ParsedError, parseError } from '@/config/parsedError';
+import { ParsedErrorToasts } from '@/constants';
+import { useGetGraph, useGraphMutation } from '@/hooks';
+import { arrangeGraph, newGraph, setGraphDirected } from '@/services/graph';
 import {
-    getDefaultEdgesData,
-    getDefaultNodesData,
-    transformStylesheet,
-} from '@/utils/styleHelpers';
-import { useLayoutProperties, useToasts } from '@Contexts';
+    assertImportDataLimits,
+    normalizeCytoscapeOptionsForImport,
+    parseTextData,
+    type FileType,
+} from '@/services/persistence';
+import { getDefaultEdgesData, getDefaultNodesData } from '@/utils/styleHelpers';
+import { useLayoutStore } from '@/stores/layoutStore';
+import { useSettings, useToasts } from '@Contexts';
 import cytoscape, { type CytoscapeOptions } from 'cytoscape';
 import {
     useCallback,
@@ -25,10 +26,14 @@ export function ImportTab({
     ref,
     onImportSuccess,
     onReadyStateChange,
-}: ImportTabProps) {
+}: Readonly<ImportTabProps>) {
     const graphRef = useGetGraph('main-graph');
+    const { syncAll } = useGraphMutation('main-graph');
 
-    const { current: currentLayout } = useLayoutProperties();
+    const currentLayout = useLayoutStore((s) => s.current);
+    const {
+        graph: { limits },
+    } = useSettings();
 
     const [importData, setImportData] = useState<CytoscapeOptions | null>(null);
     const [previewCy, setPreviewCy] = useState<cytoscape.Core | null>(null);
@@ -74,7 +79,7 @@ export function ImportTab({
                 });
             });
 
-            handleDataPreview(content, file.type as FileType);
+            handleDataPreview(content, file.type);
         } catch (error: unknown) {
             const parsedError = parseError(error);
             addToast({
@@ -87,7 +92,9 @@ export function ImportTab({
     };
 
     const handleDataPreview = (data: string, fileType: FileType) => {
-        if (!graphRef.current) {
+        const activeGraph = graphRef.current;
+
+        if (!activeGraph) {
             addToast(ParsedErrorToasts.GraphNotFound);
             return;
         }
@@ -96,16 +103,13 @@ export function ImportTab({
         if (fileType === 'application/json') {
             try {
                 const jsonData: unknown = JSON.parse(data);
+                const normalized = normalizeCytoscapeOptionsForImport(jsonData);
 
-                if (!isCytoscapeOptions(jsonData)) {
+                if (!normalized) {
                     throw new ParsedError('Invalid Cytoscape JSON format');
                 }
 
-                if (isStylesheetStyleArray(jsonData.style)) {
-                    jsonData.style = transformStylesheet(jsonData.style, 'sheet');
-                }
-
-                dataToImport = { ...jsonData };
+                dataToImport = normalized;
             } catch (error) {
                 const parsedError = parseError(error);
                 addToast({ type: 'error', message: parsedError.message });
@@ -113,8 +117,8 @@ export function ImportTab({
             }
         } else {
             const defaults = {
-                nodes: getDefaultNodesData(graphRef.current),
-                edges: getDefaultEdgesData(graphRef.current),
+                nodes: getDefaultNodesData(activeGraph),
+                edges: getDefaultEdgesData(activeGraph),
             };
 
             try {
@@ -127,6 +131,8 @@ export function ImportTab({
         }
 
         try {
+            assertImportDataLimits(dataToImport, limits);
+
             const newPreviewCy = newGraph('data-preview-cy', {
                 ...dataToImport,
                 userPanningEnabled: false,
@@ -141,13 +147,20 @@ export function ImportTab({
             setImportData(dataToImport);
         } catch (error) {
             const parsedError = parseError(error);
+
+            previewCy?.destroy();
+            setPreviewCy(null);
+            setImportData(null);
+
             addToast({ type: 'error', message: parsedError.message });
             return;
         }
     };
 
     const handleImport = () => {
-        if (!graphRef.current) {
+        const activeGraph = graphRef.current;
+
+        if (!activeGraph) {
             addToast(ParsedErrorToasts.GraphNotFound);
             return;
         }
@@ -160,13 +173,14 @@ export function ImportTab({
             return;
         }
 
-        graphRef.current.elements().remove();
+        activeGraph.elements().remove();
 
         // @ts-expect-error - CytoscapeOptions is not fully compatible with the expected type for json(), but it contains all necessary data for import
-        graphRef.current.json(importData);
+        activeGraph.json(importData);
 
         const directed = Boolean(importData.data?.directed);
-        setGraphDirected(graphRef.current, directed);
+        setGraphDirected(activeGraph, directed);
+        syncAll(activeGraph);
 
         cleanup();
         onImportSuccess();
@@ -188,14 +202,16 @@ export function ImportTab({
                     ref={fileInputRef}
                     className={
                         'file-input w-full' +
-                        (!importData ? '' : ' file-input-accent')
+                        (importData ? ' file-input-accent' : '')
                     }
                     onChange={(e) => {
                         void handleFileSelect(e);
                     }}
                     type="file"
                 />
-                <label className="label">Max size 2MB</label>
+                <span aria-label="Maximum file size" className="label">
+                    Max size 2MB
+                </span>
             </fieldset>
             <h3 className="text-sm font-medium text-base-content">Data Preview</h3>
             <div className="relative p-2 text-center">

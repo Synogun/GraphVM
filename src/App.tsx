@@ -1,17 +1,36 @@
 import { ActionBar } from '@/components/ActionBar';
-import { GraphCanvas } from '@/components/GraphCanvas';
-import { LoadingHero } from '@/components/LoadingHero';
 import { PropertiesBar } from '@/components/PropertiesBar';
-import { ToastArea } from '@/components/ToastArea';
-import { PropertiesProvider } from '@/providers/PropertiesProvider';
+import { DefaultFallback, LoadingHero, ToastArea } from '@/components/feedback';
+import { ElementInfoPanel, GraphWorkspace } from '@/components/graph';
+import {
+    useAnimationShortcuts,
+    useClipboardShortcuts,
+    useGraphShortcuts,
+    useShareLink,
+} from '@/hooks';
+import {
+    AlgorithmsModal,
+    EdgeLabelModal,
+    HelpModal,
+    ImportExportModal,
+    NodeLabelModal,
+    SettingsModal,
+} from '@/lazy';
 import { isDev } from '@/utils/general';
-import { useModals } from '@Contexts';
-import { AlgorithmsModal, HelpModal, ImportExportModal, Modal } from '@Modals';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
+import { useSettings } from './contexts';
 
 export function App() {
     const [loadingApp, setLoadingApp] = useState(true);
-    const modals = useModals();
+    useShareLink();
+
+    const {
+        ui: { disableElementsInfoPanel, theme },
+    } = useSettings();
+
+    useEffect(() => {
+        document.documentElement.dataset.theme = theme;
+    }, [theme]);
 
     useEffect(() => {
         // Simulated loading time - Users thinks its more natural
@@ -29,37 +48,38 @@ export function App() {
         };
     }, []);
 
-    return loadingApp ? (
-        <LoadingHero />
-    ) : (
-        <>
-            <PropertiesProvider>
-                <PropertiesBar>
-                    <ActionBar>
-                        <GraphCanvas containerId="main-graph" />
-                    </ActionBar>
-                </PropertiesBar>
+    if (loadingApp) {
+        return <LoadingHero />;
+    }
 
+    return (
+        <>
+            <GraphShortcutsBinding />
+
+            <PropertiesBar>
+                <ActionBar>
+                    <GraphWorkspace />
+                    {!disableElementsInfoPanel && <ElementInfoPanel />}
+                </ActionBar>
+            </PropertiesBar>
+
+            <Suspense fallback={<DefaultFallback />}>
                 <AlgorithmsModal />
                 <ImportExportModal />
-                <Modal
-                    id="settings-modal"
-                    onClose={() => {
-                        modals.setIsSettingsModalOpen(false);
-                    }}
-                    show={modals.isSettingsModalOpen}
-                    title="Settings"
-                >
-                    <div className="flex flex-col gap-4">
-                        <p className="text-sm text-base-content/80">
-                            Settings will be added in a future update.
-                        </p>
-                    </div>
-                </Modal>
+                <SettingsModal />
                 <HelpModal />
+                <NodeLabelModal />
+                <EdgeLabelModal />
+            </Suspense>
 
-                <ToastArea />
-            </PropertiesProvider>
+            <ToastArea />
         </>
     );
+}
+
+function GraphShortcutsBinding() {
+    useGraphShortcuts();
+    useClipboardShortcuts();
+    useAnimationShortcuts();
+    return null;
 }

@@ -1,38 +1,21 @@
-import { ParsedErrorToasts, parseError } from '@/config/parsedError';
-import { useGetGraph } from '@/hooks/useGraphRegistry';
-import { addEdges, removeEdges } from '@/services/edgesService';
-import { resetGraph } from '@/services/graphService';
-import { arrangeGraph, centerGraph } from '@/services/layoutService';
-import { addNode, removeNodes } from '@/services/nodesService';
-import { isArrayOfStrings } from '@/types/typeGuards';
 import {
-    useGraphProperties,
-    useLayoutProperties,
-    useModals,
-    useToasts,
-} from '@Contexts';
-import { useCallback, useEffect, type ChangeEvent } from 'react';
-
-const DEFAULT_LAYOUT = { name: 'circle' };
+    useAnimationLock,
+    useEdgeMode,
+    useElementActions,
+    useGetGraph,
+    useGraphActions,
+} from '@/hooks';
+import {
+    buildShareUrl,
+    encodeSharePayload,
+    serializeGraph,
+} from '@/services/persistence';
+import { useGraphWorkspaceStore } from '@/stores/graphWorkspaceStore';
+import type { SharePayload } from '@/types/workspace';
+import { useModals, useToasts } from '@Contexts';
+import { useCallback } from 'react';
 
 export function useActionBarLogic() {
-    const {
-        directed,
-        setDirected,
-        nodes: {
-            setCount: setNodeCount,
-            selected: selectedNodes,
-            setSelected: setSelectedNodes,
-        },
-        edges: {
-            edgeMode,
-            setEdgeMode,
-            selected: selectedEdges,
-            setSelected: setSelectedEdges,
-            setCount: setEdgeCount,
-        },
-    } = useGraphProperties();
-
     const {
         setIsAlgorithmsModalOpen,
         setIsHelpModalOpen,
@@ -40,41 +23,15 @@ export function useActionBarLogic() {
         setIsImportExportModalOpen,
     } = useModals();
 
-    const { current: currentLayout } = useLayoutProperties();
+    const graphActions = useGraphActions();
+    const elementActions = useElementActions();
+    const edgeModeProps = useEdgeMode();
+    const { isLocked: isAnimationLocked, lockTooltip } = useAnimationLock();
+
     const graphRef = useGetGraph('main-graph');
-
+    const activeTabId = useGraphWorkspaceStore((s) => s.activeTabId);
+    const tabs = useGraphWorkspaceStore((s) => s.tabs);
     const { addToast } = useToasts();
-
-    useEffect(() => {
-        if (directed && edgeMode === 'complete') {
-            setEdgeMode('path');
-        }
-    }, [directed, edgeMode, setEdgeMode]);
-
-    const handleNewGraph = useCallback(() => {
-        const graph = graphRef.current;
-
-        if (!graph) {
-            addToast(ParsedErrorToasts.GraphNotFound);
-            return;
-        }
-
-        resetGraph(graph, {
-            setNodeCount,
-            setEdgeCount,
-            setSelectedNodes,
-            setSelectedEdges,
-            setDirected,
-        });
-    }, [
-        graphRef,
-        setDirected,
-        setEdgeCount,
-        setNodeCount,
-        setSelectedEdges,
-        setSelectedNodes,
-        addToast,
-    ]);
 
     const handleAlgorithms = useCallback(() => {
         setIsAlgorithmsModalOpen(true);
@@ -84,16 +41,6 @@ export function useActionBarLogic() {
         setIsImportExportModalOpen(true);
     }, [setIsImportExportModalOpen]);
 
-    const handleArrangeGraph = useCallback(() => {
-        const graph = graphRef.current;
-        if (!graph) {
-            addToast(ParsedErrorToasts.GraphNotFound);
-            return;
-        }
-
-        arrangeGraph(graph, currentLayout ?? DEFAULT_LAYOUT);
-    }, [graphRef, currentLayout, addToast]);
-
     const handleSettings = useCallback(() => {
         setIsSettingsModalOpen(true);
     }, [setIsSettingsModalOpen]);
@@ -102,139 +49,49 @@ export function useActionBarLogic() {
         setIsHelpModalOpen(true);
     }, [setIsHelpModalOpen]);
 
-    const handleCenterGraph = useCallback(() => {
-        const graph = graphRef.current;
-        if (!graph) {
-            addToast(ParsedErrorToasts.GraphNotFound);
+    const handleShareGraph = useCallback(async () => {
+        const core = graphRef.current;
+        if (!core) {
+            addToast({
+                type: 'error',
+                message: 'Graph not ready. Please try again.',
+            });
             return;
         }
 
-        const currentSelected = graph.elements(':selected');
+        const activeTab = tabs.find((t) => t.id === activeTabId);
+        const name = activeTab?.name ?? 'Shared Graph';
+        const graph = serializeGraph(core);
 
-        //TODO: add default padding to graph properties
-        centerGraph(graph, currentSelected, 30);
-    }, [graphRef, addToast]);
-
-    const handleAddNode = useCallback(() => {
-        const graph = graphRef.current;
-        if (!graph) {
-            addToast(ParsedErrorToasts.GraphNotFound);
-            return;
-        }
-
-        addNode(graph);
-        setNodeCount(graph.nodes().length);
-        handleArrangeGraph();
-    }, [graphRef, setNodeCount, handleArrangeGraph, addToast]);
-
-    const handleAddEdges = useCallback(() => {
-        const graph = graphRef.current;
-        if (!graph) {
-            addToast(ParsedErrorToasts.GraphNotFound);
-            return;
-        }
-
-        const currentSelectedNodes: unknown = graph.data('nodeSelectionOrder');
-
-        if (!isArrayOfStrings(currentSelectedNodes)) {
-            addToast({ type: 'warning', message: 'Invalid selection order data.' });
-            return;
-        }
-
-        if (currentSelectedNodes.length < 2) {
-            addToast({ message: 'Select at least two nodes to create an edge.' });
-            return;
-        }
+        const payload: SharePayload = { v: 1, name, graph };
+        const encoded = encodeSharePayload(payload);
+        const url = buildShareUrl(encoded);
 
         try {
-            addEdges(graph, currentSelectedNodes, edgeMode);
-        } catch (error: unknown) {
-            const parsedError = parseError(error);
-            addToast({ type: 'error', message: parsedError.message });
-            return;
+            await navigator.clipboard.writeText(url);
+            addToast({
+                type: 'success',
+                message: 'Share link copied to clipboard!',
+            });
+        } catch {
+            addToast({
+                type: 'error',
+                message:
+                    'Could not copy to clipboard. Please copy the URL manually.',
+            });
         }
-
-        setEdgeCount(graph.edges().length);
-        handleArrangeGraph();
-    }, [graphRef, edgeMode, setEdgeCount, handleArrangeGraph, addToast]);
-
-    const handleToggleEdgeMode = useCallback(
-        (e: ChangeEvent<HTMLInputElement>) => {
-            if (directed) {
-                addToast({
-                    type: 'warning',
-                    message: 'Edge mode is locked to path while graph is directed.',
-                });
-                return;
-            }
-            setEdgeMode(e.target.checked ? 'complete' : 'path');
-        },
-        [directed, setEdgeMode, addToast]
-    );
-
-    const handleDeleteSelected = useCallback(() => {
-        if (!graphRef.current) {
-            addToast(ParsedErrorToasts.GraphNotFound);
-            return;
-        }
-
-        let selectedElements = graphRef.current.elements(':selected');
-        if (selectedElements.length === 0) {
-            addToast({ message: 'Select nodes or edges to delete.' });
-            return;
-        }
-
-        const nodesToRemove = selectedElements.filter('node');
-        if (nodesToRemove.length > 0) {
-            removeNodes(graphRef.current, nodesToRemove);
-
-            setSelectedNodes([]);
-            setNodeCount(graphRef.current.nodes().length);
-            graphRef.current.data('nodeSelectionOrder', []);
-        }
-
-        selectedElements = graphRef.current.elements(':selected');
-        const edgesToRemove = selectedElements.filter('edge');
-        if (edgesToRemove.length > 0) {
-            try {
-                removeEdges(graphRef.current, edgesToRemove);
-            } catch (error: unknown) {
-                const parsedError = parseError(error);
-                addToast({ type: 'error', message: parsedError.message });
-                return;
-            }
-
-            setSelectedEdges([]);
-            setEdgeCount(graphRef.current.edges().length);
-            graphRef.current.data('edgeSelectionOrder', []);
-        }
-    }, [
-        graphRef,
-        setSelectedNodes,
-        setNodeCount,
-        setSelectedEdges,
-        setEdgeCount,
-        addToast,
-    ]);
+    }, [graphRef, activeTabId, tabs, addToast]);
 
     return {
-        edgeMode,
-        selectedNodes,
-        selectedEdges,
-        handleNewGraph,
+        ...graphActions,
+        ...elementActions,
+        ...edgeModeProps,
         handleAlgorithms,
         handleImportExport,
-        handleArrangeGraph,
         handleSettings,
         handleHelp,
-        handleCenterGraph,
-        handleAddNode,
-        handleAddEdges,
-        handleToggleEdgeMode,
-        handleDeleteSelected,
-        isDeleteBtnDisabled:
-            selectedNodes.length === 0 && selectedEdges.length === 0,
-        isCompleteEdgeMode: edgeMode === 'complete',
-        isEdgeModeLocked: directed,
+        handleShareGraph,
+        isAnimationLocked,
+        lockTooltip,
     };
 }

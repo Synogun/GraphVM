@@ -1,16 +1,24 @@
 import { AppIcons } from '@/components/common/AppIcons';
 import { Tabs, type TabItem } from '@/components/common/tabs';
 import { useModals } from '@Contexts';
-import { Modal } from '@Modals';
+import { Logger } from '@Logger';
+import { Modal } from '@Modals/Modal';
 import { useMemo, useRef, useState } from 'react';
+import { ColoringTab, type ColoringTabRef } from './ColoringTab';
 import { GenerationTab, type GenerationTabRef } from './GenerationTab';
+import { TraversalTab, type TraversalTabRef } from './TraversalTab';
 
-type AlgorithmTabId = 'generative' | 'traversal'; // TODO: Add more tabs like pathfinding, optimization, etc. in the future
+const logger = Logger.createContextLogger('AlgorithmsModal');
+
+type AlgorithmTabId = 'generative' | 'traversal' | 'coloring';
+// TODO: Add more tabs like pathfinding, optimization, etc. in the future
 
 export function AlgorithmsModal() {
     const { isAlgorithmsModalOpen, setIsAlgorithmsModalOpen } = useModals();
     const [activeTab, setActiveTab] = useState<AlgorithmTabId>('generative');
     const generationTabRef = useRef<GenerationTabRef>(null);
+    const traversalTabRef = useRef<TraversalTabRef>(null);
+    const coloringTabRef = useRef<ColoringTabRef>(null);
 
     const tabConfig = useMemo<TabItem<AlgorithmTabId>[]>(
         () => [
@@ -21,9 +29,13 @@ export function AlgorithmsModal() {
             },
             {
                 id: 'traversal',
-                label: 'Traversal (Soon)',
+                label: 'Traversal',
                 icon: <AppIcons.PathEdgeMode size={16} />,
-                disabled: true,
+            },
+            {
+                id: 'coloring',
+                label: 'Coloring',
+                icon: <AppIcons.ColorPalette size={16} />,
             },
         ],
         []
@@ -34,8 +46,18 @@ export function AlgorithmsModal() {
     };
 
     const handleRun = () => {
-        if (activeTab === 'generative') {
-            generationTabRef.current?.handleRun();
+        switch (activeTab) {
+            case 'generative':
+                generationTabRef.current?.handleRun();
+                break;
+            case 'traversal':
+                traversalTabRef.current?.handleRun();
+                break;
+            case 'coloring':
+                coloringTabRef.current?.handleRun();
+                break;
+            default:
+                logger.warn('Unknown active tab:', activeTab);
         }
 
         handleClose();
@@ -46,7 +68,7 @@ export function AlgorithmsModal() {
             <button className="btn btn-ghost" onClick={handleClose}>
                 Cancel
             </button>
-            <button className="btn btn-primary" onClick={handleRun}>
+            <button className="btn btn-accent" onClick={handleRun}>
                 Run
             </button>
         </>
@@ -72,9 +94,18 @@ export function AlgorithmsModal() {
                     {activeTab === 'generative' && (
                         <GenerationTab ref={generationTabRef} />
                     )}
-                    {/* {activeTab === 'traversal' && ( 
-                        <TraversalTab ref={traversalTabRef} />
-                    )} */}
+                    {activeTab === 'traversal' && (
+                        <TraversalTab
+                            ref={traversalTabRef}
+                            isOpen={isAlgorithmsModalOpen}
+                        />
+                    )}
+                    {activeTab === 'coloring' && (
+                        <ColoringTab
+                            ref={coloringTabRef}
+                            isOpen={isAlgorithmsModalOpen}
+                        />
+                    )}
                 </div>
             </main>
         </Modal>

@@ -1,4 +1,4 @@
-import type { SettingsData } from '@/types/settings';
+import type { SettingsData } from '@/types/ui/settings';
 
 export const DefaultSettingsData: SettingsData = {
     ui: {
@@ -6,6 +6,8 @@ export const DefaultSettingsData: SettingsData = {
             duration: 3000,
             position: 'bottom-center',
         },
+        disableElementsInfoPanel: false,
+        theme: 'dark',
     },
     graph: {
         arrangeOn: {
@@ -14,10 +16,28 @@ export const DefaultSettingsData: SettingsData = {
             editNode: false,
             editEdge: false,
             import: true,
+            layoutChange: true,
+            tabChange: false,
         },
         limits: {
-            maxNodes: 2000,
-            maxEdges: 4000,
+            maxNodes: 500,
+            maxEdges: 1000,
         },
+        defaultPaddingOnActions: 30,
+    },
+    shortcuts: {
+        deleteSelected: 'Delete',
+        deselectAll: 'Escape',
+        selectAll: 'Ctrl+A',
+        newGraph: 'Ctrl+Shift+N',
+        addNode: 'N',
+        addEdges: 'E',
+        arrangeGraph: 'A',
+        centerGraph: 'C',
+        toggleEdgeMode: 'M',
+        animPlayPause: 'Space',
+        animStepForward: 'ArrowRight',
+        animStepBackward: 'ArrowLeft',
+        animStop: 'Escape',
     },
 };

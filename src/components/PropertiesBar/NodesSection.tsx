@@ -1,21 +1,24 @@
 import { DefaultNodesData } from '@/constants/graphDefaults';
-import { useGetGraph } from '@/hooks/useGraphRegistry';
-import { usePropertyEditor } from '@/hooks/usePropertyEditor';
-import { updateNodes } from '@/services/nodesService';
-import { isNodeShape, ValidNodeShapes } from '@/types/nodesTypeGuards';
-import { parseKebabCase } from '@/utils/elements';
+import { useGetGraph, usePropertyEditor } from '@/hooks';
+import { updateNodes } from '@/services/graph';
+import { isNodeShape, ValidNodeShapes } from '@/types/elements/nodes/typeGuards';
+import { findPropertyValueMode, parseKebabCase } from '@/utils/elements';
 import { getDefaultNodesData, setDefaultNodesData } from '@/utils/styleHelpers';
-import { useGraphProperties, useNodeProperties } from '@Contexts';
-import { ColorInput, SelectInput } from '@Inputs';
-import { type ChangeEvent, useEffect, useMemo } from 'react';
+import { useGraphSelectionStore } from '@/stores/graphSelectionStore';
+import { useGraphWorkspaceStore } from '@/stores/graphWorkspaceStore';
+import { useModals } from '@Contexts';
+import { ButtonInput, ColorInput, SelectInput } from '@Inputs';
+import { type ChangeEvent, useLayoutEffect, useMemo, useState } from 'react';
 
-export function NodesSection({ visible = true }: NodeSectionProps) {
+export function NodesSection({ visible = true }: Readonly<NodeSectionProps>) {
     const graphRef = useGetGraph('main-graph');
-    const { color, setColor, shape, setShape } = useNodeProperties();
-
-    const {
-        nodes: { selected: selectedNodes },
-    } = useGraphProperties();
+    const [color, setColor] = useState<string>(DefaultNodesData.color);
+    const [shape, setShape] = useState<cytoscape.Css.NodeShape>(
+        DefaultNodesData.shape
+    );
+    const { setIsNodeLabelModalOpen } = useModals();
+    const activeTabId = useGraphWorkspaceStore((s) => s.activeTabId);
+    const selectedNodes = useGraphSelectionStore((s) => s.selectedNodes);
 
     const propertyEditor = usePropertyEditor({
         graphRef,
@@ -24,40 +27,39 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
         setDefaults: setDefaultNodesData,
         getElements: (core) => core.nodes(),
         updateElements: (core, ids, property, value) => {
-            updateNodes(core, ids, property, value);
+            if (value !== undefined) updateNodes(core, ids, property, value);
         },
     });
 
-    useEffect(() => {
-        const currentDefaults = propertyEditor.resolveDefaults();
-        if (!currentDefaults) {
-            return;
-        }
+    useLayoutEffect(() => {
+        const core = graphRef.current;
+        if (!core) return;
 
-        const { color: defaultNodeColor, shape: defaultNodeShape } = currentDefaults;
+        const currentDefaults = getDefaultNodesData(core);
 
         if (selectedNodes.length === 0) {
-            setColor(defaultNodeColor);
-            setShape(defaultNodeShape);
+            setColor(currentDefaults.color);
+            setShape(currentDefaults.shape);
             return;
         }
 
-        const modeColor = propertyEditor.getModeValue('color') ?? defaultNodeColor;
-        const modeShape = propertyEditor.getModeValue('shape') ?? defaultNodeShape;
+        const collection = core
+            .nodes()
+            .filter((n) => selectedNodes.includes(n.id()));
+        const modeColor =
+            findPropertyValueMode(collection, 'color', true) ??
+            currentDefaults.color;
+        const modeShapeRaw =
+            findPropertyValueMode(collection, 'shape', true) ??
+            currentDefaults.shape;
+        const modeShape = isNodeShape(modeShapeRaw)
+            ? modeShapeRaw
+            : currentDefaults.shape;
 
         setColor(modeColor);
-        setShape(isNodeShape(modeShape) ? modeShape : defaultNodeShape);
-    }, [propertyEditor, selectedNodes, setColor, setShape]);
-
-    // const handleChangeLabel = (e: ChangeEvent<HTMLInputElement>) => {
-    //     if (!graphRef.current) { return; }
-
-    //     const selectedNodes = selectedNodes;
-    //     const { value: rawValue } = e.target;
-    //     const indexedValue = rawValue.split(';').map(v => v.trim()).join;
-
-    //     graph.updateNodes(selectedNodes, 'label', indexedValue);
-    // };
+        setShape(modeShape);
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- graphRef is a stable ref; reading .current inside the effect is intentional
+    }, [selectedNodes, activeTabId]);
 
     const handleChangeColor = (e: ChangeEvent<HTMLInputElement>) => {
         const didApply = propertyEditor.applyValue('color', e.target.value);
@@ -105,11 +107,16 @@ export function NodesSection({ visible = true }: NodeSectionProps) {
                 <h1 className="text-lg font-bold text-center">Nodes</h1>
             </div>
 
-            {/* <SelectInput
-                label='Label'
-                onChange={ handleChangeLabel }
-                // value={ nodeProperties.label }
-            /> */}
+            <ButtonInput
+                label="Label"
+                onClick={() => {
+                    setIsNodeLabelModalOpen(true);
+                }}
+                disabled={selectedNodes.length === 0}
+                tooltip={{ content: 'Edit labels of selected nodes.' }}
+            >
+                Edit Labels
+            </ButtonInput>
 
             <ColorInput
                 label="Color"

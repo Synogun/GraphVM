@@ -1,91 +1,111 @@
-import { ParsedErrorToasts } from '@/config/parsedError';
+import { ParsedErrorToasts } from '@/constants';
 import {
     DefaultGridLayoutOptions,
     DefaultLayoutOptions,
 } from '@/constants/layoutDefaults';
-import { useGetGraph } from '@/hooks/useGraphRegistry';
-import { arrangeGraph } from '@/services/layoutService';
-import { isLayoutType, ValidGraphLayouts } from '@/types/layoutTypeGuards';
+import { useGetGraph } from '@/hooks';
+import { arrangeGraph, updateLayoutOptions } from '@/services/graph';
+import { useGraphWorkspaceStore } from '@/stores/graphWorkspaceStore';
+import { useLayoutStore } from '@/stores/layoutStore';
+import type { LayoutType } from '@/types';
+import {
+    isLayoutOptions,
+    isLayoutType,
+    ValidGraphLayouts,
+} from '@/types/ui/layout/typeGuards';
 import { parseKebabCase } from '@/utils/elements';
-import { useLayoutProperties, useToasts } from '@Contexts';
+import { useSettings, useToasts } from '@Contexts';
 import { RangeInput, SelectInput } from '@Inputs';
-import { type ChangeEvent, useEffect, useMemo } from 'react';
+import { type ChangeEvent, useEffect, useMemo, useRef } from 'react';
 
-export function LayoutSection({ visible = true }: LayoutSectionProps) {
+export function LayoutSection({ visible = true }: Readonly<LayoutSectionProps>) {
     const graphRef = useGetGraph('main-graph');
-    const {
-        type: layoutType,
-        setType: setLayoutType,
-        circle: circleLayout,
-        grid: gridLayout,
-        setCurrent: setCurrentLayout,
-    } = useLayoutProperties();
-
+    const layoutType = useLayoutStore((s) => s.type);
+    const setLayoutType = useLayoutStore((s) => s.setType);
+    const gridLayoutCols = useLayoutStore((s) => s.cols);
+    const setGridLayoutCols = useLayoutStore((s) => s.setCols);
+    const currentLayout = useLayoutStore((s) => s.current);
+    const setCurrentLayout = useLayoutStore((s) => s.setCurrent);
+    const syncLayout = useLayoutStore((s) => s.syncLayout);
+    const activeTabId = useGraphWorkspaceStore((s) => s.activeTabId);
     const { addToast } = useToasts();
 
+    const {
+        graph: { arrangeOn },
+    } = useSettings();
+
+    const arrangeOnRef = useRef(arrangeOn);
+
     useEffect(() => {
+        arrangeOnRef.current = arrangeOn;
+    }, [arrangeOn]);
+
+    useEffect(() => {
+        if (!graphRef.current) {
+            return;
+        }
+
+        const rawOptions: unknown = graphRef.current.data('layoutOptions');
+        const options = isLayoutOptions(rawOptions)
+            ? rawOptions
+            : { ...DefaultLayoutOptions };
+
+        const type = isLayoutType(options.name)
+            ? options.name
+            : (DefaultLayoutOptions.name as LayoutType);
+
+        const cols =
+            options.name === 'grid'
+                ? { ...DefaultGridLayoutOptions, ...options }.cols ||
+                  DefaultGridLayoutOptions.cols
+                : undefined;
+
+        syncLayout(type, options, cols);
+    }, [graphRef, activeTabId, syncLayout]);
+
+    useEffect(() => {
+        if (!graphRef.current) {
+            return;
+        }
+
+        if (arrangeOnRef.current.tabChange) {
+            arrangeGraph(graphRef.current, currentLayout);
+        }
+    }, [currentLayout, graphRef]);
+
+    const handleChangeLayoutType = (e: ChangeEvent<HTMLSelectElement>) => {
         if (!graphRef.current) {
             addToast(ParsedErrorToasts.GraphNotFound);
             return;
         }
 
-        let options: cytoscape.LayoutOptions = {
-            name: layoutType,
-
-            animate: true,
-            animationDuration: 500,
-            animationEasing: 'ease-out',
-        };
-
-        // Delayed
-        // if (layoutType === 'circle') {
-        //     options = {
-        //         ...options,
-        //         name: 'circle',
-        //         radius: circleLayout.radius,
-        //     };
-        // }
-
-        if (layoutType === 'grid') {
-            options = {
-                ...options,
-                name: 'grid',
-                // rows: gridLayout.rows, // Delayed
-                cols: gridLayout.cols,
-            };
-        }
-
-        setCurrentLayout(options);
-        arrangeGraph(graphRef.current, options);
-    }, [
-        graphRef,
-        layoutType,
-        circleLayout.radius,
-        gridLayout.rows,
-        gridLayout.cols,
-        setCurrentLayout,
-        addToast,
-    ]);
-
-    const handleChangeLayoutType = (e: ChangeEvent<HTMLSelectElement>) => {
         const { value } = e.target;
-        const type = isLayoutType(value) ? value : 'circle';
+        const type = isLayoutType(value)
+            ? value
+            : (DefaultLayoutOptions.name as LayoutType);
 
         setLayoutType(type);
+        setCurrentLayout((prev) => ({ ...prev, name: type }));
+        updateLayoutOptions(
+            graphRef.current,
+            { name: type },
+            arrangeOnRef.current.layoutChange
+        );
     };
 
-    // Delayed
-    // const handleChangeCircleRadius = (e: ChangeEvent<HTMLInputElement>) => {
-    //     setNumberProperty(e, circleLayout.setRadius, circleLayout.radius, 1, 250);
-    // };
-
-    // In analysis for better use cases
-    // const handleChangeGridRows = (e: ChangeEvent<HTMLInputElement>) => {
-    //     setNumberProperty(e, gridLayout.setRows, gridLayout.rows, 1, 10);
-    // };
-
     const handleChangeGridCols = (e: ChangeEvent<HTMLInputElement>) => {
-        setNumberProperty(e, gridLayout.setCols, gridLayout.cols, 1, 10);
+        if (!graphRef.current) {
+            addToast(ParsedErrorToasts.GraphNotFound);
+            return;
+        }
+
+        setNumberProperty(e, setGridLayoutCols, gridLayoutCols, 1, 10);
+        setCurrentLayout((prev) => ({ ...prev, cols: Number(e.target.value) }));
+        updateLayoutOptions(
+            graphRef.current,
+            { name: 'grid', cols: Number(e.target.value) },
+            arrangeOnRef.current.layoutChange
+        );
     };
 
     const handleRandomLayout = () => {
@@ -93,7 +113,13 @@ export function LayoutSection({ visible = true }: LayoutSectionProps) {
             addToast(ParsedErrorToasts.GraphNotFound);
             return;
         }
-        arrangeGraph(graphRef.current, { name: 'random' });
+
+        setCurrentLayout((prev) => ({ ...prev, name: 'random' }));
+        updateLayoutOptions(
+            graphRef.current,
+            { name: 'random' },
+            arrangeOnRef.current.layoutChange
+        );
     };
 
     const selectTypeOptions = useMemo(() => {
@@ -108,81 +134,47 @@ export function LayoutSection({ visible = true }: LayoutSectionProps) {
     }, []);
 
     return (
-        <>
-            <div className={visible ? '' : 'hidden'}>
-                <div className="divider mb-1">
-                    <h1 className="text-lg font-bold text-center">Layout</h1>
-                </div>
+        <div className={visible ? '' : 'hidden'}>
+            <div className="divider mb-1">
+                <h1 className="text-lg font-bold text-center">Layout</h1>
+            </div>
 
-                <SelectInput
-                    label="Layout Type"
-                    onChange={handleChangeLayoutType}
-                    options={selectTypeOptions}
-                    value={layoutType}
-                    defaultValue={DefaultLayoutOptions.name}
+            <SelectInput
+                label="Layout Type"
+                onChange={handleChangeLayoutType}
+                options={selectTypeOptions}
+                value={layoutType}
+                defaultValue={DefaultLayoutOptions.name}
+                tooltip={{
+                    content: 'Select the layout algorithm for arranging nodes.',
+                }}
+            />
+
+            {layoutType === 'grid' && (
+                <RangeInput
+                    label="Columns"
+                    max={10}
+                    min={1}
+                    onChange={handleChangeGridCols}
+                    step={1}
+                    value={gridLayoutCols}
+                    defaultValue={DefaultGridLayoutOptions.cols}
                     tooltip={{
-                        content: 'Select the layout algorithm for arranging nodes.',
+                        content:
+                            'Determine the number of columns in the grid layout.',
                     }}
                 />
+            )}
 
-                {/* {layoutType === 'circle' && (
-                    // Better visualized when multi-layout is implemented
-                    // TODO: implement multi-layout
-                    <>
-                        <RangeInput
-                            label="Radius"
-                            max={250}
-                            min={1}
-                            onChange={handleChangeCircleRadius}
-                            step={1}
-                            value={circleLayout.radius}
-                            defaultValue={DefaultCircleLayoutOptions.radius}
-                        />
-                    </>
-                )} */}
-
-                {layoutType === 'grid' && (
-                    <>
-                        {/* In analysis for better use cases 
-                            TODO: Find use cases for grid rows adjustment or deprecation */}
-                        {/* <RangeInput
-                            label="Rows"
-                            max={10}
-                            min={1}
-                            onChange={handleChangeGridRows}
-                            step={1}
-                            value={gridLayout.rows}
-                            defaultValue={DefaultGridLayoutOptions.rows}
-                        /> */}
-
-                        <RangeInput
-                            label="Columns"
-                            max={10}
-                            min={1}
-                            onChange={handleChangeGridCols}
-                            step={1}
-                            value={gridLayout.cols}
-                            defaultValue={DefaultGridLayoutOptions.cols}
-                            tooltip={{
-                                content:
-                                    'Determine the number of columns in the grid layout.',
-                            }}
-                        />
-                    </>
-                )}
-
-                {layoutType === 'random' && (
-                    <>
-                        <button
-                            className="btn btn-outline hover:btn-accent focus:btn-accent w-full mt-2 mb-1"
-                            onClick={handleRandomLayout}
-                        >
-                            Randomize node positions
-                        </button>
-                    </>
-                )}
-            </div>
-        </>
+            {layoutType === 'random' && (
+                <button
+                    className="btn btn-outline hover:btn-accent focus:btn-accent w-full mt-2 mb-1"
+                    onClick={handleRandomLayout}
+                >
+                    Randomize node positions
+                </button>
+            )}
+        </div>
     );
 }
 
@@ -195,7 +187,7 @@ const setNumberProperty = (
 ) => {
     let value = Number(e.target.value);
 
-    if (isNaN(value)) {
+    if (Number.isNaN(value)) {
         return;
     }
 

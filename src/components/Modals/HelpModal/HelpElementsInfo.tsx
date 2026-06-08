@@ -36,8 +36,7 @@ export function HelpElementsInfo() {
                                     order they were selected (A→B→C) when in{' '}
                                     <ActionBarButton
                                         label="Path Mode"
-                                        className="px-1 btn-xs"
-                                        margin="my-0"
+                                        className="px-1 btn-xs my-0"
                                         icon={AppIcons.PathEdgeMode({
                                             size: 16,
                                         })}

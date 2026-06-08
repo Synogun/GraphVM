@@ -9,9 +9,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `Graph` - Added context menus for nodes, edges and the graph background with relevant actions.
+- `ElementsInfoPanel` - Added a new panel to display some information about the currently selected nodes and edges.
+- `Algorithms` - Added traversal algorithms tab in the Algorithms modal.
+- `Project` - Adopted SonarQube for code quality analysis.
+- `GenerationAlgorithms` - Added a new graph generation algorithm for HLP graphs and unit tests. (Sorry about the diff pollution on MR 😇)
+- `Tests` - Added structure for unit, integration and end-to-end tests.
+- `Graph` - Implemented a tabbed interface for multiple graph instances, allowing users to create and manage different contexts and easily switch between them.
+- `Modals` - Implemented `ConfirmModal` for reusable confirmation dialogs across the app.
+- `Graph` - Added support for multiple graph instances with a workspace system.
+- `Shortcuts` - Added a `GraphShortcutsBinding` component to bind keyboard shortcuts to graph actions using the `useGraphShortcuts` hook.
+- `Hooks` - Implemented `useGraphMutation` hook to provide better syncronization between the core graph state and the React state, with methods for syncing metadata and selection.
+- `Settings` - Added settings for keyboard shortcuts configuration.
+- `Settings` - Applied `ArrangeOn` settings to graph operations (add node/edge, import, edit node/edge) to trigger automatic layout when enabled.
+- `Settings` - Implemented the settings modal with a tabbed interface for graph, layout, and style settings.
+- `Project` - Adopted React Compiler for better rendering performance.
+- `Packages` - Upgraded dependencies to their latest versions.
+- `Env` - Added empty `.env` file to enforce standard project practices.
+- `Actions` - Added an action for pull requests.
+- `Project` - Added minimum README content.
+- `Graph` - Implements validation for graph limits on action bar, generation algorithms and importing modal.
+- `Actions` - Added a new action for pre-deploy to automate changelog and version bumping.
+
 ### Changed
 
+- `Project` - Adjustes ts.config files to share common properties and extend when needed;
+- `Project` - Adjusted files into subfolders for better organization;
+- `Inputs` - Adjusted `ToggleInput` to accept custom labels for on/off states.
+
 ### Fixed
+
+- `SonarQube` - Fixed SonarQube issues reported after adoption.
+- `Toasts` - Fixed an issue where toast were always rendered beneath modals.
 
 ## [v2.5.0](https://github.com/Synogun/GraphVM/compare/v2.4.0...v2.5.0)
 

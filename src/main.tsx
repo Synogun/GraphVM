@@ -1,30 +1,25 @@
 import { App } from '@/App';
-import { ErrorBoundary } from '@/components/ErrorBoundary';
-import { ModalsProvider } from '@/providers/ModalsProvider';
-import { ToastsProvider } from '@/providers/ToastsProvider';
-import '@/styles/animations.css';
-import '@/styles/main.css';
+import { ErrorBoundary } from '@/components/feedback';
+import '@/styles';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { importCytoscapeExtensions } from './config/extensions';
-import { ParsedError } from './config/parsedError';
+import { AppProviders } from './providers';
 
 importCytoscapeExtensions();
 
 const rootElement = document.getElementById('root');
 
 if (!rootElement) {
-    throw new ParsedError('Root element with id "root" not found');
+    throw new Error('Root element with id "root" not found');
 }
 
 const appTree = (
     <StrictMode>
         <ErrorBoundary>
-            <ToastsProvider>
-                <ModalsProvider>
-                    <App />
-                </ModalsProvider>
-            </ToastsProvider>
+            <AppProviders>
+                <App />
+            </AppProviders>
         </ErrorBoundary>
     </StrictMode>
 );

@@ -9,7 +9,8 @@ export function Modal({
     onClose,
     actions,
     className,
-}: ModalProps) {
+    boxClassName,
+}: Readonly<ModalProps>) {
     const modalRef = useRef<HTMLDialogElement>(null);
 
     useEffect(() => {
@@ -20,6 +21,9 @@ export function Modal({
             modal.showModal();
         } else {
             modal.close();
+            if (document.activeElement instanceof HTMLElement) {
+                document.activeElement.blur();
+            }
         }
     }, [show]);
 
@@ -37,15 +41,14 @@ export function Modal({
 
         return () => {
             modal.removeEventListener('close', handleClose);
-            if (document.activeElement instanceof HTMLElement) {
-                document.activeElement.blur();
-            }
         };
     }, [onClose, show]);
 
     return (
         <dialog ref={modalRef} className={`modal ${className ?? ''}`} id={id}>
-            <div className="modal-box max-h-[90vh] max-w-[70vw] overflow-y-auto overflow-x-hidden">
+            <div
+                className={`modal-box max-h-[90vh] max-w-[70vw] overflow-y-auto overflow-x-hidden ${boxClassName ?? ''}`}
+            >
                 <h3 className="font-bold text-lg text-center">{title ?? ' '}</h3>
                 {subtitle && (
                     <p className="text-sm text-center text-base-content/70 mt-1">
@@ -56,7 +59,7 @@ export function Modal({
                 <div className="modal-action mt-2">
                     {actions ?? (
                         <form method="dialog">
-                            <button className="btn" onClick={onClose}>
+                            <button className="btn btn-accent" onClick={onClose}>
                                 Close
                             </button>
                         </form>
@@ -79,4 +82,5 @@ type ModalProps = {
     onClose?: () => void;
     actions?: React.ReactNode;
     className?: string;
+    boxClassName?: string;
 };

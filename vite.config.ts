@@ -1,11 +1,16 @@
 import tailwindcss from '@tailwindcss/vite';
-import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
+import babel from '@rolldown/plugin-babel';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
+import { defineConfig } from 'vitest/config';
 
 // https://vite.dev/config/
 export default defineConfig({
     base: '/GraphVM/',
-    plugins: [react(), tailwindcss()],
+    plugins: [
+        react(),
+        babel({ presets: [reactCompilerPreset()] }),
+        tailwindcss(),
+    ],
     resolve: {
         alias: {
             '@': '/src',
@@ -15,20 +20,30 @@ export default defineConfig({
             '@Inputs': '/src/components/common/inputs',
             '@Contexts': '/src/contexts',
             '@Logger': '/src/config/logger',
+            '@Config': '/src/config',
         },
     },
     build: {
-        rollupOptions: {
+        chunkSizeWarningLimit: 600,
+        rolldownOptions: {
             output: {
-                manualChunks: {
-                    cytoscape: ['cytoscape'],
-                    react: ['react', 'react-dom'],
+                codeSplitting: {
+                    groups: [
+                        { name: 'cytoscape', test: /node_modules\/cytoscape/ },
+                        { name: 'react', test: /node_modules\/react/ },
+                    ],
                 },
             },
         },
     },
     css: {
         devSourcemap: true,
+    },
+    test: {
+        include: ['tests/unit/**/*.test.ts', 'tests/integration/**/*.test.ts?(x)'],
+        environment: 'jsdom',
+        globals: true,
+        setupFiles: ['./tests/setup/vitest.setup.ts'],
     },
 });
 

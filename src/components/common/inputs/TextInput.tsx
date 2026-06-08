@@ -9,7 +9,7 @@ export function TextInput({
     tooltip,
     defaultValue,
     allowClear = true,
-}: TextInputProps) {
+}: Readonly<TextInputProps>) {
     const isModified =
         allowClear &&
         defaultValue !== undefined &&

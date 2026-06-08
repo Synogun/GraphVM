@@ -1,0 +1,116 @@
+import { parseError } from '@/config/parsedError';
+import { useGetGraph } from '@/hooks';
+import { useGraphMetaStore } from '@/stores/graphMetaStore';
+import { useGraphSelectionStore } from '@/stores/graphSelectionStore';
+import { isGenerationFamily } from '@/types/algorithms/generationAlgorithmsTypeGuards';
+import { Logger } from '@Logger';
+import { useCallback } from 'react';
+
+const logger = Logger.createContextLogger('useGraphMutation');
+
+type GraphMutationAction<TResult> = (core: cytoscape.Core) => TResult;
+
+export function useGraphMutation(graphId = 'main-graph') {
+    const graphRef = useGetGraph(graphId);
+
+    const setDirected = useGraphMetaStore((s) => s.setDirected);
+    const setFamilies = useGraphMetaStore((s) => s.setFamilies);
+    const setNodeCount = useGraphMetaStore((s) => s.setNodeCount);
+    const setEdgeCount = useGraphMetaStore((s) => s.setEdgeCount);
+    const setEdgeMode = useGraphMetaStore((s) => s.setEdgeMode);
+    const setSelectedNodes = useGraphSelectionStore((s) => s.setSelectedNodes);
+    const setSelectedEdges = useGraphSelectionStore((s) => s.setSelectedEdges);
+
+    const getGraph = useCallback(() => {
+        const core = graphRef.current;
+
+        if (!core) {
+            return null;
+        }
+
+        return core;
+    }, [graphRef]);
+
+    const syncMeta = useCallback(
+        (core?: cytoscape.Core) => {
+            const target = core ?? getGraph();
+            if (!target) {
+                return false;
+            }
+
+            setNodeCount(target.nodes('[!isGhost]').length);
+            setEdgeCount(target.edges('[!isGhost]').length);
+            setDirected(Boolean(target.data('directed')));
+
+            const storedEdgeMode: unknown = target.data('edgeMode');
+            if (storedEdgeMode === 'path' || storedEdgeMode === 'complete') {
+                setEdgeMode(storedEdgeMode);
+            }
+
+            const storedFamilies: unknown = target.data('generationFamily');
+            setFamilies(
+                Array.isArray(storedFamilies)
+                    ? storedFamilies.filter(isGenerationFamily)
+                    : []
+            );
+
+            return true;
+        },
+        [getGraph, setNodeCount, setEdgeCount, setDirected, setEdgeMode, setFamilies]
+    );
+
+    const syncSelection = useCallback(
+        (core?: cytoscape.Core) => {
+            const target = core ?? getGraph();
+            if (!target) {
+                return false;
+            }
+
+            setSelectedNodes(target.nodes(':selected').map((node) => node.id()));
+            setSelectedEdges(target.edges(':selected').map((edge) => edge.id()));
+            return true;
+        },
+        [getGraph, setSelectedNodes, setSelectedEdges]
+    );
+
+    const syncAll = useCallback(
+        (core?: cytoscape.Core) => {
+            const target = core ?? getGraph();
+            if (!target) {
+                return false;
+            }
+
+            syncMeta(target);
+            syncSelection(target);
+            return true;
+        },
+        [getGraph, syncMeta, syncSelection]
+    );
+
+    const withGraph = useCallback(
+        <TResult>(action: GraphMutationAction<TResult>) => {
+            const core = getGraph();
+            if (!core) {
+                return null;
+            }
+
+            try {
+                const result = action(core);
+                syncAll(core);
+                return result;
+            } catch (error: unknown) {
+                const parsedError = parseError(error);
+                logger.error('Graph action failed', parsedError);
+                return null;
+            }
+        },
+        [getGraph, syncAll]
+    );
+
+    return {
+        withGraph,
+        syncMeta,
+        syncSelection,
+        syncAll,
+    };
+}

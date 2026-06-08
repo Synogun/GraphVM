@@ -1,8 +1,9 @@
-import { ParsedErrorToasts, parseError } from '@/config/parsedError';
+import { parseError } from '@/config/parsedError';
+import { ParsedErrorToasts } from '@/constants';
 import type { GraphInstance } from '@/types/graph';
 import { findPropertyValueMode } from '@/utils/elements';
 import { useToasts } from '@Contexts';
-import type { RefObject } from 'react';
+import { useCallback, type RefObject } from 'react';
 
 type EditorCollection = cytoscape.NodeCollection | cytoscape.EdgeCollection;
 
@@ -30,7 +31,7 @@ export function usePropertyEditor<TDefaults extends Record<string, unknown>>({
 }: UsePropertyEditorParams<TDefaults>) {
     const { addToast } = useToasts();
 
-    const getCore = () => {
+    const getCore = useCallback(() => {
         const core = graphRef.current;
 
         if (!core) {
@@ -39,18 +40,18 @@ export function usePropertyEditor<TDefaults extends Record<string, unknown>>({
         }
 
         return core;
-    };
+    }, [graphRef, addToast]);
 
-    const resolveDefaults = () => {
+    const resolveDefaults = useCallback(() => {
         const core = getCore();
         if (!core) {
             return null;
         }
 
         return getDefaults(core);
-    };
+    }, [getCore, getDefaults]);
 
-    const resolveSelectedCollection = () => {
+    const resolveSelectedCollection = useCallback(() => {
         const core = getCore();
         if (!core) {
             return null;
@@ -62,55 +63,59 @@ export function usePropertyEditor<TDefaults extends Record<string, unknown>>({
         );
 
         return collection;
-    };
+    }, [getCore, getElements, selectedIds]);
 
-    const getModeValue = <K extends Extract<keyof TDefaults, string>>(
-        property: K
-    ) => {
-        const defaults = resolveDefaults();
-        if (!defaults) {
-            return null;
-        }
+    const getModeValue = useCallback(
+        <K extends Extract<keyof TDefaults, string>>(property: K) => {
+            const defaults = resolveDefaults();
+            if (!defaults) {
+                return null;
+            }
 
-        if (selectedIds.length === 0) {
-            return defaults[property];
-        }
+            if (selectedIds.length === 0) {
+                return defaults[property];
+            }
 
-        const selectedCollection = resolveSelectedCollection();
-        if (!selectedCollection) {
-            return null;
-        }
+            const selectedCollection = resolveSelectedCollection();
+            if (!selectedCollection) {
+                return null;
+            }
 
-        const modeValue = findPropertyValueMode(selectedCollection, property);
-        return modeValue ?? defaults[property];
-    };
+            const modeValue = findPropertyValueMode(selectedCollection, property);
+            return modeValue ?? defaults[property];
+        },
+        [resolveDefaults, selectedIds, resolveSelectedCollection]
+    );
 
-    const applyValue = <K extends Extract<keyof TDefaults, string>>(
-        property: K,
-        value: TDefaults[K]
-    ) => {
-        const core = getCore();
-        if (!core) {
-            return false;
-        }
+    const applyValue = useCallback(
+        <K extends Extract<keyof TDefaults, string>>(
+            property: K,
+            value: TDefaults[K]
+        ) => {
+            const core = getCore();
+            if (!core) {
+                return false;
+            }
 
-        if (selectedIds.length === 0) {
-            const defaultPatch = {
-                [property]: value,
-            } as unknown as Partial<TDefaults>;
-            setDefaults(core, defaultPatch);
-            return true;
-        }
+            if (selectedIds.length === 0) {
+                const defaultPatch = {
+                    [property]: value,
+                } as unknown as Partial<TDefaults>;
+                setDefaults(core, defaultPatch);
+                return true;
+            }
 
-        try {
-            updateElements(core, selectedIds, property, value);
-            return true;
-        } catch (error: unknown) {
-            const parsedError = parseError(error);
-            addToast({ type: 'error', message: parsedError.message });
-            return false;
-        }
-    };
+            try {
+                updateElements(core, selectedIds, property, value);
+                return true;
+            } catch (error: unknown) {
+                const parsedError = parseError(error);
+                addToast({ type: 'error', message: parsedError.message });
+                return false;
+            }
+        },
+        [getCore, selectedIds, setDefaults, updateElements, addToast]
+    );
 
     return {
         getCore,

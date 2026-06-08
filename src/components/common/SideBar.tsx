@@ -8,34 +8,19 @@ export function SideBar({
     inputId,
     children,
     sidebarChildren,
+    openOnLarge = true,
     side = 'left',
     width = 'w-60',
     className,
     sideClassName,
-}: SideBarProps) {
-    const sidebarWidth = width;
-
-    const openButton = {
-        side: side === 'left' ? 'left-4' : 'right-4',
-        icon:
-            side === 'left'
-                ? {
-                      open: iconHandlers.left.open,
-                      close: iconHandlers.left.close,
-                  }
-                : {
-                      open: iconHandlers.right.open,
-                      close: iconHandlers.right.close,
-                  },
-    };
-
+}: Readonly<SideBarProps>) {
     return (
         <div
             id={id}
             className={
                 'drawer ' +
                 (side === 'left' ? '' : 'drawer-end ') +
-                'lg:drawer-open ' +
+                (openOnLarge ? 'lg:drawer-open ' : '') +
                 (className ?? '')
             }
         >
@@ -44,17 +29,24 @@ export function SideBar({
             <div className="drawer-content flex flex-col h-screen">
                 {children}
 
-                <div className={`fixed top-4 ${openButton.side}`}>
+                <div
+                    className={[
+                        'fixed top-16',
+                        side === 'left' ? 'left-4' : 'right-4',
+                        ...(openOnLarge ? [] : ['lg:hidden']),
+                    ].join(' ')}
+                >
                     <label
                         aria-label="toggle sidebar"
-                        className="swap swap-rotate"
                         htmlFor={inputId}
-                        id={'toggle-sidebar-' + side}
+                        id={['toggle-sidebar', side, inputId].join('-')}
                         title="Open sidebar"
                     >
-                        <input type="checkbox" />
-                        {openButton.icon.open}
-                        {openButton.icon.close}
+                        {side === 'left' ? (
+                            <AppIcons.SidebarLeftExpand size={ICON_SIZE} />
+                        ) : (
+                            <AppIcons.SidebarRightExpand size={ICON_SIZE} />
+                        )}
                     </label>
                 </div>
             </div>
@@ -66,7 +58,7 @@ export function SideBar({
                     htmlFor={inputId}
                 />
                 <ul
-                    className={`menu bg-base-200 text-base-content min-h-full ${sidebarWidth} p-4`}
+                    className={`menu bg-base-200 text-base-content min-h-full ${width} p-4`}
                 >
                     {sidebarChildren}
                 </ul>
@@ -74,45 +66,6 @@ export function SideBar({
         </div>
     );
 }
-
-const iconHandlers = {
-    left: {
-        open: (
-            <>
-                <AppIcons.SidebarLeftExpand
-                    className="swap-off h-10 w-10"
-                    size={ICON_SIZE}
-                />
-            </>
-        ),
-        close: (
-            <>
-                <AppIcons.SidebarLeftCollapse
-                    className="swap-on h-10 w-10"
-                    size={ICON_SIZE}
-                />
-            </>
-        ),
-    },
-    right: {
-        open: (
-            <>
-                <AppIcons.SidebarRightExpand
-                    className="swap-off h-10 w-10 fill-current"
-                    size={ICON_SIZE}
-                />
-            </>
-        ),
-        close: (
-            <>
-                <AppIcons.SidebarRightCollapse
-                    className="swap-on h-10 w-10 fill-current"
-                    size={ICON_SIZE}
-                />
-            </>
-        ),
-    },
-};
 
 type SideBarProps = {
     id?: string;
@@ -123,6 +76,7 @@ type SideBarProps = {
     side?: 'left' | 'right';
     width?: string;
     sidebarChildren?: ReactNode;
+    openOnLarge?: boolean;
     open?: boolean;
     condensed?: boolean;
 };

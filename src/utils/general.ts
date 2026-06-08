@@ -1,8 +1,7 @@
 /**
  * Determines if the current environment is development.
  *
- * Checks if the current window location does not include 'synogun.github.io',
- * which is used to identify the production environment.
+ * Identify the if its in 'development' environment.
  *
  * @returns {boolean} `true` if running in development mode, otherwise `false`.
  */

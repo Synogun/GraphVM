@@ -3,29 +3,46 @@ import { AiOutlineNodeIndex } from 'react-icons/ai';
 import { BiExport, BiImport } from 'react-icons/bi';
 import { FaCheck, FaGithub } from 'react-icons/fa';
 import { FaCircleInfo, FaCode } from 'react-icons/fa6';
-import { FiHelpCircle } from 'react-icons/fi';
-import { GoTrash } from 'react-icons/go';
+import { FiHelpCircle, FiShare2 } from 'react-icons/fi';
+import { GoPencil, GoTrash } from 'react-icons/go';
+import { IoIosAdd } from 'react-icons/io';
 import {
     IoAddCircleOutline,
     IoClose,
     IoCloseCircle,
+    IoCopyOutline,
+    IoPause,
+    IoPlay,
+    IoPlayBack,
+    IoPlayForward,
+    IoStop,
     IoWarningOutline,
 } from 'react-icons/io5';
-import { MdFilterCenterFocus, MdPalette, MdSettings } from 'react-icons/md';
-import { PiFediverseLogo, PiGraph, PiLineSegments, PiShuffle } from 'react-icons/pi';
-import { RiSave3Fill } from 'react-icons/ri';
 import {
-    TbLayoutSidebarLeftCollapseFilled,
-    TbLayoutSidebarLeftExpandFilled,
-    TbLayoutSidebarRightCollapseFilled,
-    TbLayoutSidebarRightExpandFilled,
-    TbReport,
-} from 'react-icons/tb';
+    MdDeleteSweep,
+    MdFilterCenterFocus,
+    MdOutlineReplay,
+    MdPalette,
+    MdSettings,
+} from 'react-icons/md';
+import {
+    PiFediverseLogo,
+    PiGhost,
+    PiGraph,
+    PiLineSegments,
+    PiShuffle,
+} from 'react-icons/pi';
+import { RiSave3Fill } from 'react-icons/ri';
+import { TbReport } from 'react-icons/tb';
+import {
+    VscLayoutSidebarLeftDock,
+    VscLayoutSidebarRightDock,
+} from 'react-icons/vsc';
 
 export const AppIcons = {
     NewGraph: (props: IconBaseProps) => <PiGraph {...props} />,
     Algorithms: (props: IconBaseProps) => <FaCode {...props} />,
-    ImportExport: (props: IconBaseProps) => <RiSave3Fill {...props} />,
+    Save: (props: IconBaseProps) => <RiSave3Fill {...props} />,
     Arrange: (props: IconBaseProps) => <PiShuffle {...props} />,
     Center: (props: IconBaseProps) => <MdFilterCenterFocus {...props} />,
     AddNode: (props: IconBaseProps) => <IoAddCircleOutline {...props} />,
@@ -41,20 +58,38 @@ export const AppIcons = {
     DebugLogs: (props: IconBaseProps) => <TbReport {...props} />,
     ColorPalette: (props: IconBaseProps) => <MdPalette {...props} />,
     SidebarLeftCollapse: (props: IconBaseProps) => (
-        <TbLayoutSidebarLeftCollapseFilled {...props} />
+        <VscLayoutSidebarLeftDock {...props} />
     ),
     SidebarLeftExpand: (props: IconBaseProps) => (
-        <TbLayoutSidebarLeftExpandFilled {...props} />
+        <VscLayoutSidebarRightDock {...props} />
     ),
     SidebarRightCollapse: (props: IconBaseProps) => (
-        <TbLayoutSidebarRightCollapseFilled {...props} />
+        <VscLayoutSidebarLeftDock
+            {...props}
+            className={`${props.className ?? ''} rotate-180`}
+        />
     ),
     SidebarRightExpand: (props: IconBaseProps) => (
-        <TbLayoutSidebarRightExpandFilled {...props} />
+        <VscLayoutSidebarRightDock
+            {...props}
+            className={`${props.className ?? ''} rotate-180`}
+        />
     ),
     Checkmark: (props: IconBaseProps) => <FaCheck {...props} />,
     Import: (props: IconBaseProps) => <BiImport {...props} />,
+    Share: (props: IconBaseProps) => <FiShare2 {...props} />,
     Export: (props: IconBaseProps) => <BiExport {...props} />,
     Info: (props: IconBaseProps) => <FaCircleInfo {...props} />,
     Warning: (props: IconBaseProps) => <IoWarningOutline {...props} />,
+    Add: (props: IconBaseProps) => <IoIosAdd {...props} />,
+    Edit: (props: IconBaseProps) => <GoPencil {...props} />,
+    Copy: (props: IconBaseProps) => <IoCopyOutline {...props} />,
+    ClearAll: (props: IconBaseProps) => <MdDeleteSweep {...props} />,
+    Ghost: (props: IconBaseProps) => <PiGhost {...props} />,
+    AnimPlay: (props: IconBaseProps) => <IoPlay {...props} />,
+    AnimPause: (props: IconBaseProps) => <IoPause {...props} />,
+    AnimForward: (props: IconBaseProps) => <IoPlayForward {...props} />,
+    AnimBackward: (props: IconBaseProps) => <IoPlayBack {...props} />,
+    AnimStop: (props: IconBaseProps) => <IoStop {...props} />,
+    AnimReplay: (props: IconBaseProps) => <MdOutlineReplay {...props} />,
 };

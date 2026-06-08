@@ -1,0 +1,40 @@
+import type { GraphLimits } from '@/types/ui/settings';
+
+export type ContextMenuControl = {
+    destroy: () => void;
+};
+
+export type BindContextMenuOptions = {
+    syncAll: (core: cytoscape.Core) => void;
+    graphLimits?: { readonly current: GraphLimits | undefined };
+    isAnimationLocked?: { readonly current: boolean };
+    onError?: (message: string) => void;
+    shouldAbort?: () => boolean;
+    openNodeLabelModal?: () => void;
+    openEdgeLabelModal?: () => void;
+    openAlgorithmsModal?: () => void;
+};
+
+export type ContextMenuActionDependencies = {
+    syncAll: (core: cytoscape.Core) => void;
+    graphLimits?: GraphLimits;
+    onError?: (message: string) => void;
+    openNodeLabelModal?: () => void;
+    openEdgeLabelModal?: () => void;
+    openAlgorithmsModal?: () => void;
+};
+
+export type ContextMenuActionDefinition = {
+    id: string;
+    content: string;
+    tooltipText: string;
+    selector: string;
+    coreAsWell?: boolean;
+    show?: boolean;
+    disabled?: boolean;
+    hasTrailingDivider?: boolean;
+    onClick: (
+        evt: cytoscape.EventObject,
+        deps: ContextMenuActionDependencies
+    ) => void;
+};

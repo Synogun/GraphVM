@@ -1,10 +1,13 @@
-import { ParsedErrorToasts, parseError } from '@/config/parsedError';
-import { useGetGraph } from '@/hooks/useGraphRegistry';
-import { mapElementsToText } from '@/services/importExportService';
-import { isCytoscapeOptions, isStylesheetStyleArray } from '@/types/graphTypeGuards';
+import { parseError } from '@/config/parsedError';
+import { ParsedErrorToasts } from '@/constants';
+import { useGetGraph, useGraphMutation } from '@/hooks';
+import {
+    mapElementsToText,
+    normalizeCytoscapeOptionsForExport,
+} from '@/services/persistence';
 import { makeBlobAndDownload } from '@/utils/general';
-import { transformStylesheet } from '@/utils/styleHelpers';
-import { useGraphProperties, useToasts } from '@Contexts';
+import { useGraphMetaStore } from '@/stores/graphMetaStore';
+import { useToasts } from '@Contexts';
 import type cytoscape from 'cytoscape';
 import {
     useCallback,
@@ -21,8 +24,9 @@ export function ExportTab({
     ref,
     onExportSuccess,
     onReadyStateChange,
-}: ExportTabProps) {
+}: Readonly<ExportTabProps>) {
     const graphRef = useGetGraph('main-graph');
+    const { syncSelection } = useGraphMutation('main-graph');
     const [exportFormat, setExportFormat] = useState<
         'text' | 'json' | 'png' | 'jpg'
     >('text');
@@ -30,9 +34,7 @@ export function ExportTab({
         cytoscape.ExportStringOptions & cytoscape.ExportJpgStringOptions
     >({});
 
-    const {
-        nodes: { count: nodeCount },
-    } = useGraphProperties();
+    const nodeCount = useGraphMetaStore((s) => s.nodeCount);
 
     const { addToast } = useToasts();
 
@@ -60,7 +62,9 @@ export function ExportTab({
     }, []);
 
     const handleExport = () => {
-        if (!graphRef.current) {
+        const activeGraph = graphRef.current;
+
+        if (!activeGraph) {
             addToast(ParsedErrorToasts.GraphNotFound);
             return;
         }
@@ -86,10 +90,10 @@ export function ExportTab({
 
         if (exportFilenameInputRef.current.value) {
             fileName = exportFilenameInputRef.current.value
-                .replace('{TIMESTAMP}', Date.now().toString())
-                .replace('{NODE_COUNT}', nodeCount.toString())
-                .replace('{EDGE_COUNT}', graphRef.current.edges().length.toString())
-                .replace(/[^a-zA-Z0-9-_]/g, '-');
+                .replaceAll('{TIMESTAMP}', Date.now().toString())
+                .replaceAll('{NODE_COUNT}', nodeCount.toString())
+                .replaceAll('{EDGE_COUNT}', activeGraph.edges().length.toString())
+                .replaceAll(/[^a-zA-Z0-9-_]/g, '-');
         }
 
         let dataStr = '';
@@ -97,20 +101,17 @@ export function ExportTab({
         let fileType = '';
 
         if (exportFormat === 'json') {
-            graphRef.current.elements().unselect();
+            activeGraph.elements().unselect();
+            syncSelection(activeGraph);
 
-            const json = graphRef.current.json();
+            const json = normalizeCytoscapeOptionsForExport(activeGraph.json());
 
-            if (!isCytoscapeOptions(json)) {
+            if (!json) {
                 addToast({
                     type: 'error',
                     message: 'Failed to export graph. Invalid graph data.',
                 });
                 return;
-            }
-
-            if (isStylesheetStyleArray(json.style)) {
-                json.style = transformStylesheet(json.style, 'json');
             }
 
             try {
@@ -136,12 +137,12 @@ export function ExportTab({
 
             dataStr =
                 exportFormat === 'png'
-                    ? graphRef.current.png(options)
-                    : graphRef.current.jpg(options);
+                    ? activeGraph.png(options)
+                    : activeGraph.jpg(options);
             fileNameWithExt = `${fileName}.${exportFormat}`;
             fileType = `image/${exportFormat}`;
         } else {
-            dataStr = mapElementsToText(graphRef.current);
+            dataStr = mapElementsToText(activeGraph);
             fileNameWithExt = `${fileName}.txt`;
             fileType = 'text/plain';
         }
@@ -205,61 +206,62 @@ export function ExportTab({
                     >
                         Export Options
                     </label>
-                    <>
-                        <div
-                            className="grid sm:grid-cols-2 grid-cols-1 gap-4 mt-2"
-                            id="export-options"
+                    <div
+                        className="grid sm:grid-cols-2 grid-cols-1 gap-4 mt-2"
+                        id="export-options"
+                    >
+                        <label
+                            aria-label="Fit graph before exporting"
+                            className="label cursor-pointer justify-start gap-3 rounded-lg border border-base-300 p-3 hover:border-accent"
                         >
-                            <label className="label cursor-pointer justify-start gap-3 rounded-lg border border-base-300 p-3 hover:border-accent">
-                                <input
-                                    className="toggle toggle-accent"
-                                    defaultChecked={!exportOptions.full}
-                                    id="option-fit-graph"
-                                    onChange={(e) => {
-                                        setExportOptions((prev) => ({
-                                            ...prev,
-                                            full: e.target.checked,
-                                        }));
-                                    }}
-                                    type="checkbox"
-                                />
-                                <div className="flex flex-col items-start">
-                                    <span className="label-text">Fit Graph</span>
-                                    <span className="font-thin">
-                                        Center before exporting
-                                    </span>
-                                </div>
-                            </label>
-                            <label className="label cursor-pointer justify-start gap-3 rounded-lg border border-base-300 p-3 hover:border-accent">
-                                <input
-                                    className="p-2 border-0 rounded bg-transparent"
-                                    defaultValue={undefined}
-                                    id="option-bg-color"
-                                    onChange={(e) => {
-                                        console.log(e.target.value);
-                                        setExportOptions((prev) => ({
-                                            ...prev,
-                                            bg: e.target.value,
-                                        }));
-                                    }}
-                                    type="color"
-                                />
-                                <div className="flex flex-col items-start">
-                                    <span className="label-text">
-                                        Background Color
-                                    </span>
-                                    <span className="font-thin">
-                                        Defaults to transparent
-                                    </span>
-                                </div>
-                            </label>
-                        </div>
-                    </>
+                            <input
+                                className="toggle toggle-accent"
+                                defaultChecked={!exportOptions.full}
+                                id="option-fit-graph"
+                                onChange={(e) => {
+                                    setExportOptions((prev) => ({
+                                        ...prev,
+                                        full: e.target.checked,
+                                    }));
+                                }}
+                                type="checkbox"
+                            />
+                            <div className="flex flex-col items-start">
+                                <span className="label-text">Fit Graph</span>
+                                <span className="font-thin">
+                                    Center before exporting
+                                </span>
+                            </div>
+                        </label>
+                        <label
+                            aria-label="Select background color for export"
+                            className="label cursor-pointer justify-start gap-3 rounded-lg border border-base-300 p-3 hover:border-accent"
+                        >
+                            <input
+                                className="p-2 border-0 rounded bg-transparent"
+                                defaultValue={undefined}
+                                id="option-bg-color"
+                                onChange={(e) => {
+                                    setExportOptions((prev) => ({
+                                        ...prev,
+                                        bg: e.target.value,
+                                    }));
+                                }}
+                                type="color"
+                            />
+                            <div className="flex flex-col items-start">
+                                <span className="label-text">Background Color</span>
+                                <span className="font-thin">
+                                    Defaults to transparent
+                                </span>
+                            </div>
+                        </label>
+                    </div>
                 </fieldset>
                 // .421-64
             )}
             {!nodeCount && (
-                <p>
+                <p className="text-center">
                     The graph has no elemens to export. <br />
                     Try adding some!
                 </p>

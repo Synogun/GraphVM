@@ -1,0 +1,243 @@
+import { ParsedError, parseError } from '@/config/parsedError';
+import { DefaultEdgesData, DefaultNodesData } from '@/constants/graphDefaults';
+import { assertEdgeLimit, assertNodeLimit } from '@/services/graph';
+import type { EdgesData } from '@/types/elements/edges';
+import type { NodesData } from '@/types/elements/nodes';
+import {
+    isCytoscapeOptions,
+    isElementsDefinitionObject,
+    isStylesheetStyleArray,
+} from '@/types/graph/typeGuards';
+import type { GraphLimits } from '@/types/ui/settings';
+import { transformStylesheet } from '@/utils/styleHelpers';
+import type cytoscape from 'cytoscape';
+import type { CytoscapeOptions } from 'cytoscape';
+import { makeEdgeId } from '../graph/edgesService';
+import { makeNodeId } from '../graph/nodesService';
+
+export function normalizeCytoscapeOptionsForImport(
+    value: unknown
+): CytoscapeOptions | null {
+    if (!isCytoscapeOptions(value)) {
+        return null;
+    }
+
+    const normalized: CytoscapeOptions = {
+        ...value,
+    };
+
+    if (isStylesheetStyleArray(normalized.style)) {
+        normalized.style = transformStylesheet([...normalized.style], 'sheet');
+    }
+
+    return normalized;
+}
+
+export function normalizeCytoscapeOptionsForExport(
+    value: unknown
+): CytoscapeOptions | null {
+    if (!isCytoscapeOptions(value)) {
+        return null;
+    }
+
+    const normalized: CytoscapeOptions = {
+        ...value,
+    };
+
+    if (isStylesheetStyleArray(normalized.style)) {
+        normalized.style = transformStylesheet([...normalized.style], 'json');
+    }
+
+    return normalized;
+}
+
+function isDataValid(data: string[][]) {
+    if (data.length < 1) {
+        return false;
+    }
+
+    for (const line of data) {
+        if (line.length < 2 || line.length > 3) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+export function parseTextData(
+    data: string,
+    defaults?: { nodes: NodesData; edges: EdgesData }
+): CytoscapeOptions {
+    const separator = ' ';
+
+    const parseLine = (line: string) =>
+        line.replaceAll(/\s+/g, ' ').trim().split(separator);
+
+    const lines = data
+        .replaceAll('\r', '')
+        .split('\n')
+        .filter(Boolean)
+        .map(parseLine);
+
+    if (!isDataValid(lines)) {
+        throw new ParsedError(
+            'Invalid file data. Each line must contain 2 or 3 values separated by spaces.',
+            { context: { dataPreview: data.slice(0, 100) } }
+        );
+    }
+
+    const headerTokens = lines.shift() ?? [];
+    const [numNodes] = headerTokens.map(Number);
+    const directedHeader = headerTokens[2]?.toUpperCase?.();
+    const directed = directedHeader === 'D';
+
+    const currentNodesData = {
+        ...DefaultNodesData,
+        ...(defaults?.nodes ?? {}),
+    };
+    const currentEdgesData = {
+        ...DefaultEdgesData,
+        ...(defaults?.edges ?? {}),
+    };
+
+    const nodeMap = new Map<string, string>();
+    const edges: cytoscape.EdgeDefinition[] = [];
+
+    try {
+        for (const line of lines) {
+            if (line.length < 2) {
+                continue;
+            }
+
+            const [sourceLabel, targetLabel, weight = 1] = line.map((val) =>
+                val.trim()
+            );
+
+            const sourceId = nodeMap.get(sourceLabel) ?? makeNodeId();
+            const targetId = nodeMap.get(targetLabel) ?? makeNodeId();
+
+            edges.push({
+                data: {
+                    ...currentEdgesData,
+                    id: makeEdgeId(),
+                    source: sourceId,
+                    target: targetId,
+                    weight,
+                },
+            });
+
+            if (!nodeMap.has(sourceLabel)) {
+                nodeMap.set(sourceLabel, sourceId);
+            }
+            if (!nodeMap.has(targetLabel)) {
+                nodeMap.set(targetLabel, targetId);
+            }
+        }
+    } catch (error) {
+        const parsedError = parseError(error);
+        throw new ParsedError(
+            'Error parsing file data. Please ensure it is correctly formatted.',
+            {
+                cause: parsedError,
+                context: { dataPreview: data.slice(0, 100) },
+            }
+        );
+    }
+
+    const nodes = Array.from(nodeMap.entries()).map(([label, id]) => ({
+        data: {
+            ...currentNodesData,
+            id,
+            label,
+        },
+    }));
+
+    if (numNodes !== nodes.length) {
+        for (let i = nodes.length; i < numNodes; i++) {
+            const newId = makeNodeId();
+            const newIndex = nodes.length + 1;
+            nodes.push({
+                data: {
+                    ...currentNodesData,
+                    id: newId,
+                    label: newIndex.toString(),
+                },
+            });
+        }
+    }
+
+    return { elements: { nodes, edges }, data: { directed } };
+}
+
+export function mapElementsToText(graph: cytoscape.Core): string {
+    const directedFlag = graph.data('directed') ? 'D' : 'U';
+
+    let dataStr = `${graph.nodes().length.toString()} ${graph.edges().length.toString()} ${directedFlag}\n`;
+
+    // Map Edges
+    dataStr += graph
+        .edges()
+        .map((edge) => {
+            const {
+                source: sourceId,
+                target: targetId,
+                weight,
+            } = edge.data() as EdgesData;
+
+            const sourceLabel = graph.$id(sourceId).data('label') as string;
+            const targetLabel = graph.$id(targetId).data('label') as string;
+
+            let text = `${sourceLabel} ${targetLabel}`;
+
+            if (weight && weight !== 1) {
+                text += ` ${weight.toString()}`;
+            }
+
+            return text;
+        })
+        .join('\n');
+
+    return dataStr;
+}
+
+export function countElementsFromCytoscapeOptions(data: CytoscapeOptions): {
+    nodeCount: number;
+    edgeCount: number;
+} {
+    const elements = data.elements;
+
+    if (!elements) {
+        return { nodeCount: 0, edgeCount: 0 };
+    }
+
+    if (Array.isArray(elements)) {
+        const nodeCount = elements.filter(
+            (element) => element.group === 'nodes'
+        ).length;
+        const edgeCount = elements.filter(
+            (element) => element.group === 'edges'
+        ).length;
+        return { nodeCount, edgeCount };
+    }
+
+    if (!isElementsDefinitionObject(elements)) {
+        return { nodeCount: 0, edgeCount: 0 };
+    }
+
+    const nodeCount = Array.isArray(elements.nodes) ? elements.nodes.length : 0;
+    const edgeCount = Array.isArray(elements.edges) ? elements.edges.length : 0;
+    return { nodeCount, edgeCount };
+}
+
+export function assertImportDataLimits(
+    data: CytoscapeOptions,
+    limits?: GraphLimits
+): void {
+    const { nodeCount, edgeCount } = countElementsFromCytoscapeOptions(data);
+
+    assertNodeLimit(0, nodeCount, limits);
+    assertEdgeLimit(0, edgeCount, limits);
+}
+
+export type FileType = 'application/json' | 'text/plain';

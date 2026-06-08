@@ -1,13 +1,13 @@
 import { DefaultEdgesData, DefaultNodesData } from '@/constants/graphDefaults';
-import type { EdgeCurveStyle, EdgesData } from '@/types/edges';
+import type { EdgeCurveStyle, EdgesData } from '@/types/elements/edges';
 import {
     isDefaultEdgeData,
     isEdgeArrowShape,
     isEdgeCurve,
     isEdgeLineStyle,
-} from '@/types/edgesTypeGuards';
-import type { NodesData } from '@/types/nodes';
-import { isDefaultNodeData, isNodeShape } from '@/types/nodesTypeGuards';
+} from '@/types/elements/edges/typeGuards';
+import type { NodesData } from '@/types/elements/nodes';
+import { isDefaultNodeData, isNodeShape } from '@/types/elements/nodes/typeGuards';
 import {
     type EdgeSingular,
     type NodeSingular,
@@ -64,29 +64,24 @@ export function getNodeShape(e: NodeSingular): cytoscape.Css.NodeShape {
 }
 
 export function getEdgeLabel(e: EdgeSingular): string {
-    const label: unknown = e.data('label');
+    const labelStyle: unknown = e.data('labelStyle');
     const graph = e.cy();
 
-    let effectiveLabel = 'hidden';
+    let effectiveLabelStyle = 'hidden';
 
-    // 1. Try to use element data
-    if (typeof label === 'string') {
-        effectiveLabel = label;
-    }
-    // 2. Try to use default data
-    else if (hasDefaultData(graph)) {
-        const defaults = getDefaultEdgesData(graph);
-        effectiveLabel = defaults.label;
+    if (typeof labelStyle === 'string') {
+        effectiveLabelStyle = labelStyle;
+    } else if (hasDefaultData(graph)) {
+        effectiveLabelStyle = getDefaultEdgesData(graph).labelStyle;
     }
 
-    if (effectiveLabel === 'hidden') return '';
-    if (effectiveLabel === 'weight') return String(e.data('weight'));
-    if (effectiveLabel === 'index') return String(e.data('index'));
-    if (effectiveLabel === 'custom') {
-        // TODO: implement custom label parsing with {propertyName} syntax
-        return '';
-    }
+    if (effectiveLabelStyle === 'hidden') return '';
 
+    const label: unknown = e.data('label');
+    if (typeof label === 'string') return label;
+
+    if (effectiveLabelStyle === 'weight') return String(e.data('weight'));
+    if (effectiveLabelStyle === 'index') return String(e.data('index'));
     return '';
 }
 

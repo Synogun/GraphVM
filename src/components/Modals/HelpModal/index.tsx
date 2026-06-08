@@ -1,6 +1,6 @@
 import { Tabs, type TabItem } from '@/components/common/tabs';
 import { useModals } from '@Contexts';
-import { Modal } from '@Modals';
+import { Modal } from '@Modals/Modal';
 import { useMemo, useState } from 'react';
 import { ControlsInfo } from './ControlsInfo';
 import { HelpElementsInfo } from './HelpElementsInfo';
@@ -51,23 +51,23 @@ export function HelpModal() {
                             <ul className="list-disc list-inside mt-2 space-y-1">
                                 <li>
                                     <strong className="text-primary">
-                                        Action Bar (Left)
-                                    </strong>
-                                    : Tools for creating, removing and organizing the
+                                        Action Bar (Left):
+                                    </strong>{' '}
+                                    Tools for creating, removing and organizing the
                                     graph and its elements. Also contains access to
                                     menus like Settings and Help.
                                 </li>
                                 <li>
-                                    <strong>Canvas (Center)</strong>: The interactive
+                                    <strong>Canvas (Center):</strong> The interactive
                                     space where you view and edit your graph.
                                 </li>
                                 <li>
                                     <strong className="text-secondary">
-                                        Properties Bar (Right)
-                                    </strong>
-                                    : Through this panel, you can view some
-                                    information and customize the appearance and
-                                    behavior of nodes and edges in the graph.
+                                        Properties Bar (Right):
+                                    </strong>{' '}
+                                    Through this panel, you can view some information
+                                    and customize the appearance and behavior of
+                                    nodes and edges in the graph.
                                 </li>
                             </ul>
                         </section>

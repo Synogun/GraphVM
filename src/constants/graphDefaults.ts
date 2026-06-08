@@ -1,6 +1,5 @@
-import type { EdgesData } from '@/types/edges';
+import type { EdgesData, NodesData } from '../types/elements';
 import type { AutopanOptions } from '@/types/graph';
-import type { NodesData } from '@/types/nodes';
 import {
     getEdgeArrowShape,
     getEdgeCurve,
@@ -16,6 +15,11 @@ export const DefaultNodesData: NodesData = {
     label: '',
     color: '#999999',
     shape: 'ellipse',
+    isGhost: false,
+};
+
+export const DefaultGhostNodeData: Partial<NodesData> = {
+    isGhost: true,
 };
 
 export const DefaultEdgesData: EdgesData = {
@@ -23,11 +27,18 @@ export const DefaultEdgesData: EdgesData = {
     source: '',
     target: '',
     weight: 1,
-    label: 'hidden',
+    labelStyle: 'hidden',
+    label: '',
     color: '#cccccc',
     style: 'solid',
     curve: 'bezier',
     arrowShape: 'triangle',
+    isGhost: false,
+};
+
+export const DefaultGhostEdgeData: Partial<EdgesData> = {
+    isGhost: true,
+    style: 'dashed',
 };
 
 export const DefaultStylesheet: StylesheetCSS[] = [
@@ -117,6 +128,60 @@ export const DefaultStylesheet: StylesheetCSS[] = [
             'line-outline-color': '#0169d9',
         },
     },
+    {
+        selector: '.ghost-element',
+        css: {
+            opacity: 0.5,
+        },
+    },
+    {
+        selector: 'edge.ghost-element',
+        css: {
+            'line-style': 'dashed',
+        },
+    },
+    {
+        selector: '.hidden',
+        css: {
+            display: 'none',
+        },
+    },
+    {
+        selector: 'node.anim-visited',
+        css: {
+            'background-color': '#22c55e',
+        },
+    },
+    {
+        selector: 'node.anim-in-frontier',
+        css: {
+            'background-color': '#3b82f6',
+        },
+    },
+    {
+        selector: 'node.anim-current',
+        css: {
+            'background-color': '#f59e0b',
+            'border-color': '#d97706',
+            'border-width': 3,
+        },
+    },
+    {
+        selector: 'edge.anim-active-edge',
+        css: {
+            'line-color': '#f97316',
+            'target-arrow-color': '#f97316',
+            width: 4,
+        },
+    },
+    {
+        selector: 'edge[animColor]',
+        css: { 'line-color': 'data(animColor)', width: 3 },
+    },
+    {
+        selector: 'node.anim-fan-vertex',
+        css: { 'background-color': 'hsl(var(--a))' },
+    },
 ];
 
 export const DefaultAutopanOptions: AutopanOptions = {
@@ -125,8 +190,12 @@ export const DefaultAutopanOptions: AutopanOptions = {
     margin: 25,
 };
 
+export const GRAPH_MIN_ZOOM = 0.1;
+export const GRAPH_MAX_ZOOM = 5;
+
 export const DefaultGraphOptions: CytoscapeOptions = {
     layout: DefaultLayoutOptions,
     style: DefaultStylesheet,
-    minZoom: 0.1,
+    minZoom: GRAPH_MIN_ZOOM,
+    maxZoom: GRAPH_MAX_ZOOM,
 };

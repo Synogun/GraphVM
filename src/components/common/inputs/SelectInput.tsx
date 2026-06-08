@@ -2,6 +2,7 @@ import { type ChangeEvent, type ReactNode } from 'react';
 import { FieldWrapper } from './FieldWrapper';
 
 export function SelectInput({
+    ref,
     value,
     options,
     label,
@@ -10,7 +11,8 @@ export function SelectInput({
     tooltip,
     defaultValue,
     allowClear = true,
-}: SelectInputProps) {
+    disabled = false,
+}: Readonly<SelectInputProps>) {
     const isModified =
         allowClear &&
         defaultValue !== undefined &&
@@ -30,9 +32,18 @@ export function SelectInput({
         } as ChangeEvent<HTMLSelectElement>);
     };
 
-    const makeOptionValue = ({ value, label, title }: SelectOptionType) => {
+    const makeOptionValue = ({
+        value,
+        label,
+        title: isTitle = false,
+        disabled = false,
+    }: SelectOptionType) => {
         return (
-            <option key={`${value}-option`} value={value} disabled={title}>
+            <option
+                key={`${value}-option`}
+                value={value}
+                disabled={disabled || isTitle}
+            >
                 {label}
             </option>
         );
@@ -46,9 +57,11 @@ export function SelectInput({
             tooltip={tooltip}
         >
             <select
+                ref={ref}
                 className={`select hover:select-accent focus:select-accent cursor-pointer w-full ${className}`}
                 onChange={onChange}
                 value={value}
+                disabled={disabled}
             >
                 {options.map(makeOptionValue)}
             </select>
@@ -60,9 +73,11 @@ type SelectOptionType = {
     label: string;
     value: string;
     title?: boolean;
+    disabled?: boolean;
 };
 
 type SelectInputProps = {
+    ref?: React.Ref<HTMLSelectElement>;
     label: string;
     value?: string;
     onChange?: (e: ChangeEvent<HTMLSelectElement>) => void;
@@ -74,4 +89,5 @@ type SelectInputProps = {
     };
     defaultValue?: string;
     allowClear?: boolean;
+    disabled?: boolean;
 };

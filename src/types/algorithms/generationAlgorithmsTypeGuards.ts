@@ -1,0 +1,165 @@
+import type {
+    BipartiteGraphParams,
+    CircleGraphParams,
+    CompleteBipartiteGraphParams,
+    CompleteGraphParams,
+    GenerationFamily,
+    GenerationParams,
+    GridGraphParams,
+    HlpGraphParams,
+    SimpleGraphParams,
+    StarGraphParams,
+    WheelGraphParams,
+} from './generationAlgorithms';
+
+export const ValidGenerationFamilies: GenerationFamily[] = [
+    'complete',
+    'grid',
+    'circle',
+    'star',
+    'wheel',
+    'hlp',
+    'bipartite',
+    'complete-bipartite',
+    'simple',
+];
+
+export function isGenerationFamily(value: unknown): value is GenerationFamily {
+    return (
+        typeof value === 'string' &&
+        (ValidGenerationFamilies as string[]).includes(value)
+    );
+}
+
+export function isCompleteGraphParams(
+    params: GenerationParams
+): params is CompleteGraphParams {
+    return params.family === 'complete' && typeof params.nodeCount === 'number';
+}
+
+export function isGridGraphParams(
+    params: GenerationParams
+): params is GridGraphParams {
+    return (
+        params.family === 'grid' &&
+        typeof params.rows === 'number' &&
+        typeof params.cols === 'number' &&
+        (params.applyGridLayout === undefined ||
+            typeof params.applyGridLayout === 'boolean')
+    );
+}
+
+export function isCircleGraphParams(
+    params: GenerationParams
+): params is CircleGraphParams {
+    return (
+        params.family === 'circle' &&
+        typeof params.nodeCount === 'number' &&
+        (params.applyCircleLayout === undefined ||
+            typeof params.applyCircleLayout === 'boolean')
+    );
+}
+
+export function isStarGraphParams(
+    params: GenerationParams
+): params is StarGraphParams {
+    return (
+        params.family === 'star' &&
+        typeof params.nodeCount === 'number' &&
+        (params.applyConcentricLayout === undefined ||
+            typeof params.applyConcentricLayout === 'boolean')
+    );
+}
+
+export function isWheelGraphParams(
+    params: GenerationParams
+): params is WheelGraphParams {
+    return (
+        params.family === 'wheel' &&
+        typeof params.nodeCount === 'number' &&
+        (params.applyConcentricLayout === undefined ||
+            typeof params.applyConcentricLayout === 'boolean')
+    );
+}
+
+export function isHlpGraphParams(
+    params: GenerationParams
+): params is HlpGraphParams {
+    return (
+        params.family === 'hlp' &&
+        typeof params.L === 'number' &&
+        typeof params.P === 'number' &&
+        (params.applyGridLayout === undefined ||
+            typeof params.applyGridLayout === 'boolean')
+    );
+}
+
+export function isHlpGraphMetadata(
+    metadata: unknown
+): metadata is { L: number; P: number } {
+    return (
+        typeof metadata === 'object' &&
+        metadata !== null &&
+        'L' in metadata &&
+        'P' in metadata &&
+        typeof (metadata as { L: unknown }).L === 'number' &&
+        typeof (metadata as { P: unknown }).P === 'number'
+    );
+}
+
+export function isBipartiteGraphParams(
+    params: GenerationParams
+): params is BipartiteGraphParams {
+    return (
+        params.family === 'bipartite' &&
+        typeof params.setASize === 'number' &&
+        typeof params.setBSize === 'number'
+    );
+}
+
+export function isCompleteBipartiteGraphParams(
+    params: GenerationParams
+): params is CompleteBipartiteGraphParams {
+    return (
+        params.family === 'complete-bipartite' &&
+        typeof params.setASize === 'number' &&
+        typeof params.setBSize === 'number'
+    );
+}
+
+export function isSimpleGraphParams(
+    params: GenerationParams
+): params is SimpleGraphParams {
+    return (
+        params.family === 'simple' &&
+        typeof params.nodeCount === 'number' &&
+        typeof params.edgeCount === 'number' &&
+        (params.applyFcoseLayout === undefined ||
+            typeof params.applyFcoseLayout === 'boolean')
+    );
+}
+
+export function isValidGenerationParams(params: GenerationParams): boolean {
+    switch (params.family) {
+        case 'complete':
+            return isCompleteGraphParams(params);
+        case 'grid':
+            return isGridGraphParams(params);
+        case 'circle':
+            return isCircleGraphParams(params);
+        case 'star':
+            return isStarGraphParams(params);
+        case 'wheel':
+            return isWheelGraphParams(params);
+        case 'hlp':
+            return isHlpGraphParams(params);
+        case 'bipartite':
+            return isBipartiteGraphParams(params);
+        case 'complete-bipartite':
+            return isCompleteBipartiteGraphParams(params);
+        case 'simple':
+            return isSimpleGraphParams(params);
+        default:
+            return false;
+    }
+}

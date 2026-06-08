@@ -1,17 +1,34 @@
 import type { ReactNode } from 'react';
+import { AnimationSidebar } from '@/components/graph/AnimationSidebar';
+import { useAnimationStore } from '@/stores/animationStore';
+import { useGraphWorkspaceStore } from '@/stores/graphWorkspaceStore';
 import { SideBar } from '../common/SideBar';
 import { EdgesSection } from './EdgesSection';
 import { GraphSection } from './GraphSection';
 import { LayoutSection } from './LayoutSection';
 import { NodesSection } from './NodesSection';
 
-export function PropertiesBar({ children }: PropertiesBarProps) {
-    // const [panelsDisplay, setPanelsDisplay] = useState({
-    //     layout: true,
-    //     nodes: false,
-    //     edges: false,
-    // });
+function PropertiesSidebarContent() {
+    const activeTabId = useGraphWorkspaceStore((s) => s.activeTabId);
+    const animStatus = useAnimationStore((s) =>
+        activeTabId ? (s.tabs[activeTabId]?.status ?? 'idle') : 'idle'
+    );
 
+    if (activeTabId && animStatus !== 'idle') {
+        return <AnimationSidebar tabId={activeTabId} />;
+    }
+
+    return (
+        <>
+            <GraphSection />
+            <LayoutSection />
+            <NodesSection />
+            <EdgesSection />
+        </>
+    );
+}
+
+export function PropertiesBar({ children }: Readonly<PropertiesBarProps>) {
     return (
         <SideBar
             id="properties-bar"
@@ -19,23 +36,7 @@ export function PropertiesBar({ children }: PropertiesBarProps) {
             side="right"
             sideClassName="select-none shadow-xl/45"
             width="w-70"
-            sidebarChildren={
-                <>
-                    <GraphSection />
-
-                    <LayoutSection
-                    // visible={ panelsDisplay.layout }
-                    />
-
-                    <NodesSection
-                    // visible={ panelsDisplay.nodes }
-                    />
-
-                    <EdgesSection
-                    // visible={ panelsDisplay.edges }
-                    />
-                </>
-            }
+            sidebarChildren={<PropertiesSidebarContent />}
         >
             {children}
         </SideBar>

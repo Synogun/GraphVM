@@ -1,4 +1,5 @@
-import { ParsedErrorToasts, parseError } from '@/config/parsedError';
+import { parseError } from '@/config/parsedError';
+import { ParsedErrorToasts } from '@/constants';
 import {
     DefaultBipartiteGenerationParams,
     DefaultCircleGenerationParams,
@@ -6,11 +7,12 @@ import {
     DefaultCompleteGenerationParams,
     DefaultGenerationParams,
     DefaultGridGenerationParams,
+    DefaultHlpGenerationParams,
     DefaultSimpleGenerationParams,
     DefaultStarGenerationParams,
     DefaultWheelGenerationParams,
 } from '@/constants/algorithmDefaults';
-import { useGetGraph } from '@/hooks/useGraphRegistry';
+import { useGetGraph, useGraphMutation } from '@/hooks';
 import {
     calcMaxEdgesForSimpleGraph,
     generateBipartiteGraph,
@@ -18,16 +20,20 @@ import {
     generateCompleteBipartiteGraph,
     generateCompleteGraph,
     generateGridGraph,
+    generateHlpGraph,
     generateSimpleGraph,
     generateStarGraph,
     generateWheelGraph,
-} from '@/services/algorithms/generationAlgorithmsService';
+} from '@/services/algorithms';
 import {
+    type GenerationFamily,
+    type GenerationParams,
     isGenerationFamily,
     ValidGenerationFamilies,
-} from '@/types/algorithmTypeGuards';
-import type { GenerationFamily, GenerationParams } from '@/types/algorithms';
-import { useGraphProperties, useLayoutProperties, useToasts } from '@Contexts';
+} from '@/types/algorithms';
+import { parseKebabCase } from '@/utils/elements';
+import { useLayoutStore } from '@/stores/layoutStore';
+import { useSettings, useToasts } from '@Contexts';
 import { SelectInput } from '@Inputs';
 import { forwardRef, useImperativeHandle, useMemo, useState } from 'react';
 import {
@@ -35,10 +41,11 @@ import {
     CircleParamsInput,
     CompleteParamsInput,
     GridParamsInput,
+    HlpParamsInput,
     SimpleParamsInput,
     StarParamsInput,
     WheelParamsInput,
-} from './AlgorithmsParamsSection';
+} from './GenerationAlgorithmsParams';
 
 const FAMILY_MAP: Record<
     GenerationFamily,
@@ -88,6 +95,18 @@ const FAMILY_MAP: Record<
         description:
             'A cycle graph with an additional central hub connected to all other nodes.',
     },
+    hlp: {
+        params: {
+            family: 'hlp',
+            L: DefaultHlpGenerationParams.L,
+            P: DefaultHlpGenerationParams.P,
+            applyGridLayout: true,
+        },
+        description:
+            'A special subfamily of Cayley graphs, ' +
+            'where nodes represent vectors of length L, ' +
+            'and edges are defined based on a specific generating set. ',
+    },
     bipartite: {
         params: {
             family: 'bipartite',
@@ -125,27 +144,32 @@ export type GenerationTabRef = {
 };
 
 export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
-    const [params, setParams] = useState<GenerationParams>({
+    const [params, setParams] = useState({
         ...DefaultGenerationParams,
     });
 
     const graph = useGetGraph('main-graph');
+    const currentLayout = useLayoutStore((s) => s.current);
+    const setLayout = useLayoutStore((s) => s.setCurrent);
+    const setType = useLayoutStore((s) => s.setType);
+    const setCols = useLayoutStore((s) => s.setCols);
+    const setRows = useLayoutStore((s) => s.setRows);
+    const { syncAll } = useGraphMutation('main-graph');
     const {
-        current: currentLayout,
-        setCurrent: setLayout,
-        grid,
-        setType,
-    } = useLayoutProperties();
-    const {
-        setDirected,
-        nodes: { setCount: setNodeCount, setSelected: setSelectedNodes },
-        edges: { setCount: setEdgeCount, setSelected: setSelectedEdges },
-    } = useGraphProperties();
+        graph: { limits },
+    } = useSettings();
 
     const { addToast } = useToasts();
 
+    const maxSimpleEdges =
+        params.family === 'simple'
+            ? calcMaxEdgesForSimpleGraph(params.nodeCount)
+            : 0;
+
     const handleRun = () => {
-        if (!graph.current) {
+        const activeGraph = graph.current;
+
+        if (!activeGraph) {
             addToast(ParsedErrorToasts.GraphNotFound);
             return;
         }
@@ -154,7 +178,7 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
         try {
             switch (params.family) {
                 case 'complete':
-                    generateCompleteGraph(graph.current, params, layout);
+                    generateCompleteGraph(activeGraph, params, layout, limits);
                     break;
                 case 'grid':
                     if (params.applyGridLayout) {
@@ -166,10 +190,10 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
                         };
                         setType('grid');
                         setLayout({ ...layout });
-                        grid.setCols(params.cols);
-                        grid.setRows(params.rows);
+                        setCols(params.cols);
+                        setRows(params.rows);
                     }
-                    generateGridGraph(graph.current, params, layout);
+                    generateGridGraph(activeGraph, params, layout, limits);
                     break;
                 case 'circle':
                     if (params.applyCircleLayout) {
@@ -177,7 +201,7 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
                         setType('circle');
                         setLayout({ ...layout });
                     }
-                    generateCircleGraph(graph.current, params, layout);
+                    generateCircleGraph(activeGraph, params, layout, limits);
                     break;
                 case 'star':
                     if (params.applyConcentricLayout) {
@@ -188,7 +212,7 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
                             name: 'concentric',
                         });
                     }
-                    generateStarGraph(graph.current, params, layout);
+                    generateStarGraph(activeGraph, params, layout, limits);
                     break;
                 case 'wheel':
                     if (params.applyConcentricLayout) {
@@ -196,22 +220,34 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
                         setType('concentric');
                         setLayout({ ...layout });
                     }
-                    generateWheelGraph(graph.current, params, layout);
+                    generateWheelGraph(activeGraph, params, layout, limits);
                     break;
-                // case 'cayley':
-                //     generateCayleyGraph(graph.current, params, layout);
-                //     break;
+                case 'hlp':
+                    if (params.applyGridLayout) {
+                        layout = {
+                            ...layout,
+                            name: 'grid',
+                            cols: params.P,
+                        };
+                        setType('grid');
+                        setLayout({ ...layout });
+                        setCols(params.P);
+                    }
+
+                    generateHlpGraph(activeGraph, params, layout);
+                    break;
                 case 'bipartite':
-                    generateBipartiteGraph(graph.current, params, layout);
+                    generateBipartiteGraph(activeGraph, params, layout, limits);
                     break;
                 case 'complete-bipartite':
-                    generateCompleteBipartiteGraph(graph.current, params, layout);
+                    generateCompleteBipartiteGraph(
+                        activeGraph,
+                        params,
+                        layout,
+                        limits
+                    );
                     break;
                 case 'simple':
-                    const maxSimpleEdges = calcMaxEdgesForSimpleGraph(
-                        params.nodeCount
-                    );
-
                     if (params.edgeCount > maxSimpleEdges) {
                         addToast({
                             type: 'warning',
@@ -226,7 +262,7 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
                         setType('circle');
                         setLayout({ ...layout });
                     }
-                    generateSimpleGraph(graph.current, params, layout);
+                    generateSimpleGraph(activeGraph, params, layout, limits);
                     break;
 
                 default:
@@ -245,11 +281,8 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
             return;
         }
 
-        setNodeCount(graph.current.nodes().length);
-        setEdgeCount(graph.current.edges().length);
-        setSelectedNodes([]);
-        setSelectedEdges([]);
-        setDirected(Boolean(graph.current.data('directed')));
+        activeGraph.data('generationFamily', [params.family]);
+        syncAll(activeGraph);
 
         setParams({ ...DefaultGenerationParams });
         addToast({
@@ -286,10 +319,9 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
                 return <StarParamsInput params={params} setParams={setParams} />;
             case 'wheel':
                 return <WheelParamsInput params={params} setParams={setParams} />;
+            case 'hlp':
+                return <HlpParamsInput params={params} setParams={setParams} />;
             case 'bipartite':
-                return (
-                    <BipartiteParamsInput params={params} setParams={setParams} />
-                );
             case 'complete-bipartite':
                 return (
                     <BipartiteParamsInput params={params} setParams={setParams} />
@@ -307,7 +339,7 @@ export const GenerationTab = forwardRef<GenerationTabRef>((_, ref) => {
 
     const graphFamilySelectOptions = useMemo(() => {
         return ValidGenerationFamilies.map((family) => ({
-            label: family.charAt(0).toUpperCase() + family.slice(1),
+            label: parseKebabCase(family),
             value: family,
         }));
     }, []);

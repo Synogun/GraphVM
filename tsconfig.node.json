@@ -2,7 +2,7 @@
     "compilerOptions": {
         "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
         "target": "ES2023",
-        "lib": ["ES2023"],
+        "lib": ["ES2023", "DOM"],
         "module": "ESNext",
         "skipLibCheck": true,
 
@@ -19,7 +19,24 @@
         "noUnusedParameters": true,
         "erasableSyntaxOnly": true,
         "noFallthroughCasesInSwitch": true,
-        "noUncheckedSideEffectImports": true
+        "noUncheckedSideEffectImports": true,
+        "jsx": "react-jsx",
+        "types": ["node"],
+        "paths": {
+            "@/*": ["./src/*"],
+            "@Modals": ["./src/components/Modals"],
+            "@Modals/*": ["./src/components/Modals/*"],
+            "@Inputs": ["./src/components/common/inputs"],
+            "@Contexts": ["./src/contexts"],
+            "@Logger": ["./src/config/logger"],
+            "@Config": ["./src/config"]
+        }
     },
-    "include": ["vite.config.ts", "eslint.config.ts"]
+    "include": [
+        "vite.config.ts",
+        "eslint.config.ts",
+        "playwright.config.ts",
+        "tests/**/*.ts",
+        "tests/**/*.tsx"
+    ]
 }
