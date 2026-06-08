@@ -1,2 +1,2 @@
 export { runMisraGriesAnimation } from './misraGriesService';
-export { runHlpEdgeColoringAnimation } from './hlpEdgeColoringService';
+export { runPythonHlpEdgeColoringAnimation as runHlpEdgeColoringAnimation } from './pythonHlpEdgeColoringService';
